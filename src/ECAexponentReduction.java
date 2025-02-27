@@ -11,7 +11,7 @@ public class ECAexponentReduction {
      */
     RuleStretchTemplate ruleStretchTemplate = new RuleStretchTemplate();
     /**
-     * At what iteration does the algorithm stop repeating?
+     * At what iteration does the algorithm (passLoop in doLogReductionTwo) stop repeating?
      */
     int passRepeat;
     /**
@@ -154,7 +154,7 @@ public class ECAexponentReduction {
     }
 
     /**
-     * ???
+     * A manager function that compares center columns of doLogReductionTwo() solutions to all possible neighborhoods of a certain size
      *
      * @param n ECA 0-255 rule
      */

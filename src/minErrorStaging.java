@@ -2,20 +2,52 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class minErrorStaging {
+    /**
+     *
+     */
     int[] sameSolutions;
+    /**
+     *
+     */
     int[][] localMaxSolution;
+    /**
+     * Within a single solution, if multiple codewords have the same weighted error score, each codeword is placed here
+     */
     int[] sameError;
+    /**
+     * Within a single maximization solution, if multiple codewords have the same weighted error score, each is placed here
+     */
     int[] sameErrorMax;
+    /**
+     * Cumulative heat map of errors
+     */
     int[][] maxErrorMap;
     int[][] minErrorMap;
-    int[] coefficients;
     int[] gateDistro;
     int[][] maxDistro;
+    /**
+     * Weighted change score of an input, scored the same way as the errors
+     */
     int changeScoreInt;
+    /**
+     * Hamming change in codewords
+     */
     int totHammingChange;
+    /**
+     * Total number of errors in all solutions found
+     */
     int totLocalErrors;
+    /**
+     * ??
+     */
     int[] fbfWolfram;
+    /**
+     * Cumulative distribution of codeword solutions over all inputs
+     */
     int[] solutionDistro;
+    /**
+     * Cumulative distribution of codeword solutions over all inputs, maximized error codewords rather than minimized error codewords
+     */
     int[] maxSolutionDistro;
 
     /**
@@ -646,6 +678,13 @@ public class minErrorStaging {
         return solutions[0];
     }
 
+    /**
+     * ???
+     * @param rule
+     * @param maxLength
+     * @param numTrials
+     */
+
     public void manageLengthsMinimizations(int rule, int maxLength, int numTrials) {
         int columnsOutput = 24;
         int[][] allData = new int[maxLength][(int) Math.pow(2, maxLength)];
@@ -710,7 +749,7 @@ public class minErrorStaging {
     }
 
     /**
-     * Checks the mean Hamming distance between codewords when the input array is changed
+     * Checks the mean Hamming distance between minimized codewords when the input array is changed
      *
      * @param rule      ECA rule 0-255
      * @param in        random input data array
@@ -899,6 +938,12 @@ public class minErrorStaging {
         return out;
     }
 
+    /**
+     * ??
+     * @param size
+     * @return
+     */
+
     public int[][] doWolfram(int size) {
         ecaBestFitHashCollisionExhuastive(150, 4, false, false, 1);
         int fieldSize = 150;
@@ -929,6 +974,11 @@ public class minErrorStaging {
         }
         return field;
     }
+
+    /**
+     * ??
+     * @return
+     */
     public int[][] checkCodesXor(){
         int[] codes = new int[]{9,18,27,21};
         int[][] table = new int[4][4];
@@ -941,7 +991,7 @@ public class minErrorStaging {
         return table;
     }
     /**
-     * ???
+     * A non-exhaustive version of ecaBestFitHashCollisionExhaustive
      *
      * @param specificRule ECA 0-255 rule
      * @param size         width of input array, size of solution neighborhood
