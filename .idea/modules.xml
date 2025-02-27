@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ECAerrorMinAndCenterColumn.iml" filepath="$PROJECT_DIR$/.idea/ECAerrorMinAndCenterColumn.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ECAerrorMinAndCenterColumn.iml" filepath="$PROJECT_DIR$/ECAerrorMinAndCenterColumn.iml" />
     </modules>
   </component>
 </project>
