@@ -19,11 +19,20 @@ public class minErrorStaging {
      */
     int[] sameErrorMax;
     /**
-     * Cumulative heat map of errors
+     * Cumulative heat map of errors, maximization version
      */
     int[][] maxErrorMap;
+    /**
+     * Cumulative heat map of errors
+     */
     int[][] minErrorMap;
+    /**
+     *
+     */
     int[] gateDistro;
+    /**
+     *
+     */
     int[][] maxDistro;
     /**
      * Weighted change score of an input, scored the same way as the errors
@@ -97,6 +106,9 @@ public class minErrorStaging {
             //Score the error
             for (row = 0; row < size; row++) {
                 for (column = 0; column < size; column++) {
+                    //
+                     //
+                     //Various error-scoring weights tested
                     errorScore[correction] += ((int) Math.pow(2, row) * (trialField[row][column] ^ in[row][column]));
                     //errorScore[correction] +=  ((row*row))*(trialField[row][column] ^ in[row][column]);
                     //errorScore[correction] += row*row*(trialField[row][column] ^ in[row][column]);
@@ -144,6 +156,15 @@ public class minErrorStaging {
 //                    hammingDistance++;
 //                }
 //            }
+
+
+
+
+
+        //
+         //
+         //
+         //Checks for solution uniqueness
         int sameNumErrors = 0;
         int[] esPrintList = new int[errorScore.length];
         int[] esMaxPL = new int[errorScore.length];
@@ -182,7 +203,7 @@ public class minErrorStaging {
         //System.out.println("sameNumErrors " + sameNumErrors);
         //
         //
-        //Run the Wolfram code on the minimum neighborhood for return
+        //Run the Wolfram code on the minimum neighborhood codeword for function return purposes
         trialField = new int[size + 1][size];
         int neighborhoodInt = 0;
         for (column = 0; column < size; column++) {
@@ -218,6 +239,9 @@ public class minErrorStaging {
                 //maxErrorMap[row][column] += (localMaxSolution[row][column]^in[row][column]);
             }
         }
+        //
+         //
+         //Some experimental voting procedures
         int[][][] subVote = new int[10][size][size];
         for (int answer = 0; answer < 1; answer++) {
             trialField = new int[size][size];

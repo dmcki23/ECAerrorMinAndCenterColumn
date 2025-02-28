@@ -4,11 +4,12 @@ public class Main {
     public static void main(String[] args) {
         minErrorStaging m = new minErrorStaging();
         //m.manageLengthsMinimizations(150,4,500);
-        //m.ecaBestFitHashCollisionExhuastive(150,4,false,false,500);
+        m.ecaBestFitHashCollisionExhuastive(150,2,false,false,500);
         RuleStretchTemplate ruleStretchTemplate = new RuleStretchTemplate();
         //ruleStretchTemplate.manageBoth(30);
         ECAexponentReduction ecaexponentReduction = new ECAexponentReduction();
         //ecaexponentReduction.checkColumns(30,50);
-        ecaexponentReduction.checkAllColumns(30);
+        //ecaexponentReduction.checkAllColumns(30);
+
     }
 }
