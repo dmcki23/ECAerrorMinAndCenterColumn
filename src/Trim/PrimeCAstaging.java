@@ -1,3 +1,5 @@
+package Trim;
+
 import java.util.Arrays;
 
 public class PrimeCAstaging {

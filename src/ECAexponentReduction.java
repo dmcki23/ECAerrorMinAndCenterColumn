@@ -19,8 +19,6 @@ public class ECAexponentReduction {
      */
     int[][] decPasses;
 
-
-
     /**
      * Does the input, stretch, feedback algorithm to find offset equal center columns to the input neighborhood's center column
      *
@@ -37,7 +35,6 @@ public class ECAexponentReduction {
         for (int power = 0; power < 8; power++) {
             nw[power] = ((n / (int) Math.pow(2, power)) % 2);
         }
-
         int maxRows = 22;
         int value;
         int initRow;
@@ -52,8 +49,6 @@ public class ECAexponentReduction {
                 }
             }
         }
-
-
         value = initialValue;
         initRow = logIn;
         passLoop:
@@ -66,7 +61,6 @@ public class ECAexponentReduction {
                 }
                 value *= 2;
             }
-
             for (int row = 0; row < maxRows; row++) {
                 tot = 0;
                 int powers = 1 + 2 * (row - 1);
@@ -95,11 +89,9 @@ public class ECAexponentReduction {
             if (lengthRepeat != -1) break passLoop;
             System.out.print("\n");
         }
-
         System.out.println("repeat " + passRepeat);
         return passes;
     }
-
 
     /**
      * A manager function that compares center columns of doLogReductionTwo() solutions to all possible neighborhoods of a certain size
@@ -140,7 +132,6 @@ public class ECAexponentReduction {
                     }
                     for (int in = 0; in < (int) Math.pow(2, 2 * (ll) + 1); in++) {
                         int[] second = new int[2 * ll + 1];
-
                         for (int index = 0; index < second.length; index++) {
                             second[index] = ((in / (int) Math.pow(2, index)) % 2);
                         }
@@ -154,16 +145,12 @@ public class ECAexponentReduction {
 //                                System.out.println("spot " + spot);
                                 System.out.println();
                                 found = true;
-
                             }
-
                         }
                         if (!found) {
-
 //                            System.out.println(Arrays.toString(Arrays.copyOfRange(comp, 1, 31)));
 //                            System.out.println(Arrays.toString(Arrays.copyOfRange(a, pass+2, pass + 32)));
                             System.out.println();
-
                         }
                     }
                 }

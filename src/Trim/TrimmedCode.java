@@ -1,6 +1,4 @@
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Random;
+package Trim;
 
 public class TrimmedCode {
 //    /**
@@ -227,6 +225,146 @@ public class TrimmedCode {
 
 
 
+//
+//    /**
+//     * ???
+//     * @param rule
+//     * @param maxLength
+//     * @param numTrials
+//     */
+//
+//    public void manageLengthsMinimizations(int rule, int maxLength, int numTrials) {
+//        int columnsOutput = 24;
+//        int[][] allData = new int[maxLength][(int) Math.pow(2, maxLength)];
+//        maxDistro = new int[maxLength][(int) Math.pow(2, maxLength)];
+//        for (int lengths = 4; lengths < maxLength; lengths++) {
+//            sameError = new int[(int) Math.pow(2, maxLength) + 1];
+//            sameErrorMax = new int[(int) Math.pow(2, maxLength) + 1];
+//            ecaBestFitHashCollisionExhuastive(rule, lengths, false, false, numTrials);
+//            for (int spot = 0; spot < (int) Math.pow(2, lengths); spot++) {
+//                allData[lengths][spot] = sameError[spot];
+//                maxDistro[lengths][spot] = sameErrorMax[spot];
+//            }
+//        }
+//
+//        System.out.println("same number of errors minimum ");
+//        System.out.print("\n");
+//
+//        for (int lengths = 4; lengths < maxLength; lengths += 2) {
+//            for (int spot = 0; spot < columnsOutput; spot++) {
+//                System.out.print(allData[lengths][spot]);
+//                if (spot != columnsOutput - 1) System.out.print(",");
+//            }
+//            if (lengths != maxLength - 2) System.out.print(";");
+//            //System.out.println();
+//        }
+//        System.out.println("}");
+//        System.out.print("\n{");
+//
+//        for (int lengths = 5; lengths < maxLength; lengths += 2) {
+//            for (int spot = 0; spot < columnsOutput; spot++) {
+//                System.out.print(allData[lengths][spot]);
+//                if (spot != columnsOutput - 1) System.out.print(",");
+//            }
+//            if (lengths != maxLength - 1) System.out.print(";");
+//            //System.out.println();
+//        }
+//        System.out.println("}");
+//        System.out.println("same number of errors maximum ");
+//        System.out.print("\n{");
+//
+//        for (int lengths = 4; lengths < maxLength; lengths += 2) {
+//            for (int spot = 0; spot < columnsOutput; spot++) {
+//                System.out.print(maxDistro[lengths][spot]);
+//                if (spot != columnsOutput - 1) System.out.print(",");
+//            }
+//            if (lengths != maxLength - 1) System.out.print(";");
+//            //System.out.println();
+//        }
+//        System.out.println("}");
+//        System.out.print("\n{");
+//
+//        for (int lengths = 5; lengths < maxLength; lengths += 2) {
+//            for (int spot = 0; spot < columnsOutput; spot++) {
+//                System.out.print(maxDistro[lengths][spot]);
+//                if (spot != columnsOutput - 1) System.out.print(",");
+//            }
+//            if (lengths != maxLength - 1) System.out.print(";");
+//            //System.out.println();
+//        }
+//        System.out.println("}");
+//
+//    }
 
 
+
+
+
+
+
+
+
+//
+//
+//    /**
+//     * Finds the center column of an input neighborhood
+//     *
+//     * @param in      primeCA Wolfram code
+//     * @param inputIn input neighborhood
+//     * @param numRows number of rows to return
+//     * @param size    size of output space, must be > 2*numRows
+//     * @return the center column of inputIn[]'s output
+//     */
+//    public int[] traditionalCenterColumnLong(long[] in, long[] inputIn, int numRows, int size) {
+//        //
+//        //
+//        //Initialization
+////        int[] n = new int[in.length];
+////        for (int spot = 0; spot < in.length; spot++) {
+////            n[spot] = (int) in[spot];
+////        }
+////        int[] input = new int[inputIn.length];
+////        for (int spot = 0; spot < inputIn.length; spot++) {
+////            input[spot] = (int) inputIn[spot];
+////        }
+//        int[] columnOut = new int[numRows];
+//        //code = basicECA.ruleExtension(30);
+//        //System.out.println(Arrays.toString(code[5]));
+//        //code[3] = new int[]{0,1,1,1,1,0,0,0};
+//        long[][] field = new long[size][size];
+//        //field[0][128] = 1;
+//        for (int column = size / 2 - inputIn.length / 2; column <= size / 2 + inputIn.length / 2; column++) {
+//            //System.out.println("column " + column);
+//            field[0][column] = inputIn[column + inputIn.length / 2 - size / 2];
+//        }
+//        //System.out.println(Arrays.toString(field[0]));
+//        columnOut[0] = (int) field[0][size / 2];
+//        //calculate neighborhood
+//        //System.out.println("size/2 " + (size/2));
+//        //System.out.println("size/2 - input.length/2 " + (size/2-input.length/2));
+//        //Run Wolfram code on input
+//        int column = 0;
+//        for (int row = 1; row < numRows; row++) {
+//            for (column = 1; column < size - 1; column++) {
+////                for (int bit = 0; bit < 3; bit++) {
+////                    field[row][ccolumn] += (int) Math.pow(16, bit) * field[row - 1][ccolumn - 1 + bit];
+////                }
+//                field[row][column] = field[row - 1][column - 1] + 16 * field[row - 1][column] + 16 * 16 * field[row - 1][column + 1];
+//                field[row][column] = in[(int) field[row][column]];
+//            }
+//            columnOut[row] = (int) field[row][size / 2];
+//        }
+//        for (int row = 0; row < 10; row++) {
+//            //System.out.println(Arrays.toString(Arrays.copyOfRange(field[row],size/2-10,size/2+10)));
+//        }
+////        System.out.print("\n");
+////        for (int row = 0; row < numRows; row++) {
+////            for (int ccolumn = size/2-numRows; ccolumn < size/2+numRows; ccolumn++) {
+////                System.out.print(field[row][ccolumn]);
+////            }
+////            System.out.print("\n");
+////        }
+////        System.out.print("\n");
+//        return columnOut;
+//    }
 }

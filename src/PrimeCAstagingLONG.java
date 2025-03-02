@@ -685,7 +685,6 @@ public class PrimeCAstagingLONG {
         //Main loop, does it until it finds a repeat
         passLoop:
         for (int pass = 0; pass < 32 && lengthRepeat == -1; pass++) {
-
             //
             //
             //Stretch loop, multiplies by 16 each time, adding a zero to each side of the neighborhood
@@ -744,7 +743,6 @@ public class PrimeCAstagingLONG {
         for (int pass = 0; pass < passRepeat; pass++) {
             long[] passArr = Arrays.copyOfRange(passes[pass][feedbackRow], 0, 2 * (feedbackRow - 1) + 1);
             int[] b = Arrays.copyOfRange(traditionalCenterColumn(wolfram, passArr, 256, 1024), 0, 128);
-
             for (int spot = 0; spot < 64; spot++) {
                 if (Arrays.equals(Arrays.copyOfRange(b, 1, 33), Arrays.copyOfRange(a, spot, spot + 32))) {
                     System.out.println("Pass " + pass + " Spot " + spot);
@@ -773,7 +771,7 @@ public class PrimeCAstagingLONG {
             l[n] = l[n - 1] * 16;
         }
         int lengthCompare = 16;
-        int[] mainColumn = traditionalCenterColumnLong(wolfram, new long[]{0, 0, 0, 10, 0, 4, 8}, 512, 2048);
+        int[] mainColumn = traditionalCenterColumn(wolfram, new long[]{0, 0, 0, 10, 0, 4, 8}, 512, 2048);
         //mainColumn = Arrays.copyOfRange(mainColumn,0,lengthCompare);
         System.out.println(Arrays.toString(mainColumn));
         int[] comp;
@@ -805,7 +803,7 @@ public class PrimeCAstagingLONG {
                 //input[input.length - 1] = 1;
                 //input = new long[]{0,0,0,10,0,4,8};
                 System.out.println(Arrays.toString(input));
-                comp = traditionalCenterColumnLong(wolfram, input, 512, 2048);
+                comp = traditionalCenterColumn(wolfram, input, 512, 2048);
                 //comp = Arrays.copyOfRange(comp,0,lengthCompare);
                 //System.out.println(Arrays.toString(Arrays.copyOfRange(comp, 0, 256)));
                 //System.out.println(Arrays.toString(Arrays.copyOfRange(mainColumn, 0, 256)));
@@ -839,68 +837,6 @@ public class PrimeCAstagingLONG {
             }
             //System.out.println("total " + total);
         }
-    }
-
-    /**
-     * Finds the center column of an input neighborhood
-     *
-     * @param in      primeCA Wolfram code
-     * @param inputIn input neighborhood
-     * @param numRows number of rows to return
-     * @param size    size of output space, must be > 2*numRows
-     * @return the center column of inputIn[]'s output
-     */
-    public int[] traditionalCenterColumnLong(long[] in, long[] inputIn, int numRows, int size) {
-        //
-        //
-        //Initialization
-//        int[] n = new int[in.length];
-//        for (int spot = 0; spot < in.length; spot++) {
-//            n[spot] = (int) in[spot];
-//        }
-//        int[] input = new int[inputIn.length];
-//        for (int spot = 0; spot < inputIn.length; spot++) {
-//            input[spot] = (int) inputIn[spot];
-//        }
-        int[] columnOut = new int[numRows];
-        //code = basicECA.ruleExtension(30);
-        //System.out.println(Arrays.toString(code[5]));
-        //code[3] = new int[]{0,1,1,1,1,0,0,0};
-        long[][] field = new long[size][size];
-        //field[0][128] = 1;
-        for (int column = size / 2 - inputIn.length / 2; column <= size / 2 + inputIn.length / 2; column++) {
-            //System.out.println("column " + column);
-            field[0][column] = inputIn[column + inputIn.length / 2 - size / 2];
-        }
-        //System.out.println(Arrays.toString(field[0]));
-        columnOut[0] = (int) field[0][size / 2];
-        //calculate neighborhood
-        //System.out.println("size/2 " + (size/2));
-        //System.out.println("size/2 - input.length/2 " + (size/2-input.length/2));
-        //Run Wolfram code on input
-        int column = 0;
-        for (int row = 1; row < numRows; row++) {
-            for (column = 1; column < size - 1; column++) {
-//                for (int bit = 0; bit < 3; bit++) {
-//                    field[row][ccolumn] += (int) Math.pow(16, bit) * field[row - 1][ccolumn - 1 + bit];
-//                }
-                field[row][column] = field[row - 1][column - 1] + 16 * field[row - 1][column] + 16 * 16 * field[row - 1][column + 1];
-                field[row][column] = in[(int) field[row][column]];
-            }
-            columnOut[row] = (int) field[row][size / 2];
-        }
-        for (int row = 0; row < 10; row++) {
-            //System.out.println(Arrays.toString(Arrays.copyOfRange(field[row],size/2-10,size/2+10)));
-        }
-//        System.out.print("\n");
-//        for (int row = 0; row < numRows; row++) {
-//            for (int ccolumn = size/2-numRows; ccolumn < size/2+numRows; ccolumn++) {
-//                System.out.print(field[row][ccolumn]);
-//            }
-//            System.out.print("\n");
-//        }
-//        System.out.print("\n");
-        return columnOut;
     }
 
     /**
