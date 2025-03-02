@@ -4,19 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="feature branch node, have been no fundamental alterations since last season and prior to gathering the files from several projects post thesis joss arxiv">
-      <change afterPath="$PROJECT_DIR$/src/PrimeCAstaging.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/PrimeCAstagingLONG.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/TrimmedCode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/ECAexponentReduction.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/ECAexponentReduction.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/PrimeCA.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/PrimeCA.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/minErrorStaging.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/minErrorStaging.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAexponentReduction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAexponentReduction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/PrimeCA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PrimeCA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/minErrorStaging.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/minErrorStaging.java" afterDir="false" />
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="Moved some staging classes to Trim (a recycle bin)&#10;&#10;Cut all unnecessary functions, only essential functions left (probably, ftm)">
+      <change beforePath="$PROJECT_DIR$/src/Trim/PrimeCA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Trim/PrimeCA.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,7 +53,7 @@
     "Application.Unnamed.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "sizeTwoECAerrorMin",
+    "git-widget-placeholder": "trimming",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/home/daniel/IdeaProjects/ECAerrorMinAndCenterColumn",
     "node.js.detected.package.eslint": "true",
@@ -106,7 +95,7 @@
       <updated>1740330970065</updated>
       <workItem from="1740330971027" duration="10577000" />
       <workItem from="1740630168703" duration="671000" />
-      <workItem from="1740697486564" duration="16315000" />
+      <workItem from="1740697486564" duration="22165000" />
     </task>
     <task id="LOCAL-00001" summary="Have gathered the code from several local projects into this, initial commit">
       <option name="closed" value="true" />
@@ -156,7 +145,31 @@
       <option name="project" value="LOCAL" />
       <updated>1740773859099</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Basic functions working&#10;&#10;The prime stretch is working in PrimeCAstagingLONG in doLogReductionPrimeTwo()&#10;&#10;The exhaustive and numTrials versions in minErrorStaging ecaBestFitHashCollision ... (), the numTrials parameter is redundant in the exhaustive version&#10;&#10;Next up is a lot of organizing polishing and cosmetic work">
+      <option name="closed" value="true" />
+      <created>1740876444286</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1740876444286</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Moved some staging classes to Trim (a recycle bin)&#10;&#10;Cut all unnecessary functions, only essential functions left (probably, ftm)">
+      <option name="closed" value="true" />
+      <created>1740951879555</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1740951879555</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Moved some staging classes to Trim (a recycle bin)&#10;&#10;Cut all unnecessary functions, only essential functions left (probably, ftm)">
+      <option name="closed" value="true" />
+      <created>1740951885374</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1740951885374</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -168,6 +181,11 @@
         <entry key="MAIN">
           <value>
             <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="true" />
+                </map>
+              </option>
               <option name="FILTERS">
                 <map>
                   <entry key="branch">
@@ -190,6 +208,8 @@
     <MESSAGE value="Merge branch 'Main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/modules.xml" />
     <MESSAGE value="added some javadoc comments" />
     <MESSAGE value="feature branch node, have been no fundamental alterations since last season and prior to gathering the files from several projects post thesis joss arxiv" />
-    <option name="LAST_COMMIT_MESSAGE" value="feature branch node, have been no fundamental alterations since last season and prior to gathering the files from several projects post thesis joss arxiv" />
+    <MESSAGE value="Basic functions working&#10;&#10;The prime stretch is working in PrimeCAstagingLONG in doLogReductionPrimeTwo()&#10;&#10;The exhaustive and numTrials versions in minErrorStaging ecaBestFitHashCollision ... (), the numTrials parameter is redundant in the exhaustive version&#10;&#10;Next up is a lot of organizing polishing and cosmetic work" />
+    <MESSAGE value="Moved some staging classes to Trim (a recycle bin)&#10;&#10;Cut all unnecessary functions, only essential functions left (probably, ftm)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Moved some staging classes to Trim (a recycle bin)&#10;&#10;Cut all unnecessary functions, only essential functions left (probably, ftm)" />
   </component>
 </project>
