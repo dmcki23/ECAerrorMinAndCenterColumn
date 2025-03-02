@@ -100,58 +100,6 @@ public class ECAexponentReduction {
         return passes;
     }
 
-    /**
-     * ???
-     *
-     * @param n       ECA 0-255 rule
-     * @param numRows number of rows
-     * @return ???
-     */
-
-    public int[] backwardsColumn(int n, int numRows) {
-        int[] out = new int[numRows];
-        int[] multiplier = new int[]{1, 2, 4};
-        int[][] partial = new int[3][3];
-        int[] next = new int[3];
-        int[] in = new int[]{7, 3, 1};
-        int tot = 0;
-        for (int row = numRows - 1; row >= 0; row--) {
-            next = new int[3];
-            for (int value = 0; value < 3; value++) {
-                for (int mult = 0; mult < 3; mult++) {
-                    partial[value][mult] = in[value] / multiplier[mult];
-                    next[value] += (int) Math.pow(2, mult) * (((n / (int) Math.pow(2, partial[value][mult])) % 2));
-                }
-                //next[value] = ((n/(int)Math.pow(2,next[value]))%2);
-                in[value] = next[value];
-                next[value] = ((n / (int) Math.pow(2, next[value])) % 2);
-                out[row] += (int) Math.pow(2, value) * next[value];
-            }
-            out[row] = ((n / (int) Math.pow(2, out[row])) % 2);
-        }
-        return out;
-    }
-
-    /**
-     * ???
-     *
-     * @param n       ECA 0-255 rule
-     * @param numRows number of rows
-     */
-    public void checkColumns(int n, int numRows) {
-        int[][][] passes = doLogReductionTwo(n, 1, 2, 4);
-        int[] input = Arrays.copyOfRange(passes[passRepeat][5], 0, 9);
-        System.out.println(Arrays.toString(input));
-        int[] a = ruleStretchTemplate.traditionalCenterColumn(n, 512, input, 1024);
-        int[] b = ruleStretchTemplate.traditionalCenterColumn(n, 512, new int[]{1}, 1024);
-        for (int spot = 0; spot < 128; spot++) {
-            if (Arrays.equals(Arrays.copyOfRange(b, spot, spot + 30), Arrays.copyOfRange(a, 1, 31))) {
-                System.out.println("spot " + spot);
-            }
-        }
-        System.out.println(Arrays.toString(a));
-        System.out.println(Arrays.toString(b));
-    }
 
     /**
      * A manager function that compares center columns of doLogReductionTwo() solutions to all possible neighborhoods of a certain size
