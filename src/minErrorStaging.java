@@ -89,7 +89,7 @@ public class minErrorStaging {
             for (column = 0; column < size; column++) {
                 trialField[0][column] = ((correction / (int) Math.pow(2, column)) % 2);
             }
-            //Run Wolfram code on trial neighborhood to row size
+            //Run Wolfram code on array with row 0 input = correction
             for (row = 1; row < size; row++) {
                 for (column = 0; column < size; column++) {
                     a = ((column - 1) + size) % size;

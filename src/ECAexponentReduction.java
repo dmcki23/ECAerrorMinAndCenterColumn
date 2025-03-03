@@ -29,17 +29,25 @@ public class ECAexponentReduction {
      * @return all solutions all rows all iterations
      */
     public int[][][] doLogReductionTwo(int n, int logIn, int initialValue, int feedbackRow) {
+        //All neighborhoods calculated in the algorithm
         int[][][] passes = new int[32][24][64];
+        //Decimal version of passes
         decPasses = new int[passes.length][passes[0].length];
+        //Maximum number of rows to stretch to, much more than 22 here is an integer overflow and would require BigInteger
+        int maxRows = 22;
+        //Currently active Wolfram code address
+        int value;
+        //Initial row
+        int initRow;
+        //Holds the values of the feedback row so that the loop can check for repeats
+        int[] values = new int[32];
+        values[0] = initialValue;
+        //Wolfram code array
         int[] nw = new int[8];
         for (int power = 0; power < 8; power++) {
             nw[power] = ((n / (int) Math.pow(2, power)) % 2);
         }
-        int maxRows = 22;
-        int value;
-        int initRow;
-        int[] values = new int[32];
-        values[0] = initialValue;
+        //Initializes to -1
         int lengthRepeat = -1;
         for (int pass = 0; pass < 32 && lengthRepeat == -1; pass++) {
             for (int row = 0; row < maxRows; row++) {
@@ -49,35 +57,47 @@ public class ECAexponentReduction {
                 }
             }
         }
+        //
         value = initialValue;
+        //initRow and logIn aren't the same because initRow changes to feedbackRow-1 after the first loop
         initRow = logIn;
+        //Main loop
         passLoop:
         for (int pass = 0; pass < 32 && lengthRepeat == -1; pass++) {
-            int tot = 0;
+            //For each size neighborhood within maxRows
+            //First loop it starts at initRow, after the first loop it starts at feedbackRow-1
             for (int row = initRow; row < maxRows; row++) {
+                //Size of current neighborhood
                 int powers = 1 + 2 * (row - 1);
+                //Calculate 1 row for the current Wolfram code address (value)
                 for (int power = 0; power < powers; power++) {
                     passes[pass][row][power] = nw[((value / (int) Math.pow(2, power)) % 8)];
                 }
+                //Extend to next row's neighborhood
                 value *= 2;
             }
+            //Converts neighborhoods to decimals
             for (int row = 0; row < maxRows; row++) {
-                tot = 0;
+                int tot = 0;
                 int powers = 1 + 2 * (row - 1);
                 for (int power = 0; power < powers; power++) {
                     tot += (int) Math.pow(2, power) * passes[pass][row][power];
                 }
                 decPasses[pass][row] = tot;
             }
+            //Set for next loop
             value = decPasses[pass][feedbackRow];
             values[pass] = value;
+            //Checks for repeat
             for (int passs = 0; passs < pass; passs++) {
                 if (values[passs] == values[pass]) {
                     lengthRepeat = pass;
                     passRepeat = pass;
                 }
             }
+            //This is only relevant during the first loop
             initRow = feedbackRow - 1;
+            //Display results of current loop
             System.out.print("\n");
             System.out.println("passes[" + pass + "]");
             for (int row = 0; row < 22; row++) {

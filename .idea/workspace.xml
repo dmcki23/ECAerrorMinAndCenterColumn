@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="Moved some staging classes to Trim (a recycle bin)&#10;&#10;Cut all unnecessary functions, only essential functions left (probably, ftm)">
-      <change beforePath="$PROJECT_DIR$/src/Trim/PrimeCA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Trim/PrimeCA.java" afterDir="false" />
-    </list>
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="Moved some staging classes to Trim (a recycle bin)&#10;&#10;Cut all unnecessary functions, only essential functions left (probably, ftm)" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -53,7 +51,7 @@
     "Application.Unnamed.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "trimming",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/home/daniel/IdeaProjects/ECAerrorMinAndCenterColumn",
     "node.js.detected.package.eslint": "true",
