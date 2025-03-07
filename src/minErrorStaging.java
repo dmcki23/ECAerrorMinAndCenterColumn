@@ -343,8 +343,9 @@ public class minErrorStaging {
         //solution distro
         //Pi/Phi stuff
         System.out.println("Rule specific: " + specificRule);
-        System.out.println("Min errors: " + minErrorBuckets[specificRule]);
-        System.out.println("Max errors: " + maxErrorBuckets[specificRule]);
+        System.out.println("numberBoards: " + numberBoards[specificRule]);
+        System.out.println("Min errors: " + minErrorBuckets[specificRule] + " " + String.format("%.4f", (double)minErrorBuckets[specificRule]/(double)numberBoards[specificRule]));
+        System.out.println("Max errors: " + maxErrorBuckets[specificRule] + " " + String.format("%.4f",(double)maxErrorBuckets[specificRule]/(double)numberBoards[specificRule]));
         if (doChangeScore) {
             System.out.println("Change score: " + changeScoreTrials);
         }
@@ -352,8 +353,8 @@ public class minErrorStaging {
         customArray.plusArrayDisplay(maxErrorMap[specificRule], false, false, "maxErrorMap");
         System.out.println("minSolutionDistro[] " + Arrays.toString(minSolutionDistro));
         System.out.println("maxSolutionDistro[] " + Arrays.toString(maxSolutionDistro));
-        System.out.println("sameErrorMin[] " + Arrays.toString(sameErrorMin[specificRule]));
-        System.out.println("sameErrorMax[] " + Arrays.toString(sameErrorMax[specificRule]));
+        System.out.println("sameErrorMin[] " + Arrays.toString(sameErrorMin[specificRule]) + " " + String.format("%.4f",(double)minNumberOfSameSolutions[specificRule]/(double)numberBoards[specificRule]));
+        System.out.println("sameErrorMax[] " + Arrays.toString(sameErrorMax[specificRule]) + " " + String.format("%.4f",(double)maxNumberOfSameSolutions[specificRule]/(double)numberBoards[specificRule]));
         double[] minRowTots = new double[size];
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
@@ -390,7 +391,9 @@ public class minErrorStaging {
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
                 System.out.print(String.format("%.4f", maxProportions[row][column]) + " ");
+
             }
+            System.out.print("\n");
         }
         System.out.print("\n");
         System.out.println("numberOfSameMinimum " + minNumberOfSameSolutions[specificRule]);

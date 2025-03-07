@@ -4,13 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="the bulk of the rearranging is done, has NOT been tested at all yet">
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="the minErrorStaging proportions are at least somewhat correct">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/CustomArray.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/CustomArray.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/ECAexponentReduction.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/ECAexponentReduction.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/PrimeCA.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/RuleStretchTemplate.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/RuleStretchTemplate.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/minErrorStaging.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/minErrorStaging.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/minErrorStaging.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/minErrorStaging.java" afterDir="false" />
@@ -209,7 +205,15 @@
       <option name="project" value="LOCAL" />
       <updated>1741224487795</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="the minErrorStaging proportions are at least somewhat correct">
+      <option name="closed" value="true" />
+      <created>1741322357712</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1741322357712</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -253,6 +257,7 @@
     <MESSAGE value="added some inline algorithm comments" />
     <MESSAGE value="consolidated ecaBestFitHashCollision() versions into errorMinimizationManager()&#10;&#10;renamed many variables with better names, declared some loop variables at a higher scope for performance, added a few parameters for random/exhaustive consolidation and performance" />
     <MESSAGE value="the bulk of the rearranging is done, has NOT been tested at all yet" />
-    <option name="LAST_COMMIT_MESSAGE" value="the bulk of the rearranging is done, has NOT been tested at all yet" />
+    <MESSAGE value="the minErrorStaging proportions are at least somewhat correct" />
+    <option name="LAST_COMMIT_MESSAGE" value="the minErrorStaging proportions are at least somewhat correct" />
   </component>
 </project>
