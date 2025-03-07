@@ -20,7 +20,11 @@ public class Main {
         //primeCAstaging.doLogReductionPrime(primeCAstaging.primeRule,3,4);
         PrimeCAstagingLONG primeCAstagingLONG = new PrimeCAstagingLONG();
         //primeCAstagingLONG.checkAllColumnsTwo(primeCAstagingLONG.longRule, 3,4);
-        primeCAstagingLONG.doLogReductionPrimeTwo(primeCAstagingLONG.primeRule, 3,5);
+        //primeCAstagingLONG.doLogReductionPrimeTwo(primeCAstagingLONG.primeRule, 3,5);
+        minErrorStaging staging = new minErrorStaging();
+        staging.individualWrapper(150,4,false,0,false,500,false);
+        //staging.individualRuleDisplay(150,false,0,4);
+        //staging.doAllRules(4,false,0,true,5000,false);
 
 
     }

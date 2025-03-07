@@ -80,7 +80,6 @@ public class minErrorStaging {
     int[] maxSorted;
     int[] minNumberOfSameSolutions;
     int[] maxNumberOfSameSolutions;
-
     BasicECA basicECA = new BasicECA();
     CustomArray customArray = new CustomArray();
     Random rand = new Random();
@@ -92,12 +91,12 @@ public class minErrorStaging {
      * @param in binary input array
      * @return the array with ECA n and initial neighborhood mimimum output
      */
-    public int[][] checkPascalErrorCorrectionAll(int n, int[][] in, int[] wolfram, int integerWolfram) {
+    public int[][] checkPascalErrorCorrectionAll(int n, int[][] in, int[] wolfram) {
         sameSolutions = new int[256];
         int size = in.length;
         localMaxSolution = new int[size][size];
+        localMinSolution = new int[size][size];
         int[][] trialField = new int[size][size];
-        int[] errorScore = new int[sameErrorMin.length];
         //Declaring these here instead of inline in the loops significantly speeds it up
         int row = 0;
         int column = 0;
@@ -105,6 +104,8 @@ public class minErrorStaging {
         int b = 0;
         int c = 0;
         int maxNeighborhood = (int) Math.pow(2, size);
+        int[] errorScore = new int[maxNeighborhood];
+
         //
         //
         //Check every possible input neighborhood of length size
@@ -152,7 +153,7 @@ public class minErrorStaging {
         for (int neighborhood = 0; neighborhood < maxNeighborhood; neighborhood++) {
             if (errorScore[neighborhood] > maxErrors) {
                 maxErrors = errorScore[neighborhood];
-                maxSpot = neighborhood;
+                //maxSpot = neighborhood;
             }
         }
         int minErrors = Integer.MAX_VALUE;
@@ -160,7 +161,7 @@ public class minErrorStaging {
         for (int neighborhood = 0; neighborhood < maxNeighborhood; neighborhood++) {
             if (errorScore[neighborhood] < minErrors) {
                 minErrors = errorScore[neighborhood];
-                minSpot = neighborhood;
+                //minSpot = neighborhood;
             }
         }
 //        System.out.println("minErrors " + minErrors);
@@ -204,14 +205,14 @@ public class minErrorStaging {
                 }
             }
         }
-        sameMinimums = Arrays.copyOfRange(sameMinimums, 0, minIndex);
-        sameMaximums = Arrays.copyOfRange(sameMaximums, 0, maxIndex);
+        //sameMinimums = Arrays.copyOfRange(sameMinimums, 0, minIndex);
+        // = Arrays.copyOfRange(sameMaximums, 0, maxIndex);
         //sameErrorMin[integerWolfram][numberOfSameMinimum]++;
         //sameErrorMax[integerWolfram][numberOfSameMaximum]++;
-        minNumberOfSameSolutions[integerWolfram] = numSameMinimum;
-        maxNumberOfSameSolutions[integerWolfram] = numSameMaximum;
+        minNumberOfSameSolutions[n] += numSameMinimum;
+        maxNumberOfSameSolutions[n] += numSameMaximum;
         if (numSameMinimum > sameSolutions[n]) {
-            sameSolutions[n] = numSameMinimum;
+            //sameSolutions[n] = numSameMinimum;
         }
         //System.out.println("sameNumErrors = " + sameNumErrors);
         //System.out.println("sameNumErrorsMax = " + sameNumMax);
@@ -219,14 +220,14 @@ public class minErrorStaging {
         //
         //
         //Run the Wolfram code on the minimum neighborhood codeword for function return purposes
-        trialField = new int[size + 1][size];
+        trialField = new int[size][size];
         for (column = 0; column < size; column++) {
-            trialField[0][column] = ((minSpot / (int) Math.pow(2, column)) % 2);
-            localMaxSolution[0][column] = ((maxSpot / (int) Math.pow(2, column)) % 2);
-            localMinSolution[0][column] = ((minSpot / (int) Math.pow(2, column)) % 2);
+            trialField[0][column] = ((firstMinSpot / (int) Math.pow(2, column)) % 2);
+            localMaxSolution[0][column] = ((firstMaxSpot / (int) Math.pow(2, column)) % 2);
+            localMinSolution[0][column] = ((firstMinSpot / (int) Math.pow(2, column)) % 2);
         }
-        minSolutionDistro[minIndex]++;
-        maxSolutionDistro[maxIndex]++;
+        minSolutionDistro[firstMinSpot]++;
+        maxSolutionDistro[firstMaxSpot]++;
         for (row = 1; row < size; row++) {
             for (column = 0; column < size; column++) {
                 a = ((column - 1) + size) % size;
@@ -238,10 +239,48 @@ public class minErrorStaging {
                 //localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
             }
         }
+        for (row = 1; row < size; row++) {
+            for (column = 0; column < size; column++) {
+                a = ((column - 1) + size) % size;
+                b = column;
+                c = ((column + 1)) % size;
+                localMinSolution[row][column] = localMinSolution[row - 1][a] + 2 * localMinSolution[row - 1][b] + 4 * localMinSolution[row - 1][c];
+                localMinSolution[row][column] = wolfram[localMinSolution[row][column]];
+                //localMaxSolution[row][column] = localMaxSolution[row-1][a]+2*trialField[row-1][b]+4*trialField[row-1][c];
+                //localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
+            }
+        }
+        for (row = 1; row < size; row++) {
+            for (column = 0; column < size; column++) {
+                a = ((column - 1) + size) % size;
+                b = column;
+                c = ((column + 1)) % size;
+                localMaxSolution[row][column] = localMaxSolution[row - 1][a] + 2 * localMaxSolution[row - 1][b] + 4 * localMaxSolution[row - 1][c];
+                localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
+                //localMaxSolution[row][column] = localMaxSolution[row-1][a]+2*trialField[row-1][b]+4*trialField[row-1][c];
+                //localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
+            }
+        }
+        //if (numSameMinimum != 1) System.out.println(numSameMinimum);
         return trialField;
     }
 
     public void doAllRules(int size, boolean doChangeScore, int changeScoreTrials, boolean doRandom, int numTrials, boolean doVoting) {
+        sameErrorMin = new int[256][(int) Math.pow(2, size)];
+        sameErrorMax = new int[256][(int) Math.pow(2, size)];
+        minNumberOfSameSolutions = new int[256];
+        maxNumberOfSameSolutions = new int[256];
+        localMinSolution = new int[size][size];
+        localMaxSolution = new int[size][size];
+        minSolutionDistro = new int[(int) Math.pow(2, size)];
+        maxSolutionDistro = new int[(int) Math.pow(2, size)];
+        minErrorMap = new int[256][size][size];
+        maxErrorMap = new int[256][size][size];
+        minErrorBuckets = new int[256];
+        maxErrorBuckets = new int[256];
+        numberBoards = new int[256];
+        minSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
+        maxSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
         for (int rule = 0; rule < 256; rule++) {
             individualRuleMinimizer(rule, size, doChangeScore, changeScoreTrials, doRandom, numTrials, doVoting);
         }
@@ -253,7 +292,7 @@ public class minErrorStaging {
         }
         for (int row = 0; row < 256; row++) {
             for (int column = 0; column < 256; column++) {
-                if (minErrorBuckets[minSorted[row]] < minErrorBuckets[minSorted[column]]) {
+                if (minErrorBuckets[minSorted[row]] > minErrorBuckets[minSorted[column]]) {
                     int temp = minSorted[row];
                     minSorted[row] = minSorted[column];
                     minSorted[column] = temp;
@@ -273,15 +312,20 @@ public class minErrorStaging {
         maxErrorPerArray = new double[256];
         minErrorPerBit = new double[256];
         maxErrorPerBit = new double[256];
-        double numArrays = Math.pow(2,size*size);
+        double numArrays = Math.pow(2, size * size);
         if (doRandom) numArrays = numTrials;
         double numBits = numArrays * size * size;
         for (int row = 0; row < 256; row++) {
-            minErrorPerArray[row] = minErrorBuckets[row]/numArrays;
-            maxErrorPerArray[row] = maxErrorBuckets[row]/numArrays;
-            minErrorPerBit[row] = minErrorBuckets[row]/numBits;
-            maxErrorPerBit[row] = maxErrorBuckets[row]/numBits;
+            minErrorPerArray[row] = minErrorBuckets[row] / numArrays;
+            maxErrorPerArray[row] = maxErrorBuckets[row] / numArrays;
+            minErrorPerBit[row] = minErrorBuckets[row] / numBits;
+            maxErrorPerBit[row] = maxErrorBuckets[row] / numBits;
         }
+        System.out.println("minErrorPerArray, sorted");
+        System.out.println(Arrays.toString(minSorted));
+        System.out.println("maxErrorPerArray, sorted");
+        System.out.println(Arrays.toString(maxSorted));
+
         //Sort
         //All of these min/max
         //
@@ -322,15 +366,18 @@ public class minErrorStaging {
                 minProportions[row][column] = minRowTots[row] / minRowTots[column];
             }
         }
+        System.out.println("minProportions[][]");
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
                 System.out.print(String.format("%.4f", minProportions[row][column]) + " ");
             }
+            System.out.print("\n");
         }
+        System.out.println((minRowTots[0]+minRowTots[1])/(minRowTots[2]+minRowTots[3]));
         double[] maxRowTots = new double[size];
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
-                maxRowTots[row] += (double) minErrorMap[specificRule][row][column];
+                maxRowTots[row] += (double) maxErrorMap[specificRule][row][column];
             }
         }
         double[][] maxProportions = new double[size][size];
@@ -339,11 +386,15 @@ public class minErrorStaging {
                 maxProportions[row][column] = maxRowTots[row] / maxRowTots[column];
             }
         }
+        System.out.println("\nmaxProportions[][]");
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
                 System.out.print(String.format("%.4f", maxProportions[row][column]) + " ");
             }
         }
+        System.out.print("\n");
+        System.out.println("numberOfSameMinimum " + minNumberOfSameSolutions[specificRule]);
+        System.out.println("numberOfSameMaximum " + maxNumberOfSameSolutions[specificRule]);
 //        //The rest is results management & display
 //        //
 //        //
@@ -554,6 +605,28 @@ public class minErrorStaging {
 //        }
     }
 
+    public void individualWrapper(int rule, int size, boolean doChangeScore, int changeScoreTrials, boolean doRandom, int numTrials, boolean doVoting) {
+        sameErrorMin = new int[256][(int) Math.pow(2, size)];
+        sameErrorMax = new int[256][(int) Math.pow(2, size)];
+        minNumberOfSameSolutions = new int[256];
+        maxNumberOfSameSolutions = new int[256];
+        localMinSolution = new int[size][size];
+        localMaxSolution = new int[size][size];
+        minSolutionDistro = new int[(int) Math.pow(2, size)];
+        maxSolutionDistro = new int[(int) Math.pow(2, size)];
+        minErrorMap = new int[256][size][size];
+        maxErrorMap = new int[256][size][size];
+        minErrorBuckets = new int[256];
+        maxErrorBuckets = new int[256];
+        numberBoards = new int[256];
+        minSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
+        maxSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
+        individualRuleMinimizer(rule, size, doChangeScore, changeScoreTrials, doRandom, numTrials, doVoting);
+        individualRuleDisplay(rule, doChangeScore, changeScoreTrials, size);
+        System.out.println(Arrays.toString(basicECA.ecaWolframCodes[rule]));
+
+    }
+
     public void individualRuleMinimizer(int rule, int size, boolean doChangeScore, int changeScoreTrials, boolean doRandom, int numTrials, boolean doVoting) {
         int trial;
         int row;
@@ -562,6 +635,8 @@ public class minErrorStaging {
         if (doRandom) numBoards = numTrials;
         int numVotes = 1;
         if (doVoting) numVotes = 8;
+        field = new int[size][size];
+        int[][] temp = new int[size][size];
         System.out.println("rule " + rule);
         for (trial = 0; trial < numBoards; trial++) {
             if (trial % 1000 == 0) System.out.println("trial " + trial);
@@ -583,16 +658,16 @@ public class minErrorStaging {
             maxVote = new int[size][size];
             //This loop reflects, rotates, and transposes the input data array
             for (int rotation = 0; rotation < numVotes; rotation++) {
-                minTemp = new int[size][size];
+                temp = new int[size][size];
                 for (row = 0; row < size; row++) {
                     for (column = 0; column < size; column++) {
-                        minTemp[row][column] = field[row][column];
+                        temp[row][column] = field[row][column];
                     }
                 }
-                minTemp = customArray.reflectRotateTranspose(minTemp, rotation);
-                minTemp = checkPascalErrorCorrectionAll(rule, minTemp, basicECA.ecaWolframCodes[rule], rule);
-                minTemp = customArray.reflectRotateTranspose(minTemp, rotation);
-                maxTemp = localMaxSolution;
+                temp = customArray.reflectRotateTranspose(temp, rotation);
+                temp = checkPascalErrorCorrectionAll(rule, temp, basicECA.ecaWolframCodes[rule]);
+                minTemp = customArray.reflectRotateTranspose(localMinSolution, rotation);
+                maxTemp = customArray.reflectRotateTranspose(localMaxSolution, rotation);
                 for (row = 0; row < size; row++) {
                     for (column = 0; column < size; column++) {
                         minVote[row][column] += minTemp[row][column];
@@ -600,23 +675,34 @@ public class minErrorStaging {
                     }
                 }
             }
-            for (column = 0; column < size && !doRandom; column++) {
-                minSolutionsAsWolfram[rule][trial] += (int) Math.pow(2, column) * minTemp[0][column];
-                maxSolutionsAsWolfram[rule][trial] += (int) Math.pow(2, column) * maxTemp[0][column];
-            }
             totMinErrors = 0;
             totMaxErrors = 0;
-            for (row = 0; row < size; row++) {
+            for (row = 0; row < size && doVoting; row++) {
                 for (column = 0; column < size; column++) {
-                    if (minVote[row][column] > 3) minVote[row][column] = 1;
-                    else minVote[row][column] = 0;
+                    if (minVote[row][column] > 3) {
+                        minVote[row][column] = 1;
+                    } else {
+                        minVote[row][column] = 0;
+                    }
                     totMinErrors += (minVote[row][column] ^ field[row][column]);
                     minErrorMap[rule][row][column] += (minVote[row][column] ^ field[row][column]);
                     if (maxVote[row][column] > 3) maxVote[row][column] = 1;
                     else maxVote[row][column] = 0;
-                    totMaxErrors += (maxVote[row][column] ^ field[row][column]);
-                    maxErrorMap[rule][row][column] += (maxVote[row][column] ^ field[row][column]);
+                    totMaxErrors += (((maxVote[row][column] ^ field[row][column])));
+                    maxErrorMap[rule][row][column] += (((maxVote[row][column] ^ field[row][column])));
                 }
+            }
+            for (row = 0; row < size && !doVoting; row++) {
+                for (column = 0; column < size; column++) {
+                    totMinErrors += (minVote[row][column] ^ field[row][column]);
+                    minErrorMap[rule][row][column] += (minVote[row][column] ^ field[row][column]);
+                    totMaxErrors += (((maxVote[row][column] ^ field[row][column])));
+                    maxErrorMap[rule][row][column] += (((maxVote[row][column] ^ field[row][column])));
+                }
+            }
+            for (column = 0; column < size && !doRandom; column++) {
+                minSolutionsAsWolfram[rule][trial] += (int) Math.pow(2, column) * minVote[0][column];
+                maxSolutionsAsWolfram[rule][trial] += (int) Math.pow(2, column) * maxVote[0][column];
             }
             minErrorBuckets[rule] += totMinErrors;
             maxErrorBuckets[rule] += totMaxErrors;
@@ -730,7 +816,7 @@ public class minErrorStaging {
                         }
                     }
                     minTemp = customArray.reflectRotateTranspose(minTemp, rotation);
-                    minTemp = checkPascalErrorCorrectionAll(rule, minTemp, basicECA.ecaWolframCodes[rule], rule);
+                    minTemp = checkPascalErrorCorrectionAll(rule, minTemp, basicECA.ecaWolframCodes[rule]);
                     minTemp = customArray.reflectRotateTranspose(minTemp, rotation);
                     maxTemp = localMaxSolution;
                     for (row = 0; row < size; row++) {
@@ -1321,7 +1407,7 @@ public class minErrorStaging {
                 weightedChangeScore += (int) Math.pow(2, randRow);
             }
             //Finds the new minimum neighborhood
-            fitted = checkPascalErrorCorrectionAll(rule, changed, basicECA.ecaWolframCodes[rule], rule);
+            fitted = checkPascalErrorCorrectionAll(rule, changed, basicECA.ecaWolframCodes[rule]);
             //Scores the new neighborhood
             changes = 0;
             for (power = 0; power < size; power++) {
