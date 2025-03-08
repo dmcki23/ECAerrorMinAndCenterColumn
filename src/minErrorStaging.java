@@ -132,14 +132,14 @@ public class minErrorStaging {
                     //
                     //
                     //Various error-scoring weights tested
-                    errorScore[neighborhood] += ((int) Math.pow(2, row) * (trialField[row][column] ^ in[row][column]));
+                    //errorScore[neighborhood] += ((int) Math.pow(2, row) * (trialField[row][column] ^ in[row][column]));
                     //errorScore[correction] +=  ((row*row))*(trialField[row][column] ^ in[row][column]);
                     //errorScore[correction] += row*row*(trialField[row][column] ^ in[row][column]);
                     //errorScore[correction] += column*column *(in[row][column] ^  trialField[row][column]);
                     //errorScore[correction] += column* (in[row][column] ^  trialField[row][column]);
                     //errorScore[correction] += row* (in[row][column] ^  trialField[row][column]);
                     //errorScore[correction] += (in[row][column] ^ trialField[row][column]);
-                    //errorScore[correction] += (int)Math.pow(2, column)*(in[row][column] ^ trialField[row][column]);
+                    errorScore[neighborhood] += (int)Math.pow(2, column)*(in[row][column] ^ trialField[row][column]);
                     //errorScore[correction] += coefficients[row] * trialField[row][column];
                 }
             }
