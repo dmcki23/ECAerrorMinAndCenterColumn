@@ -177,4 +177,42 @@ public class ECAexponentReduction {
             }
         }
     }
+
+    /**
+     * A manager function that compares center columns of doLogReductionTwo() solutions to all possible neighborhoods of a certain size
+     *
+     * @param n ECA 0-255 rule
+     */
+    public void checkAllColumns(int n, int neighborhoodInt, int neighborhoodSize) {
+        int[] initNeighborhood = new int[neighborhoodSize];
+        for (int spot = 0; spot < neighborhoodSize; spot++) {
+            initNeighborhood[spot] = ((neighborhoodInt / (int) Math.pow(2, spot)) % 2);
+        }
+        int[] a = ruleStretchTemplate.traditionalCenterColumn(n, 256, initNeighborhood, 512);
+        System.out.println(Arrays.toString(a));
+        int[] comp;
+        for (int in = 0; in < (int) Math.pow(2, neighborhoodSize); in++) {
+            int[] second = new int[neighborhoodSize];
+            for (int index = 0; index < second.length; index++) {
+                second[index] = ((in / (int) Math.pow(2, index)) % 2);
+            }
+            second = ruleStretchTemplate.traditionalCenterColumn(n, 256, second, 512);
+            boolean found = false;
+            for (int spot = 1; spot < 128; spot++) {
+                int[] temp = Arrays.copyOfRange(second, 1, 17);
+                if (Arrays.equals(temp, Arrays.copyOfRange(a, spot, spot + 16))) {
+                    System.out.println("spot " + spot + " in " + in + " middle three " + ((in / 8) % 8));
+//                                System.out.println("l " + l + " input " + input + " ll " + ll + " pass " + pass);
+//                                System.out.println("spot " + spot);
+                    System.out.println();
+                    found = true;
+                }
+            }
+            if (!found) {
+//                            System.out.println(Arrays.toString(Arrays.copyOfRange(comp, 1, 31)));
+//                            System.out.println(Arrays.toString(Arrays.copyOfRange(a, pass+2, pass + 32)));
+                System.out.println();
+            }
+        }
+    }
 }

@@ -4,12 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="made the error heat map arrays square and added the double min/max error rate numbers">
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="next up is to add checkAllColumns() to minErrorStaging.java">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/minErrorStaging.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/minErrorStaging.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/minErrorStaging.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/minErrorStaging.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAexponentReduction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAexponentReduction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/ECAhashPaper.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/ECAhashPaper.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/ECAhashPaper.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/ECAhashPaper.synctex.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/ECAhashPaper.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/ECAhashPaper.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PrimeCAstagingLONG.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PrimeCAstagingLONG.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -221,7 +222,15 @@
       <option name="project" value="LOCAL" />
       <updated>1741384351916</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="next up is to add checkAllColumns() to minErrorStaging.java">
+      <option name="closed" value="true" />
+      <created>1741473151267</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1741473151267</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -267,6 +276,7 @@
     <MESSAGE value="the bulk of the rearranging is done, has NOT been tested at all yet" />
     <MESSAGE value="the minErrorStaging proportions are at least somewhat correct" />
     <MESSAGE value="made the error heat map arrays square and added the double min/max error rate numbers" />
-    <option name="LAST_COMMIT_MESSAGE" value="made the error heat map arrays square and added the double min/max error rate numbers" />
+    <MESSAGE value="next up is to add checkAllColumns() to minErrorStaging.java" />
+    <option name="LAST_COMMIT_MESSAGE" value="next up is to add checkAllColumns() to minErrorStaging.java" />
   </component>
 </project>

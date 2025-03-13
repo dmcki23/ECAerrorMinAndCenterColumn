@@ -643,7 +643,7 @@ public class PrimeCAstagingLONG {
      * @param feedbackRow at what point to start feeding it back to feedbackRow-1?
      * @return all iterations all solutions all rows
      */
-    public long[][][] doLogReductionPrimeTwo(int[] n, int initRow, int feedbackRow) {
+    public long[][][] doStretchFeedback(int[] n, int initRow, int feedbackRow) {
         //
         //
         //Initialization
@@ -761,7 +761,7 @@ public class PrimeCAstagingLONG {
      * @param feedbackRow at what point to start feeding the stretched neighborhood back in?
      */
     public void checkAllColumnsTwo(long[] wolfram, int startRow, int feedbackRow) {
-        long[][][] passes = doLogReductionPrimeTwo(primeRule, startRow, feedbackRow);
+        long[][][] passes = doStretchFeedback(primeRule, startRow, feedbackRow);
         int length = 2 * (feedbackRow - 1) + 1;
         //length = 2 * feedbackRow + 1;
         long[] input = new long[length];
