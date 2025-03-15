@@ -1,5 +1,3 @@
-import Trim.PrimeCAstaging;
-
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
@@ -22,9 +20,12 @@ public class Main {
         //primeCAstagingLONG.checkAllColumnsTwo(primeCAstagingLONG.longRule, 3,4);
         //primeCAstagingLONG.doLogReductionPrimeTwo(primeCAstagingLONG.primeRule, 3,5);
         minErrorStaging staging = new minErrorStaging();
-        staging.individualWrapper(90,4,false,0,false,500,false);
+        //staging.individualRuleManager(90,4,false,0,false,500,false);
         //staging.individualRuleDisplay(150,false,0,4);
         //staging.doAllRules(4,false,0,true,5000,false);
+        //staging.test(4);
+        //staging.testAll(4);
+        staging.doAllRules(4,false,0,false,0,false);
 
 
     }

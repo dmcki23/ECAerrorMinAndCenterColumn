@@ -1417,4 +1417,863 @@ public class TrimmedCode {
 //    }
 
 
+
+
+
+
+
+
+
+
+    //        //The rest is results management & display
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //Sorts and averages the best performing ECA rules
+//        System.out.println("solutionBucket[] " + solutionBucket);
+//        System.out.println("pre division");
+//        System.out.println(Arrays.toString(minErrorBuckets));
+//        System.out.println("hbLength[]");
+//        System.out.println(Arrays.toString(numberBoards));
+//        int[] hashbucketRate = new int[256];
+//        hashbucketRate[row] = minErrorBuckets[row] / numberBoards[row];
+//        if (doChangeScore) averageChange[row] = (double) hammingChange[row] / (double) errorChange[row];
+//        System.out.println("post division");
+//        System.out.println(Arrays.toString(hashbucketRate));
+//        // System.out.println(Arrays.toString(hashbucket));
+//        //
+//        //
+//        //Output
+//        System.out.println("Here");
+//        for (int index = start; index < stop; index++) {
+//            System.out.println("index " + sorted[index] + " " + basicECA.ruleClasses[sorted[index]] + " " + hashbucketRate[index] + " " + minErrorBuckets[index] + " " + numberBoards[index] + " ");
+//        }
+//        System.out.println(Arrays.toString(sameSolutions));
+//        for (row = start; row < stop; row++) {
+//            if (sameSolutions[sorted[row]] == 1) {
+//                System.out.println("Rule has a unique solution " + sorted[row]);
+//            } else {
+//                System.out.println("sameSolutions[" + sorted[row] + "] " + sameSolutions[sorted[row]]);
+//            }
+//        }
+//        if (doChangeScore) {
+//            System.out.println("hammingChange per changeScore");
+//            for (row = start; row < stop; row++) {
+//                System.out.println(sorted[row] + " " + changeChange[sorted[row]] + " " + errorChange[sorted[row]]);
+//            }
+//        }
+//        System.out.println("min error/grid " + ((double) minErrorBuckets[specificRule] / (double) numBoards));
+//        System.out.println("min error/bit " + ((double) minErrorBuckets[specificRule]) / numBoards / size / size);
+//        System.out.println("min bits/error " + (double) (numBoards * size * size) / (double) minErrorBuckets[specificRule]);
+//        System.out.println("sameError " + Arrays.toString(sameErrorMin));
+//        System.out.println("sameErrorMax " + Arrays.toString(sameErrorMax));
+//        System.out.println("max error/grid " + ((double) maxErrorBuckets[specificRule] / (double) numBoards));
+//        System.out.println("max error/bit " + ((double) maxErrorBuckets[specificRule]) / numBoards / size / size);
+//        System.out.println("max bits/error " + (double) (numBoards * size * size) / (double) maxErrorBuckets[specificRule]);
+//        System.out.println("\n");
+//        double max = ((double) maxErrorBuckets[specificRule]) / numBoards / size / size;
+//        double min = ((double) minErrorBuckets[specificRule]) / numBoards / size / size;
+//        double ebDiff = ((double) maxErrorBuckets[specificRule] / numBoards / size / size) - ((double) minErrorBuckets[specificRule] / numBoards / size / size);
+//        double beDiff = ((double) (numTrials * size * size) / (double) maxErrorBuckets[specificRule]) - ((double) (numTrials * size * size) / (double) minErrorBuckets[specificRule]);
+//        System.out.println("ebDiff " + ebDiff);
+//        System.out.println("beDiff " + beDiff);
+//        System.out.println("max * min = " + (max * min));
+//        double[][] sameMin = new double[size][size];
+//        double[][] sameMax = new double[size][size];
+//        for (row = 0; row < size; row++) {
+//            for (column = 0; column < size; column++) {
+//                sameMin[row][column] = (double) sameErrorMin[row + 1] / (double) sameErrorMin[column + 1];
+//                sameMax[row][column] = (double) sameErrorMax[2 * row + 2] / (double) sameErrorMax[2 * column + 2];
+//            }
+//        }
+//        System.out.println("sameMaxRowComparisons ");
+//        for (row = 0; row < size; row++) {
+//            for (column = 0; column < size; column++) {
+//                System.out.print(String.format("%.4f", sameMax[row][column]) + " ");
+//            }
+//            System.out.print("\n");
+//        }
+//        System.out.println("sameMinRowComparisons ");
+//        for (row = 0; row < size; row++) {
+//            for (column = 0; column < size; column++) {
+//                System.out.print(String.format("%.4f", sameMin[row][column]) + " ");
+//            }
+//            System.out.print("\n");
+//        }
+//        for (row = 1; row < 4096 && row < sameErrorMin.length; row *= 2) {
+//            System.out.print("row " + row + " " + sameErrorMin[row] + "\n");
+//        }
+//        int maxErrorTot = 0;
+//        for (row = 0; row < size; row++) {
+//            for (column = 0; column < size; column++) {
+//                maxErrorTot += minErrorMap[row][column];
+//            }
+//        }
+//        CustomArray.plusArrayDisplay(minErrorMap, false, false, "Min Error Map");
+//        CustomArray.plusArrayDisplay(maxErrorMap, false, false, "Max Error Map");
+//        double[] rowTots = new double[size];
+//        double phi = (1 + Math.sqrt(5)) / 2;
+//        int[] maxRowTots = new int[size];
+//        for (row = 0; row < size; row++) {
+//            for (column = 0; column < size; column++) {
+//                rowTots[row] += minErrorMap[row][column];
+//                maxRowTots[row] += maxErrorMap[row][column];
+//            }
+//        }
+//        double[][] maxRowComparisons = new double[size][size];
+//        double[][] minRowComparisons = new double[size][size];
+//        double[][] maxMapRate = new double[size][size];
+//        double[][] minMapRate = new double[size][size];
+//        for (row = 0; row < size; row++) {
+//            for (column = 0; column < size; column++) {
+//                maxRowComparisons[row][column] = (double) maxRowTots[row] / (double) maxRowTots[column];
+//                minRowComparisons[row][column] = (double) rowTots[row] / (double) rowTots[column];
+//                maxMapRate[row][column] = (double) maxErrorMap[row][column] / (double) numBoards / 8.0;
+//                minMapRate[row][column] = (double) minErrorMap[row][column] / (double) numBoards / 8.0;
+//            }
+//        }
+//        System.out.println("maxRowComparisons ");
+//        for (row = 0; row < size; row++) {
+//            for (column = 0; column < size; column++) {
+//                System.out.print(String.format("%.4f", maxRowComparisons[row][column]) + " ");
+//            }
+//            System.out.print("\n");
+//        }
+//        System.out.println("maxMapRate[][] ");
+//        for (row = 0; row < size; row++) {
+//            for (column = 0; column < size; column++) {
+//                System.out.print(String.format("%.4f", maxMapRate[row][column]) + " ");
+//            }
+//            System.out.print("\n");
+//        }
+//        System.out.println("minRowComparisons ");
+//        for (row = 0; row < size; row++) {
+//            for (column = 0; column < size; column++) {
+//                System.out.print(String.format("%.4f", minRowComparisons[row][column]) + " ");
+//            }
+//            System.out.print("\n");
+//        }
+//        System.out.println("maxMapRate[][] ");
+//        for (row = 0; row < size; row++) {
+//            for (column = 0; column < size; column++) {
+//                System.out.print(String.format("%.4f", minMapRate[row][column]) + " ");
+//            }
+//            System.out.print("\n");
+//        }
+//        System.out.println("(1,0) - PI/3" + ((double) rowTots[1] / (double) rowTots[0] - Math.PI / 3.0));
+//        System.out.println("(3,2) - PI " + ((double) rowTots[2] / (double) rowTots[3] - Math.PI));
+//        double diff = ((double) rowTots[1] / (double) rowTots[0] - Math.PI / 3.0);
+//        diff = Math.log(diff) / Math.log(2);
+//        System.out.println("diff " + diff);
+//        diff = ((double) rowTots[2] / (double) rowTots[3] - Math.PI);
+//        diff = Math.log(diff) / Math.log(2);
+//        System.out.println("diff " + diff);
+//        int upper = 0;
+//        int lower = 0;
+//        for (row = 0; row < 2; row++) {
+//            for (column = 0; column < size; column++) {
+//                upper += minErrorMap[row][column];
+//                lower += minErrorMap[row + 2][column];
+//            }
+//        }
+//        double div = (double) upper / (double) lower;
+//        System.out.println("upper/lower " + div + " " + 1.0 / div + " " + div * Math.PI + " " + Math.PI / div + " " + div / Math.PI);
+//        System.out.println("upper/lower - phi*phi " + (div - phi * phi));
+//        double[] diffs = new double[]{((double) rowTots[1] / (double) rowTots[0] - Math.PI / 3.0), ((double) rowTots[2] / (double) rowTots[3] - Math.PI), (div - phi * phi)};
+//        for (int d = 0; d < 3; d++) {
+//            diffs[d] = Math.abs(diffs[d]);
+//            System.out.println("diff " + diffs[d] + " " + (Math.log(diffs[d]) / Math.log(2)));
+//        }
+//        for (int power = 2; power > -20; power--) {
+//            System.out.print((int) (Math.PI / Math.pow(2, power)) % 2 + " ");
+//        }
+//        System.out.println();
+//        for (int power = 2; power > -20; power--) {
+//            System.out.print((int) (diffs[1] / Math.pow(2, power)) % 2 + " ");
+//        }
+//        System.out.println();
+//        for (int power = 2; power > -24; power--) {
+//            int a = (int) ((diffs[1] / Math.pow(2, power)) % 2);
+//            int b = (int) ((Math.PI / Math.pow(2, power)) % 2);
+//            System.out.print((a ^ b) + " ");
+//        }
+//        System.out.println();
+//        double[][] errors = new double[size][size];
+//        double[] byRow = new double[size];
+//        for (row = 0; row < size; row++) {
+//            for (column = 0; column < size; column++) {
+//                errors[row][column] = (double) minErrorMap[row][column] / (double) (Math.pow(2, size * size) * 8);
+//                byRow[row] += errors[row][column];
+//            }
+//            byRow[row] /= 4;
+//            byRow[row] *= (440 * 8);
+//        }
+//        System.out.println("errors ");
+//        for (row = 0; row < size; row++) {
+//            System.out.println(Arrays.toString(errors[row]));
+//        }
+//        System.out.println("byRow " + Arrays.toString(byRow));
+//        //doWallisProduct(50);
+//        //doTriangles(50);
+//        System.out.println("solutionDistro: " + Arrays.toString(minSolutionDistro));
+//        System.out.println("maxSolutionDistro: " + Arrays.toString(maxSolutionDistro));
+//        System.out.println("\n\n\n\n\n\n\n");
+//        for (int spot = 0; spot < 16; spot++) {
+//            System.out.print((double) maxSolutionDistro[spot] / 65536.0 + " ");
+//        }
+//        System.out.println();
+//        for (int spot = 0; spot < 16; spot++) {
+//            System.out.print(65536.0 / (double) maxSolutionDistro[spot] + " ");
+//        }
+
+
+
+//    /**
+//     * Manager function for checkPascalErrorCorrection()
+//     *
+//     * @param specificRule ECA 0-255 rule
+//     * @param size         width of input array, size of solution neighborhood
+//     * @return ???
+//     */
+//    public int[][] errorMinimizationManager(int specificRule, int size, boolean doChangeScore, int changeScoreTrials, boolean doAllRules, boolean doRandom, int numTrials, boolean doVoting) {
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //Initialization
+//        CustomArray customArray = new CustomArray();
+//        maxSolutionDistro = new int[(int) Math.pow(2, size)];
+//        minSolutionDistro = new int[(int) Math.pow(2, size)];
+//        int numBoards = (int) Math.pow(2, size * size);
+//        if (doRandom) numBoards = numTrials;
+//        //Turns solutions into a Wolfram code, with the address being the input array (trial)
+//        //Currently only for one ECA rule, and does not work with doRandom, and does not work for size > 4 because the Wolfram code becomes too long (4x4 array = 2^16 length)
+//        minSolutionsAsWolfram = new int[256][numBoards];
+//        minErrorMap = new int[256][size][size];
+//        maxErrorMap = new int[256][size][size];
+//        sameSolutions = new int[256];
+//        sameErrorMin = new int[256][(int) Math.pow(2, size) + 1];
+//        sameErrorMax = new int[256][sameErrorMin.length];
+//        field = new int[size][size];
+//        minErrorBuckets = new int[256];
+//        maxErrorBuckets = new int[256];
+//        solutions = new int[8][size][size];
+//        numberBoards = new int[256];
+//        errorChange = new int[256];
+//        hammingChange = new int[256];
+//        averageChange = new double[256];
+//        solutionBucket = new int[256];
+//        changeChange = new double[256];
+//        changeScore = new int[256];
+//        maxVote = new int[size][size];
+//        minVote = new int[size][size];
+//        maxTemp = new int[size][size];
+//        minTemp = new int[size][size];
+//        int start = 0;
+//        if (!doAllRules) start = specificRule;
+//        int stop = 255;
+//        if (!doAllRules) stop = specificRule + 1;
+//        int numVotes = 1;
+//        if (doVoting) numVotes = 8;
+//        Random rand = new Random();
+//        int trial;
+//        int row;
+//        int column;
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //Main loop
+//        for (int rule = start; rule < stop; rule++) {
+//            System.out.println("rule " + rule);
+//            for (trial = 0; trial < numBoards; trial++) {
+//                if (trial % 1000 == 0) System.out.println("trial " + trial);
+//                if (!doRandom) {
+//                    for (row = 0; row < size; row++) {
+//                        for (column = 0; column < size; column++) {
+//                            field[row][column] = ((trial / (int) Math.pow(2, size * column + row)) % 2);
+//                        }
+//                    }
+//                } else {
+//                    for (row = 0; row < size; row++) {
+//                        for (column = 0; column < size; column++) {
+//                            field[row][column] = rand.nextInt(0, 2);
+//                        }
+//                    }
+//                }
+//                //CustomArray.plusArrayDisplay(field, false, true, "Field");
+//                minVote = new int[size][size];
+//                maxVote = new int[size][size];
+//                //This loop reflects, rotates, and transposes the input data array
+//                for (int rotation = 0; rotation < numVotes; rotation++) {
+//                    minTemp = new int[size][size];
+//                    for (row = 0; row < size; row++) {
+//                        for (column = 0; column < size; column++) {
+//                            minTemp[row][column] = field[row][column];
+//                        }
+//                    }
+//                    minTemp = customArray.reflectRotateTranspose(minTemp, rotation);
+//                    minTemp = checkPascalErrorCorrectionAll(rule, minTemp, basicECA.ecaWolframCodes[rule]);
+//                    minTemp = customArray.reflectRotateTranspose(minTemp, rotation);
+//                    maxTemp = localMaxSolution;
+//                    for (row = 0; row < size; row++) {
+//                        for (column = 0; column < size; column++) {
+//                            minVote[row][column] += minTemp[row][column];
+//                            maxVote[row][column] += maxTemp[row][column];
+//                        }
+//                    }
+//                }
+//                for (column = 0; column < size && !doRandom; column++) {
+//                    minSolutionsAsWolfram[rule][trial] += (int) Math.pow(2, column) * minTemp[0][column];
+//                    maxSolutionsAsWolfram[rule][trial] += (int) Math.pow(2, column) * maxTemp[0][column];
+//                }
+//                totMinErrors = 0;
+//                totMaxErrors = 0;
+//                for (row = 0; row < size; row++) {
+//                    for (column = 0; column < size; column++) {
+//                        if (minVote[row][column] > 3) minVote[row][column] = 1;
+//                        else minVote[row][column] = 0;
+//                        totMinErrors += (minVote[row][column] ^ field[row][column]);
+//                        minErrorMap[rule][row][column] += (minVote[row][column] ^ field[row][column]);
+//                        if (maxVote[row][column] > 3) maxVote[row][column] = 1;
+//                        else maxVote[row][column] = 0;
+//                        totMaxErrors += (maxVote[row][column] ^ field[row][column]);
+//                        maxErrorMap[rule][row][column] += (maxVote[row][column] ^ field[row][column]);
+//                    }
+//                }
+//                minErrorBuckets[rule] += totMinErrors;
+//                maxErrorBuckets[rule] += totMaxErrors;
+//                numberBoards[rule]++;
+//                //
+//                //
+//                //Severely impacts runtime
+//                //Finds the mean distance between codewords per change in the random input data
+//                //the changeScore is scored with the same exponent as the errorScore
+//                if (doChangeScore) {
+//                    changeChange[rule] = changeChange(rule, minVote, totMinErrors, changeScoreTrials);
+//                    errorChange[rule] += totMinErrors;
+//                    hammingChange[rule] += totHammingChange;
+//                    changeScore[rule] += weightedChangeScore;
+//                }
+//            }
+//            if (doChangeScore) changeChange[rule] = (double) hammingChange[rule] / (double) changeScore[rule];
+//            //CustomArray.plusArrayDisplay(errorMap,false,false,"ECA rule " + rule + " error map");
+//        }
+////        //The rest is results management & display
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //Sorts and averages the best performing ECA rules
+////        System.out.println("solutionBucket[] " + solutionBucket);
+////        System.out.println("pre division");
+////        System.out.println(Arrays.toString(minErrorBuckets));
+////        System.out.println("hbLength[]");
+////        System.out.println(Arrays.toString(numberBoards));
+////        int[] hashbucketRate = new int[256];
+////        for (row = start; row < stop; row++) {
+////            hashbucketRate[row] = minErrorBuckets[row] / numberBoards[row];
+////            if (doChangeScore) averageChange[row] = (double) hammingChange[row] / (double) errorChange[row];
+////        }
+////        System.out.println("post division");
+////        System.out.println(Arrays.toString(hashbucketRate));
+////        int[] sorted = new int[256];
+////        for (row = 0; row < 256; row++) {
+////            sorted[row] = row;
+////        }
+////        if (doAllRules) {
+////            for (row = 0; row < 256; row++) {
+////                for (column = 0; column < 256; column++) {
+////                    if (hashbucketRate[row] < hashbucketRate[column]) {
+////                        int temp = minErrorBuckets[row];
+////                        minErrorBuckets[row] = minErrorBuckets[column];
+////                        minErrorBuckets[column] = temp;
+////                        temp = sorted[row];
+////                        sorted[row] = sorted[column];
+////                        sorted[column] = temp;
+////                        temp = numberBoards[row];
+////                        numberBoards[row] = numberBoards[column];
+////                        numberBoards[column] = temp;
+////                        temp = hashbucketRate[row];
+////                        hashbucketRate[row] = hashbucketRate[column];
+////                        hashbucketRate[column] = temp;
+////                    }
+////                }
+////            }
+////        }
+////        // System.out.println(Arrays.toString(hashbucket));
+////        //
+////        //
+////        //Output
+////        System.out.println("Here");
+////        for (int index = start; index < stop; index++) {
+////            System.out.println("index " + sorted[index] + " " + basicECA.ruleClasses[sorted[index]] + " " + hashbucketRate[index] + " " + minErrorBuckets[index] + " " + numberBoards[index] + " ");
+////        }
+////        System.out.println(Arrays.toString(sameSolutions));
+////        for (row = start; row < stop; row++) {
+////            if (sameSolutions[sorted[row]] == 1) {
+////                System.out.println("Rule has a unique solution " + sorted[row]);
+////            } else {
+////                System.out.println("sameSolutions[" + sorted[row] + "] " + sameSolutions[sorted[row]]);
+////            }
+////        }
+////        if (doChangeScore) {
+////            System.out.println("hammingChange per changeScore");
+////            for (row = start; row < stop; row++) {
+////                System.out.println(sorted[row] + " " + changeChange[sorted[row]] + " " + errorChange[sorted[row]]);
+////            }
+////        }
+////        System.out.println("min error/grid " + ((double) minErrorBuckets[specificRule] / (double) numBoards));
+////        System.out.println("min error/bit " + ((double) minErrorBuckets[specificRule]) / numBoards / size / size);
+////        System.out.println("min bits/error " + (double) (numBoards * size * size) / (double) minErrorBuckets[specificRule]);
+////        System.out.println("sameError " + Arrays.toString(sameErrorMin));
+////        System.out.println("sameErrorMax " + Arrays.toString(sameErrorMax));
+////        System.out.println("max error/grid " + ((double) maxErrorBuckets[specificRule] / (double) numBoards));
+////        System.out.println("max error/bit " + ((double) maxErrorBuckets[specificRule]) / numBoards / size / size);
+////        System.out.println("max bits/error " + (double) (numBoards * size * size) / (double) maxErrorBuckets[specificRule]);
+////        System.out.println("\n");
+////        double max = ((double) maxErrorBuckets[specificRule]) / numBoards / size / size;
+////        double min = ((double) minErrorBuckets[specificRule]) / numBoards / size / size;
+////        double ebDiff = ((double) maxErrorBuckets[specificRule] / numBoards / size / size) - ((double) minErrorBuckets[specificRule] / numBoards / size / size);
+////        double beDiff = ((double) (numTrials * size * size) / (double) maxErrorBuckets[specificRule]) - ((double) (numTrials * size * size) / (double) minErrorBuckets[specificRule]);
+////        System.out.println("ebDiff " + ebDiff);
+////        System.out.println("beDiff " + beDiff);
+////        System.out.println("max * min = " + (max * min));
+////        double[][] sameMin = new double[size][size];
+////        double[][] sameMax = new double[size][size];
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                sameMin[row][column] = (double) sameErrorMin[row + 1] / (double) sameErrorMin[column + 1];
+////                sameMax[row][column] = (double) sameErrorMax[2 * row + 2] / (double) sameErrorMax[2 * column + 2];
+////            }
+////        }
+////        System.out.println("sameMaxRowComparisons ");
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                System.out.print(String.format("%.4f", sameMax[row][column]) + " ");
+////            }
+////            System.out.print("\n");
+////        }
+////        System.out.println("sameMinRowComparisons ");
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                System.out.print(String.format("%.4f", sameMin[row][column]) + " ");
+////            }
+////            System.out.print("\n");
+////        }
+////        for (row = 1; row < 4096 && row < sameErrorMin.length; row *= 2) {
+////            System.out.print("row " + row + " " + sameErrorMin[row] + "\n");
+////        }
+////        int maxErrorTot = 0;
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                maxErrorTot += minErrorMap[row][column];
+////            }
+////        }
+////        CustomArray.plusArrayDisplay(minErrorMap, false, false, "Min Error Map");
+////        CustomArray.plusArrayDisplay(maxErrorMap, false, false, "Max Error Map");
+////        double[] rowTots = new double[size];
+////        double phi = (1 + Math.sqrt(5)) / 2;
+////        int[] maxRowTots = new int[size];
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                rowTots[row] += minErrorMap[row][column];
+////                maxRowTots[row] += maxErrorMap[row][column];
+////            }
+////        }
+////        double[][] maxRowComparisons = new double[size][size];
+////        double[][] minRowComparisons = new double[size][size];
+////        double[][] maxMapRate = new double[size][size];
+////        double[][] minMapRate = new double[size][size];
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                maxRowComparisons[row][column] = (double) maxRowTots[row] / (double) maxRowTots[column];
+////                minRowComparisons[row][column] = (double) rowTots[row] / (double) rowTots[column];
+////                maxMapRate[row][column] = (double) maxErrorMap[row][column] / (double) numBoards / 8.0;
+////                minMapRate[row][column] = (double) minErrorMap[row][column] / (double) numBoards / 8.0;
+////            }
+////        }
+////        System.out.println("maxRowComparisons ");
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                System.out.print(String.format("%.4f", maxRowComparisons[row][column]) + " ");
+////            }
+////            System.out.print("\n");
+////        }
+////        System.out.println("maxMapRate[][] ");
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                System.out.print(String.format("%.4f", maxMapRate[row][column]) + " ");
+////            }
+////            System.out.print("\n");
+////        }
+////        System.out.println("minRowComparisons ");
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                System.out.print(String.format("%.4f", minRowComparisons[row][column]) + " ");
+////            }
+////            System.out.print("\n");
+////        }
+////        System.out.println("maxMapRate[][] ");
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                System.out.print(String.format("%.4f", minMapRate[row][column]) + " ");
+////            }
+////            System.out.print("\n");
+////        }
+////        System.out.println("(1,0) - PI/3" + ((double) rowTots[1] / (double) rowTots[0] - Math.PI / 3.0));
+////        System.out.println("(3,2) - PI " + ((double) rowTots[2] / (double) rowTots[3] - Math.PI));
+////        double diff = ((double) rowTots[1] / (double) rowTots[0] - Math.PI / 3.0);
+////        diff = Math.log(diff) / Math.log(2);
+////        System.out.println("diff " + diff);
+////        diff = ((double) rowTots[2] / (double) rowTots[3] - Math.PI);
+////        diff = Math.log(diff) / Math.log(2);
+////        System.out.println("diff " + diff);
+////        int upper = 0;
+////        int lower = 0;
+////        for (row = 0; row < 2; row++) {
+////            for (column = 0; column < size; column++) {
+////                upper += minErrorMap[row][column];
+////                lower += minErrorMap[row + 2][column];
+////            }
+////        }
+////        double div = (double) upper / (double) lower;
+////        System.out.println("upper/lower " + div + " " + 1.0 / div + " " + div * Math.PI + " " + Math.PI / div + " " + div / Math.PI);
+////        System.out.println("upper/lower - phi*phi " + (div - phi * phi));
+////        double[] diffs = new double[]{((double) rowTots[1] / (double) rowTots[0] - Math.PI / 3.0), ((double) rowTots[2] / (double) rowTots[3] - Math.PI), (div - phi * phi)};
+////        for (int d = 0; d < 3; d++) {
+////            diffs[d] = Math.abs(diffs[d]);
+////            System.out.println("diff " + diffs[d] + " " + (Math.log(diffs[d]) / Math.log(2)));
+////        }
+////        for (int power = 2; power > -20; power--) {
+////            System.out.print((int) (Math.PI / Math.pow(2, power)) % 2 + " ");
+////        }
+////        System.out.println();
+////        for (int power = 2; power > -20; power--) {
+////            System.out.print((int) (diffs[1] / Math.pow(2, power)) % 2 + " ");
+////        }
+////        System.out.println();
+////        for (int power = 2; power > -24; power--) {
+////            int a = (int) ((diffs[1] / Math.pow(2, power)) % 2);
+////            int b = (int) ((Math.PI / Math.pow(2, power)) % 2);
+////            System.out.print((a ^ b) + " ");
+////        }
+////        System.out.println();
+////        double[][] errors = new double[size][size];
+////        double[] byRow = new double[size];
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                errors[row][column] = (double) minErrorMap[row][column] / (double) (Math.pow(2, size * size) * 8);
+////                byRow[row] += errors[row][column];
+////            }
+////            byRow[row] /= 4;
+////            byRow[row] *= (440 * 8);
+////        }
+////        System.out.println("errors ");
+////        for (row = 0; row < size; row++) {
+////            System.out.println(Arrays.toString(errors[row]));
+////        }
+////        System.out.println("byRow " + Arrays.toString(byRow));
+////        //doWallisProduct(50);
+////        //doTriangles(50);
+////        System.out.println("solutionDistro: " + Arrays.toString(minSolutionDistro));
+////        System.out.println("maxSolutionDistro: " + Arrays.toString(maxSolutionDistro));
+////        System.out.println("\n\n\n\n\n\n\n");
+////        for (int spot = 0; spot < 16; spot++) {
+////            System.out.print((double) maxSolutionDistro[spot] / 65536.0 + " ");
+////        }
+////        System.out.println();
+////        for (int spot = 0; spot < 16; spot++) {
+////            System.out.print(65536.0 / (double) maxSolutionDistro[spot] + " ");
+////        }
+//        return solutions[0];
+//    }
+//
+//    public void displayResults(boolean doChangeScore) {
+////        int row;
+////        int column;
+////        //The rest is results management & display
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //Sorts and averages the best performing ECA rules
+////        System.out.println("solutionBucket[] " + solutionBucket);
+////        System.out.println("pre division");
+////        System.out.println(Arrays.toString(minErrorBuckets));
+////        System.out.println("hbLength[]");
+////        System.out.println(Arrays.toString(numberBoards));
+////        int[] hashbucketRate = new int[256];
+////        for (row = start; row < stop; row++) {
+////            hashbucketRate[row] = minErrorBuckets[row] / numberBoards[row];
+////            if (doChangeScore) averageChange[row] = (double) hammingChange[row] / (double) errorChange[row];
+////        }
+////        System.out.println("post division");
+////        System.out.println(Arrays.toString(hashbucketRate));
+////        int[] sorted   //The rest is results management & display
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //
+////        //Sorts and averages the best performing ECA rules
+////        System.out.println("solutionBucket[] " + solutionBucket);
+////        System.out.println("pre division");
+////        System.out.println(Arrays.toString(minErrorBuckets));
+////        System.out.println("hbLength[]");
+////        System.out.println(Arrays.toString(numberBoards));
+////        int[] hashbucketRate = new int[256];
+////        for (row = start; row < stop; row++) {
+////            hashbucketRate[row] = minErrorBuckets[row] / numberBoards[row];
+////            if (doChangeScore) averageChange[row] = (double) hammingChange[row] / (double) errorChange[row];
+////        }
+////        System.out.println("post division");
+////        System.out.println(Arrays.toString(hashbucketRate));
+////        int[] sorted = new int[256];
+////        for (row = 0; row < 256; row++) {
+////            sorted[row] = row;
+////        }
+////        if (doAllRules) {
+////            for (row = 0; row < 256; row++) {
+////                for (column = 0; column < 256; column++) {
+////                    if (hashbucketRate[row] < hashbucketRate[column]) {
+////                        int temp = minErrorBuckets[row];
+////                        minErrorBuckets[row] = minErrorBuckets[column];
+////                        minErrorBuckets[column] = temp;
+////                        temp = sorted[row];
+////                        sorted[row] = sorted[column];
+////                        sorted[column] = temp;
+////                        temp = numberBoards[row];
+////                        numberBoards[row] = numberBoards[column];
+////                        numberBoards[column] = temp;
+////                        temp = hashbucketRate[row];
+////                        hashbucketRate[row] = hashbucketRate[column];
+////                        hashbucketRate[column] = temp;
+////                    }
+////                }
+////            }
+////        }
+////        // System.out.println(Arrays.toString(hashbucket));
+////        //
+////        //
+////        //Output
+////        System.out.println("Here");
+////        for (int index = start; index < stop; index++) {
+////            System.out.println("index " + sorted[index] + " " + basicECA.ruleClasses[sorted[index]] + " " + hashbucketRate[index] + " " + minErrorBuckets[index] + " " + numberBoards[index] + " ");
+////        }
+////        System.out.println(Arrays.toString(sameSolutions));
+////        for (row = start; row < stop; row++) {
+////            if (sameSolutions[sorted[row]] == 1) {
+////                System.out.println("Rule has a unique solution " + sorted[row]);
+////            } else {
+////                System.out.println("sameSolutions[" + sorted[row] + "] " + sameSolutions[sorted[row]]);
+////            }
+////        }
+////        if (doChangeScore) {
+////            System.out.println("hammingChange per changeScore");
+////            for (row = start; row < stop; row++) {
+////                System.out.println(sorted[row] + " " + changeChange[sorted[row]] + " " + errorChange[sorted[row]]);
+////            }
+////        }
+////        System.out.println("min error/grid " + ((double) minErrorBuckets[specificRule] / (double) numBoards));
+////        System.out.println("min error/bit " + ((double) minErrorBuckets[specificRule]) / numBoards / size / size);
+////        System.out.println("min bits/error " + (double) (numBoards * size * size) / (double) minErrorBuckets[specificRule]);
+////        System.out.println("sameError " + Arrays.toString(sameErrorMin));
+////        System.out.println("sameErrorMax " + Arrays.toString(sameErrorMax));
+////        System.out.println("max error/grid " + ((double) maxErrorBuckets[specificRule] / (double) numBoards));
+////        System.out.println("max error/bit " + ((double) maxErrorBuckets[specificRule]) / numBoards / size / size);
+////        System.out.println("max bits/error " + (double) (numBoards * size * size) / (double) maxErrorBuckets[specificRule]);
+////        System.out.println("\n");
+////        double max = ((double) maxErrorBuckets[specificRule]) / numBoards / size / size;
+////        double min = ((double) minErrorBuckets[specificRule]) / numBoards / size / size;
+////        double ebDiff = ((double) maxErrorBuckets[specificRule] / numBoards / size / size) - ((double) minErrorBuckets[specificRule] / numBoards / size / size);
+////        double beDiff = ((double) (numTrials * size * size) / (double) maxErrorBuckets[specificRule]) - ((double) (numTrials * size * size) / (double) minErrorBuckets[specificRule]);
+////        System.out.println("ebDiff " + ebDiff);
+////        System.out.println("beDiff " + beDiff);
+////        System.out.println("max * min = " + (max * min));
+////        double[][] sameMin = new double[size][size];
+////        double[][] sameMax = new double[size][size];
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                sameMin[row][column] = (double) sameErrorMin[row + 1] / (double) sameErrorMin[column + 1];
+////                sameMax[row][column] = (double) sameErrorMax[2 * row + 2] / (double) sameErrorMax[2 * column + 2];
+////            }
+////        }
+////        System.out.println("sameMaxRowComparisons ");
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                System.out.print(String.format("%.4f", sameMax[row][column]) + " ");
+////            }
+////            System.out.print("\n");
+////        }
+////        System.out.println("sameMinRowComparisons ");
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                System.out.print(String.format("%.4f", sameMin[row][column]) + " ");
+////            }
+////            System.out.print("\n");
+////        }
+////        for (row = 1; row < 4096 && row < sameErrorMin.length; row *= 2) {
+////            System.out.print("row " + row + " " + sameErrorMin[row] + "\n");
+////        }
+////        int maxErrorTot = 0;
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                maxErrorTot += minErrorMap[row][column];
+////            }
+////        }
+////        CustomArray.plusArrayDisplay(minErrorMap, false, false, "Min Error Map");
+////        CustomArray.plusArrayDisplay(maxErrorMap, false, false, "Max Error Map");
+////        double[] rowTots = new double[size];
+////        double phi = (1 + Math.sqrt(5)) / 2;
+////        int[] maxRowTots = new int[size];
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                rowTots[row] += minErrorMap[row][column];
+////                maxRowTots[row] += maxErrorMap[row][column];
+////            }
+////        }
+////        double[][] maxRowComparisons = new double[size][size];
+////        double[][] minRowComparisons = new double[size][size];
+////        double[][] maxMapRate = new double[size][size];
+////        double[][] minMapRate = new double[size][size];
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                maxRowComparisons[row][column] = (double) maxRowTots[row] / (double) maxRowTots[column];
+////                minRowComparisons[row][column] = (double) rowTots[row] / (double) rowTots[column];
+////                maxMapRate[row][column] = (double) maxErrorMap[row][column] / (double) numBoards / 8.0;
+////                minMapRate[row][column] = (double) minErrorMap[row][column] / (double) numBoards / 8.0;
+////            }
+////        }
+////        System.out.println("maxRowComparisons ");
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                System.out.print(String.format("%.4f", maxRowComparisons[row][column]) + " ");
+////            }
+////            System.out.print("\n");
+////        }
+////        System.out.println("maxMapRate[][] ");
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                System.out.print(String.format("%.4f", maxMapRate[row][column]) + " ");
+////            }
+////            System.out.print("\n");
+////        }
+////        System.out.println("minRowComparisons ");
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                System.out.print(String.format("%.4f", minRowComparisons[row][column]) + " ");
+////            }
+////            System.out.print("\n");
+////        }
+////        System.out.println("maxMapRate[][] ");
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                System.out.print(String.format("%.4f", minMapRate[row][column]) + " ");
+////            }
+////            System.out.print("\n");
+////        }
+////        System.out.println("(1,0) - PI/3" + ((double) rowTots[1] / (double) rowTots[0] - Math.PI / 3.0));
+////        System.out.println("(3,2) - PI " + ((double) rowTots[2] / (double) rowTots[3] - Math.PI));
+////        double diff = ((double) rowTots[1] / (double) rowTots[0] - Math.PI / 3.0);
+////        diff = Math.log(diff) / Math.log(2);
+////        System.out.println("diff " + diff);
+////        diff = ((double) rowTots[2] / (double) rowTots[3] - Math.PI);
+////        diff = Math.log(diff) / Math.log(2);
+////        System.out.println("diff " + diff);
+////        int upper = 0;
+////        int lower = 0;
+////        for (row = 0; row < 2; row++) {
+////            for (column = 0; column < size; column++) {
+////                upper += minErrorMap[row][column];
+////                lower += minErrorMap[row + 2][column];
+////            }
+////        }
+////        double div = (double) upper / (double) lower;
+////        System.out.println("upper/lower " + div + " " + 1.0 / div + " " + div * Math.PI + " " + Math.PI / div + " " + div / Math.PI);
+////        System.out.println("upper/lower - phi*phi " + (div - phi * phi));
+////        double[] diffs = new double[]{((double) rowTots[1] / (double) rowTots[0] - Math.PI / 3.0), ((double) rowTots[2] / (double) rowTots[3] - Math.PI), (div - phi * phi)};
+////        for (int d = 0; d < 3; d++) {
+////            diffs[d] = Math.abs(diffs[d]);
+////            System.out.println("diff " + diffs[d] + " " + (Math.log(diffs[d]) / Math.log(2)));
+////        }
+////        for (int power = 2; power > -20; power--) {
+////            System.out.print((int) (Math.PI / Math.pow(2, power)) % 2 + " ");
+////        }
+////        System.out.println();
+////        for (int power = 2; power > -20; power--) {
+////            System.out.print((int) (diffs[1] / Math.pow(2, power)) % 2 + " ");
+////        }
+////        System.out.println();
+////        for (int power = 2; power > -24; power--) {
+////            int a = (int) ((diffs[1] / Math.pow(2, power)) % 2);
+////            int b = (int) ((Math.PI / Math.pow(2, power)) % 2);
+////            System.out.print((a ^ b) + " ");
+////        }
+////        System.out.println();
+////        double[][] errors = new double[size][size];
+////        double[] byRow = new double[size];
+////        for (row = 0; row < size; row++) {
+////            for (column = 0; column < size; column++) {
+////                errors[row][column] = (double) minErrorMap[row][column] / (double) (Math.pow(2, size * size) * 8);
+////                byRow[row] += errors[row][column];
+////            }
+////            byRow[row] /= 4;
+////            byRow[row] *= (440 * 8);
+////        }
+////        System.out.println("errors ");
+////        for (row = 0; row < size; row++) {
+////            System.out.println(Arrays.toString(errors[row]));
+////        }
+////        System.out.println("byRow " + Arrays.toString(byRow));
+////        //doWallisProduct(50);
+////        //doTriangles(50);
+////        System.out.println("solutionDistro: " + Arrays.toString(minSolutionDistro));
+////        System.out.println("maxSolutionDistro: " + Arrays.toString(maxSolutionDistro));
+////        System.out.println("\n\n\n\n\n\n\n");
+////        for (int spot = 0; spot < 16; spot++) {
+////            System.out.print((double) maxSolutionDistro[spot] / 65536.0 + " ");
+////        }
+////        System.out.println();
+////        for (int spot = 0; spot < 16; spot++) {
+////            System.out.print(65536.0 / (double) maxSolutionDistro[spot] + " ");
+////        }
+//    }
 }
