@@ -25,8 +25,9 @@ public class Main {
         //staging.doAllRules(4,false,0,true,5000,false);
         //staging.test(4);
         //staging.testAll(4);
-        staging.doAllRules(4,false,0,false,0,false);
-
+        //staging.doAllRules(4,false,0,false,0,false);
+        PiBytes piBytes = new PiBytes();
+        piBytes.testFiveStar();
 
     }
 }
