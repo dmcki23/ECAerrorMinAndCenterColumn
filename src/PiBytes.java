@@ -1,20 +1,21 @@
 import java.util.Arrays;
 
 public class PiBytes {
-    public void testFiveStar(){
+    public void testFiveStar() {
         double input = 3.142;
         int[] inputBinary = new int[32];
         int[] PiBinary = new int[32];
         int[] comp = new int[32];
-        for (int power =-1; power < 16; power++){
-            inputBinary[power+1] =(int) (input/Math.pow(2,-power) ) % 2;
-            PiBinary[power+1] =(int) (Math.PI/Math.pow(2,-power) ) % 2;
-            comp[power+1] = inputBinary[power+1] ^ PiBinary[power+1];
+        for (int power = -1; power < 16; power++) {
+            inputBinary[power + 1] = (int) (input / Math.pow(2, -power)) % 2;
+            PiBinary[power + 1] = (int) (Math.PI / Math.pow(2, -power)) % 2;
+            comp[power + 1] = inputBinary[power + 1] ^ PiBinary[power + 1];
         }
         System.out.println(Arrays.toString(inputBinary));
         System.out.println(Arrays.toString(PiBinary));
         System.out.println(Arrays.toString(comp));
     }
+
     /**
      * Calculates PI via the Wallis product
      *
@@ -94,6 +95,38 @@ public class PiBytes {
             System.out.println("PI - triangles = " + (Math.PI - out));
             double l = Math.log(Math.PI - out) / Math.log(2);
             System.out.println("log(PI-triangles)= " + l);
+        }
+        return out;
+    }
+
+    public int[][] doArray() {
+        minErrorStaging m = new minErrorStaging();
+        int length = 256;
+        int[] Pi = new int[length];
+        int[] E = new int[length];
+        int[] Phi = new int[length];
+        int[] sqrtTwo = new int[length];
+        int[] hamming = new int[length];
+        int[][] in = new int[256][8];
+        int[][] out = new int[256 + 8][8];
+        int[][][] outVotes = new int[256][8][8];
+        int[] outDec = new int[length];
+        int[][] cell = new int[8][8];
+        for (int l = 0; l < length; l++) {
+            for (int row = 0; row < 8; row++) {
+                for (int col = 0; col < 8; col++) {
+                    int spot = l - 8;
+                    if (spot < 0) {
+                        cell[row][col] = 0;
+                    } else {
+                        cell[row][col] = in[l][row];
+                    }
+                }
+            }
+            int[] codeword = m.findMinimizingCodeword(204,cell,new int[]{0,0,0,0,0,0,0,0})[0];
+            for (int row = 0; row < 8; row++){
+                out[l][row] = codeword[row];
+            }
         }
         return out;
     }

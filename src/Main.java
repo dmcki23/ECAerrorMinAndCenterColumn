@@ -1,7 +1,10 @@
+import java.io.IOException;
+import java.util.Arrays;
+
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         minErrorStaging m = new minErrorStaging();
         //m.manageLengthsMinimizations(150,4,500);
         //m.ecaBestFitHashCollisionExhuastiveSizeTwo(105,2,false,false,500);
@@ -23,11 +26,22 @@ public class Main {
         //staging.individualRuleManager(90,4,false,0,false,500,false);
         //staging.individualRuleDisplay(150,false,0,4);
         //staging.doAllRules(4,false,0,true,5000,false);
+        //staging.doAllRulesCoords(4,false,0,false,0,false,new int[][]{{0,255},{85,170},{15,51},{204,240}});
         //staging.test(4);
         //staging.testAll(4);
         //staging.doAllRules(4,false,0,false,0,false);
         PiBytes piBytes = new PiBytes();
-        piBytes.testFiveStar();
+        //piBytes.testFiveStar();
+        RuleStretchTemplate ruleStretchTemplate2 = new RuleStretchTemplate();
+        //System.out.println(Arrays.toString(ruleStretchTemplate2.traditionalCenterColumn(30,16,new int[]{1},30)));
+        //FastMinTransform fastMinTransform = new FastMinTransform();
+        //fastMinTransform.checkWolframs();
+        //fastMinTransform.checkWolframsForReversibility();
+        //fastMinTransform.checkNeighborWindow();
+        //fastMinTransform.checkNeighborWindow(100);
+        SwingApplyFastMinTransform swingApplyFastMinTransform = new SwingApplyFastMinTransform("Image with transform");
+        swingApplyFastMinTransform.getImage();
+
 
     }
 }

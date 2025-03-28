@@ -4,12 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="added some images to the center column paper&#10;updated doAllRules()">
-      <change afterPath="$PROJECT_DIR$/src/PiBytes.java" afterDir="false" />
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="moved Wallis product and triangle to the new PiBytes">
+      <change afterPath="$PROJECT_DIR$/src/FastMinTransform.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/SwingApplyFastMinTransform.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/ECAcenterColumnPaper/ECAcenterColumnLaTex.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/ECAcenterColumnPaper/ECAcenterColumnLaTex.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/ECAcenterColumnPaper/ECAcenterColumnLaTex.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/ECAcenterColumnPaper/ECAcenterColumnLaTex.synctex.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/ECAcenterColumnPaper/ECAcenterColumnLaTex.tex" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/ECAcenterColumnPaper/ECAcenterColumnLaTex.tex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/Main.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/minErrorStaging.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/minErrorStaging.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAcenterColumnPaper/ECAcenterColumnLaTex.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAcenterColumnPaper/ECAcenterColumnLaTex.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAcenterColumnPaper/ECAcenterColumnLaTex.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAcenterColumnPaper/ECAcenterColumnLaTex.synctex.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAcenterColumnPaper/ECAcenterColumnLaTex.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAcenterColumnPaper/ECAcenterColumnLaTex.tex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PiBytes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PiBytes.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/minErrorStaging.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/minErrorStaging.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -67,6 +75,7 @@
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;onboarding.tips.debug.path&quot;: &quot;/home/daniel/IdeaProjects/ECAerrorMinAndCenterColumn/src/Main.java&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.statistic.project.settings&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -103,7 +112,13 @@
       <workItem from="1740697486564" duration="22165000" />
       <workItem from="1742046979716" duration="10421000" />
       <workItem from="1742087030740" duration="607000" />
-      <workItem from="1742159268060" duration="3262000" />
+      <workItem from="1742159268060" duration="4736000" />
+      <workItem from="1742404779854" duration="1242000" />
+      <workItem from="1742836588818" duration="1328000" />
+      <workItem from="1742919699687" duration="13981000" />
+      <workItem from="1742936036899" duration="27286000" />
+      <workItem from="1743122816812" duration="12591000" />
+      <workItem from="1743184458496" duration="1185000" />
     </task>
     <task id="LOCAL-00001" summary="Have gathered the code from several local projects into this, initial commit">
       <option name="closed" value="true" />
@@ -257,7 +272,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742057952101</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="moved Wallis product and triangle to the new PiBytes">
+      <option name="closed" value="true" />
+      <created>1742244356627</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1742244356627</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -306,6 +329,25 @@
     <MESSAGE value="next up is to add checkAllColumns() to minErrorStaging.java" />
     <MESSAGE value="worked on ECAhashPaper.tex, worked on checkAllColumns() but not tested" />
     <MESSAGE value="added some images to the center column paper&#10;updated doAllRules()" />
-    <option name="LAST_COMMIT_MESSAGE" value="added some images to the center column paper&#10;updated doAllRules()" />
+    <MESSAGE value="moved Wallis product and triangle to the new PiBytes" />
+    <option name="LAST_COMMIT_MESSAGE" value="moved Wallis product and triangle to the new PiBytes" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.io.IOException" package="java.io" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.ArrayIndexOutOfBoundsException" package="java.lang" />
+          <option name="timeStamp" value="2" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
