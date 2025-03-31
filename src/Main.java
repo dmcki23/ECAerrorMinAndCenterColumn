@@ -30,17 +30,21 @@ public class Main {
         //staging.test(4);
         //staging.testAll(4);
         //staging.doAllRules(4,false,0,false,0,false);
-        PiBytes piBytes = new PiBytes();
+        //PiBytes piBytes = new PiBytes();
         //piBytes.testFiveStar();
-        RuleStretchTemplate ruleStretchTemplate2 = new RuleStretchTemplate();
+        //RuleStretchTemplate ruleStretchTemplate2 = new RuleStretchTemplate();
         //System.out.println(Arrays.toString(ruleStretchTemplate2.traditionalCenterColumn(30,16,new int[]{1},30)));
-        //FastMinTransform fastMinTransform = new FastMinTransform();
+        FastMinTransform fastMinTransform = new FastMinTransform();
         //fastMinTransform.checkWolframs();
         //fastMinTransform.checkWolframsForReversibility();
         //fastMinTransform.checkNeighborWindow();
         //fastMinTransform.checkNeighborWindow(100);
-        SwingApplyFastMinTransform swingApplyFastMinTransform = new SwingApplyFastMinTransform("Image with transform");
-        swingApplyFastMinTransform.getImage();
+        //SwingApplyFastMinTransform swingApplyFastMinTransform = new SwingApplyFastMinTransform("Image with transform");
+        //swingApplyFastMinTransform.getImage();
+        //fastMinTransform.checkWolframsbyCheckWolframs();
+        //fastMinTransform.cnw();
+        //fastMinTransform.oneHammingChange(1);
+        fastMinTransform.check();
 
 
     }

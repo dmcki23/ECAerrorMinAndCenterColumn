@@ -4,21 +4,71 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="moved Wallis product and triangle to the new PiBytes">
-      <change afterPath="$PROJECT_DIR$/src/FastMinTransform.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/SwingApplyFastMinTransform.java" afterDir="false" />
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="SwingApplyFastMinTransform working">
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ECAhashPaper/ShortOut/AnimatedMinTransform.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ECAhashPaper/ShortOut/GIFpage.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ECAhashPaper/ShortOut/GifIncrementOne/GifIncrementOne.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ECAhashPaper/ShortOut/GifIncrementPowersTwo/GifIncrementPowersTwo.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/ECAcenterColumnPaper/ECAcenterColumnLaTex.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/ECAcenterColumnPaper/ECAcenterColumnLaTex.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/ECAcenterColumnPaper/ECAcenterColumnLaTex.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/ECAcenterColumnPaper/ECAcenterColumnLaTex.synctex.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/ECAcenterColumnPaper/ECAcenterColumnLaTex.tex" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/ECAcenterColumnPaper/ECAcenterColumnLaTex.tex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/minErrorStaging.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/minErrorStaging.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAcenterColumnPaper/ECAcenterColumnLaTex.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAcenterColumnPaper/ECAcenterColumnLaTex.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAcenterColumnPaper/ECAcenterColumnLaTex.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAcenterColumnPaper/ECAcenterColumnLaTex.synctex.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAcenterColumnPaper/ECAcenterColumnLaTex.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAcenterColumnPaper/ECAcenterColumnLaTex.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth0.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth0.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth1.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth1.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth10.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth10.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth11.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth11.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth12.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth12.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth13.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth14.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth15.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth16.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth17.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth18.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth19.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth2.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth2.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth20.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth21.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth22.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth23.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth24.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth25.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth26.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth27.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth28.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth29.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth3.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth3.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth30.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth31.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth32.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth33.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth34.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth35.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth36.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth37.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth38.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth39.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth4.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth4.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth40.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth41.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth42.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth43.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth44.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth45.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth46.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth47.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth48.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth49.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth5.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth5.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth50.bmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth6.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth6.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth7.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth7.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth8.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth8.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth9.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/processedDepth9.bmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FastMinTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FastMinTransform.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/PiBytes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PiBytes.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/minErrorStaging.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/minErrorStaging.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SwingApplyFastMinTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SwingApplyFastMinTransform.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,6 +79,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -64,8 +115,10 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;Application.Unnamed.executor&quot;: &quot;Run&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;addCheckAllColumns&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;/home/daniel/IdeaProjects/ECAerrorMinAndCenterColumn&quot;,
@@ -75,7 +128,7 @@
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;onboarding.tips.debug.path&quot;: &quot;/home/daniel/IdeaProjects/ECAerrorMinAndCenterColumn/src/Main.java&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.statistic.project.settings&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propCompiler&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -118,7 +171,8 @@
       <workItem from="1742919699687" duration="13981000" />
       <workItem from="1742936036899" duration="27286000" />
       <workItem from="1743122816812" duration="12591000" />
-      <workItem from="1743184458496" duration="1185000" />
+      <workItem from="1743184458496" duration="37931000" />
+      <workItem from="1743383175923" duration="3681000" />
     </task>
     <task id="LOCAL-00001" summary="Have gathered the code from several local projects into this, initial commit">
       <option name="closed" value="true" />
@@ -280,7 +334,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742244356627</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="SwingApplyFastMinTransform working">
+      <option name="closed" value="true" />
+      <created>1743187561062</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1743187561062</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -330,7 +392,8 @@
     <MESSAGE value="worked on ECAhashPaper.tex, worked on checkAllColumns() but not tested" />
     <MESSAGE value="added some images to the center column paper&#10;updated doAllRules()" />
     <MESSAGE value="moved Wallis product and triangle to the new PiBytes" />
-    <option name="LAST_COMMIT_MESSAGE" value="moved Wallis product and triangle to the new PiBytes" />
+    <MESSAGE value="SwingApplyFastMinTransform working" />
+    <option name="LAST_COMMIT_MESSAGE" value="SwingApplyFastMinTransform working" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
