@@ -8,9 +8,9 @@ public class Main {
         minErrorStaging m = new minErrorStaging();
         //m.manageLengthsMinimizations(150,4,500);
         //m.ecaBestFitHashCollisionExhuastiveSizeTwo(105,2,false,false,500);
-        RuleStretchTemplate ruleStretchTemplate = new RuleStretchTemplate();
+        // ruleStretchTemplate = new RuleStretchTemplate();
         //ruleStretchTemplate.manageBoth(30);
-        ECAexponentReduction ecaexponentReduction = new ECAexponentReduction();
+        //ECAexponentReduction ecaexponentReduction = new ECAexponentReduction();
         //ecaexponentReduction.checkColumns(30,50);
         //ecaexponentReduction.checkAllColumns(30);
         //primeCA.outputPrimeField();
@@ -19,7 +19,7 @@ public class Main {
         //primeCA.doLogReductionPrime(primeCA.primeRule, 3,5);
         //primeCA.checkAllColumns(primeCA.longRule, 3,5);
         //primeCAstaging.doLogReductionPrime(primeCAstaging.primeRule,3,4);
-        PrimeCAstagingLONG primeCAstagingLONG = new PrimeCAstagingLONG();
+        //PrimeCAstagingLONG primeCAstagingLONG = new PrimeCAstagingLONG();
         //primeCAstagingLONG.checkAllColumnsTwo(primeCAstagingLONG.longRule, 3,4);
         //primeCAstagingLONG.doLogReductionPrimeTwo(primeCAstagingLONG.primeRule, 3,5);
         minErrorStaging staging = new minErrorStaging();
@@ -44,7 +44,10 @@ public class Main {
         //fastMinTransform.checkWolframsbyCheckWolframs();
         //fastMinTransform.cnw();
         //fastMinTransform.oneHammingChange(1);
-        fastMinTransform.check();
+        //fastMinTransform.check();
+        //fastMinTransform.reconstructFromPrimitives();
+        Addition addition = new Addition();
+        addition.testAddition();
 
 
     }

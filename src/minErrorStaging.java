@@ -90,6 +90,24 @@ public class minErrorStaging {
     BasicECA basicECA = new BasicECA();
     CustomArray customArray = new CustomArray();
     Random rand = new Random();
+    public minErrorStaging() {
+        int size = 4;
+        sameErrorMin = new int[256][(int) Math.pow(2, size)];
+        sameErrorMax = new int[256][(int) Math.pow(2, size)];
+        minNumberOfSameSolutions = new int[256];
+        maxNumberOfSameSolutions = new int[256];
+        localMinSolution = new int[size][size];
+        localMaxSolution = new int[size][size];
+        minSolutionDistro = new int[256][(int) Math.pow(2, size)];
+        maxSolutionDistro = new int[256][(int) Math.pow(2, size)];
+        minErrorMap = new int[256][size][size];
+        maxErrorMap = new int[256][size][size];
+        minErrorBuckets = new int[256];
+        maxErrorBuckets = new int[256];
+        numberBoards = new int[256];
+        minSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
+        maxSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
+    }
 
     /**
      * Finds the minimum-discrepancy initial neighborhood output of the ECA n vs the input
@@ -102,12 +120,12 @@ public class minErrorStaging {
         int size = in.length;
         localMaxSolution = new int[size][size];
         localMinSolution = new int[size][size];
-        if (wolfram == null){
+        //if (wolfram == null){
             wolfram = new int[8];
             for (int power = 0; power < 8; power++){
                 wolfram[power] = (n/(int)Math.pow(2, power))%2;
             }
-        }
+        //}
         int[][] trialField = new int[size][size];
         //Declaring these here instead of inline in the loops significantly speeds it up
         int row = 0;
@@ -276,6 +294,7 @@ public class minErrorStaging {
         //if (numSameMinimum != 1) System.out.println(numSameMinimum);
         return trialField;
     }
+
     public int[][] generateGuess(int[] in, int rule){
         int[][] out = new int[in.length][in.length];
         for (int row = 0; row < in.length; row++) {
@@ -293,7 +312,7 @@ public class minErrorStaging {
                 b = column;
                 c = ((column + 1)) % size;
                 out[row][column] = out[row - 1][a] + 2 * out[row - 1][b] + 4 * out[row - 1][c];
-                out[row][column] = ((rule/(int)Math.pow(2,localMaxSolution[row][column])%2));
+                out[row][column] = ((rule/(int)Math.pow(2,out[row][column])%2));
                 //localMaxSolution[row][column] = localMaxSolution[row-1][a]+2*trialField[row-1][b]+4*trialField[row-1][c];
                 //localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
             }
@@ -321,7 +340,7 @@ public class minErrorStaging {
                 b = column;
                 c = ((column + 1)) % size;
                 out[row][column] = out[row - 1][a] + 2 * out[row - 1][b] + 4 * out[row - 1][c];
-                out[row][column] = ((rule/(int)Math.pow(2,localMaxSolution[row][column])%2));
+                out[row][column] = ((rule/(int)Math.pow(2,out[row][column])%2));
                 //localMaxSolution[row][column] = localMaxSolution[row-1][a]+2*trialField[row-1][b]+4*trialField[row-1][c];
                 //localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
             }

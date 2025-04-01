@@ -887,7 +887,7 @@ public class FastMinTransform {
     }
 
     public void check() throws IOException {
-        String filepath = "testScreenshot.bmp";
+        String filepath = "lion.bmp";
         File file = new File(filepath);
         BufferedImage inImage = ImageIO.read(file);
         int[] inRaster = ((DataBufferInt) inImage.getRaster().getDataBuffer()).getData();
@@ -903,14 +903,58 @@ public class FastMinTransform {
                 }
             }
         }
+        CustomArray.plusArrayDisplay(binaryArray, true, true, "binaryArray");
         checkInverse(binaryArray);
+    }
+
+    public void reconstructFromPrimitives() {
+        initWolframs();
+        int totEqual = 0;
+        int totHamming = 0;
+        for (int address = 0; address < 65536; address++) {
+            int tot = 0;
+            int[][] vote = new int[4][4];
+            for (int posNeg = 0; posNeg < 1; posNeg++) {
+                for (int t = 0; t < 8; t++) {
+                    int[][] guess = m.generateGuess(flatWolframs[posNeg][t][address], unpackedList[t]);
+                    for (int r = 0; r < 4; r++) {
+                        for (int c = 0; c < 4; c++) {
+                            if (guess[r][c] == posNeg) {
+                                vote[r][c]+=(int)Math.pow(2,r);
+                            } else {
+                                vote[r][c]-= (int)Math.pow(2,r);
+                            }
+                        }
+                    }
+                }
+            }
+            for (int r = 0; r < 4; r++) {
+                for (int c = 0; c < 4; c++) {
+                    if (vote[r][c] >= 0) {
+                        vote[r][c] = 0;
+                    } else {
+                        vote[r][c] = 1;
+                    }
+                    tot += (int)Math.pow(2, 4 * r + c) * (vote[r][c] );
+                    if (vote[r][c] != ((address/(int)Math.pow(2,4*r+c))%2)){
+                        totHamming++;
+                    }
+
+                }
+            }
+            if (tot == address){
+                totEqual++;
+            }
+        }
+        System.out.println("totEqual: " + totEqual);
+        System.out.println("totHamming: " + totHamming);
     }
 
     public void checkInverse(int[][] in) {
         initWolframs();
         int[][][][] depthChart = new int[2][8][in.length][in[0].length];
-        for (int posNeg = 0; posNeg < 1; posNeg++) {
-            for (int t = 1; t < 7; t++) {
+        for (int posNeg = 0; posNeg < 2; posNeg++) {
+            for (int t = 0; t < 8; t++) {
                 System.out.println("posNeg: " + posNeg + " t: " + t);
                 depthChart[posNeg][t] = minTransform(in, new int[]{posNeg, t / 2, t % 2})[1];
             }
@@ -921,18 +965,18 @@ public class FastMinTransform {
         int t;
         int posNeg;
         for (int row = 0; row < in.length; row++) {
+            System.out.println("row: " + row + " out of " + in.length);
             for (int column = 0; column < in[0].length; column++) {
-                for (posNeg = 0; posNeg < 1; posNeg++) {
-                    for (t = 1; t < 7; t++) {
+                for (posNeg = 0; posNeg < 2; posNeg++) {
+                    for (t = 0; t < 8; t++) {
                         int[][] generatedGuess = m.generateGuess(depthChart[posNeg][t][row][column], unpackedList[t]);
-
                         for (r = 0; r < 4; r++) {
                             for (c = 0; c < 4; c++) {
                                 //int a = (generatedGuess[r][c] );
                                 if (generatedGuess[r][c] == posNeg) {
-                                    outVotes[(row+r)%in.length][(column+c)%in[0].length] += (int) Math.pow(2, r);
+                                    outVotes[(row + r) % in.length][(column + c) % in[0].length] += (int) Math.pow(2, r);
                                 } else {
-                                    outVotes[(row+r)%in.length][(column+c)%in[0].length] -= (int) Math.pow(2, r );
+                                    outVotes[(row + r) % in.length][(column + c) % in[0].length] -= (int) Math.pow(2, r);
                                 }
                             }
                         }
@@ -940,7 +984,6 @@ public class FastMinTransform {
                 }
             }
         }
-
         int[][] outResult = new int[in.length][in[0].length];
         int[][] outCompare = new int[in.length][in[0].length];
         int totDifferent = 0;
