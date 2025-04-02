@@ -953,7 +953,7 @@ public class FastMinTransform {
     public void checkInverse(int[][] in) {
         initWolframs();
         int[][][][] depthChart = new int[2][8][in.length][in[0].length];
-        for (int posNeg = 0; posNeg < 2; posNeg++) {
+        for (int posNeg = 0; posNeg < 1; posNeg++) {
             for (int t = 0; t < 8; t++) {
                 System.out.println("posNeg: " + posNeg + " t: " + t);
                 depthChart[posNeg][t] = minTransform(in, new int[]{posNeg, t / 2, t % 2})[1];
@@ -973,7 +973,7 @@ public class FastMinTransform {
                         for (r = 0; r < 4; r++) {
                             for (c = 0; c < 4; c++) {
                                 //int a = (generatedGuess[r][c] );
-                                if (generatedGuess[r][c] == posNeg) {
+                                if (generatedGuess[r][c] != posNeg) {
                                     outVotes[(row + r) % in.length][(column + c) % in[0].length] += (int) Math.pow(2, r);
                                 } else {
                                     outVotes[(row + r) % in.length][(column + c) % in[0].length] -= (int) Math.pow(2, r);

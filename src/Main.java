@@ -46,8 +46,11 @@ public class Main {
         //fastMinTransform.oneHammingChange(1);
         //fastMinTransform.check();
         //fastMinTransform.reconstructFromPrimitives();
-        Addition addition = new Addition();
-        addition.testAddition();
+        //Addition addition = new Addition();
+        //addition.testAddition();
+        FastMinTransformApril fastMinTransformApril = new FastMinTransformApril();
+        //fastMinTransformApril.check();
+        fastMinTransform.check();
 
 
     }
