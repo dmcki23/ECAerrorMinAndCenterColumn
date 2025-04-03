@@ -108,4 +108,39 @@ public class FastMinTransformApril {
         }
         return out;
     }
+    public void checkErrorWeights(){
+        fmt.initWolframs();
+        int totDifferent = 0;
+        for (int posNeg = 0; posNeg < 1; posNeg++) {
+            for (int t = 0; t < 8; t++) {
+                for (int input = 0; input < 16; input++) {
+                    int[][] cell = fmt.m.generateGuess(input,fmt.unpackedList[t]);
+                    int error = 0;
+                    for (int row = 0; row < 4; row++) {
+                        for (int column = 0; column < 4; column++) {
+                            if (cell[row][column] == 0) {
+                                error += (1<<row);
+                            } else {
+                                error -= (1<<row);
+                            }
+
+                        }
+                    }
+                    int totInInput = 0;
+                    for (int power = 0 ; power < 4; power++) {
+                        totInInput += ((input/(int)Math.pow(2, power)) % 2);
+                    }
+                    totInInput %= 2;
+                    System.out.println("totInInput: " + totInInput);
+                    System.out.println("error: " + error);
+                    int vote = 0;
+                    if (error >= 0) vote = 0;
+                    else vote = 1;
+                    totDifferent += (vote^totInInput);
+                    System.out.println("vote: " + vote);
+                }
+            }
+        }
+        System.out.println("totDifferent: " + totDifferent);
+    }
 }

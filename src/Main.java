@@ -50,7 +50,10 @@ public class Main {
         //addition.testAddition();
         FastMinTransformApril fastMinTransformApril = new FastMinTransformApril();
         //fastMinTransformApril.check();
-        fastMinTransform.check();
+        //fastMinTransform.check();
+        //fastMinTransformApril.checkErrorWeights();
+        Addition a = new Addition();
+        a.checkAdditionParity(16);
 
 
     }

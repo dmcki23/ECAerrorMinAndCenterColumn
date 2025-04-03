@@ -88,4 +88,36 @@ public class Addition {
         CustomArray.plusArrayDisplay(outTable,false,false,"xor-ed out by power");
         CustomArray.plusArrayDisplay(hOut,false,false,"Hadamard xor outTable");
     }
+    public void checkAdditionParity(int size){
+        int[] rparity = new int[16];
+        for (int spot = 0; spot < 16; spot++) {
+            int tot = 0;
+            for (int power = 0; power < 4; power++){
+                tot += ((spot/(1<<power))%2);
+            }
+            rparity[spot] = tot%2;
+        }
+        HadamardThMar25 hadamard = new HadamardThMar25();
+        int[][] h = hadamard.generateByRandCmodTwoboolean(16);
+        int[] bandParity = new int[8];
+        for (int spot = 0; spot < 8; spot++) {
+            bandParity[spot] = -1;
+        }
+        int[][] conflictGrid = new int[16][16];
+        for (int row = 0; row < 16; row++) {
+            for (int col = 0; col < 16; col++) {
+                    int spot = rparity[row] + 2 * rparity[col] ;
+                    if (bandParity[spot] == -1) bandParity[spot] = h[row][col];
+                    if (bandParity[spot] == h[row][col]) {
+                    }
+                    if (bandParity[spot] != h[row][col] && bandParity[spot] != -1) {
+                        //System.out.println("error");
+                        conflictGrid[row][col] = 1;
+                    }
+
+            }
+        }
+        System.out.println(Arrays.toString(bandParity));
+        CustomArray.plusArrayDisplay(conflictGrid,true,false,"bandParity");
+    }
 }
