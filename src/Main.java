@@ -53,7 +53,17 @@ public class Main {
         //fastMinTransform.check();
         //fastMinTransformApril.checkErrorWeights();
         Addition a = new Addition();
-        a.checkAdditionParity(16);
+        //a.checkAdditionParity(16);
+        //fastMinTransformApril.checkCollisions();
+        //fastMinTransformApril.checkWolframCollision();
+        //fastMinTransformApril.checkOneTileSlideNextDoor();
+        //fastMinTransformApril.checkOneTileSlide();
+        //fastMinTransformApril.checkOneTileSlideNextDoorRandomized();
+        AttemptSize8 attemptSize8 = new AttemptSize8();
+        //attemptSize8.checkLastRowWeight();
+        m.individualRuleManager(150,4,false,0,false,0,false);
+        PiBytes piBytes = new PiBytes();
+        //piBytes.checkStar();
 
 
     }

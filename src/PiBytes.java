@@ -130,4 +130,17 @@ public class PiBytes {
         }
         return out;
     }
+    public double checkStar(){
+        double difference = 3.1420-Math.PI;
+        System.out.println("difference = " + difference);
+        for (int power = 1; power < 12; power++) {
+            int a = (int)(Math.PI/Math.pow(2,-power)%2);
+            int b = (int)(3.1420/Math.pow(2,-power)%2);
+            if (a != b){
+                System.out.println("breaks down at power " + power);
+                break;
+            }
+        }
+        return difference;
+    }
 }

@@ -59,6 +59,8 @@ public class minErrorStaging {
      * Cumulative distribution of codeword solutions over all inputs, maximized error codewords rather than minimized error codewords
      */
     int[][] maxSolutionDistro;
+    int lastMinCodeword;
+    int lastMaxCodeword;
     int[][] field;
     int[] minErrorBuckets;
     int[] maxErrorBuckets;
@@ -109,6 +111,27 @@ public class minErrorStaging {
         maxSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
     }
 
+    /**
+     * Initializes arrays to size. Sizes above five bust it
+     * @param size length and width of the input neighborhood
+     */
+    public void initialize(int size) {
+        sameErrorMin = new int[256][(int) Math.pow(2, size)];
+        sameErrorMax = new int[256][(int) Math.pow(2, size)];
+        minNumberOfSameSolutions = new int[256];
+        maxNumberOfSameSolutions = new int[256];
+        localMinSolution = new int[size][size];
+        localMaxSolution = new int[size][size];
+        minSolutionDistro = new int[256][(int) Math.pow(2, size)];
+        maxSolutionDistro = new int[256][(int) Math.pow(2, size)];
+        minErrorMap = new int[256][size][size];
+        maxErrorMap = new int[256][size][size];
+        minErrorBuckets = new int[256];
+        maxErrorBuckets = new int[256];
+        numberBoards = new int[256];
+        minSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
+        maxSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
+    }
     /**
      * Finds the minimum-discrepancy initial neighborhood output of the ECA n vs the input
      *
@@ -235,6 +258,8 @@ public class minErrorStaging {
                 }
             }
         }
+        lastMinCodeword = firstMinSpot;
+        lastMaxCodeword = firstMaxSpot;
         //sameMinimums = Arrays.copyOfRange(sameMinimums, 0, minIndex);
         // = Arrays.copyOfRange(sameMaximums, 0, maxIndex);
         //sameErrorMin[integerWolfram][numberOfSameMinimum]++;
@@ -293,6 +318,193 @@ public class minErrorStaging {
         }
         //if (numSameMinimum != 1) System.out.println(numSameMinimum);
         return trialField;
+    }
+    /**
+     * Finds the minimum-discrepancy initial neighborhood output of the ECA n vs the input
+     *
+     * @param n  ECA rule 0-255
+     * @param in binary input array
+     * @return the array with ECA n and initial neighborhood mimimum output
+     */
+    public void findMinimizingCodewordLarge(int n, int[][] in, int[] wolfram) {
+        int size = in.length;
+        localMaxSolution = new int[size][size];
+        localMinSolution = new int[size][size];
+        //if (wolfram == null){
+        wolfram = new int[8];
+        for (int power = 0; power < 8; power++){
+            wolfram[power] = (n/(int)Math.pow(2, power))%2;
+        }
+        //}
+        int[][] trialField = new int[size][size];
+        //Declaring these here instead of inline in the loops significantly speeds it up
+        int row = 0;
+        int column = 0;
+        int a = 0;
+        int b = 0;
+        int c = 0;
+        int maxNeighborhood = (int) Math.pow(2, size);
+        int[] errorScore = new int[maxNeighborhood];
+
+        //
+        //
+        //Check every possible input neighborhood of length size
+        for (int neighborhood = 0; neighborhood < maxNeighborhood; neighborhood++) {
+            //Initialize trial neighborhood
+            for (column = 0; column < size; column++) {
+                trialField[0][column] = ((neighborhood / (int) Math.pow(2, column)) % 2);
+            }
+            //Run Wolfram code on array with row 0 input = correction
+            for (row = 1; row < size; row++) {
+                for (column = 0; column < size; column++) {
+                    a = ((column - 1) + size) % size;
+                    b = column;
+                    c = ((column + 1)) % size;
+                    trialField[row][column] = trialField[row - 1][a] + 2 * trialField[row - 1][b] + 4 * trialField[row - 1][c];
+                    trialField[row][column] = wolfram[trialField[row][column]];
+                }
+            }
+            //
+            //
+            //Score the error
+            for (row = 0; row < size; row++) {
+                for (column = 0; column < size; column++) {
+                    //
+                    //
+                    //Various error-scoring weights tested
+                    errorScore[neighborhood] += ((int) Math.pow(2, row) * (trialField[row][column] ^ in[row][column]));
+                    //errorScore[neighborhood] +=  ((row*row))*(trialField[row][column] ^ in[row][column]);
+                    //errorScore[correction] += row*row*(trialField[row][column] ^ in[row][column]);
+                    //errorScore[correction] += column*column *(in[row][column] ^  trialField[row][column]);
+                    //errorScore[correction] += column* (in[row][column] ^  trialField[row][column]);
+                    //errorScore[neighborhood] += row* (in[row][column] ^  trialField[row][column]);
+                    //errorScore[correction] += (in[row][column] ^ trialField[row][column]);
+                    //errorScore[neighborhood] += (int)Math.pow(2, column)*(in[row][column] ^ trialField[row][column]);
+                    //errorScore[correction] += coefficients[row] * trialField[row][column];
+                }
+            }
+        }
+        //
+        //
+        //Sort the errors to find the minimum error producing neighborhood
+        //System.out.println(Arrays.toString(errorScore));
+        int maxErrors = 0;
+        int maxSpot = 0;
+        for (int neighborhood = 0; neighborhood < maxNeighborhood; neighborhood++) {
+            if (errorScore[neighborhood] > maxErrors) {
+                maxErrors = errorScore[neighborhood];
+                //maxSpot = neighborhood;
+            }
+        }
+        int minErrors = Integer.MAX_VALUE;
+        int minSpot = 0;
+        for (int neighborhood = 0; neighborhood < maxNeighborhood; neighborhood++) {
+            if (errorScore[neighborhood] < minErrors) {
+                minErrors = errorScore[neighborhood];
+                //minSpot = neighborhood;
+            }
+        }
+//        System.out.println("minErrors " + minErrors);
+//        System.out.println("maxErrors " + maxErrors);
+//        System.out.println("minSpot " + minSpot);
+//            int hammingDistance = 0;
+//            for (int spot = 0; spot < size; spot++) {
+//                if (((minSpot / (int) Math.pow(2, spot)) % 2) != ((decInput / (int) Math.pow(2, spot)) % 2)) {
+//                    hammingDistance++;
+//                }
+//            }
+        //
+        //
+        //
+        //Checks for solution uniqueness
+        int numSameMinimum = 0;
+        int numSameMaximum = 0;
+        int[] sameMinimums = new int[errorScore.length];
+        int[] sameMaximums = new int[errorScore.length];
+        Arrays.fill(sameMaximums, -1);
+        Arrays.fill(sameMinimums, -1);
+        int minIndex = 0;
+        int maxIndex = 0;
+        int firstMinSpot = -1;
+        int firstMaxSpot = -1;
+        for (int neighborhood = 0; neighborhood < (int) Math.pow(2, size); neighborhood++) {
+            if (errorScore[neighborhood] == minErrors) {
+                numSameMinimum++;
+                sameMinimums[minIndex] = neighborhood;
+                minIndex++;
+                if (firstMinSpot == -1) {
+                    firstMinSpot = neighborhood;
+                }
+            }
+            if (errorScore[neighborhood] == maxErrors) {
+                numSameMaximum++;
+                sameMaximums[maxIndex] = neighborhood;
+                maxIndex++;
+                if (firstMaxSpot == -1) {
+                    firstMaxSpot = neighborhood;
+                }
+            }
+        }
+        lastMinCodeword = firstMinSpot;
+        lastMaxCodeword = firstMaxSpot;
+        //sameMinimums = Arrays.copyOfRange(sameMinimums, 0, minIndex);
+        // = Arrays.copyOfRange(sameMaximums, 0, maxIndex);
+        //sameErrorMin[integerWolfram][numberOfSameMinimum]++;
+        //sameErrorMax[integerWolfram][numberOfSameMaximum]++;
+//        if (numSameMinimum > minNumberOfSameSolutions[n]) minNumberOfSameSolutions[n] = numSameMinimum;
+//        if (numSameMaximum > maxNumberOfSameSolutions[n]) maxNumberOfSameSolutions[n] = numSameMaximum;
+//        //minNumberOfSameSolutions[n] += numSameMinimum;
+//        //maxNumberOfSameSolutions[n] += numSameMaximum;
+//
+//        //System.out.println("sameNumErrors = " + sameNumErrors);
+//        //System.out.println("sameNumErrorsMax = " + sameNumMax);
+//        //System.out.println("sameNumErrors " + sameNumErrors);
+//        //
+//        //
+//        //Run the Wolfram code on the minimum neighborhood codeword for function return purposes
+//        trialField = new int[size][size];
+//        for (column = 0; column < size; column++) {
+//            trialField[0][column] = ((firstMinSpot / (int) Math.pow(2, column)) % 2);
+//            localMaxSolution[0][column] = ((firstMaxSpot / (int) Math.pow(2, column)) % 2);
+//            localMinSolution[0][column] = ((firstMinSpot / (int) Math.pow(2, column)) % 2);
+//        }
+//        minSolutionDistro[n][firstMinSpot]++;
+//        maxSolutionDistro[n][firstMaxSpot]++;
+//        for (row = 1; row < size; row++) {
+//            for (column = 0; column < size; column++) {
+//                a = ((column - 1) + size) % size;
+//                b = column;
+//                c = ((column + 1)) % size;
+//                trialField[row][column] = trialField[row - 1][a] + 2 * trialField[row - 1][b] + 4 * trialField[row - 1][c];
+//                trialField[row][column] = wolfram[trialField[row][column]];
+//                //localMaxSolution[row][column] = localMaxSolution[row-1][a]+2*trialField[row-1][b]+4*trialField[row-1][c];
+//                //localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
+//            }
+//        }
+//        for (row = 1; row < size; row++) {
+//            for (column = 0; column < size; column++) {
+//                a = ((column - 1) + size) % size;
+//                b = column;
+//                c = ((column + 1)) % size;
+//                localMinSolution[row][column] = localMinSolution[row - 1][a] + 2 * localMinSolution[row - 1][b] + 4 * localMinSolution[row - 1][c];
+//                localMinSolution[row][column] = wolfram[localMinSolution[row][column]];
+//                //localMaxSolution[row][column] = localMaxSolution[row-1][a]+2*trialField[row-1][b]+4*trialField[row-1][c];
+//                //localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
+//            }
+//        }
+//        for (row = 1; row < size; row++) {
+//            for (column = 0; column < size; column++) {
+//                a = ((column - 1) + size) % size;
+//                b = column;
+//                c = ((column + 1)) % size;
+//                localMaxSolution[row][column] = localMaxSolution[row - 1][a] + 2 * localMaxSolution[row - 1][b] + 4 * localMaxSolution[row - 1][c];
+//                localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
+//                //localMaxSolution[row][column] = localMaxSolution[row-1][a]+2*trialField[row-1][b]+4*trialField[row-1][c];
+//                //localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
+//            }
+//        }
+//        //if (numSameMinimum != 1) System.out.println(numSameMinimum);
+//        return trialField;
     }
 
     public int[][] generateGuess(int[] in, int rule){
@@ -615,17 +827,18 @@ public class minErrorStaging {
         //heat map
         //solution distro
         //Pi/Phi stuff
-        System.out.println("Rule specific: " + specificRule);
-        System.out.println("numberBoards: " + numberBoards[specificRule]);
-        System.out.println("Min errors: " + minErrorBuckets[specificRule] + " " + String.format("%.4f", (double)minErrorBuckets[specificRule]/(double)numberBoards[specificRule]));
-        System.out.println("Max errors: " + maxErrorBuckets[specificRule] + " " + String.format("%.4f",(double)maxErrorBuckets[specificRule]/(double)numberBoards[specificRule]));
+        System.out.println("Specific: " + specificRule);
+        //System.out.println("numberBoards: " + numberBoards[specificRule]);
+        //System.out.println("Min errors: " + minErrorBuckets[specificRule] + " " + String.format("%.4f", (double)minErrorBuckets[specificRule]/(double)numberBoards[specificRule]));
+        //System.out.println("Max errors: " + maxErrorBuckets[specificRule] + " " + String.format("%.4f",(double)maxErrorBuckets[specificRule]/(double)numberBoards[specificRule]));
         if (doChangeScore) {
             System.out.println("Change score: " + changeScoreTrials);
         }
+        System.out.println();
         customArray.plusArrayDisplay(minErrorMap[specificRule], false, false, "minErrorMap");
         customArray.plusArrayDisplay(maxErrorMap[specificRule], false, false, "maxErrorMap");
-        System.out.println("minSolutionDistro[] " + Arrays.toString(minSolutionDistro));
-        System.out.println("maxSolutionDistro[] " + Arrays.toString(maxSolutionDistro));
+        System.out.println("minSolutionDistro[] " + Arrays.toString(minSolutionDistro[specificRule]));
+        System.out.println("maxSolutionDistro[] " + Arrays.toString(maxSolutionDistro[specificRule]));
         System.out.println("sameErrorMin[] " + Arrays.toString(sameErrorMin[specificRule]) + " " + String.format("%.4f",(double)minNumberOfSameSolutions[specificRule]/(double)numberBoards[specificRule]));
         System.out.println("sameErrorMax[] " + Arrays.toString(sameErrorMax[specificRule]) + " " + String.format("%.4f",(double)maxNumberOfSameSolutions[specificRule]/(double)numberBoards[specificRule]));
         double[] minRowTots = new double[size];
@@ -648,6 +861,7 @@ public class minErrorStaging {
             System.out.print("\n");
         }
         System.out.println((minRowTots[0]+minRowTots[1])/(minRowTots[2]+minRowTots[3]));
+        double firstTwoOverSecondTwo = (minRowTots[0]+minRowTots[1])/(minRowTots[2]+minRowTots[3]);
         double[] maxRowTots = new double[size];
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
@@ -671,6 +885,175 @@ public class minErrorStaging {
         System.out.print("\n");
         System.out.println("numberOfSameMinimum " + minNumberOfSameSolutions[specificRule]);
         System.out.println("numberOfSameMaximum " + maxNumberOfSameSolutions[specificRule]);
+        StringPrint s = new StringPrint();
+        double PiOverThree = Math.PI/3;
+        double PhiSquared = (Math.sqrt(5)+1)/2;
+        PhiSquared *= PhiSquared;
+
+        double[] relevantProportions = new double[]{minProportions[2][3],minProportions[1][0],firstTwoOverSecondTwo};
+        int[] numberPlaces = new int[3];
+        for (int power = 1; power < 12; power++){
+            int in = (int) ((minProportions[2][3]/Math.pow(2,-power))%2);
+            int comp = (int) ((Math.PI/Math.pow(2,-power))%2);
+            if (in != comp){
+                numberPlaces[0] = power;
+                break;
+            }
+        }
+        for (int power = 1; power < 12; power++){
+            int in = (int) ((minProportions[1][0]/Math.pow(2,-power))%2);
+            int comp = (int) (((Math.PI/3.0)/Math.pow(2,-power))%2);
+            if (in != comp){
+                numberPlaces[1] = power;
+                break;
+            }
+        }
+        for (int power = 1; power < 12; power++){
+            int in = (int) ((firstTwoOverSecondTwo/Math.pow(2,-power))%2);
+            int comp = (int) ((PhiSquared/Math.pow(2,-power))%2);
+            if (in != comp){
+                numberPlaces[2] = power;
+                break;
+            }
+        }
+
+        s.println("the following only apply to rule 150, i don't know about elsewise");
+        s.println();
+        s.println("a = row2 / row 3 = " + minProportions[2][3]);
+        s.println("a = (row2 / row 3) - PI = " + (minProportions[2][3]-Math.PI));
+        s.println("accurate to the binary 2^-" + numberPlaces[0] + " place");
+        double a = minProportions[2][3]-Math.PI;
+        s.println();
+        s.println("b = row1 / row 0 = " + minProportions[1][0]);
+        s.println("b = (row1 / row 1) - (PI/3) = " + (minProportions[1][0]-Math.PI/3));
+        s.println("accurate to the binary 2^-" + numberPlaces[1] + " place");
+        double b = minProportions[1][1]-Math.PI/3;
+        s.println();
+        s.println("c = (row0+row1)/(row2+row3) = " + firstTwoOverSecondTwo);
+        s.println("c = (row0+row1)/(row2+row3) - PhiSquared = " + (firstTwoOverSecondTwo-PhiSquared));
+        s.println("accurate to the binary 2^-" + numberPlaces[2] + " place");
+        double c = firstTwoOverSecondTwo-PhiSquared;
+        s.println();
+        s.println("As well as the 1's and 2's place makes for 7, 11, and 10 accurate digits");
+
+
+    }
+    public void oneFiftyDisplay(int specificRule, boolean doChangeScore, int changeScoreTrials, int size) {
+        //All of these min/max
+        //
+        //Error rate
+        //heat map
+        //solution distro
+        //Pi/Phi stuff
+        System.out.println("Specific: " + specificRule);
+        //System.out.println("numberBoards: " + numberBoards[specificRule]);
+        //System.out.println("Min errors: " + minErrorBuckets[specificRule] + " " + String.format("%.4f", (double)minErrorBuckets[specificRule]/(double)numberBoards[specificRule]));
+        //System.out.println("Max errors: " + maxErrorBuckets[specificRule] + " " + String.format("%.4f",(double)maxErrorBuckets[specificRule]/(double)numberBoards[specificRule]));
+        if (doChangeScore) {
+            System.out.println("Change score: " + changeScoreTrials);
+        }
+        System.out.println();
+        customArray.plusArrayDisplay(minErrorMap[specificRule], false, false, "minErrorMap");
+//        customArray.plusArrayDisplay(maxErrorMap[specificRule], false, false, "maxErrorMap");
+//        System.out.println("minSolutionDistro[] " + Arrays.toString(minSolutionDistro));
+//        System.out.println("maxSolutionDistro[] " + Arrays.toString(maxSolutionDistro));
+//        System.out.println("sameErrorMin[] " + Arrays.toString(sameErrorMin[specificRule]) + " " + String.format("%.4f",(double)minNumberOfSameSolutions[specificRule]/(double)numberBoards[specificRule]));
+//        System.out.println("sameErrorMax[] " + Arrays.toString(sameErrorMax[specificRule]) + " " + String.format("%.4f",(double)maxNumberOfSameSolutions[specificRule]/(double)numberBoards[specificRule]));
+        double[] minRowTots = new double[size];
+        for (int row = 0; row < size; row++) {
+            for (int column = 0; column < size; column++) {
+                minRowTots[row] += (double) minErrorMap[specificRule][row][column];
+            }
+        }
+        double[][] minProportions = new double[size][size];
+        for (int row = 0; row < size; row++) {
+            for (int column = 0; column < size; column++) {
+                minProportions[row][column] = minRowTots[row] / minRowTots[column];
+            }
+        }
+        System.out.println("minProportions[][]");
+        for (int row = 0; row < size; row++) {
+            for (int column = 0; column < size; column++) {
+                System.out.print(String.format("%.4f", minProportions[row][column]) + " ");
+            }
+            System.out.print("\n");
+        }
+        System.out.println((minRowTots[0]+minRowTots[1])/(minRowTots[2]+minRowTots[3]));
+        double firstTwoOverSecondTwo = (minRowTots[0]+minRowTots[1])/(minRowTots[2]+minRowTots[3]);
+        double[] maxRowTots = new double[size];
+        for (int row = 0; row < size; row++) {
+            for (int column = 0; column < size; column++) {
+                maxRowTots[row] += (double) maxErrorMap[specificRule][row][column];
+            }
+        }
+        double[][] maxProportions = new double[size][size];
+        for (int row = 0; row < size; row++) {
+            for (int column = 0; column < size; column++) {
+                maxProportions[row][column] = maxRowTots[row] / maxRowTots[column];
+            }
+        }
+//        System.out.println("\nmaxProportions[][]");
+//        for (int row = 0; row < size; row++) {
+//            for (int column = 0; column < size; column++) {
+//                System.out.print(String.format("%.4f", maxProportions[row][column]) + " ");
+//
+//            }
+//            System.out.print("\n");
+//        }
+//        System.out.print("\n");
+//        System.out.println("numberOfSameMinimum " + minNumberOfSameSolutions[specificRule]);
+//        System.out.println("numberOfSameMaximum " + maxNumberOfSameSolutions[specificRule]);
+        StringPrint s = new StringPrint();
+        double PiOverThree = Math.PI/3;
+        double PhiSquared = (Math.sqrt(5)+1)/2;
+        PhiSquared *= PhiSquared;
+
+        double[] relevantProportions = new double[]{minProportions[2][3],minProportions[1][0],firstTwoOverSecondTwo};
+        int[] numberPlaces = new int[3];
+        for (int power = 1; power < 12; power++){
+            int in = (int) ((minProportions[2][3]/Math.pow(2,-power))%2);
+            int comp = (int) ((Math.PI/Math.pow(2,-power))%2);
+            if (in != comp){
+                numberPlaces[0] = power;
+                break;
+            }
+        }
+        for (int power = 1; power < 12; power++){
+            int in = (int) ((minProportions[1][0]/Math.pow(2,-power))%2);
+            int comp = (int) (((Math.PI/3.0)/Math.pow(2,-power))%2);
+            if (in != comp){
+                numberPlaces[1] = power;
+                break;
+            }
+        }
+        for (int power = 1; power < 12; power++){
+            int in = (int) ((firstTwoOverSecondTwo/Math.pow(2,-power))%2);
+            int comp = (int) ((PhiSquared/Math.pow(2,-power))%2);
+            if (in != comp){
+                numberPlaces[2] = power;
+                break;
+            }
+        }
+
+
+        s.println();
+        s.println("a = row2 / row 3 = " + minProportions[2][3]);
+        s.println("a = (row2 / row 3) - PI = " + (minProportions[2][3]-Math.PI));
+        s.println("accurate to the binary 2^-" + numberPlaces[0] + " place");
+        double a = minProportions[2][3]-Math.PI;
+        s.println();
+        s.println("b = row1 / row 0 = " + minProportions[1][0]);
+        s.println("b = (row1 / row 1) - (PI/3) = " + (minProportions[1][0]-Math.PI/3));
+        s.println("accurate to the binary 2^-" + numberPlaces[1] + " place");
+        double b = minProportions[1][1]-Math.PI/3;
+        s.println();
+        s.println("c = (row0+row1)/(row2+row3) = " + firstTwoOverSecondTwo);
+        s.println("c = (row0+row1)/(row2+row3) - PhiSquared = " + (firstTwoOverSecondTwo-PhiSquared));
+        s.println("accurate to the binary 2^-" + numberPlaces[2] + " place");
+        double c = firstTwoOverSecondTwo-PhiSquared;
+        s.println();
+        s.println("As well as the 1's and 2's place makes for 7, 11, and 10 accurate digits");
+
 
     }
 
@@ -692,7 +1075,7 @@ public class minErrorStaging {
         maxSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
         individualRule(rule, size, doChangeScore, changeScoreTrials, doRandom, numTrials, doVoting);
         individualRuleDisplay(rule, doChangeScore, changeScoreTrials, size);
-        System.out.println(Arrays.toString(basicECA.ecaWolframCodes[rule]));
+        //System.out.println(Arrays.toString(basicECA.ecaWolframCodes[rule]));
 
     }
 
