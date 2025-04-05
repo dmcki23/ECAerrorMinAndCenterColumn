@@ -5,13 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="FastMinTransform Addition and SwingApplyFastMinTransform can be looked up in the javadocs at some point&#10;&#10;removed the center column part of this project to its own intellij project">
-      <change afterPath="$PROJECT_DIR$/src/FastMinTransformApril.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/AlgorithmCode/package-info.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/CustomLibrary/package-info.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ECAhashPaper/package-info.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/TrimmedCode/package-info.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/package-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/ECAexponentReduction.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ECAerrorMinAndCenterColumn/RuleStretchTemplate.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FastMinTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/FastMinTransform.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECAerrorMinAndCenterColumn.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ECAminErrorFit.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Addition.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Addition.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/HashBib.bib" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/HashBib.bib" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Hadamard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hadamard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/HashTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/HashTransformManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransformManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PiBytes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/PiBytes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SwingApplyFastMinTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/SwingApplyFastMinTransform.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/AttemptSize8.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TrimmedCode/AttemptSize8.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/trimCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TrimmedCode/trimCode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/errorMinimizationHash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/errorMinimizationHash.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +38,7 @@
       <list>
         <option value="HTML File" />
         <option value="Class" />
+        <option value="package-info" />
       </list>
     </option>
   </component>
@@ -58,30 +74,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Unnamed.executor&quot;: &quot;Run&quot;,
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;addCheckAllColumns&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/daniel/IdeaProjects/ECAerrorMinAndCenterColumn&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;/home/daniel/IdeaProjects/ECAerrorMinAndCenterColumn/src/Main.java&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propCompiler&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Unnamed.executor": "Run",
+    "DefaultHtmlFileTemplate": "HTML File",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "addCheckAllColumns",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/home/daniel/IdeaProjects/ECAminErrorFit",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "onboarding.tips.debug.path": "/home/daniel/IdeaProjects/ECAerrorMinAndCenterColumn/src/Main.java",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="Unnamed" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
-      <module name="ECAerrorMinAndCenterColumn" />
+      <module name="ECAminErrorFit" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -119,6 +139,7 @@
       <workItem from="1743122816812" duration="12591000" />
       <workItem from="1743184458496" duration="37931000" />
       <workItem from="1743383175923" duration="19573000" />
+      <workItem from="1743870066775" duration="10797000" />
     </task>
     <task id="LOCAL-00001" summary="Have gathered the code from several local projects into this, initial commit">
       <option name="closed" value="true" />

@@ -1,17 +1,30 @@
-public class HashTransform {
-    errorMinimizationHash m = new errorMinimizationHash();
-    //int[][][][] wolframs;
-    int[][][][][] solutions;
-    int[][] ruleList = new int[][]{{0, 255}, {15, 85}, {204, 204}, {170, 240}};
-    int[][][] flatWolframs = new int[2][8][256 * 256];
-    int[][][] reconstructed;
-    int[][] vectorField;
-    //int[][] packedList = new int[][]{{0, 255}, {15, 240}, {51, 204}, {85, 170}};
-    int[] unpackedList = new int[]{0, 15, 51, 85, 170, 204, 240, 255};
-    int[][][][] contiguous;
-    int[][][][] buckets;
+package AlgorithmCode;
 
-    public int[] oneD(int[] input, int[] wolframTuple) {
+/**
+ *
+ */
+public class HashTransform {
+    /**
+     * Hash subroutines
+     */
+    errorMinimizationHash m = new errorMinimizationHash();
+    /**
+     * The entire set of min and max codewords of [0,15,51,85,170,204,240,255]
+     */
+    int[][][] flatWolframs = new int[2][8][256 * 256];
+    /**
+     * The 8 rules referred to in the paper that have an even distribution of codewords
+     * and unique codewords for every input
+     */
+    int[] unpackedList = new int[]{0, 15, 51, 85, 170, 204, 240, 255};
+
+    /**
+     * Does the Hash transform on 1D input
+     *
+     * @param input binary array
+     * @return
+     */
+    public int[] oneD(int[] input) {
         int[] out = new int[input.length];
 //        int[][] intermediate = new int[input.length][input.length];
 //        for (int row = 0; row < input.length; row++) {
@@ -27,12 +40,21 @@ public class HashTransform {
         return out;
     }
 
+    /**
+     * Takes raw binary data and does the initial conversion to one codeword per point covering its
+     * area of influence, before comparing them with neighbors in ecaMinMaxTransform()
+     *
+     * @param input a 2D binary array
+     * @param rule  an ECA rule
+     * @return a set of 2D arrays with input in layer 0, and layer 1 is the codeword-ified input,
+     * the rest is empty
+     */
     public int[][][] initializeDepthZero(int[][] input, int rule) {
         //initWolframs();
         int rows = input.length;
         int cols = input[0].length;
         //mirrors, xy, phase, depth, (cell mirrors, minMax tree)
-        solutions = new int[8][2][4][5][256 * 256];
+        //solutions = new int[8][2][4][5][256 * 256];
         int[][] out = new int[rows][cols];
         int totLength = 256 * 256;
         int[][][] deepInput = new int[4][rows][cols];
@@ -55,12 +77,20 @@ public class HashTransform {
         return deepInput;
     }
 
+    /**
+     * Takes in a 2D array of hashed data in codeword form, then rehashes sets of codewords increasingly far apart in steps of powers of 2, 1 apart 2 apart 4 apart ... 2^n apart
+     *
+     * @param input a 2D array of hashed data
+     * @param rule  one of {0,15,51,85,170,204,240,255}
+     * @param depth iterative depth, also the power of how far away its neighbors are
+     * @return the input data, rehashed with neighbors 2^depth apart
+     */
     public int[][][] ecaMinTransform(int[][] input, int rule, int depth) {
         initWolframs();
         int rows = input.length;
         int cols = input[0].length;
         //mirrors, xy, phase, depth, (cell mirrors, minMax tree)
-        solutions = new int[8][2][4][5][256 * 256];
+        //solutions = new int[8][2][4][5][256 * 256];
         int[][] out = new int[rows][cols];
         int totLength = 256 * 256;
         int[][][] deepInput = new int[depth + 1][rows][cols];
@@ -88,12 +118,21 @@ public class HashTransform {
         }
         return deepInput;
     }
+
+    /**
+     * Takes in a 2D array of hashed data in codeword form, then rehashes sets of codewords increasingly far apart in steps of powers of 2, 1 apart 2 apart 4 apart ... 2^n apart
+     *
+     * @param input a 2D array of hashed data
+     * @param rule  one of {0,15,51,85,170,204,240,255}
+     * @param depth iterative depth, also the power of how far away its neighbors are
+     * @return the input data, rehashed with neighbors 2^depth apart
+     */
     public int[][][] ecaMaxTransform(int[][] input, int rule, int depth) {
         initWolframs();
         int rows = input.length;
         int cols = input[0].length;
         //mirrors, xy, phase, depth, (cell mirrors, minMax tree)
-        solutions = new int[8][2][4][5][256 * 256];
+        //solutions = new int[8][2][4][5][256 * 256];
         int[][] out = new int[rows][cols];
         int totLength = 256 * 256;
         int[][][] deepInput = new int[depth + 1][rows][cols];
@@ -122,12 +161,14 @@ public class HashTransform {
         return deepInput;
     }
 
-
-    public int[][][][] initWolframs() {
+    /**
+     * Initializes the set of hash truth tables for [0,15,51,85,170,204,240,255]
+     */
+    public void initWolframs() {
         //int[][] ruleList = packedList;
         int[][][] wolframIn = new int[4][2][256 * 256];
         int[][][] maxWolframIn = new int[4][2][256 * 256];
-        m.doAllRulesCoords(4, false, 0, false, 0, false, ruleList);
+        //m.doAllRulesCoords(4, false, 0, false, 0, false, ruleList);
         for (int spot = 0; spot < 4; spot++) {
             for (int lr = 0; lr < 2; lr++) {
                 //m.individualRule(ruleList[spot][lr],4,false,0,false,0,false);
@@ -151,7 +192,6 @@ public class HashTransform {
                 }
             }
         }
-        return new int[1][1][1][1];
     }
 }
 

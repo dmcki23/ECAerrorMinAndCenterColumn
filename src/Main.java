@@ -1,3 +1,4 @@
+import AlgorithmCode.*;
 import TrimmedCode.AttemptSize8;
 
 import java.io.IOException;
@@ -31,7 +32,7 @@ public class Main {
         //staging.test(4);
         //staging.testAll(4);
         //staging.doAllRules(4,false,0,false,0,false);
-        //PiBytes piBytes = new PiBytes();
+        //AlgorithmCode.PiBytes piBytes = new AlgorithmCode.PiBytes();
         //piBytes.testFiveStar();
         //RuleStretchTemplate ruleStretchTemplate2 = new RuleStretchTemplate();
         //System.out.println(Arrays.toString(ruleStretchTemplate2.traditionalCenterColumn(30,16,new int[]{1},30)));
@@ -40,14 +41,14 @@ public class Main {
         //fastMinTransform.checkWolframsForReversibility();
         //fastMinTransform.checkNeighborWindow();
         //fastMinTransform.checkNeighborWindow(100);
-        //SwingApplyFastMinTransform swingApplyFastMinTransform = new SwingApplyFastMinTransform("Image with transform");
+        //AlgorithmCode.SwingApplyFastMinTransform swingApplyFastMinTransform = new AlgorithmCode.SwingApplyFastMinTransform("Image with transform");
         //swingApplyFastMinTransform.getImage();
         //fastMinTransform.checkWolframsbyCheckWolframs();
         //fastMinTransform.cnw();
         //fastMinTransform.oneHammingChange(1);
         //fastMinTransform.check();
         //fastMinTransform.reconstructFromPrimitives();
-        //Addition addition = new Addition();
+        //AlgorithmCode.Addition addition = new AlgorithmCode.Addition();
         //addition.testAddition();
         HashTransformManager fastMinTransformApril = new HashTransformManager();
         //fastMinTransformApril.check();

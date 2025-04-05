@@ -1701,4 +1701,184 @@ public class trimCode {
             }
         }
     }
+
+    public void doAllRulesCoords(int size, boolean doChangeScore, int changeScoreTrials, boolean doRandom, int numTrials, boolean doVoting, int[][] ruleList) {
+        int[] list = new int[8];
+        for (int spot = 0; spot < 4; spot++) {
+            for (int lr = 0; lr < 2; lr++){
+                list[2*spot+lr] = ruleList[spot][lr];
+                //individualRule(ruleList[spot][lr], size, doChangeScore, changeScoreTrials, doRandom, numTrials, doVoting);
+            }
+        }
+        int listLength = 8;
+        sameErrorMin = new int[256][(int) Math.pow(2, size)];
+        sameErrorMax = new int[256][(int) Math.pow(2, size)];
+        minNumberOfSameSolutions = new int[256];
+        maxNumberOfSameSolutions = new int[256];
+        localMinSolution = new int[size][size];
+        localMaxSolution = new int[size][size];
+        minSolutionDistro = new int[256][(int) Math.pow(2, size)];
+        maxSolutionDistro = new int[256][(int) Math.pow(2, size)];
+        minErrorMap = new int[256][size][size];
+        maxErrorMap = new int[256][size][size];
+        minErrorBuckets = new int[256];
+        maxErrorBuckets = new int[256];
+        numberBoards = new int[256];
+        minSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
+        maxSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
+        list = new int[8];
+        for (int spot = 0; spot < 4; spot++) {
+            for (int lr = 0; lr < 2; lr++){
+                //list[2*spot+lr] = ruleList[spot][lr];
+                individualRule(ruleList[spot][lr], size, doChangeScore, changeScoreTrials, doRandom, numTrials, doVoting);
+            }
+        }
+        boolean isOnList = false;
+
+        for (int rule = 0; rule < 256; rule++) {
+            isOnList = false;
+            for (int l = 0; l < 8; l++){
+                if (list[l] == rule){
+                    isOnList = true;
+                }
+            }
+            if (isOnList == false){
+                continue;
+            }
+            //individualRule(rule, size, doChangeScore, changeScoreTrials, doRandom, numTrials, doVoting);
+        }
+        minSorted = new int[256];
+        maxSorted = new int[256];
+        for (int row = 0; row < 256; row++) {
+            isOnList = false;
+            for (int l = 0; l < 8; l++){
+                if (list[l] == row){
+                    isOnList = true;
+                }
+            }
+            if (isOnList == false){
+                continue;
+            }
+            minSorted[row] = row;
+            maxSorted[row] = row;
+
+        }
+        for (int row = 0; row < 256; row++) {
+            isOnList = false;
+            for (int l = 0; l < 8; l++){
+                if (list[l] == row){
+                    isOnList = true;
+                }
+            }
+            if (isOnList == false){
+                continue;
+            }
+            for (int column = 0; column < 256; column++) {
+                isOnList = false;
+                for (int l = 0; l < 8; l++){
+                    if (list[l] == column){
+                        isOnList = true;
+                    }
+                }
+                if (isOnList == false){
+                    continue;
+                }
+                if (minErrorBuckets[minSorted[row]] > minErrorBuckets[minSorted[column]]) {
+                    int temp = minSorted[row];
+                    minSorted[row] = minSorted[column];
+                    minSorted[column] = temp;
+                }
+            }
+        }
+        for (int row = 0; row < 256; row++) {
+            isOnList = false;
+            for (int l = 0; l < 8; l++){
+                if (list[l] == row){
+                    isOnList = true;
+                }
+            }
+            if (isOnList == false){
+                continue;
+            }
+            for (int column = 0; column < 256; column++) {
+                isOnList = false;
+                for (int l = 0; l < 8; l++){
+                    if (list[l] == column){
+                        isOnList = true;
+                    }
+                }
+                if (isOnList == false){
+                    continue;
+                }
+                if (maxErrorBuckets[maxSorted[row]] < maxErrorBuckets[maxSorted[column]]) {
+                    int temp = maxSorted[row];
+                    maxSorted[row] = maxSorted[column];
+                    maxSorted[column] = temp;
+                }
+            }
+        }
+        minErrorPerArray = new double[256];
+        maxErrorPerArray = new double[256];
+        minErrorPerBit = new double[256];
+        maxErrorPerBit = new double[256];
+        double numArrays = Math.pow(2, size * size);
+        if (doRandom) numArrays = numTrials;
+        double numBits = numArrays * size * size;
+        for (int row = 0; row < 256; row++) {
+            isOnList = false;
+            for (int l = 0; l < 8; l++){
+                if (list[l] == row){
+                    isOnList = true;
+                }
+            }
+            if (isOnList == false){
+                continue;
+            }
+            minErrorPerArray[row] = minErrorBuckets[row] / numArrays;
+            maxErrorPerArray[row] = maxErrorBuckets[row] / numArrays;
+            minErrorPerBit[row] = minErrorBuckets[row] / numBits;
+            maxErrorPerBit[row] = maxErrorBuckets[row] / numBits;
+        }
+        System.out.println("minErrorPerArray, sorted");
+        System.out.println(Arrays.toString(minSorted));
+        System.out.println("maxErrorPerArray, sorted");
+        System.out.println(Arrays.toString(maxSorted));
+        for (int n = 0; n < 256; n++){
+            isOnList = false;
+            for (int l = 0; l < 8; l++){
+                if (list[l] == n){
+                    isOnList = true;
+                }
+            }
+            if (isOnList == false){
+                continue;
+            }
+            System.out.println("n: " + n + " " + minNumberOfSameSolutions[n] + " " + maxNumberOfSameSolutions[n] + " " + Arrays.toString(minSolutionDistro[n]) + " " + Arrays.toString(maxSolutionDistro[n]));
+        }
+        System.out.println();
+        for (int n = 0; n < 256; n++){
+            isOnList = false;
+            for (int l = 0; l < 8; l++){
+                if (list[l] == n){
+                    isOnList = true;
+                }
+            }
+            if (isOnList == false){
+                continue;
+            }
+            if (minNumberOfSameSolutions[n] == 1 || maxNumberOfSameSolutions[n] == 1){
+                System.out.println("n: " + n + " " + minNumberOfSameSolutions[n] + " " + maxNumberOfSameSolutions[n] + " " + Arrays.toString(minSolutionDistro[n]) + " " + Arrays.toString(maxSolutionDistro[n]));
+                System.out.println(minErrorPerArray[n] + " " + maxErrorPerArray[n]);
+                System.out.println();
+            }
+        }
+
+        //Sort
+        //All of these min/max
+        //
+        //Error rate
+        //heat map
+        //solution distro
+        //Pi/Phi stuff
+    }
 }

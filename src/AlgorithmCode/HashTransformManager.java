@@ -1,3 +1,5 @@
+package AlgorithmCode;
+
 import CustomLibrary.CustomArray;
 
 import javax.imageio.ImageIO;
@@ -8,9 +10,20 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
+/**
+ *
+ */
 public class HashTransformManager {
+    /**
+     * Middle layer of transform code
+     */
     HashTransform fmt = new HashTransform();
 
+    /**
+     * Attempts to reconstruct the original bitmap raster after doing one iteration of the hash transform
+     *
+     * @throws IOException
+     */
     public void check() throws IOException {
         String filepath = "lion.bmp";
         File file = new File(filepath);
@@ -32,6 +45,11 @@ public class HashTransformManager {
         checkInverse(binaryArray);
     }
 
+    /**
+     * Does the legwork of reconstituting input from sets of codewords
+     *
+     * @param in 2D codeword input array
+     */
     public void checkInverse(int[][] in) {
         fmt.initWolframs();
         int[][][][] depthChart = new int[2][8][in.length][in[0].length];
@@ -91,11 +109,16 @@ public class HashTransformManager {
         System.out.println("different/Area=errors/bit= " + ((double) totDifferent / (double) (in.length * in[0].length)));
     }
 
+    /**
+     * Does the 4 bit version of the 8 bit ECA left-right-black-white symmetries
+     *
+     * @return
+     */
     public int[][][] lrbwFourTemplate() {
         int[][][] out = new int[16][4][4];
         for (int row = 0; row < 16; row++) {
             for (int power = 0; power < 4; power++) {
-                out[row][0][power] = row ;
+                out[row][0][power] = row;
             }
             for (int lr = 0; lr < 2; lr++) {
                 for (int power = 0; power < 4 && lr == 1; power++) {
@@ -116,17 +139,30 @@ public class HashTransformManager {
                 }
             }
         }
+        int[][] inDec = new int[16][4];
+        for (int row = 0; row < 16; row++) {
+            for (int column = 0; column < 4; column++) {
+                for (int power = 0; power < 4; power++) {
+                    inDec[row][column] += (int) Math.pow(2, power) * out[row][column][power];
+                }
+            }
+        }
         return out;
     }
 
-    public int[][] lrbwCodewordTemplate(){
+    /**
+     * Does the 4 bit version of the 8 bit ECA left, right, black, white symmetries, leaving the place value instead of reducing
+     *
+     * @return
+     */
+    public int[][] lrbwCodewordTemplate() {
         int[][][] in = lrbwFourTemplate();
         int[][] out = new int[in.length][in[0].length];
         for (int row = 0; row < in.length; row++) {
             for (int lr = 0; lr < 2; lr++) {
                 for (int bw = 0; bw < 2; bw++) {
                     for (int power = 0; power < 4; power++) {
-                        out[row][2*lr+bw] += (1<<in[row][2*lr+bw][power])*((row>>power)%2);
+                        out[row][2 * lr + bw] += (1 << in[row][2 * lr + bw][power]) * ((row >> power) % 2);
                     }
                 }
             }
@@ -134,6 +170,11 @@ public class HashTransformManager {
         return out;
     }
 
+    /**
+     * For all possible codewords of [0,15,51,85,170,104,240,255] compares the errorScore of its output tile
+     * to the codeword's Hadamard parity. This is to make some kind of sense out of why substituting these two values in
+     * checkInverse() result in the same reconstitution
+     */
     public void checkErrorScoreVsHadamard() {
         fmt.initWolframs();
         int totDifferent = 0;
@@ -239,8 +280,14 @@ public class HashTransformManager {
         System.out.println("numCollisions: " + Arrays.toString(numCollisions));
     }
 
-
-
+    /**
+     * Basic unit of the hash. A power of 2 size square, 4x4 in the paper, with the input in row 0,
+     * the columns wrapped - the left boundary rolls over to the right boundary and vice versa. The rest of the rows
+     * are ECA output on that wrapped space.
+     * @param size length of the square
+     * @param inInt integer value of the input neighborhood
+     * @return a square integer array of 1 row of input and the rest ECA output
+     */
     public int[][] gridOfInt(int size, int inInt) {
         int[][] out = new int[size][size];
         for (int row = 0; row < size; row++) {
@@ -251,6 +298,11 @@ public class HashTransformManager {
         return out;
     }
 
+    /**
+     * Verifies the optional non-collision loop mentioned in the paper. This checks for collisions between all 65536 minMax 8-tuples,
+     * when the codeword is wrapped with itself. Instead of just collisions between sets of codewords, its checking for collisions
+     * between sets of codeword neighborhoods. The 0-65536 value that the truth table is addressed by is a binary 4x4 array.
+     */
     public void wrappedTileCodewords() {
         int[][] slidingAddresses = new int[65536][16];
         int[][][] slidingTuples = new int[65536][16][16];
@@ -312,8 +364,9 @@ public class HashTransformManager {
         }
     }
 
-
-
+    /**
+     * Checks random input for codeword collisions
+     */
     public void randomizedCollisionChecker() {
         int[][] slidingAddresses = new int[65536][4];
         int[][][] slidingTuples = new int[65536][4][16];
@@ -452,6 +505,13 @@ public class HashTransformManager {
         }
         System.out.println("numErrors = " + numErrors);
     }
+
+    /**
+     * Shows a negative. Even though the tuple rules are linear the minMax errorScore for a tile depends on more than the last row.
+     * Changes in other rows besides the last row affect the code word as well. This is checked by finding codewords of random grids,
+     * then making random changes in the grid anywhere but the last row, finding the codeword for the changed grid,
+     * and see if the two codewords remain the same.
+     */
     public void checkLastRowWeight() {
         int numTrials = 50;
         int size = 4;
@@ -486,8 +546,7 @@ public class HashTransformManager {
                 for (int t = 0; t < 8; t++) {
                     fmt.m.findMinimizingCodewordLarge(fmt.unpackedList[t], changedGrid, new int[8]);
                     changedTuple[t] = fmt.m.lastMinCodeword;
-                    changedTuple[8  + t] = fmt.m.lastMaxCodeword;
-
+                    changedTuple[8 + t] = fmt.m.lastMaxCodeword;
                 }
                 if (Arrays.equals(tuple, changedTuple)) {
                     numSame++;

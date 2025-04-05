@@ -1,9 +1,19 @@
+package AlgorithmCode;
+
 import CustomLibrary.CustomArray;
 
 import java.util.Arrays;
 
+/**
+ * Hadamard matrix
+ */
 public class Hadamard {
-    public int[][] generateByRandCmodTwoboolean(int size) {
+    /**
+     * boolean Hadamard matrix
+     * @param size size of the array desired
+     * @return a boolean Hadamard matrix
+     */
+    public int[][] generateHadamardBoolean(int size) {
         int[][] out = new int[size][size];
         int log = (int) (Math.log(size) / Math.log(2));
         for (int row = 0; row < size; row++) {
@@ -20,7 +30,12 @@ public class Hadamard {
         return out;
     }
 
-    public int[][] generateByRandCmodTwoNeg(int size) {
+    /**
+     * Hadamard matrix
+     * @param size size of array desired
+     * @return Hadamard matrix
+     */
+    public int[][] generateHadamard(int size) {
         int[][] out = new int[size][size];
         int log = (int) (Math.log(size) / Math.log(2));
         for (int row = 0; row < size; row++) {
@@ -43,6 +58,12 @@ public class Hadamard {
         return out;
     }
 
+    /**
+     * Multiplies a * b
+     * @param a a matrix
+     * @param b a vector
+     * @return a * b
+     */
     public int[] matrixMultiply(int[][] a, int[] b) {
         int[] out = new int[b.length];
         for (int row = 0; row < a.length; row++) {
@@ -53,6 +74,12 @@ public class Hadamard {
         return out;
     }
 
+    /**
+     * Multiplies a * b
+     * @param a a matrix
+     * @param b a matrix
+     * @return a * b
+     */
     public int[][] matrixMultiply(int[][] a, int[][] b) {
         int[][] out = new int[a.length][a[0].length];
         for (int row = 0; row < a[0].length; row++) {
@@ -64,9 +91,15 @@ public class Hadamard {
         }
         return out;
     }
+
+    /**
+     * Tests the Hadamard and inverse Hadamard matrices
+     * @param size size of matrices to be tested
+     * @return Hadamard matrix
+     */
     public int[][] test(int size){
-        int[][] H = generateByRandCmodTwoNeg(size);
-        int[][] Hnegated = generateByRandCmodTwoNeg(size);
+        int[][] H = generateHadamard(size);
+        int[][] Hnegated = generateHadamard(size);
         for (int row = 0; row < H.length; row++) {
             for (int col = 0; col < H[0].length; col++) {
                 Hnegated[row][col] = -H[row][col];
@@ -104,6 +137,12 @@ public class Hadamard {
         System.out.println("allMatch = " + allMatch);
         return H;
     }
+
+    /**
+     * Sierpinski gasket in a square matrix
+     * @param size size of array desired
+     * @return Pascal triangle square matrix of size size
+     */
     public int[][] pascalDiag(int size){
         int[][] out = new int[size][size];
         out[0][0] = 1;
@@ -128,6 +167,12 @@ public class Hadamard {
         CustomArray.plusArrayDisplay(out, false, false, "pascal");
         return out;
     }
+
+    /**
+     * Sierpinski gasket on the diagonal in a square matrix
+     * @param size
+     * @return
+     */
     public int[][] pascalLR(int size){
         int[][] out = new int[size][size];
         out[0][0] = 1;
@@ -148,8 +193,14 @@ public class Hadamard {
         CustomArray.plusArrayDisplay(out, false, false, "pascal");
         return out;
     }
+
+    /**
+     * Sierpinksi gasket XOR Hadmard matrix
+     * @param size length of array
+     * @return Sierpinski XOR Hadmard
+     */
     public int[][] pascalXORhadamard(int size){
-        int[][] H = generateByRandCmodTwoboolean(size);
+        int[][] H = generateHadamardBoolean(size);
         int[][] pascal;
         pascal = pascalLR(size);
         int[][] pascalDiag = pascalDiag(size);

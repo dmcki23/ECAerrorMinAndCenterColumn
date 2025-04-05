@@ -21,7 +21,7 @@
 \section{Introduction}
 
 Elementary cellular automata (ECA) are 8 bit extensions of 4 bit logic gate truth tables, done linearly in parallel. \cite{Wolfram}
-Here a subset of 8 of the 256 ECA rules are explored as a non-cryptographic hash function. It utilizes an error-minimization function on 4x4 binary grids; this parallels several discrete transforms, the Fast Fourier Transform (FFT) and Fast Walsh-Hadamard Transform. General algorithm, specific ECA rules, and aggregate properties are discussed. It is implemented in Java at \cite{mygit} along with more frames of the algorithm images. \\
+Here a subset of 8 of the 256 ECA rules are explored as a non-cryptographic hash function. It utilizes an error-minimization function on 4x4 binary grids; this parallels several discrete transforms, the Fast Fourier Transform (FFT) and Fast Walsh-AlgorithmCode.Hadamard Transform. General algorithm, specific ECA rules, and aggregate properties are discussed. It is implemented in Java at \cite{mygit} along with more frames of the algorithm images. \\
 \section{Main Algorithm}
 
 \begin{center}
@@ -49,7 +49,7 @@ The algorithm first creates a truth table for the lossy compression of square bi
 
 For every row,column location in input, that value's neighborhood is 4x4 (row,column)..((row+4),(column+4)). Every location is part of 16 neighborhoods. Transform the input so that each location is the minimizing and maximizing codewords of overlapping neighborhoods of the ECA rule subset described later.  Depths of iteration are the same process with the 4x4 neighborhoods' constituent rows and columns spaced out $2^{depth-1}$ instead of $2^{0}$. Depth 1 is next door neighboring codewords, depth 2 is two spaces away, depth 3 is 4 away. This comparing of neighbors of powers of 2 is the same arrow chart as the FFT and Fast Walsh Transform, except with reminimizations instead of sums and/or products at every level of recursion. These exponential neighborhood expansions guarantee the avalanche property in $log_2(size)$ time.\\
 \begin{center}
-Below is a Fast Walsh-Hadamard Example \cite{enwiki:1261916659}\\
+Below is a Fast Walsh-AlgorithmCode.Hadamard Example \cite{enwiki:1261916659}\\
 \includegraphics{FastWalshHadamard}\\
 If you did the above with the powers of 2 in reverse order you would get this. Below is one axis of this algorithm, and instead of a sum term it's a sum term that gets reminimized. Find the codewords of the codewords, further apart each time.\\
 \includegraphics{AlgoStruct}\\
@@ -65,7 +65,7 @@ There are 8 [0,15,51,85,170,204,240,255] of the 256 8 bit ECA truth tables that 
 
 \section{Hash properties}
 
-Codeword addition is each codeword's 4x4 ECA output is laid out flat like a piece of paper with another codeword, added, and then the combination is itself reminimized. In constructing the addition tables for codewords, the result was a table that is exactly the logical operation row AND column. The Hadamard matrix can be constructed using this operation by summing the ones in (row AND column) taking it mod 2 for the boolean Hadamard matrix. Experimentally, in the inverse phase the binary Hadamard value of the codeword was substituted for the codeword's 4x4 ECA output. The result had roughly the same 97\% decompression rate as the the first way. Each tuple rule's entire codeword output set was seperately processed as a weighted voting neighborhood without the overlap of the algorithm's main implementation. The result was 164/256 positively correlated Hadamard value to vote value. Each cell of each rule's Wolfram code does better than one half, then overlaps with 15 others al doing better than 1/2.\\
+Codeword addition is each codeword's 4x4 ECA output is laid out flat like a piece of paper with another codeword, added, and then the combination is itself reminimized. In constructing the addition tables for codewords, the result was a table that is exactly the logical operation row AND column. The AlgorithmCode.Hadamard matrix can be constructed using this operation by summing the ones in (row AND column) taking it mod 2 for the boolean AlgorithmCode.Hadamard matrix. Experimentally, in the inverse phase the binary AlgorithmCode.Hadamard value of the codeword was substituted for the codeword's 4x4 ECA output. The result had roughly the same 97\% decompression rate as the the first way. Each tuple rule's entire codeword output set was seperately processed as a weighted voting neighborhood without the overlap of the algorithm's main implementation. The result was 164/256 positively correlated AlgorithmCode.Hadamard value to vote value. Each cell of each rule's Wolfram code does better than one half, then overlaps with 15 others al doing better than 1/2.\\
 
 Avalanche properties of this hash algorithm begin when an input bit has influenced every other input bit. If using powers of two the avalanche effect begins at the greater of $log_2 (width) , log_2 (height)$. This property shows up in the animated bitmaps when every single point in the image is static and snowy. Doing fewer iterations than the avalanche's diffusion threshold but more than zero limits this property. This localization property can be exploited in communication because in the first few iterations the data is irreversible enough to be imperfectly unencryptable while showing the location of the discrepancy.\\
 

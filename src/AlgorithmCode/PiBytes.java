@@ -1,20 +1,13 @@
+package AlgorithmCode;
+
 import java.util.Arrays;
 
+/**
+ * Various Pi related functions, most relevant to a 1-2% error rate in reconstructing the lossy compression
+ * hash minimums
+ */
 public class PiBytes {
-    public void testFiveStar() {
-        double input = 3.142;
-        int[] inputBinary = new int[32];
-        int[] PiBinary = new int[32];
-        int[] comp = new int[32];
-        for (int power = -1; power < 16; power++) {
-            inputBinary[power + 1] = (int) (input / Math.pow(2, -power)) % 2;
-            PiBinary[power + 1] = (int) (Math.PI / Math.pow(2, -power)) % 2;
-            comp[power + 1] = inputBinary[power + 1] ^ PiBinary[power + 1];
-        }
-        System.out.println(Arrays.toString(inputBinary));
-        System.out.println(Arrays.toString(PiBinary));
-        System.out.println(Arrays.toString(comp));
-    }
+
 
     /**
      * Calculates PI via the Wallis product
@@ -99,6 +92,12 @@ public class PiBytes {
         return out;
     }
 
+    /**
+     * Place binary Pi, Phi, and Sqrt(2) next to each other, find the Hamming codeword of them at each point
+     * then find the hash's minimizing codeword at each point and see if you can reconstruct Pi, Phi, Sqrt(2)
+     * from hash codewords
+     * @return
+     */
     public int[][] doArray() {
         errorMinimizationHash m = new errorMinimizationHash();
         int length = 256;
@@ -130,6 +129,12 @@ public class PiBytes {
         }
         return out;
     }
+
+    /**
+     * If you have {0,1,2,3,4} start at 0 and go backwards by 2 you get {3,1,4,2,0} and this
+     * function checks to see the difference between 3.1420 and Pi
+     * @return 3.1420 - Pi
+     */
     public double checkStar(){
         double difference = 3.1420-Math.PI;
         System.out.println("difference = " + difference);
