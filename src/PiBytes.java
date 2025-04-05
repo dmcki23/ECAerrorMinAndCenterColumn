@@ -100,7 +100,7 @@ public class PiBytes {
     }
 
     public int[][] doArray() {
-        minErrorStaging m = new minErrorStaging();
+        errorMinimizationHash m = new errorMinimizationHash();
         int length = 256;
         int[] Pi = new int[length];
         int[] E = new int[length];

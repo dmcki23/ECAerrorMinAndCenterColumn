@@ -1,8 +1,10 @@
+import CustomLibrary.CustomArray;
+
 import java.util.Arrays;
 
 public class Addition {
-    FastMinTransform fastMinTransform = new FastMinTransform();
-    minErrorStaging staging = new minErrorStaging();
+    HashTransform fastMinTransform = new HashTransform();
+    errorMinimizationHash staging = new errorMinimizationHash();
     public void testAddition(){
         fastMinTransform.initWolframs();
         int[][][][] additionTables = new int[2][8][16][16];
@@ -10,8 +12,8 @@ public class Addition {
             for (int b = 0; b < 16; b++) {
                 for (int posNeg = 0; posNeg < 2; posNeg++) {
                     for (int t = 0; t < 8; t++) {
-                        int[][] aa = staging.generateGuess(a,fastMinTransform.unpackedList[t]);
-                        int[][] bb = staging.generateGuess(b,fastMinTransform.unpackedList[t]);
+                        int[][] aa = staging.generateWrappedECAsquare(a,fastMinTransform.unpackedList[t]);
+                        int[][] bb = staging.generateWrappedECAsquare(b,fastMinTransform.unpackedList[t]);
                         int[][] cc = new int[4][4];
                         int[][] dd = new int[4][4];
                         for (int row = 0; row < 4; row++) {
@@ -22,9 +24,9 @@ public class Addition {
                             }
                         }
                         int[][] ccc = staging.findMinimizingCodeword(fastMinTransform.unpackedList[t],dd,null);
-                        //CustomArray.plusArrayDisplay(aa,false,false,"aa");
+                        //CustomLibrary.CustomArray.plusArrayDisplay(aa,false,false,"aa");
                         //.plusArrayDisplay(bb,false,false,"bb");
-                       // CustomArray.plusArrayDisplay(cc,false,false,"a: " + a + " b: " + b);
+                       // CustomLibrary.CustomArray.plusArrayDisplay(cc,false,false,"a: " + a + " b: " + b);
                         int result = 0;
                         for (int column = 0; column < 4; column++) {
                             result += (int)Math.pow(2,column)*ccc[0][column];
@@ -41,7 +43,7 @@ public class Addition {
             }
         }
         int[][] outTable = new int[16][16];
-        HadamardThMar25 hadamard = new HadamardThMar25();
+        Hadamard hadamard = new Hadamard();
         int[][] hOut = new int[16][16];
         int[][] rowANDcol = new int[16][16];
         int[] distroAddition = new int[16];
@@ -89,15 +91,15 @@ public class Addition {
         CustomArray.plusArrayDisplay(hOut,false,false,"Hadamard xor outTable");
     }
     public void checkAdditionParity(int size){
-        int[] rparity = new int[16];
+        int[] hadamardCellBoolean = new int[16];
         for (int spot = 0; spot < 16; spot++) {
             int tot = 0;
             for (int power = 0; power < 4; power++){
                 tot += ((spot/(1<<power))%2);
             }
-            rparity[spot] = tot%2;
+            hadamardCellBoolean[spot] = tot%2;
         }
-        HadamardThMar25 hadamard = new HadamardThMar25();
+        Hadamard hadamard = new Hadamard();
         int[][] h = hadamard.generateByRandCmodTwoboolean(16);
         int[] bandParity = new int[8];
         for (int spot = 0; spot < 8; spot++) {
@@ -106,7 +108,7 @@ public class Addition {
         int[][] conflictGrid = new int[16][16];
         for (int row = 0; row < 16; row++) {
             for (int col = 0; col < 16; col++) {
-                    int spot = rparity[row] + 2 * rparity[col] ;
+                    int spot = hadamardCellBoolean[row] + 2 * hadamardCellBoolean[col] ;
                     if (bandParity[spot] == -1) bandParity[spot] = h[row][col];
                     if (bandParity[spot] == h[row][col]) {
                     }

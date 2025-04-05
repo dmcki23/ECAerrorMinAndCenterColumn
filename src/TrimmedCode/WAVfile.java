@@ -1,3 +1,5 @@
+package TrimmedCode;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -78,11 +80,11 @@ public class WAVfile {
 
                 }
             }
-            //CustomArray.plusArrayDisplay(temp,false,true,"temp " + grid);
+            //CustomLibrary.CustomArray.plusArrayDisplay(temp,false,true,"temp " + grid);
             //if (grid < 73solution = transformAndCheck(temp, wolfram, 200, grid);
             //solution = ecAminErrorFit.checkPascalErrorCorrectionLargeThree(wolfram,temp,100);
             solution = transformAndCheck(rule, temp,wolfram,numTrials,grid);
-            //CustomArray.plusArrayDisplay(solution,false,true,"solution " + grid);
+            //CustomLibrary.CustomArray.plusArrayDisplay(solution,false,true,"solution " + grid);
             int errors = 0;
             for (int row = 0; row < subSize; row++) {
                 for (int col = 0; col < subSize; col++) {
@@ -179,7 +181,7 @@ public class WAVfile {
                 }
             }
             //Finds the minimum error producing neighborhood//
-            //CustomArray.plusArrayDisplay(tempField,false,true,"transpose,reflect " + index);
+            //CustomLibrary.CustomArray.plusArrayDisplay(tempField,false,true,"transpose,reflect " + index);
             //tempField = ecAminErrorFit.checkPascalErrorCorrectionLargeThree(wolfram, tempField, numTrials);
             tempField = ecAminErrorFit.findMinimizingCodeword(rule,tempField,new int[8]);
             for (int spot = 0; spot < size; spot++) {
@@ -242,7 +244,7 @@ public class WAVfile {
                 }
             }
         }
-        //CustomArray.plusArrayDisplay(vote,false,true,"vote");
+        //CustomLibrary.CustomArray.plusArrayDisplay(vote,false,true,"vote");
         return tempField;
     }
 

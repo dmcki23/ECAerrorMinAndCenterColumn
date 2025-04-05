@@ -1,6 +1,8 @@
+import CustomLibrary.CustomArray;
+
 import java.util.Arrays;
 
-public class HadamardThMar25 {
+public class Hadamard {
     public int[][] generateByRandCmodTwoboolean(int size) {
         int[][] out = new int[size][size];
         int log = (int) (Math.log(size) / Math.log(2));

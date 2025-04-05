@@ -1,3 +1,5 @@
+package CustomLibrary;
+
 public class StringPrint {
     String outstring = "";
     public String println(String instring) {

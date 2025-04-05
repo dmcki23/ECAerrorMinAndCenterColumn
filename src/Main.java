@@ -1,11 +1,12 @@
+import TrimmedCode.AttemptSize8;
+
 import java.io.IOException;
-import java.util.Arrays;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) throws IOException {
-        minErrorStaging m = new minErrorStaging();
+        errorMinimizationHash m = new errorMinimizationHash();
         //m.manageLengthsMinimizations(150,4,500);
         //m.ecaBestFitHashCollisionExhuastiveSizeTwo(105,2,false,false,500);
         // ruleStretchTemplate = new RuleStretchTemplate();
@@ -22,7 +23,7 @@ public class Main {
         //PrimeCAstagingLONG primeCAstagingLONG = new PrimeCAstagingLONG();
         //primeCAstagingLONG.checkAllColumnsTwo(primeCAstagingLONG.longRule, 3,4);
         //primeCAstagingLONG.doLogReductionPrimeTwo(primeCAstagingLONG.primeRule, 3,5);
-        minErrorStaging staging = new minErrorStaging();
+        errorMinimizationHash staging = new errorMinimizationHash();
         //staging.individualRuleManager(90,4,false,0,false,500,false);
         //staging.individualRuleDisplay(150,false,0,4);
         //staging.doAllRules(4,false,0,true,5000,false);
@@ -34,7 +35,7 @@ public class Main {
         //piBytes.testFiveStar();
         //RuleStretchTemplate ruleStretchTemplate2 = new RuleStretchTemplate();
         //System.out.println(Arrays.toString(ruleStretchTemplate2.traditionalCenterColumn(30,16,new int[]{1},30)));
-        FastMinTransform fastMinTransform = new FastMinTransform();
+        HashTransform fastMinTransform = new HashTransform();
         //fastMinTransform.checkWolframs();
         //fastMinTransform.checkWolframsForReversibility();
         //fastMinTransform.checkNeighborWindow();
@@ -48,7 +49,7 @@ public class Main {
         //fastMinTransform.reconstructFromPrimitives();
         //Addition addition = new Addition();
         //addition.testAddition();
-        FastMinTransformApril fastMinTransformApril = new FastMinTransformApril();
+        HashTransformManager fastMinTransformApril = new HashTransformManager();
         //fastMinTransformApril.check();
         //fastMinTransform.check();
         //fastMinTransformApril.checkErrorWeights();

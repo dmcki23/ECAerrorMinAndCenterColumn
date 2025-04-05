@@ -1,7 +1,11 @@
+import CustomLibrary.BasicECA;
+import CustomLibrary.CustomArray;
+import CustomLibrary.StringPrint;
+
 import java.util.Arrays;
 import java.util.Random;
 
-public class minErrorStaging {
+public class errorMinimizationHash {
     /**
      *
      */
@@ -92,7 +96,7 @@ public class minErrorStaging {
     BasicECA basicECA = new BasicECA();
     CustomArray customArray = new CustomArray();
     Random rand = new Random();
-    public minErrorStaging() {
+    public errorMinimizationHash() {
         int size = 4;
         sameErrorMin = new int[256][(int) Math.pow(2, size)];
         sameErrorMax = new int[256][(int) Math.pow(2, size)];
@@ -507,7 +511,7 @@ public class minErrorStaging {
 //        return trialField;
     }
 
-    public int[][] generateGuess(int[] in, int rule){
+    public int[][] generateWrappedECAsquare(int[] in, int rule){
         int[][] out = new int[in.length][in.length];
         for (int row = 0; row < in.length; row++) {
             out[0][row] = in[row];
@@ -531,7 +535,7 @@ public class minErrorStaging {
         }
         return out;
     }
-    public int[][] generateGuess(int inInt, int rule){
+    public int[][] generateWrappedECAsquare(int inInt, int rule){
         int[] in = new int[4];
         for (int row = 0; row < in.length; row++) {
             in[row] = ((inInt)/(int)Math.pow(2,row)%2);
@@ -1105,7 +1109,7 @@ public class minErrorStaging {
                     }
                 }
             }
-            //CustomArray.plusArrayDisplay(field, false, true, "Field");
+            //CustomLibrary.CustomArray.plusArrayDisplay(field, false, true, "Field");
             minVote = new int[size][size];
             maxVote = new int[size][size];
             //This loop reflects, rotates, and transposes the input data array
@@ -1239,95 +1243,4 @@ public class minErrorStaging {
     }
 
 
-
-    public int[] binaryParityRowEchelon(int[][] in){
-        int size = in.length;
-        int[] out = new int[size];
-        int[][] active = new int[size][size];
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
-                active[row][col] = in[row][col];
-            }
-        }
-        for (int row = 0; row < size; row++){
-            for (int col = 0; col < size; col++){
-                out[row] ^= active[row][col];
-            }
-        }
-        //customArray.plusArrayDisplay(active,false,false,"initial");
-
-        int activeRow = 0;
-        int temp;
-        boolean columnActive;
-        for (int col = 0; col < size; col++){
-            columnActive = false;
-            for (int row = activeRow; row < size; row++){
-                if (active[row][col] == 1){
-                    for (int column = 0; column < size; column++){
-                        temp = active[activeRow][column];
-                        active[activeRow][column] = active[row][column];
-                        active[row][column] = temp;
-
-                    }
-                    temp = out[activeRow];
-                    out[activeRow] = out[row];
-                    out[row] = temp;
-                    columnActive = true;
-                    break;
-                }
-            }
-            if (columnActive){
-                for (int row = 0; row < size; row++){
-                    if (row == activeRow || active[row][col] == 0) continue;
-                    for (int column = 0; column < size; column++){
-                        active[row][column] = (active[row][column] + active[activeRow][column])%2;
-                    }
-                    out[row] = (out[row]+out[activeRow])%2;
-                }
-                activeRow++;
-            }
-            //customArray.plusArrayDisplay(active,false,false,"col: "+col);
-            //System.out.println(Arrays.toString(out));
-
-        }
-        //customArray.plusArrayDisplay(active,false,false,"final");
-
-        //System.out.println(Arrays.toString(out));
-        //System.out.println("\n\n");
-
-        return out;
-    }
-    public void test(int size){
-        int[][] field = new int[size][size];
-        for (int trial = 0; trial < 1; trial++){
-            for (int row = 0; row < size; row++){
-                for (int col = 0; col < size; col++){
-                    field[row][col] = rand.nextInt(0,2);
-                }
-            }
-            binaryParityRowEchelon(field);
-        }
-    }
-    public void testAll(int size){
-        int numBoards = (int)Math.pow(2,size*size);
-        int[][] field = new int[size][size];
-        int[] codeword = new int[size];
-        int decCodeword = 0;
-        int[] codewordDistro = new int[(int)Math.pow(2,size)];
-        for (int trial = 0; trial < numBoards; trial++){
-            if (trial % 1000 == 0) System.out.println(trial);
-            for (int row = 0; row < size; row++){
-                for (int col = 0; col < size; col++){
-                    field[row][col] = ((trial/(int)Math.pow(2,size*row+col))%2);
-                }
-            }
-            codeword = binaryParityRowEchelon(field);
-            decCodeword = 0;
-            for (int spot = 0; spot < size; spot++){
-                decCodeword += (int)Math.pow(2,spot)*codeword[spot];
-            }
-            codewordDistro[decCodeword]++;
-        }
-        System.out.println("codewordDistro[] " + Arrays.toString(codewordDistro));
-    }
 }
