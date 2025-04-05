@@ -12,9 +12,7 @@ import java.util.Random;
  * a hexadecimal codeword ECA rule pair together that minimize the discrepancies between the input and the ECA output using the codeword as the
  * initial value
  */
-
 public class errorMinimizationHash {
-
     /**
      * Last max codeword tile found
      */
@@ -191,7 +189,6 @@ public class errorMinimizationHash {
      * Initializes everything to size 4, therefore truth tables are 65536 long.
      * If you want a different size run initialize(size)
      */
-
     public errorMinimizationHash() {
         int size = 4;
         sameErrorMin = new int[256][(int) Math.pow(2, size)];
@@ -241,16 +238,19 @@ public class errorMinimizationHash {
      * @param in binary input array
      * @return the array with ECA n and initial neighborhood mimimum output
      */
-    public int[][] findMinimizingCodeword(int n, int[][] in, int[] wolfram) {
+    public int[][] findMinimizingCodeword(int n, int[][] in) {
+        //Size of the input array
         int size = in.length;
+        //The final max codeword's output is put here
         localMaxSolution = new int[size][size];
+        //The final min codeword's output is put here
         localMinSolution = new int[size][size];
-        //if (wolfram == null){
-        wolfram = new int[8];
+        //Wolfram code of the rule used
+        int[] wolfram = new int[8];
         for (int power = 0; power < 8; power++) {
             wolfram[power] = (n / (int) Math.pow(2, power)) % 2;
         }
-        //}
+        //2D binary array written to be an input and an ECA rule, and scored by weighted error discrepancy
         int[][] trialField = new int[size][size];
         //Declaring these here instead of inline in the loops significantly speeds it up
         int row = 0;
@@ -258,7 +258,9 @@ public class errorMinimizationHash {
         int a = 0;
         int b = 0;
         int c = 0;
+        //How many possible row0 input neighborhoods there are
         int maxNeighborhood = (int) Math.pow(2, size);
+        //Error score of every possible neighborhood
         int[] errorScore = new int[maxNeighborhood];
         //
         //
@@ -301,36 +303,22 @@ public class errorMinimizationHash {
         //
         //
         //Sort the errors to find the minimum error producing neighborhood
-        //System.out.println(Arrays.toString(errorScore));
         int maxErrors = 0;
-        int maxSpot = 0;
         for (int neighborhood = 0; neighborhood < maxNeighborhood; neighborhood++) {
             if (errorScore[neighborhood] > maxErrors) {
                 maxErrors = errorScore[neighborhood];
-                //maxSpot = neighborhood;
             }
         }
         int minErrors = Integer.MAX_VALUE;
-        int minSpot = 0;
         for (int neighborhood = 0; neighborhood < maxNeighborhood; neighborhood++) {
             if (errorScore[neighborhood] < minErrors) {
                 minErrors = errorScore[neighborhood];
-                //minSpot = neighborhood;
             }
         }
-//        System.out.println("minErrors " + minErrors);
-//        System.out.println("maxErrors " + maxErrors);
-//        System.out.println("minSpot " + minSpot);
-//            int hammingDistance = 0;
-//            for (int spot = 0; spot < size; spot++) {
-//                if (((minSpot / (int) Math.pow(2, spot)) % 2) != ((decInput / (int) Math.pow(2, spot)) % 2)) {
-//                    hammingDistance++;
-//                }
-//            }
         //
         //
         //
-        //Checks for solution uniqueness
+        //Checks for codeword solution uniqueness
         int numSameMinimum = 0;
         int numSameMaximum = 0;
         int[] sameMinimums = new int[errorScore.length];
@@ -361,28 +349,20 @@ public class errorMinimizationHash {
         }
         lastMinCodeword = firstMinSpot;
         lastMaxCodeword = firstMaxSpot;
-        //sameMinimums = Arrays.copyOfRange(sameMinimums, 0, minIndex);
-        // = Arrays.copyOfRange(sameMaximums, 0, maxIndex);
-        //sameErrorMin[integerWolfram][numberOfSameMinimum]++;
-        //sameErrorMax[integerWolfram][numberOfSameMaximum]++;
         if (numSameMinimum > minNumberOfSameSolutions[n]) minNumberOfSameSolutions[n] = numSameMinimum;
         if (numSameMaximum > maxNumberOfSameSolutions[n]) maxNumberOfSameSolutions[n] = numSameMaximum;
-        //minNumberOfSameSolutions[n] += numSameMinimum;
-        //maxNumberOfSameSolutions[n] += numSameMaximum;
-        //System.out.println("sameNumErrors = " + sameNumErrors);
-        //System.out.println("sameNumErrorsMax = " + sameNumMax);
-        //System.out.println("sameNumErrors " + sameNumErrors);
+        minSolutionDistro[n][firstMinSpot]++;
+        maxSolutionDistro[n][firstMaxSpot]++;
         //
         //
-        //Run the Wolfram code on the minimum neighborhood codeword for function return purposes
+        //Run the Wolfram code on the minimum neighborhood codeword for function return and class field storage purposes
         trialField = new int[size][size];
         for (column = 0; column < size; column++) {
             trialField[0][column] = ((firstMinSpot / (int) Math.pow(2, column)) % 2);
             localMaxSolution[0][column] = ((firstMaxSpot / (int) Math.pow(2, column)) % 2);
             localMinSolution[0][column] = ((firstMinSpot / (int) Math.pow(2, column)) % 2);
         }
-        minSolutionDistro[n][firstMinSpot]++;
-        maxSolutionDistro[n][firstMaxSpot]++;
+        //Minimum codeword return array
         for (row = 1; row < size; row++) {
             for (column = 0; column < size; column++) {
                 a = ((column - 1) + size) % size;
@@ -390,10 +370,9 @@ public class errorMinimizationHash {
                 c = ((column + 1)) % size;
                 trialField[row][column] = trialField[row - 1][a] + 2 * trialField[row - 1][b] + 4 * trialField[row - 1][c];
                 trialField[row][column] = wolfram[trialField[row][column]];
-                //localMaxSolution[row][column] = localMaxSolution[row-1][a]+2*trialField[row-1][b]+4*trialField[row-1][c];
-                //localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
             }
         }
+        //Minimum codeword class field array
         for (row = 1; row < size; row++) {
             for (column = 0; column < size; column++) {
                 a = ((column - 1) + size) % size;
@@ -401,10 +380,9 @@ public class errorMinimizationHash {
                 c = ((column + 1)) % size;
                 localMinSolution[row][column] = localMinSolution[row - 1][a] + 2 * localMinSolution[row - 1][b] + 4 * localMinSolution[row - 1][c];
                 localMinSolution[row][column] = wolfram[localMinSolution[row][column]];
-                //localMaxSolution[row][column] = localMaxSolution[row-1][a]+2*trialField[row-1][b]+4*trialField[row-1][c];
-                //localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
             }
         }
+        //Maximum codeword class field array
         for (row = 1; row < size; row++) {
             for (column = 0; column < size; column++) {
                 a = ((column - 1) + size) % size;
@@ -412,207 +390,17 @@ public class errorMinimizationHash {
                 c = ((column + 1)) % size;
                 localMaxSolution[row][column] = localMaxSolution[row - 1][a] + 2 * localMaxSolution[row - 1][b] + 4 * localMaxSolution[row - 1][c];
                 localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
-                //localMaxSolution[row][column] = localMaxSolution[row-1][a]+2*trialField[row-1][b]+4*trialField[row-1][c];
-                //localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
             }
         }
-        //if (numSameMinimum != 1) System.out.println(numSameMinimum);
         return trialField;
-    }
-
-    /**
-     * Finds the minimum-discrepancy initial neighborhood output of the ECA n vs the input,
-     * sans any reference of the entire Wolfram code
-     *
-     * @param n  ECA rule 0-255
-     * @param in binary input array
-     * @return the array with ECA n and initial neighborhood mimimum output
-     */
-    public void findMinimizingCodewordLarge(int n, int[][] in, int[] wolfram) {
-        int size = in.length;
-        localMaxSolution = new int[size][size];
-        localMinSolution = new int[size][size];
-        //if (wolfram == null){
-        wolfram = new int[8];
-        for (int power = 0; power < 8; power++) {
-            wolfram[power] = (n / (int) Math.pow(2, power)) % 2;
-        }
-        //}
-        int[][] trialField = new int[size][size];
-        //Declaring these here instead of inline in the loops significantly speeds it up
-        int row = 0;
-        int column = 0;
-        int a = 0;
-        int b = 0;
-        int c = 0;
-        int maxNeighborhood = (int) Math.pow(2, size);
-        int[] errorScore = new int[maxNeighborhood];
-        //
-        //
-        //Check every possible input neighborhood of length size
-        for (int neighborhood = 0; neighborhood < maxNeighborhood; neighborhood++) {
-            //Initialize trial neighborhood
-            for (column = 0; column < size; column++) {
-                trialField[0][column] = ((neighborhood / (int) Math.pow(2, column)) % 2);
-            }
-            //Run Wolfram code on array with row 0 input = correction
-            for (row = 1; row < size; row++) {
-                for (column = 0; column < size; column++) {
-                    a = ((column - 1) + size) % size;
-                    b = column;
-                    c = ((column + 1)) % size;
-                    trialField[row][column] = trialField[row - 1][a] + 2 * trialField[row - 1][b] + 4 * trialField[row - 1][c];
-                    trialField[row][column] = wolfram[trialField[row][column]];
-                }
-            }
-            //
-            //
-            //Score the error
-            for (row = 0; row < size; row++) {
-                for (column = 0; column < size; column++) {
-                    //
-                    //
-                    //Various error-scoring weights tested
-                    errorScore[neighborhood] += ((int) Math.pow(2, row) * (trialField[row][column] ^ in[row][column]));
-                    //errorScore[neighborhood] +=  ((row*row))*(trialField[row][column] ^ in[row][column]);
-                    //errorScore[correction] += row*row*(trialField[row][column] ^ in[row][column]);
-                    //errorScore[correction] += column*column *(in[row][column] ^  trialField[row][column]);
-                    //errorScore[correction] += column* (in[row][column] ^  trialField[row][column]);
-                    //errorScore[neighborhood] += row* (in[row][column] ^  trialField[row][column]);
-                    //errorScore[correction] += (in[row][column] ^ trialField[row][column]);
-                    //errorScore[neighborhood] += (int)Math.pow(2, column)*(in[row][column] ^ trialField[row][column]);
-                    //errorScore[correction] += coefficients[row] * trialField[row][column];
-                }
-            }
-        }
-        //
-        //
-        //Sort the errors to find the minimum error producing neighborhood
-        //System.out.println(Arrays.toString(errorScore));
-        int maxErrors = 0;
-        int maxSpot = 0;
-        for (int neighborhood = 0; neighborhood < maxNeighborhood; neighborhood++) {
-            if (errorScore[neighborhood] > maxErrors) {
-                maxErrors = errorScore[neighborhood];
-                //maxSpot = neighborhood;
-            }
-        }
-        int minErrors = Integer.MAX_VALUE;
-        int minSpot = 0;
-        for (int neighborhood = 0; neighborhood < maxNeighborhood; neighborhood++) {
-            if (errorScore[neighborhood] < minErrors) {
-                minErrors = errorScore[neighborhood];
-                //minSpot = neighborhood;
-            }
-        }
-//        System.out.println("minErrors " + minErrors);
-//        System.out.println("maxErrors " + maxErrors);
-//        System.out.println("minSpot " + minSpot);
-//            int hammingDistance = 0;
-//            for (int spot = 0; spot < size; spot++) {
-//                if (((minSpot / (int) Math.pow(2, spot)) % 2) != ((decInput / (int) Math.pow(2, spot)) % 2)) {
-//                    hammingDistance++;
-//                }
-//            }
-        //
-        //
-        //
-        //Checks for solution uniqueness
-        int numSameMinimum = 0;
-        int numSameMaximum = 0;
-        int[] sameMinimums = new int[errorScore.length];
-        int[] sameMaximums = new int[errorScore.length];
-        Arrays.fill(sameMaximums, -1);
-        Arrays.fill(sameMinimums, -1);
-        int minIndex = 0;
-        int maxIndex = 0;
-        int firstMinSpot = -1;
-        int firstMaxSpot = -1;
-        for (int neighborhood = 0; neighborhood < (int) Math.pow(2, size); neighborhood++) {
-            if (errorScore[neighborhood] == minErrors) {
-                numSameMinimum++;
-                sameMinimums[minIndex] = neighborhood;
-                minIndex++;
-                if (firstMinSpot == -1) {
-                    firstMinSpot = neighborhood;
-                }
-            }
-            if (errorScore[neighborhood] == maxErrors) {
-                numSameMaximum++;
-                sameMaximums[maxIndex] = neighborhood;
-                maxIndex++;
-                if (firstMaxSpot == -1) {
-                    firstMaxSpot = neighborhood;
-                }
-            }
-        }
-        lastMinCodeword = firstMinSpot;
-        lastMaxCodeword = firstMaxSpot;
-        //sameMinimums = Arrays.copyOfRange(sameMinimums, 0, minIndex);
-        // = Arrays.copyOfRange(sameMaximums, 0, maxIndex);
-        //sameErrorMin[integerWolfram][numberOfSameMinimum]++;
-        //sameErrorMax[integerWolfram][numberOfSameMaximum]++;
-//        if (numSameMinimum > minNumberOfSameSolutions[n]) minNumberOfSameSolutions[n] = numSameMinimum;
-//        if (numSameMaximum > maxNumberOfSameSolutions[n]) maxNumberOfSameSolutions[n] = numSameMaximum;
-//        //minNumberOfSameSolutions[n] += numSameMinimum;
-//        //maxNumberOfSameSolutions[n] += numSameMaximum;
-//
-//        //System.out.println("sameNumErrors = " + sameNumErrors);
-//        //System.out.println("sameNumErrorsMax = " + sameNumMax);
-//        //System.out.println("sameNumErrors " + sameNumErrors);
-//        //
-//        //
-//        //Run the Wolfram code on the minimum neighborhood codeword for function return purposes
-//        trialField = new int[size][size];
-//        for (column = 0; column < size; column++) {
-//            trialField[0][column] = ((firstMinSpot / (int) Math.pow(2, column)) % 2);
-//            localMaxSolution[0][column] = ((firstMaxSpot / (int) Math.pow(2, column)) % 2);
-//            localMinSolution[0][column] = ((firstMinSpot / (int) Math.pow(2, column)) % 2);
-//        }
-//        minSolutionDistro[n][firstMinSpot]++;
-//        maxSolutionDistro[n][firstMaxSpot]++;
-//        for (row = 1; row < size; row++) {
-//            for (column = 0; column < size; column++) {
-//                a = ((column - 1) + size) % size;
-//                b = column;
-//                c = ((column + 1)) % size;
-//                trialField[row][column] = trialField[row - 1][a] + 2 * trialField[row - 1][b] + 4 * trialField[row - 1][c];
-//                trialField[row][column] = wolfram[trialField[row][column]];
-//                //localMaxSolution[row][column] = localMaxSolution[row-1][a]+2*trialField[row-1][b]+4*trialField[row-1][c];
-//                //localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
-//            }
-//        }
-//        for (row = 1; row < size; row++) {
-//            for (column = 0; column < size; column++) {
-//                a = ((column - 1) + size) % size;
-//                b = column;
-//                c = ((column + 1)) % size;
-//                localMinSolution[row][column] = localMinSolution[row - 1][a] + 2 * localMinSolution[row - 1][b] + 4 * localMinSolution[row - 1][c];
-//                localMinSolution[row][column] = wolfram[localMinSolution[row][column]];
-//                //localMaxSolution[row][column] = localMaxSolution[row-1][a]+2*trialField[row-1][b]+4*trialField[row-1][c];
-//                //localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
-//            }
-//        }
-//        for (row = 1; row < size; row++) {
-//            for (column = 0; column < size; column++) {
-//                a = ((column - 1) + size) % size;
-//                b = column;
-//                c = ((column + 1)) % size;
-//                localMaxSolution[row][column] = localMaxSolution[row - 1][a] + 2 * localMaxSolution[row - 1][b] + 4 * localMaxSolution[row - 1][c];
-//                localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
-//                //localMaxSolution[row][column] = localMaxSolution[row-1][a]+2*trialField[row-1][b]+4*trialField[row-1][c];
-//                //localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
-//            }
-//        }
-//        //if (numSameMinimum != 1) System.out.println(numSameMinimum);
-//        return trialField;
     }
 
     /**
      * Outputs the square array, where row 0 is binary input and the rest of the rows are ECA output,
      * with wrapped columns so that it's cylindrical with the rows parallel to the circumfrence and
      * columns perpendicular. The basic unit of the hash algorithm
-     * @param in input neighborhood in array form
+     *
+     * @param in   input neighborhood in array form
      * @param rule ECA 0-255 rule
      * @return the square of the input and its ECA output
      */
@@ -634,18 +422,18 @@ public class errorMinimizationHash {
                 c = ((column + 1)) % size;
                 out[row][column] = out[row - 1][a] + 2 * out[row - 1][b] + 4 * out[row - 1][c];
                 out[row][column] = ((rule / (int) Math.pow(2, out[row][column]) % 2));
-                //localMaxSolution[row][column] = localMaxSolution[row-1][a]+2*trialField[row-1][b]+4*trialField[row-1][c];
-                //localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
             }
         }
         return out;
     }
+
     /**
      * Outputs the square array, where row 0 is binary input and the rest of the rows are ECA output,
      * with wrapped columns so that it's cylindrical with the rows parallel to the circumfrence and
      * columns perpendicular. The basic unit of the hash algorithm
+     *
      * @param inInt input neighborhood in integer form
-     * @param rule ECA 0-255 rule
+     * @param rule  ECA 0-255 rule
      * @return the square of the input and its ECA output
      */
     public int[][] generateWrappedECAsquare(int inInt, int rule) {
@@ -670,8 +458,6 @@ public class errorMinimizationHash {
                 c = ((column + 1)) % size;
                 out[row][column] = out[row - 1][a] + 2 * out[row - 1][b] + 4 * out[row - 1][c];
                 out[row][column] = ((rule / (int) Math.pow(2, out[row][column]) % 2));
-                //localMaxSolution[row][column] = localMaxSolution[row-1][a]+2*trialField[row-1][b]+4*trialField[row-1][c];
-                //localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
             }
         }
         return out;
@@ -680,16 +466,19 @@ public class errorMinimizationHash {
     /**
      * Exhaustively generates all 0-255 ECA rule hash algorithm truth tables and minMax codeword sets;
      * then does some basic analysis on aggregate properties
-     * @param size side length of the square you want to operate on
-     * @param doChangeScore if this is set, it calls a function that randomly changes the address and sees how much the codeword changes, significantly affects runtime,
-     *                      has not been tested in a while
+     *
+     * @param size              side length of the square you want to operate on
+     * @param doChangeScore     if this is set, it calls a function that randomly changes the address and sees how much the codeword changes, significantly affects runtime,
+     *                          has not been tested in a while
      * @param changeScoreTrials if doChangeScore is true this is how may random attempts doChangeScore() makes on a given codeword, significantly affects runtime
-     * @param doRandom size 4 is manageable computationally, larger than that you would want to set this true
-     * @param numTrials if doRandom is set, this is how many random attempts it makes at analyzing a given rule
-     * @param doVoting does voting on reconstruction, has not been tested in a while
+     * @param doRandom          size 4 is manageable computationally, larger than that you would want to set this true
+     * @param numTrials         if doRandom is set, this is how many random attempts it makes at analyzing a given rule
+     * @param doVoting          does voting on reconstruction, has not been tested in a while
      */
-
     public void doAllRules(int size, boolean doChangeScore, int changeScoreTrials, boolean doRandom, int numTrials, boolean doVoting) {
+        //
+        //
+        //Initializes all the data arrays, see Javadoc for detailed variable explanations
         sameErrorMin = new int[256][(int) Math.pow(2, size)];
         sameErrorMax = new int[256][(int) Math.pow(2, size)];
         minNumberOfSameSolutions = new int[256];
@@ -705,9 +494,18 @@ public class errorMinimizationHash {
         numberBoards = new int[256];
         minSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
         maxSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
+        //
+        //
+        //
+        //This is where it calls the hash function for all the rules, one by one
         for (int rule = 0; rule < 256; rule++) {
             individualRule(rule, size, doChangeScore, changeScoreTrials, doRandom, numTrials, doVoting);
         }
+        //
+        //
+        //
+        //This section sorts the results by error rate
+        //and displays
         minSorted = new int[256];
         maxSorted = new int[256];
         for (int row = 0; row < 256; row++) {
@@ -760,29 +558,17 @@ public class errorMinimizationHash {
                 System.out.println();
             }
         }
-        //Sort
-        //All of these min/max
-        //
-        //Error rate
-        //heat map
-        //solution distro
-        //Pi/Phi stuff
     }
 
     /**
      * Displays some basic information about an ECA rule's hash performance statistics
-     * @param specificRule 0-255 ECA rule
-     * @param doChangeScore whether to check the codeword change / input change
+     *
+     * @param specificRule      0-255 ECA rule
+     * @param doChangeScore     whether to check the codeword change / input change
      * @param changeScoreTrials how many random samples to take if doChangeScore is true
-     * @param size size of the hash tile
+     * @param size              size of the hash tile
      */
     public void individualRuleDisplay(int specificRule, boolean doChangeScore, int changeScoreTrials, int size) {
-        //All of these min/max
-        //
-        //Error rate
-        //heat map
-        //solution distro
-        //Pi/Phi stuff
         System.out.println("Specific: " + specificRule);
         System.out.println("numberBoards: " + numberBoards[specificRule]);
         System.out.println("Min errors: " + minErrorBuckets[specificRule] + " " + String.format("%.4f", (double) minErrorBuckets[specificRule] / (double) numberBoards[specificRule]));
@@ -791,8 +577,8 @@ public class errorMinimizationHash {
             System.out.println("Change score: " + changeScoreTrials);
         }
         System.out.println();
-        customArray.plusArrayDisplay(minErrorMap[specificRule], false, false, "minErrorMap");
-        customArray.plusArrayDisplay(maxErrorMap[specificRule], false, false, "maxErrorMap");
+        CustomArray.plusArrayDisplay(minErrorMap[specificRule], false, false, "minErrorMap");
+        CustomArray.plusArrayDisplay(maxErrorMap[specificRule], false, false, "maxErrorMap");
         System.out.println("minSolutionDistro[] " + Arrays.toString(minSolutionDistro[specificRule]));
         System.out.println("maxSolutionDistro[] " + Arrays.toString(maxSolutionDistro[specificRule]));
         System.out.println("sameErrorMin[] " + Arrays.toString(sameErrorMin[specificRule]) + " " + String.format("%.4f", (double) minNumberOfSameSolutions[specificRule] / (double) numberBoards[specificRule]));
@@ -870,54 +656,44 @@ public class errorMinimizationHash {
                 break;
             }
         }
-        s.println("the following only apply to rule 150, i don't know about elsewise");
-        s.println();
-        s.println("a = row2 / row 3 = " + minProportions[2][3]);
-        s.println("a = (row2 / row 3) - PI = " + (minProportions[2][3] - Math.PI));
-        s.println("accurate to the binary 2^-" + numberPlaces[0] + " place");
-        double a = minProportions[2][3] - Math.PI;
-        s.println();
-        s.println("b = row1 / row 0 = " + minProportions[1][0]);
-        s.println("b = (row1 / row 1) - (PI/3) = " + (minProportions[1][0] - Math.PI / 3));
-        s.println("accurate to the binary 2^-" + numberPlaces[1] + " place");
-        double b = minProportions[1][1] - Math.PI / 3;
-        s.println();
-        s.println("c = (row0+row1)/(row2+row3) = " + firstTwoOverSecondTwo);
-        s.println("c = (row0+row1)/(row2+row3) - PhiSquared = " + (firstTwoOverSecondTwo - PhiSquared));
-        s.println("accurate to the binary 2^-" + numberPlaces[2] + " place");
-        double c = firstTwoOverSecondTwo - PhiSquared;
-        s.println();
-        s.println("As well as the 1's and 2's place makes for 7, 11, and 10 accurate digits");
+//        s.println("the following only apply to rule 150, i don't know about elsewise");
+//        s.println();
+//        s.println("a = row2 / row 3 = " + minProportions[2][3]);
+//        s.println("a = (row2 / row 3) - PI = " + (minProportions[2][3] - Math.PI));
+//        s.println("accurate to the binary 2^-" + numberPlaces[0] + " place");
+//        double a = minProportions[2][3] - Math.PI;
+//        s.println();
+//        s.println("b = row1 / row 0 = " + minProportions[1][0]);
+//        s.println("b = (row1 / row 1) - (PI/3) = " + (minProportions[1][0] - Math.PI / 3));
+//        s.println("accurate to the binary 2^-" + numberPlaces[1] + " place");
+//        double b = minProportions[1][1] - Math.PI / 3;
+//        s.println();
+//        s.println("c = (row0+row1)/(row2+row3) = " + firstTwoOverSecondTwo);
+//        s.println("c = (row0+row1)/(row2+row3) - PhiSquared = " + (firstTwoOverSecondTwo - PhiSquared));
+//        s.println("accurate to the binary 2^-" + numberPlaces[2] + " place");
+//        double c = firstTwoOverSecondTwo - PhiSquared;
+//        s.println();
+//        s.println("As well as the 1's and 2's place makes for 7, 11, and 10 accurate digits");
     }
 
     /**
      * Displays some nifty information about rule 150's 4x4 hash error heat map
-     * @param specificRule only written for rule 150
-     * @param doChangeScore n/a, untested with True
-     * @param changeScoreTrials n/a, untested with other than 0
-     * @param size n/a, only written for size 4
+     *
      */
-    public void oneFiftyDisplay(int specificRule, boolean doChangeScore, int changeScoreTrials, int size) {
-        //All of these min/max
-        //
-        //Error rate
-        //heat map
-        //solution distro
-        //Pi/Phi stuff
+    public void oneFiftyDisplay() {
+        int specificRule = 150;
+        int size = 4;
         System.out.println("Specific: " + specificRule);
-        //System.out.println("numberBoards: " + numberBoards[specificRule]);
-        //System.out.println("Min errors: " + minErrorBuckets[specificRule] + " " + String.format("%.4f", (double)minErrorBuckets[specificRule]/(double)numberBoards[specificRule]));
-        //System.out.println("Max errors: " + maxErrorBuckets[specificRule] + " " + String.format("%.4f",(double)maxErrorBuckets[specificRule]/(double)numberBoards[specificRule]));
-        if (doChangeScore) {
-            System.out.println("Change score: " + changeScoreTrials);
-        }
+        initialize(4);
+        //Does the rule's truth table for the hash
+        individualRule(150,4,false,0,false,0,false);
         System.out.println();
-        customArray.plusArrayDisplay(minErrorMap[specificRule], false, false, "minErrorMap");
-//        customArray.plusArrayDisplay(maxErrorMap[specificRule], false, false, "maxErrorMap");
-//        System.out.println("minSolutionDistro[] " + Arrays.toString(minSolutionDistro));
-//        System.out.println("maxSolutionDistro[] " + Arrays.toString(maxSolutionDistro));
-//        System.out.println("sameErrorMin[] " + Arrays.toString(sameErrorMin[specificRule]) + " " + String.format("%.4f",(double)minNumberOfSameSolutions[specificRule]/(double)numberBoards[specificRule]));
-//        System.out.println("sameErrorMax[] " + Arrays.toString(sameErrorMax[specificRule]) + " " + String.format("%.4f",(double)maxNumberOfSameSolutions[specificRule]/(double)numberBoards[specificRule]));
+        //
+         //
+         //
+         //Sums the columns for each row of the min codeword error heat map and puts their ratios in minProportions
+        //The first two rows are summed and the last two rows are summed and this proportion is calculated
+        CustomArray.plusArrayDisplay(minErrorMap[specificRule], false, false, "minErrorMap");
         double[] minRowTots = new double[size];
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
@@ -951,22 +727,14 @@ public class errorMinimizationHash {
                 maxProportions[row][column] = maxRowTots[row] / maxRowTots[column];
             }
         }
-//        System.out.println("\nmaxProportions[][]");
-//        for (int row = 0; row < size; row++) {
-//            for (int column = 0; column < size; column++) {
-//                System.out.print(String.format("%.4f", maxProportions[row][column]) + " ");
-//
-//            }
-//            System.out.print("\n");
-//        }
-//        System.out.print("\n");
-//        System.out.println("numberOfSameMinimum " + minNumberOfSameSolutions[specificRule]);
-//        System.out.println("numberOfSameMaximum " + maxNumberOfSameSolutions[specificRule]);
+        //
+         //
+         //
+         //This section takes specific ratios from above, and compares their binary with Pi and Phi in binary
+        //And checks to see how many significant figures the ratios have to the constants
         StringPrint s = new StringPrint();
-        double PiOverThree = Math.PI / 3;
         double PhiSquared = (Math.sqrt(5) + 1) / 2;
         PhiSquared *= PhiSquared;
-        double[] relevantProportions = new double[]{minProportions[2][3], minProportions[1][0], firstTwoOverSecondTwo};
         int[] numberPlaces = new int[3];
         for (int power = 1; power < 12; power++) {
             int in = (int) ((minProportions[2][3] / Math.pow(2, -power)) % 2);
@@ -992,6 +760,10 @@ public class errorMinimizationHash {
                 break;
             }
         }
+        //
+         //
+         //
+         //Displays the relevant information
         s.println();
         s.println("a = row2 / row 3 = " + minProportions[2][3]);
         s.println("a = (row2 / row 3) - PI = " + (minProportions[2][3] - Math.PI));
@@ -1013,15 +785,17 @@ public class errorMinimizationHash {
 
     /**
      * Outputs basic data about an individual rule
-     * @param size side length of the square you want to operate on
-     * @param doChangeScore if this is set, it calls a function that randomly changes the address and sees how much the codeword changes, significantly affects runtime,
-     *                      has not been tested in a while
+     *
+     * @param size              side length of the square you want to operate on
+     * @param doChangeScore     if this is set, it calls a function that randomly changes the address and sees how much the codeword changes, significantly affects runtime,
+     *                          has not been tested in a while
      * @param changeScoreTrials if doChangeScore is true this is how may random attempts doChangeScore() makes on a given codeword, significantly affects runtime
-     * @param doRandom size 4 is manageable computationally, larger than that you would want to set this true
-     * @param numTrials if doRandom is set, this is how many random attempts it makes at analyzing a given rule
-     * @param doVoting does voting on reconstruction, has not been tested in a while
+     * @param doRandom          size 4 is manageable computationally, larger than that you would want to set this true
+     * @param numTrials         if doRandom is set, this is how many random attempts it makes at analyzing a given rule
+     * @param doVoting          does voting on reconstruction, has not been tested in a while
      */
     public void individualRuleManager(int rule, int size, boolean doChangeScore, int changeScoreTrials, boolean doRandom, int numTrials, boolean doVoting) {
+        //Initializes variables, see Javadoc for detailed explanation
         sameErrorMin = new int[256][(int) Math.pow(2, size)];
         sameErrorMax = new int[256][(int) Math.pow(2, size)];
         minNumberOfSameSolutions = new int[256];
@@ -1037,42 +811,56 @@ public class errorMinimizationHash {
         numberBoards = new int[256];
         minSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
         maxSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
+        //Gets the truth tables of the rule
         individualRule(rule, size, doChangeScore, changeScoreTrials, doRandom, numTrials, doVoting);
+        //Displays
         individualRuleDisplay(rule, doChangeScore, changeScoreTrials, size);
-        //System.out.println(Arrays.toString(basicECA.ecaWolframCodes[rule]));
     }
 
     /**
      * Generates the entire truth table for a given size of a particular ECA rule
-     * @param rule 0-255 ECA rule
-     * @param size side length of the square you want to operate on
-     * @param doChangeScore if this is set, it calls a function that randomly changes the address and sees how much the codeword changes, significantly affects runtime,
-     *                      has not been tested in a while
+     *
+     * @param rule              0-255 ECA rule
+     * @param size              side length of the square you want to operate on
+     * @param doChangeScore     if this is set, it calls a function that randomly changes the address and sees how much the codeword changes, significantly affects runtime,
+     *                          has not been tested in a while
      * @param changeScoreTrials if doChangeScore is true this is how may random attempts doChangeScore() makes on a given codeword, significantly affects runtime
-     * @param doRandom size 4 is manageable computationally, larger than that you would want to set this true
-     * @param numTrials if doRandom is set, this is how many random attempts it makes at analyzing a given rule
-     * @param doVoting does voting on reconstruction, has not been tested in a while
+     * @param doRandom          size 4 is manageable computationally, larger than that you would want to set this true
+     * @param numTrials         if doRandom is set, this is how many random attempts it makes at analyzing a given rule
+     * @param doVoting          does voting on reconstruction, has not been tested in a while
      */
     public void individualRule(int rule, int size, boolean doChangeScore, int changeScoreTrials, boolean doRandom, int numTrials, boolean doVoting) {
+        //for-loop counters
         int trial;
         int row;
         int column;
+        //Number of possible neighborhoods
         int numBoards = (int) Math.pow(2, size * size);
         if (doRandom) numBoards = numTrials;
+        //initializes voting control variable
         int numVotes = 1;
         if (doVoting) numVotes = 8;
+        //binary neighborhood
         field = new int[size][size];
+        //a temporary field[][]
         int[][] temp = new int[size][size];
         System.out.println("rule " + rule);
+        //
+         //
+         //
+         //Main loop, if doRandom then it selects random addresses
+        //if !doRandom it finds the codeword for every possible binary size x size neighborhood
         for (trial = 0; trial < numBoards; trial++) {
             //if (trial % 1000 == 0) System.out.println("trial " + trial);
             if (!doRandom) {
+                //Random binary array
                 for (row = 0; row < size; row++) {
                     for (column = 0; column < size; column++) {
                         field[row][column] = ((trial / (int) Math.pow(2, size * column + row)) % 2);
                     }
                 }
             } else {
+                //Initializes field[][] to the binary value of trial
                 for (row = 0; row < size; row++) {
                     for (column = 0; column < size; column++) {
                         field[row][column] = rand.nextInt(0, 2);
@@ -1091,9 +879,12 @@ public class errorMinimizationHash {
                     }
                 }
                 temp = customArray.reflectRotateTranspose(temp, rotation);
-                temp = findMinimizingCodeword(rule, temp, basicECA.ecaWolframCodes[rule]);
+                //Finds the codewords
+                temp = findMinimizingCodeword(rule, temp);
+                //Unreflects, untransposes the solution grids
                 minTemp = customArray.reflectRotateTranspose(localMinSolution, rotation);
                 maxTemp = customArray.reflectRotateTranspose(localMaxSolution, rotation);
+                //Tallies the results as votes
                 for (row = 0; row < size; row++) {
                     for (column = 0; column < size; column++) {
                         minVote[row][column] += minTemp[row][column];
@@ -1101,6 +892,9 @@ public class errorMinimizationHash {
                     }
                 }
             }
+            //If voting,
+             //Tallies the votes and compares the results to the original input
+            //Discrepancies in this comparison are totalled
             totMinErrors = 0;
             totMaxErrors = 0;
             for (row = 0; row < size && doVoting; row++) {
@@ -1118,6 +912,8 @@ public class errorMinimizationHash {
                     maxErrorMap[rule][row][column] += (((maxVote[row][column] ^ field[row][column])));
                 }
             }
+            //If no voting,
+            //Compares the results to the original input and sums the discrepancies as errors
             for (row = 0; row < size && !doVoting; row++) {
                 for (column = 0; column < size; column++) {
                     totMinErrors += (minVote[row][column] ^ field[row][column]);
@@ -1126,6 +922,7 @@ public class errorMinimizationHash {
                     maxErrorMap[rule][row][column] += (((maxVote[row][column] ^ field[row][column])));
                 }
             }
+            //Stashes the results in the truth table for the rule
             for (column = 0; column < size && !doRandom; column++) {
                 minSolutionsAsWolfram[rule][trial] += (int) Math.pow(2, column) * minVote[0][column];
                 maxSolutionsAsWolfram[rule][trial] += (int) Math.pow(2, column) * maxVote[0][column];
@@ -1161,17 +958,28 @@ public class errorMinimizationHash {
         //
         //
         //Initialization
+        //size of array
         int size = in.length;
+        //random number generator
         Random rand = new Random();
-        double out = 0;
+        //total quantity of errors for every change
         totLocalErrors = 0;
+        //cumulative Hamming distance between the original codeword and its changed codeword
         totHammingChange = 0;
+        //each changed grid sample is scored for change
+        //this changeScore is sort of the same as the errorScore only instead of discrepancies being added bit-wise changes are being added in the same way
         weightedChangeScore = 0;
+        //in[][] randomly changed on every sample
         int[][] changed = new int[size][size];
+        //the minimizing codeword for changed[][] produces this for output
+        int[][] fitted;
+        //
+         //
+         //These are all for-loop counters
+        //Initialized here to save some runtime on inline declarations
         int row;
         int column;
         int change;
-        int[][] fitted;
         int changes;
         int power;
         int randRow;
@@ -1184,7 +992,9 @@ public class errorMinimizationHash {
                     changed[row][column] = in[row][column];
                 }
             }
+            //Decides how many bits it's going to change
             int numChanges = rand.nextInt(0, 2 * size);
+            //Makes that many changes on random rows and columns
             for (change = 0; change < numChanges; change++) {
                 randRow = rand.nextInt(0, size);
                 randColumn = rand.nextInt(0, size);
@@ -1192,7 +1002,7 @@ public class errorMinimizationHash {
                 weightedChangeScore += (int) Math.pow(2, randRow);
             }
             //Finds the new minimum neighborhood
-            fitted = findMinimizingCodeword(rule, changed, basicECA.ecaWolframCodes[rule]);
+            fitted = findMinimizingCodeword(rule, changed);
             //Scores the new neighborhood
             changes = 0;
             for (power = 0; power < size; power++) {
@@ -1204,6 +1014,7 @@ public class errorMinimizationHash {
                     errorScore += ((int) Math.pow(2, row) * (fitted[row][column] ^ in[row][column]));
                 }
             }
+            //tallies
             totHammingChange += changes;
             totLocalErrors += errorScore;
         }

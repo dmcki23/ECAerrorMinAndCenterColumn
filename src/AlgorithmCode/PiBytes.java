@@ -1,7 +1,5 @@
 package AlgorithmCode;
 
-import java.util.Arrays;
-
 /**
  * Various Pi related functions, most relevant to a 1-2% error rate in reconstructing the lossy compression
  * hash minimums
@@ -49,7 +47,7 @@ public class PiBytes {
     }
 
     /**
-     * Calculates PI by evenly dividing a circle of radius one into 2^n angles and adding the outer edges, so square, then 8 triangles, then 16, then 32 etc...
+     * Calculates PI by evenly dividing a circle of radius one into 2^n triangles and adding the outer edges, so square, then 8 triangles, then 16, then 32 etc...
      *
      * @param cycles how many triangles to divide the circle into, minimum 2
      * @return PI calculated via triangle
@@ -122,7 +120,7 @@ public class PiBytes {
                     }
                 }
             }
-            int[] codeword = m.findMinimizingCodeword(204,cell,new int[]{0,0,0,0,0,0,0,0})[0];
+            int[] codeword = m.findMinimizingCodeword(204,cell)[0];
             for (int row = 0; row < 8; row++){
                 out[l][row] = codeword[row];
             }

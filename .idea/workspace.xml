@@ -4,29 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="FastMinTransform Addition and SwingApplyFastMinTransform can be looked up in the javadocs at some point&#10;&#10;removed the center column part of this project to its own intellij project">
-      <change afterPath="$PROJECT_DIR$/src/AlgorithmCode/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/CustomLibrary/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/ECAhashPaper/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/TrimmedCode/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/package-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="Rough draft Javadoc comments done">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ECAerrorMinAndCenterColumn.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ECAminErrorFit.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Addition.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Addition.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/HashBib.bib" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/HashBib.bib" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Hadamard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hadamard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/HashTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/HashTransformManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransformManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/PiBytes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/PiBytes.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SwingApplyFastMinTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/SwingApplyFastMinTransform.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/AttemptSize8.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TrimmedCode/AttemptSize8.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/trimCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TrimmedCode/trimCode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/errorMinimizationHash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/errorMinimizationHash.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Addition.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Addition.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hadamard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hadamard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTransformManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransformManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/PiBytes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/PiBytes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/SwingApplyFastMinTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/SwingApplyFastMinTransform.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/errorMinimizationHash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/errorMinimizationHash.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/AttemptSize8.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/FastMinCollisionDetection.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/FastMinStaging.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/WAVfile.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/package-info.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/trimCode.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,7 +131,7 @@
       <workItem from="1743122816812" duration="12591000" />
       <workItem from="1743184458496" duration="37931000" />
       <workItem from="1743383175923" duration="19573000" />
-      <workItem from="1743870066775" duration="10797000" />
+      <workItem from="1743870066775" duration="19622000" />
     </task>
     <task id="LOCAL-00001" summary="Have gathered the code from several local projects into this, initial commit">
       <option name="closed" value="true" />
@@ -325,7 +317,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743528831821</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Rough draft Javadoc comments done">
+      <option name="closed" value="true" />
+      <created>1743882358124</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1743882358124</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -378,7 +378,8 @@
     <MESSAGE value="SwingApplyFastMinTransform working" />
     <MESSAGE value="check() and checkInverse() working to 0.025 error/bit" />
     <MESSAGE value="FastMinTransform Addition and SwingApplyFastMinTransform can be looked up in the javadocs at some point&#10;&#10;removed the center column part of this project to its own intellij project" />
-    <option name="LAST_COMMIT_MESSAGE" value="FastMinTransform Addition and SwingApplyFastMinTransform can be looked up in the javadocs at some point&#10;&#10;removed the center column part of this project to its own intellij project" />
+    <MESSAGE value="Rough draft Javadoc comments done" />
+    <option name="LAST_COMMIT_MESSAGE" value="Rough draft Javadoc comments done" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

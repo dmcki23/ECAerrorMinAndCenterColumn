@@ -71,18 +71,10 @@ public class SwingApplyFastMinTransform extends JFrame {
     SwingApplyFastMinTransform(String titleString) throws IOException {
         drawPanel = new drawingPanel();
         framesOfHashing = new int[8][16 * 256][16 * 256];
-        //this.setSize(1030, 1335);
-        //this.setVisible(true);
-        //JFrame frame = new JFrame();
-        //frame.setLayout(new GridLayout());
-        //getImage();
         this.setTitle(titleString);
         this.setSize(1030, 850);
         this.setLocation(250, 250);
-        //panel = new JPanel();
         this.add(drawPanel);
-        //frame.add(this);
-        // this.setVisible(true);
         this.setVisible(true);
     }
 
@@ -111,7 +103,6 @@ public class SwingApplyFastMinTransform extends JFrame {
      * @throws IOException
      */
     public void getImage() throws IOException {
-        //String filepath = "src/ECAhashPaper/screenshotFriday.bmp";
         String filepath = "testScreenshot.bmp";
         File file = new File(filepath);
         inImage = ImageIO.read(file);
@@ -127,6 +118,7 @@ public class SwingApplyFastMinTransform extends JFrame {
         System.out.println("inRaster.length/inImage.getHeight(): " + inRaster.length / inImage.getHeight());
         System.out.println("inRaster.length/inImage.getWidth(): " + inRaster.length / inImage.getWidth());
         System.out.println("inRaster.length/inImage.getHeight()/inImage.getWidth(): " + inRaster.length / inImage.getHeight() / inImage.getWidth());
+        //Transforms the image into its appropriate local algorithm format
         for (int row = 0; row < inImage.getHeight(); row++) {
             for (int column = 0; column < inImage.getWidth(); column++) {
                 for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
@@ -137,7 +129,9 @@ public class SwingApplyFastMinTransform extends JFrame {
                 }
             }
         }
+        //Do the transform
         framesOfHashing = fmt.ecaMinTransform(field, fmt.unpackedList[2], depth);
+        //Convert the transform back into appropriate bitmap RGB format
         rasterized = new int[depth + 1][inImage.getHeight()][inImage.getWidth()];
         for (int d = 1; d <= depth; d++) {
             for (int row = 0; row < inImage.getHeight(); row++) {
@@ -150,22 +144,17 @@ public class SwingApplyFastMinTransform extends JFrame {
                 }
             }
         }
-        //reconstructedField = rasterizedRF;
-        //discreteField = rasterizedRF;
-        System.out.println("before repaint");
         drawPanel.triggerRepaint();
-        System.out.println("after repaint");
+        //
+         //
+         //
+         //The rest of this does the GIF file
         BufferedImage[] images = new BufferedImage[rasterized.length];
         int[][] imagesRasters = new int[depth + 1][inImage.getHeight() * inImage.getWidth()];
-        //ImageWriter writer = ImageIO.getImageWritersByFormatName("bmp").next();
         ImageWriter gifWriter = ImageIO.getImageWritersByFormatName("gif").next();
         ImageOutputStream outputStream = ImageIO.createImageOutputStream(new File("src/ECAhashPaper/screenShotGIF.gif"));
-        //ImageWriteParam gifWriteParam = new ImageWriteParam(null);
         gifWriter.setOutput(outputStream);
         gifWriter.prepareWriteSequence(null);
-        int delayTime = 200;
-        //ImageReader imageReader = ImageIO.getImageReadersByFormatName("gif").next();
-        //IIOMetadata iioMetadata = imageReader.getImageMetadata(0);
         for (int repeat = 0; repeat < 2; repeat++) {
             for (int d = 0; d <= depth; d++) {
                 File outFile = new File("src/ECAhashPaper/processedDepth" + d + ".bmp");
@@ -178,26 +167,7 @@ public class SwingApplyFastMinTransform extends JFrame {
                 }
                 ImageIO.write(outImage, "bmp", outFile);
                 IIOImage image = new IIOImage(outImage, null, null);
-                //ImageWriteParam imageWriteParam = gifWriter.getDefaultWriteParam();
-                //imageWriteParam.set
-                //      image.setMetadata(metadata);
                 gifWriter.writeToSequence(image, null);
-//            BufferedImage frame = outImage;
-//            IIOMetadata imageMetaData = writer.getDefaultImageMetadata(new ImageTypeSpecifier(frame), gifWriteParam);
-//            String metaFormatName = imageMetaData.getNativeMetadataFormatName();
-//            IIOMetadataNode root = (IIOMetadataNode) imageMetaData.getAsTree(metaFormatName);
-//            IIOMetadataNode graphicsControlExtensionNode = getNode(root, "GraphicControlExtension");
-//            graphicsControlExtensionNode.setAttribute("delayTime", Integer.toString(delays[i] / 10)); // Delay time in hundredths of a second
-//            graphicsControlExtensionNode.setAttribute("disposalMethod", "none");
-//            IIOMetadataNode applicationExtensionsNode = getNode(root, "ApplicationExtensions");
-//            IIOMetadataNode child = new IIOMetadataNode("ApplicationExtension");
-//            child.setAttribute("applicationID", "NETSCAPE");
-//            child.setAttribute("authenticationCode", "2.0");
-//            byte[] b = ("\001" + ((i == frames.length - 1) ? "\000" : "\001") + "\000").getBytes();
-//            child.setUserObject(b);
-//            applicationExtensionsNode.appendChild(child);
-//            imageMetaData.setFromTree(metaFormatName, root);
-//            writer.writeToSequence(new javax.imageio.IIOImage(frame, null, imageMetaData), gifWriteParam);
             }
         }
         gifWriter.endWriteSequence();
@@ -227,20 +197,14 @@ public class SwingApplyFastMinTransform extends JFrame {
          * @param g the <code>Graphics</code> context in which to paint
          */
         public void paintComponent(Graphics g) {
-            //super.paintComponent(g);
             g.setColor(Color.WHITE);
             g.fillRect(0, 0, 1030, 830);
             g.setColor(Color.BLACK);
-//
-//        realRaster  = new int[1];
-//        imRaster = new int[1];
             displayImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_INT_RGB);
             displayRaster = ((DataBufferInt) displayImage.getRaster().getDataBuffer()).getData();
             for (int row = 0; row < inImage.getHeight(); row++) {
                 for (int column = 0; column < inImage.getWidth(); column++) {
                     for (int d = depth; d <= depth; d++) {
-                        //Change of color scheme here
-                        //realRaster[row * 1000 + column] += (int) Math.pow(2, 23-power) * (complexField[row][column].real / Math.pow(2, -power + 3) % 2);
                         displayRaster[row * inImage.getWidth() + column] = rasterized[d][row][column];
                     }
                 }

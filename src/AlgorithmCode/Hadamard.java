@@ -93,7 +93,9 @@ public class Hadamard {
     }
 
     /**
-     * Tests the Hadamard and inverse Hadamard matrices
+     * Tests the Hadamard and inverse Hadamard matrices. Does the Hadamard-Walsh transform on all 2^size
+     * possible binary input arrays of size size. It then does the inverse and if the inverse is not the original,
+     * it flags the whole operation as incorrect.
      * @param size size of matrices to be tested
      * @return Hadamard matrix
      */
