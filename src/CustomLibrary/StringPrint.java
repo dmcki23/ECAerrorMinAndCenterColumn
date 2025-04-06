@@ -16,7 +16,9 @@ public class StringPrint {
         System.out.print(instring);
         return instring;
     }
-    public String getAggregatedOutput() {
+    public String aggregatedOutput() {
+
         return outstring;
     }
+
 }

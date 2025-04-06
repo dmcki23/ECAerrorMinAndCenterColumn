@@ -4,21 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="Rough draft Javadoc comments done">
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="rough draft inline comments are done">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Addition.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Addition.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hadamard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hadamard.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTransformManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransformManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/PiBytes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/PiBytes.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/SwingApplyFastMinTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/SwingApplyFastMinTransform.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/errorMinimizationHash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/errorMinimizationHash.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/AttemptSize8.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/FastMinCollisionDetection.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/FastMinStaging.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/WAVfile.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/package-info.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/trimCode.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CustomLibrary/BasicECA.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CustomLibrary/CustomArray.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CustomLibrary/CustomArray.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CustomLibrary/PermutationsFactoradic.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CustomLibrary/StringPrint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CustomLibrary/StringPrint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,7 +128,7 @@
       <workItem from="1743122816812" duration="12591000" />
       <workItem from="1743184458496" duration="37931000" />
       <workItem from="1743383175923" duration="19573000" />
-      <workItem from="1743870066775" duration="19622000" />
+      <workItem from="1743870066775" duration="31345000" />
     </task>
     <task id="LOCAL-00001" summary="Have gathered the code from several local projects into this, initial commit">
       <option name="closed" value="true" />
@@ -325,7 +322,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743882358124</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="rough draft inline comments are done">
+      <option name="closed" value="true" />
+      <created>1743895420503</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1743895420503</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -379,7 +384,8 @@
     <MESSAGE value="check() and checkInverse() working to 0.025 error/bit" />
     <MESSAGE value="FastMinTransform Addition and SwingApplyFastMinTransform can be looked up in the javadocs at some point&#10;&#10;removed the center column part of this project to its own intellij project" />
     <MESSAGE value="Rough draft Javadoc comments done" />
-    <option name="LAST_COMMIT_MESSAGE" value="Rough draft Javadoc comments done" />
+    <MESSAGE value="rough draft inline comments are done" />
+    <option name="LAST_COMMIT_MESSAGE" value="rough draft inline comments are done" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

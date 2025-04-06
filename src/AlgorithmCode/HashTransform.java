@@ -1,5 +1,10 @@
 package AlgorithmCode;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 /**
  *
  */
@@ -7,16 +12,16 @@ public class HashTransform {
     /**
      * Hash subroutines
      */
-    errorMinimizationHash m = new errorMinimizationHash();
+    public errorMinimizationHash m = new errorMinimizationHash();
     /**
      * The entire set of min and max codewords of [0,15,51,85,170,204,240,255]
      */
-    int[][][] flatWolframs = new int[2][8][256 * 256];
+    public int[][][] flatWolframs = new int[2][8][256 * 256];
     /**
      * The 8 rules referred to in the paper that have an even distribution of codewords
      * and unique codewords for every input
      */
-    int[] unpackedList = new int[]{0, 15, 51, 85, 170, 204, 240, 255};
+    public int[] unpackedList = new int[]{0, 15, 51, 85, 170, 204, 240, 255};
 
     /**
      * Does the Hash transform on 1D input
@@ -74,7 +79,7 @@ public class HashTransform {
      * @return the input data, rehashed with neighbors 2^depth apart
      */
     public int[][][] ecaMinTransform(int[][] input, int rule, int depth) {
-        initWolframs();
+        //initWolframs();
         int rows = input.length;
         int cols = input[0].length;
         int[][][] deepInput = new int[depth + 1][rows][cols];
@@ -94,11 +99,11 @@ public class HashTransform {
                     int phasePower = (int) Math.pow(2, d - 1);
                     for (int r = 0; r < 2; r++) {
                         for (int c = 0; c < 2; c++) {
-                            cell += (int) Math.pow(4, 2 * r + c) * deepInput[depth - 1][(row + phasePower * r) % rows][(col + phasePower * c) % cols];
+                            cell += (int) Math.pow(16, 2 * r + c) * deepInput[d - 1][(row + phasePower * r) % rows][(col + phasePower * c) % cols];
                         }
                     }
                     //stores the neighborhood's codeword
-                    deepInput[depth][row][col] = (m.minSolutionsAsWolfram[rule][cell]);
+                    deepInput[d][row][col] = (m.minSolutionsAsWolfram[rule][cell]);
                 }
             }
         }
@@ -114,7 +119,7 @@ public class HashTransform {
      * @return the input data, rehashed with neighbors 2^depth apart
      */
     public int[][][] ecaMaxTransform(int[][] input, int rule, int depth) {
-        initWolframs();
+        //initWolframs();
         int rows = input.length;
         int cols = input[0].length;
         int[][][] deepInput = new int[depth + 1][rows][cols];
@@ -133,11 +138,11 @@ public class HashTransform {
                     int phasePower = (int) Math.pow(2, d - 1);
                     for (int r = 0; r < 2; r++) {
                         for (int c = 0; c < 2; c++) {
-                            cell += (int) Math.pow(4, 2 * r + c) * deepInput[depth - 1][(row + phasePower * r) % rows][(col + phasePower * c) % cols];
+                            cell += (int) Math.pow(16, 2 * r + c) * deepInput[d - 1][(row + phasePower * r) % rows][(col + phasePower * c) % cols];
                         }
                     }
                     //stores the neighborhood's codeword
-                    deepInput[depth][row][col] = (m.maxSolutionsAsWolfram[rule][cell]);
+                    deepInput[d][row][col] = (m.maxSolutionsAsWolfram[rule][cell]);
                 }
             }
         }
@@ -148,11 +153,62 @@ public class HashTransform {
      * Initializes the set of hash truth tables for [0,15,51,85,170,204,240,255]
      */
     public void initWolframs() {
+        for (int r = 0; r < 8; r++){
+            m.individualRule(unpackedList[r],4,false,0,false,0,false);
+        }
         //Initialize the truth tables for both the min and max codewords of the set
         for (int spot = 0; spot < 8; spot++) {
             for (int column = 0; column < 256 * 256; column++) {
                 flatWolframs[0][spot][column] = m.minSolutionsAsWolfram[unpackedList[spot]][column];
                 flatWolframs[1][spot][column] = m.maxSolutionsAsWolfram[unpackedList[spot]][column];
+            }
+        }
+    }
+    public void writeSetToFile() throws IOException {
+        String filename = "src/AlgorithmCode/tupleWolframs.txt";
+        initWolframs();
+        File file = new File(filename);
+        FileWriter fw = new FileWriter(file);
+        for (int posNeg = 0; posNeg < 2; posNeg++) {
+            for (int t = 0; t < 8; t++) {
+                String outstring = "";
+                for (int row = 0; row < 256 * 256; row++) {
+                    outstring += flatWolframs[posNeg][t][row]+" ";
+                }
+                fw.write(outstring+"\n");
+
+            }
+        }
+        fw.close();
+    }
+    public void readSetFromFile() throws IOException {
+        String filename = "src/AlgorithmCode/tupleWolframs.txt";
+        flatWolframs = new int[2][8][65536];
+        File file = new File(filename);
+        FileReader reader = new FileReader(file);
+        int length = 1;
+        char[] buffer = new char[length];
+        int charactersRead = reader.read(buffer, 0, length);
+        String fileString = "";
+        while (charactersRead != -1) {
+            fileString += new String(buffer, 0, charactersRead);
+        }
+        int index = 0;
+        int posNeg = 0;
+        int t = 0;
+        String[][] wolframStrings = new String[2][8];
+        int start = 0;
+        int end = 0;
+        for (int fileSpot = 0; fileSpot < fileString.length(); fileSpot++) {
+            if (fileString.charAt(fileSpot) == '\n') {
+                end = fileSpot;
+                wolframStrings[posNeg][t] = fileString.substring(start, end);
+                start = end + 2;
+                t++;
+                if (t == 8) {
+                    t = 0;
+                    posNeg = 1;
+                }
             }
         }
     }

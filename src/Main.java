@@ -1,5 +1,4 @@
 import AlgorithmCode.*;
-import TrimmedCode.AttemptSize8;
 
 import java.io.IOException;
 
@@ -48,9 +47,10 @@ public class Main {
         //fastMinTransform.oneHammingChange(1);
         //fastMinTransform.check();
         //fastMinTransform.reconstructFromPrimitives();
-        //AlgorithmCode.Addition addition = new AlgorithmCode.Addition();
+        //AlgorithmCode.Addition addition = import TrimmedCode.AttemptSize8;
+        //new AlgorithmCode.Addition();
         //addition.testAddition();
-        HashTransformManager fastMinTransformApril = new HashTransformManager();
+        HashTransformManager hashTransformManager = new HashTransformManager();
         //fastMinTransformApril.check();
         //fastMinTransform.check();
         //fastMinTransformApril.checkErrorWeights();
@@ -61,12 +61,34 @@ public class Main {
         //fastMinTransformApril.checkOneTileSlideNextDoor();
         //fastMinTransformApril.checkOneTileSlide();
         //fastMinTransformApril.checkOneTileSlideNextDoorRandomized();
-        AttemptSize8 attemptSize8 = new AttemptSize8();
+        //AttemptSize8 attemptSize8 = new AttemptSize8();
         //attemptSize8.checkLastRowWeight();
-        m.individualRuleManager(150,4,false,0,false,0,false);
+        //m.individualRuleManager(150,4,false,0,false,0,false);
         PiBytes piBytes = new PiBytes();
         //piBytes.checkStar();
-
+        //
+        //
+        //
+        //
+        //Testing post trim, post javadoc, post inline commenting, post april 5 2025
+        //Everything after this line has been tested post 4-5-2025, DM
+        //m.doAllRules(4,false,0,false,0,false);
+//        hashTransformManager.hash.initWolframs();
+//        for (int posNeg = 0; posNeg < 2; posNeg++) {
+//            for (int row = 0; row < 8; row++) {
+//                for (int col = 0; col < 64; col++) {
+//                    System.out.print(hashTransformManager.hash.flatWolframs[posNeg][row][col] + "\t");
+//                }
+//                System.out.print("\n");
+//            }
+//        }
+//
+        //hashTransformManager.check();
+        //Hadamard hadamard = new Hadamard();
+        //hadamard.test(16);
+        //m.oneFiftyDisplay();
+        //SwingApplyFastMinTransform swingApplyFastMinTransform = new SwingApplyFastMinTransform();
+        //swingApplyFastMinTransform.getImage();
 
     }
 }

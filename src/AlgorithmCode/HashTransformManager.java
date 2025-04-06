@@ -17,7 +17,7 @@ public class HashTransformManager {
     /**
      * Middle layer of transform code
      */
-    HashTransform fmt = new HashTransform();
+    public HashTransform hash = new HashTransform();
 
     /**
      * Attempts to reconstruct the original bitmap raster after doing one iteration of the hash transform
@@ -63,13 +63,13 @@ public class HashTransformManager {
      */
     public void checkInverse(int[][] in) {
         //load the minMax 8 tuple subset Wolfram codes
-        fmt.initWolframs();
+        hash.initWolframs();
         int[][][][] depthChart = new int[2][8][in.length][in[0].length];
         //puts the input data as layer 0 of the output data
         for (int posNeg = 0; posNeg < 2; posNeg++) {
             for (int t = 0; t < 8; t++) {
                 System.out.println("posNeg: " + posNeg + " t: " + t);
-                depthChart[posNeg][t] = fmt.initializeDepthZero(in, fmt.unpackedList[t])[1];
+                depthChart[posNeg][t] = hash.initializeDepthZero(in, hash.unpackedList[t])[1];
             }
         }
         //this array is the vote tally, location is influenced by 16 neighborhoods within a distance of 4
@@ -203,7 +203,7 @@ public class HashTransformManager {
      * checkInverse() result in the same reconstitution
      */
     public void checkErrorScoreVsHadamard() {
-        fmt.initWolframs();
+        hash.initWolframs();
         int totDifferent = 0;
         //For every 8-tuple element
         for (int posNeg = 0; posNeg < 1; posNeg++) {
@@ -212,7 +212,7 @@ public class HashTransformManager {
                 for (int input = 0; input < 16; input++) {
                     //Compare a single codeword tile's voting pattern
                     //to that codeword's Hadamard parity
-                    int[][] cell = fmt.m.generateWrappedECAsquare(input, fmt.unpackedList[t]);
+                    int[][] cell = hash.m.generateWrappedECAsquare(input, hash.unpackedList[t]);
                     //Do the voting
                     int error = 0;
                     for (int row = 0; row < 4; row++) {
@@ -267,7 +267,7 @@ public class HashTransformManager {
         //Random number generator
         Random rand = new Random();
         //Initialize the 8-tuple truth tables
-        fmt.initWolframs();
+        hash.initWolframs();
         //
         for (int trial = 0; trial < numTrials; trial++) {
             for (int row = 0; row < 5; row++) {
@@ -289,7 +289,7 @@ public class HashTransformManager {
             for (int word = 0; word < 4; word++) {
                 for (int posNeg = 0; posNeg < 2; posNeg++) {
                     for (int t = 0; t < 8; t++) {
-                        codewords[8 * posNeg + t][word] = fmt.flatWolframs[posNeg][t][address[word]];
+                        codewords[8 * posNeg + t][word] = hash.flatWolframs[posNeg][t][address[word]];
                     }
                 }
             }
@@ -315,7 +315,7 @@ public class HashTransformManager {
                     for (int word = 0; word < 4; word++) {
                         for (int posNeg = 0; posNeg < 2; posNeg++) {
                             for (int t = 0; t < 8; t++) {
-                                innerCodewords[8 * posNeg + t][word] = fmt.flatWolframs[posNeg][t][address[word]];
+                                innerCodewords[8 * posNeg + t][word] = hash.flatWolframs[posNeg][t][address[word]];
                             }
                         }
                     }
@@ -365,7 +365,7 @@ public class HashTransformManager {
         //All the neighborhoods' wrapped addresses' minMax codeword set values
         int[][][] slidingTuples = new int[65536][16][16];
         //Initialize the truth tables
-        fmt.initWolframs();
+        hash.initWolframs();
         //For every address find its wrapped neighborhood set's integer values
         for (int address = 0; address < 65536; address++) {
             //Generate the address's neighborhood array
@@ -385,7 +385,7 @@ public class HashTransformManager {
                     //Find all the subset's truth table values for that address
                     for (int posNeg = 0; posNeg < 2; posNeg++) {
                         for (int t = 0; t < 8; t++) {
-                            slidingTuples[address][4 * r + c][8 * posNeg + t] = fmt.flatWolframs[posNeg][t][slidingAddresses[address][4 * r + c]];
+                            slidingTuples[address][4 * r + c][8 * posNeg + t] = hash.flatWolframs[posNeg][t][slidingAddresses[address][4 * r + c]];
                         }
                     }
                 }
@@ -414,7 +414,7 @@ public class HashTransformManager {
         //Rule subset truth tables for every adddress
         int[][][] slidingTuples = new int[65536][4][16];
         //Initialize truth tables
-        fmt.initWolframs();
+        hash.initWolframs();
         //This initializes the truth tables for the sliding window on a single cell, just one row, one column, or one row and one column
         //A shorter version of the same thing in wrappedTileCodeWords()
         for (int address = 0; address < 65536; address++) {
@@ -430,7 +430,7 @@ public class HashTransformManager {
                     slidingAddresses[address][2 * r + c] = tot;
                     for (int posNeg = 0; posNeg < 2; posNeg++) {
                         for (int t = 0; t < 8; t++) {
-                            slidingTuples[address][2 * r + c][8 * posNeg + t] = fmt.flatWolframs[posNeg][t][slidingAddresses[address][2 * r + c]];
+                            slidingTuples[address][2 * r + c][8 * posNeg + t] = hash.flatWolframs[posNeg][t][slidingAddresses[address][2 * r + c]];
                         }
                     }
                 }
@@ -510,7 +510,7 @@ public class HashTransformManager {
                         changedSlidingAddresses[5 * r + c] = tot;
                         for (posNeg = 0; posNeg < 2; posNeg++) {
                             for (t = 0; t < 8; t++) {
-                                changedSlidingTuples[5 * r + c][8 * posNeg + t] = fmt.flatWolframs[posNeg][t][changedSlidingAddresses[5 * r + c]];
+                                changedSlidingTuples[5 * r + c][8 * posNeg + t] = hash.flatWolframs[posNeg][t][changedSlidingAddresses[5 * r + c]];
                             }
                         }
                     }
@@ -551,7 +551,7 @@ public class HashTransformManager {
                                 otherAddress[5 * r + c] = tot;
                                 for (posNeg = 0; posNeg < 2; posNeg++) {
                                     for (t = 0; t < 8; t++) {
-                                        otherTuple[5 * r + c][8 * posNeg + t] = fmt.flatWolframs[posNeg][t][otherAddress[5 * r + c]];
+                                        otherTuple[5 * r + c][8 * posNeg + t] = hash.flatWolframs[posNeg][t][otherAddress[5 * r + c]];
                                     }
                                 }
                             }
@@ -607,9 +607,9 @@ public class HashTransformManager {
             }
             //Find the minimizing codewords for grid[][]
             for (int t = 0; t < 8; t++) {
-                fmt.m.findMinimizingCodeword(fmt.unpackedList[t], grid);
-                tuple[t] = fmt.m.lastMinCodeword;
-                tuple[8 + t] = fmt.m.lastMaxCodeword;
+                hash.m.findMinimizingCodeword(hash.unpackedList[t], grid);
+                tuple[t] = hash.m.lastMinCodeword;
+                tuple[8 + t] = hash.m.lastMaxCodeword;
             }
             //Randomly change any row of the grid except the last and rehash
             for (int tr = 0; tr < numTrials; tr++) {
@@ -627,9 +627,9 @@ public class HashTransformManager {
                 }
                 //Rehash
                 for (int t = 0; t < 8; t++) {
-                    fmt.m.findMinimizingCodeword(fmt.unpackedList[t], changedGrid);
-                    changedTuple[t] = fmt.m.lastMinCodeword;
-                    changedTuple[8 + t] = fmt.m.lastMaxCodeword;
+                    hash.m.findMinimizingCodeword(hash.unpackedList[t], changedGrid);
+                    changedTuple[t] = hash.m.lastMinCodeword;
+                    changedTuple[8 + t] = hash.m.lastMaxCodeword;
                 }
                 //Check against original and tally appropriately
                 if (Arrays.equals(tuple, changedTuple)) {

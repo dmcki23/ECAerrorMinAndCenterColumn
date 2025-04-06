@@ -1,6 +1,5 @@
 package AlgorithmCode;
 
-import CustomLibrary.BasicECA;
 import CustomLibrary.CustomArray;
 import CustomLibrary.StringPrint;
 
@@ -172,10 +171,7 @@ public class errorMinimizationHash {
      * to be some kind of tiebreaker tbd.
      */
     int[] maxNumberOfSameSolutions;
-    /**
-     * Custom ECA library
-     */
-    BasicECA basicECA = new BasicECA();
+
     /**
      * Custom array display functions
      */
@@ -207,6 +203,7 @@ public class errorMinimizationHash {
         minSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
         maxSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
     }
+
 
     /**
      * Initializes arrays to size. Sizes above five bust it
@@ -514,7 +511,7 @@ public class errorMinimizationHash {
         }
         for (int row = 0; row < 256; row++) {
             for (int column = 0; column < 256; column++) {
-                if (minErrorBuckets[minSorted[row]] > minErrorBuckets[minSorted[column]]) {
+                if (minErrorBuckets[minSorted[row]] < minErrorBuckets[minSorted[column]]) {
                     int temp = minSorted[row];
                     minSorted[row] = minSorted[column];
                     minSorted[column] = temp;
@@ -557,6 +554,9 @@ public class errorMinimizationHash {
                 System.out.println(minErrorPerArray[n] + " " + maxErrorPerArray[n]);
                 System.out.println();
             }
+        }
+        for (int n = 0; n < 256; n++) {
+            System.out.println(minSorted[n] + " min error/bit " + minErrorPerBit[n] + " max error/bit" + maxErrorPerBit[n]);
         }
     }
 
@@ -780,7 +780,9 @@ public class errorMinimizationHash {
         s.println("accurate to the binary 2^-" + numberPlaces[2] + " place");
         double c = firstTwoOverSecondTwo - PhiSquared;
         s.println();
-        s.println("As well as the 1's and 2's place makes for 7, 11, and 10 accurate digits");
+        s.println("Throw in the 1's and 2's place makes for 7, 11, and 10 accurate digits");
+        s.println("If you compare that accuracy to the method of computing pi by the edges of increasing numbers of triangles");
+        s.println("it takes dividing 2Pi into 32 triangles to get 7 digits. If takes 32 iterations of the Wallis product");
     }
 
     /**
