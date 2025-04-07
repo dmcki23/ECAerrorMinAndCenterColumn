@@ -187,7 +187,7 @@ public class CustomArray {
      * @param modN  which mod
      * @return input with parameters applied
      */
-    static int[][] layerOf(int[][] in, int layer, int base, int modN) {
+    static int[][] layerOf(int[][] in, int layer, int base, int modN, boolean noZeros, boolean noSpaces) {
         int[][] out = new int[in.length][in[0].length];
         for (int row = 0; row < in.length; row++) {
             for (int column = 0; column < in.length; column++) {
@@ -195,6 +195,11 @@ public class CustomArray {
             }
         }
         return out;
+    }
+    public static void intoBinary(int[][] in, int layers, int base, int modN, boolean noZeros, boolean noSpaces) {
+        for (int place = 0; place < layers; place++) {
+            layerOf(in, place, base, modN, noZeros, noSpaces);
+        }
     }
 
     public int[][] reflectRotateTranspose(int[][] in, int rotation) {

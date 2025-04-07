@@ -1,5 +1,13 @@
 package AlgorithmCode;
 
+import CustomLibrary.CustomArray;
+
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -12,7 +20,7 @@ public class HashTransform {
     /**
      * Hash subroutines
      */
-    public errorMinimizationHash m = new errorMinimizationHash();
+    public HashTruthTables m = new HashTruthTables();
     /**
      * The entire set of min and max codewords of [0,15,51,85,170,204,240,255]
      */
@@ -22,6 +30,8 @@ public class HashTransform {
      * and unique codewords for every input
      */
     public int[] unpackedList = new int[]{0, 15, 51, 85, 170, 204, 240, 255};
+
+    public OneDHashTransform oneDHashTransform = new OneDHashTransform(this);
 
     /**
      * Does the Hash transform on 1D input
@@ -164,6 +174,16 @@ public class HashTransform {
             }
         }
     }
+    public int[][] reconstruct(int[][] input, int depth){
+        int[][] out = new int[input.length][input[0].length];
+
+        return out;
+    }
+    public int[] reconstruct(int[] input, int depth){
+        int[] out = new int[input.length];
+        return out;
+    }
+
     public void writeSetToFile() throws IOException {
         String filename = "src/AlgorithmCode/tupleWolframs.txt";
         initWolframs();
@@ -211,6 +231,224 @@ public class HashTransform {
                 }
             }
         }
+    }
+    /**
+     * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
+     *
+     * @throws IOException
+     */
+    public void bitmapTransform() throws IOException {
+        String filepath = "testScreenshot.bmp";
+        File file = new File(filepath);
+        BufferedImage inImage = ImageIO.read(file);
+        int[] inRaster = ((DataBufferInt) inImage.getRaster().getDataBuffer()).getData();
+        int size = inImage.getWidth();
+        int depth = inImage.getWidth();
+        depth = 5;
+        int[][][] framesOfHashing = new int[depth][inImage.getHeight()][inImage.getWidth() * 8];
+        int[][] field = new int[inImage.getHeight()][inImage.getWidth() * 8];
+        int[][] bfield = new int[inImage.getHeight()][inImage.getWidth() * 32];
+        System.out.println("inRaster: " + inRaster.length);
+        System.out.println("imImage.getHeight(): " + inImage.getHeight());
+        System.out.println("imImage.getWidth(): " + inImage.getWidth());
+        System.out.println("inRaster.length/inImage.getHeight(): " + inRaster.length / inImage.getHeight());
+        System.out.println("inRaster.length/inImage.getWidth(): " + inRaster.length / inImage.getWidth());
+        System.out.println("inRaster.length/inImage.getHeight()/inImage.getWidth(): " + inRaster.length / inImage.getHeight() / inImage.getWidth());
+        //Transforms the image into its appropriate local algorithm format
+        for (int row = 0; row < inImage.getHeight(); row++) {
+            for (int column = 0; column < inImage.getWidth(); column++) {
+                for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
+                    for (int lr = 0; lr < 2; lr++) {
+                        int rasterCoordX = row * inImage.getWidth() + column;
+                        field[row][8 * column + 2 * rgbbyte + lr] = (int) Math.abs((inRaster[rasterCoordX] >> (4 * rgbbyte + 2*lr)) % 16);
+                        for (int power = 0; power < 4; power++){
+                            bfield[row][32*column+8*rgbbyte+4*lr+power] = (field[row][8*column+2*rgbbyte+lr]>>power)%2;
+                        }
+                    }
+                }
+            }
+        }
+        for (int row = 0; row < inImage.getHeight(); row++) {
+            for (int column = 0; column < inImage.getWidth(); column++) {
+                for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
+                    for (int power = 0; power < 8; power++){
+                        bfield[row][32*column] = (int)Math.abs((inRaster[row*inImage.getWidth() + column]>>(8*rgbbyte+power)) % 2);
+                    }
+                }
+            }
+        }
+        initWolframs();
+        bfield = initializeDepthZero(bfield,unpackedList[3])[1];
+        //Do the transform
+        framesOfHashing = ecaMinTransform(bfield, unpackedList[3], depth);
+        //Convert the transform back into appropriate bitmap RGB format
+        int[][][] rasterized = new int[depth + 1][inImage.getHeight()][inImage.getWidth()];
+//        for (int d = 0; d <= depth; d++) {
+//            for (int row = 0; row < inImage.getHeight(); row++) {
+//                for (int column = 0; column < inImage.getWidth(); column++) {
+//                    for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
+//                        for (int lr = 0; lr < 2; lr++) {
+//                            rasterized[d][row][column] +=  (framesOfHashing[d][row][column * 8 + 2 * rgbbyte + lr] << (8*rgbbyte+4*lr));
+//                        }
+//                    }
+//                }
+//            }
+//        }
+        for (int d = 0; d <= depth; d++) {
+            for (int row = 0; row < inImage.getHeight(); row++) {
+                for (int column = 0; column < inImage.getWidth(); column++) {
+                    for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
+                        for (int power = 0; power < 8; power++) {
+                            rasterized[d][row][column] += (1<<(8*rgbbyte+power)) * framesOfHashing[d][row][32*column  + 8 * rgbbyte + power];
+                        }
+                    }
+                }
+            }
+        }
+
+        //
+        //
+        //
+        //The rest of this does the GIF file
+        BufferedImage[] images = new BufferedImage[rasterized.length];
+        int[][] imagesRasters = new int[depth + 1][inImage.getHeight() * inImage.getWidth()];
+        ImageWriter gifWriter = ImageIO.getImageWritersByFormatName("gif").next();
+        ImageOutputStream outputStream = ImageIO.createImageOutputStream(new File("src/ImagesProcessed/screenShotGIF.gif"));
+        gifWriter.setOutput(outputStream);
+        int[] outRaster = new int[inImage.getHeight()*inImage.getWidth()];
+        gifWriter.prepareWriteSequence(null);
+        BufferedImage outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+        for (int repeat = 0; repeat < 1; repeat++) {
+            for (int d = 0; d <= depth; d++) {
+                File outFile = new File("src/ImagesProcessed/GifOutput/processedDepth" + d + ".bmp");
+                outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+                outRaster = ((DataBufferInt) outImage.getRaster().getDataBuffer()).getData();
+                for (int index = 0; index < outRaster.length; index++) {
+                    outRaster[index] = rasterized[d][index / inImage.getWidth()][index % inImage.getWidth()];
+                }
+                ImageIO.write(outImage, "bmp", outFile);
+                IIOImage image = new IIOImage(outImage, null, null);
+                gifWriter.writeToSequence(image, null);
+            }
+        }
+        gifWriter.endWriteSequence();
+        System.out.println("depth: " + depth);
+        System.out.println("done with gif");
+    }
+    /**
+     * Attempts to reconstruct the original bitmap raster after doing one iteration of the hash transform
+     *
+     * @throws IOException
+     */
+    public void check() throws IOException {
+        String filepath = "lion.bmp";
+        File file = new File(filepath);
+        BufferedImage inImage = ImageIO.read(file);
+        int[] inRaster = ((DataBufferInt) inImage.getRaster().getDataBuffer()).getData();
+        int[][] binaryArray = new int[inImage.getHeight()][inImage.getWidth() * 32];
+        //this converts the image's 4 byte rgb code format raster into a binary array
+        //this conversion is done in the column direction, so the data has 8 times the columns
+        //of the input
+        for (int row = 0; row < inImage.getHeight(); row++) {
+            for (int column = 0; column < inImage.getWidth(); column++) {
+                for (int b = 0; b < 3; b++) {
+                    int rgb = (inRaster[inImage.getWidth() * row + column] >> (8 * b)) % 256;
+                    if (rgb < 0) rgb = -rgb;
+                    for (int bb = 0; bb < 8; bb++) {
+                        binaryArray[row][column + 8 * b + bb] = (rgb >> bb) % 2;
+                    }
+                }
+            }
+        }
+        CustomArray.plusArrayDisplay(binaryArray, true, true, "binaryArray");
+        checkInverse(initializeDepthZero(binaryArray,51)[1]);
+    }
+    /**
+     * Does the legwork of reconstituting input from sets of codewords
+     * The commented out code that includes a and generatedGuess() is the original voting mechanism
+     * where a codeword generates a square neighborhood to decompress the data back to original
+     * What's here at the moment is the Hadamard parity, which results in the same thing with an
+     * almost identical error rate. The Hadamard parity is count the number of 1s in the bits of
+     * the binary codeword and take that mod 2. For some reason the Hadamard parity can be substituted
+     * for the codeword's generate neighborhood. This was found by experimentation after it was discovered
+     * that codeword addition results in the non-reduced ROW AND COLUMN matrix that produces the boolean
+     * Hadamard matrix.
+     *
+     * @param in 2D codeword input array
+     */
+    public void checkInverse(int[][] in) {
+        //load the minMax 8 tuple subset Wolfram codes
+        initWolframs();
+        int[][][][] depthChart = new int[2][8][in.length][in[0].length];
+        //puts the input data as layer 0 of the output data
+        for (int posNeg = 0; posNeg < 2; posNeg++) {
+            for (int t = 0; t < 8; t++) {
+                System.out.println("posNeg: " + posNeg + " t: " + t);
+                depthChart[posNeg][t] = initializeDepthZero(in, unpackedList[t])[1];
+            }
+        }
+        //this array is the vote tally, location is influenced by 16 neighborhoods within a distance of 4
+        //each of these neighborhoods has 16 terms in the min max codeword set of the 8 tuple
+        //every term of every vote is weighted by 2^RelativeRow
+        int[][] outVotes = new int[in.length][in[0].length];
+        int r;
+        int c;
+        int t;
+        int posNeg;
+        int hadamardValue;
+        int power;
+        int row;
+        int column;
+        //for every location in the transformed bitmap data
+        for (row = 0; row < in.length; row++) {
+            System.out.println("row: " + row + " out of " + in.length);
+            for (column = 0; column < in[0].length; column++) {
+                //for every term in its min max codeword set
+                for (posNeg = 0; posNeg < 2; posNeg++) {
+                    for (t = 0; t < 8; t++) {
+                        //apply its vote to every location that it influences
+                        //including itself
+                        //int[][] generatedGuess = m.generateGuess(depthChart[posNeg][t][row][column], fmt.unpackedList[t]);
+                        hadamardValue = 0;
+                        for (power = 0; power < 4; power++) {
+                            hadamardValue += ((depthChart[posNeg][t][row][column] >> power) % 2);
+                        }
+                        hadamardValue %= 2;
+                        for (r = 0; r < 4; r++) {
+                            for (c = 0; c < 4; c++) {
+                                //int a = (generatedGuess[r][c] );
+                                //if (generatedGuess[r][c] == posNeg) {
+                                if (hadamardValue == posNeg) {
+                                    outVotes[(row + r) % in.length][(column + c) % in[0].length] += (1 << r);
+                                } else {
+                                    outVotes[(row + r) % in.length][(column + c) % in[0].length] -= (1 << r);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //for each location, based on whether the final tally of the vote was positive or negative
+        //output a 0 if positive and 1 if negative, if the vote result is not what the
+        //original data is increment the error counter for analysis
+        int[][] outResult = new int[in.length][in[0].length];
+        int[][] outCompare = new int[in.length][in[0].length];
+        int totDifferent = 0;
+        for (row = 0; row < in.length; row++) {
+            for (column = 0; column < in[0].length; column++) {
+                if (outVotes[row][column] >= 0) {
+                    outResult[row][column] = 0;
+                } else {
+                    outResult[row][column] = 1;
+                }
+                outCompare[row][column] = outResult[row][column] ^ in[row][column];
+                totDifferent += outCompare[row][column];
+            }
+        }
+        System.out.println("totDifferent: " + totDifferent);
+        System.out.println("totArea: " + (in.length * in[0].length));
+        System.out.println("different/Area=errors/bit= " + ((double) totDifferent / (double) (in.length * in[0].length)));
     }
 }
 

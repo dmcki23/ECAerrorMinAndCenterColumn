@@ -6,7 +6,7 @@ import java.io.IOException;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) throws IOException {
-        errorMinimizationHash m = new errorMinimizationHash();
+        HashTruthTables m = new HashTruthTables();
         //m.manageLengthsMinimizations(150,4,500);
         //m.ecaBestFitHashCollisionExhuastiveSizeTwo(105,2,false,false,500);
         // ruleStretchTemplate = new RuleStretchTemplate();
@@ -23,7 +23,6 @@ public class Main {
         //PrimeCAstagingLONG primeCAstagingLONG = new PrimeCAstagingLONG();
         //primeCAstagingLONG.checkAllColumnsTwo(primeCAstagingLONG.longRule, 3,4);
         //primeCAstagingLONG.doLogReductionPrimeTwo(primeCAstagingLONG.primeRule, 3,5);
-        errorMinimizationHash staging = new errorMinimizationHash();
         //staging.individualRuleManager(90,4,false,0,false,500,false);
         //staging.individualRuleDisplay(150,false,0,4);
         //staging.doAllRules(4,false,0,true,5000,false);
@@ -35,7 +34,6 @@ public class Main {
         //piBytes.testFiveStar();
         //RuleStretchTemplate ruleStretchTemplate2 = new RuleStretchTemplate();
         //System.out.println(Arrays.toString(ruleStretchTemplate2.traditionalCenterColumn(30,16,new int[]{1},30)));
-        HashTransform fastMinTransform = new HashTransform();
         //fastMinTransform.checkWolframs();
         //fastMinTransform.checkWolframsForReversibility();
         //fastMinTransform.checkNeighborWindow();
@@ -50,7 +48,7 @@ public class Main {
         //AlgorithmCode.Addition addition = import TrimmedCode.AttemptSize8;
         //new AlgorithmCode.Addition();
         //addition.testAddition();
-        HashTransformManager hashTransformManager = new HashTransformManager();
+        HashCollisions hashCollisions = new HashCollisions();
         //fastMinTransformApril.check();
         //fastMinTransform.check();
         //fastMinTransformApril.checkErrorWeights();
@@ -72,23 +70,36 @@ public class Main {
         //
         //Testing post trim, post javadoc, post inline commenting, post april 5 2025
         //Everything after this line has been tested post 4-5-2025, DM
+        HashTransform hashTransform = new HashTransform();
+        //HashCollisions hashCollisions = new HashCollisions();
         //m.doAllRules(4,false,0,false,0,false);
-//        hashTransformManager.hash.initWolframs();
-//        for (int posNeg = 0; posNeg < 2; posNeg++) {
-//            for (int row = 0; row < 8; row++) {
-//                for (int col = 0; col < 64; col++) {
-//                    System.out.print(hashTransformManager.hash.flatWolframs[posNeg][row][col] + "\t");
-//                }
-//                System.out.print("\n");
-//            }
-//        }
-//
-        //hashTransformManager.check();
+        //hashTransform.hash.initWolframs();
+        //for (int posNeg = 0; posNeg < 2; posNeg++) {
+        //    for (int row = 0; row < 8; row++) {
+        //        for (int col = 0; col < 64; col++) {
+        //            System.out.print(hashTransform.hash.flatWolframs[posNeg][row][col] + "\t");
+        //        }
+        //        System.out.print("\n");
+        //    }
+        //}
+        //
+        //hashTransform.check();
         //Hadamard hadamard = new Hadamard();
         //hadamard.test(16);
         //m.oneFiftyDisplay();
-        //SwingApplyFastMinTransform swingApplyFastMinTransform = new SwingApplyFastMinTransform();
-        //swingApplyFastMinTransform.getImage();
+        //hashTransform.getImage();
+        //hashCollisions.checkErrorScoreVsHadamard();
+        //hashCollisions.checkTupleUniqueness();
+        //hashCollisions.checkUnitWrappedTupleUniqueness();
+        //hashCollisions.randomizedCollisionChecker();
+        //hashCollisions.checkLastRowWeight();
+        //a = new Addition();
+        //a.testXOR();
+        //hashTransform.check();
+        Hadamard hadamard = new Hadamard();
+        //hadamard.dftOfHadamard(8);
+        a.testAllLogic();
+
 
     }
 }

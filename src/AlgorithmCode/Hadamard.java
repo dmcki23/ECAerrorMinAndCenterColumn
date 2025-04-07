@@ -217,5 +217,72 @@ public class Hadamard {
         CustomArray.plusArrayDisplay(out, false, false, "pascalDiag");
         return out;
     }
+    public double[][][] dftOfHadamard(int size){
+        double[][][] out = new double[size][size][2];
+        int[][] H = generateHadamardBoolean(size);
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                out[row][col][0] = H[row][col];
+            }
+        }
+        out = dft(out);
+        return out;
+    }
+    public double[][] dft(double[][] in) {
+        double[][] out = new double[in.length][2];
+        double coefficient = -2 * Math.PI;
+        for (int row = 0; row < in.length; row++) {
+            for (int column = 0; column < in.length; column++) {
+                double r = in[column][0] * Math.cos( (coefficient * row * column) / (double) in.length) - in[column][1] * Math.sin( (coefficient * row * column) / (double) in.length);
+                double c = in[column][0] * Math.sin( (coefficient * row * column) / (double) in.length) + in[column][1] * Math.cos( (coefficient * row * column) / (double) in.length);
+                out[row][0] += r;
+                out[row][1] += c;
+            }
+        }
+
+        return out;
+    }
+    public double[][][] dft(double[][][] in) {
+        double[][][] out = new double[in.length][in[0].length][2];
+        double coefficient = -2 * Math.PI;
+        for (int row = 0; row < in.length; row++) {
+            for (int column = 0; column < in.length; column++) {
+                double[] innerSum = new double[2];
+                double[] outerSum = new double[2];
+                for (int rr = 0; rr < in.length; rr++) {
+                    innerSum = new double[2];
+                    for (int cc = 0; cc < in[row].length; cc++) {
+                        double r = in[row][column][0] * Math.cos((coefficient * cc * rr) / (double) in.length) - in[row][column][1] * Math.sin((coefficient * cc * rr) / (double) in.length);
+                        double c = in[row][column][0] * Math.sin((coefficient * cc * rr) / (double) in.length) + in[row][column][1] * Math.cos((coefficient * cc * rr) / (double) in.length);
+                        innerSum[0] += r;
+                        innerSum[1] += c;
+                    }
+                    innerSum[0] = innerSum[0] * Math.cos((coefficient * row * column) / (double) in.length) - innerSum[1] * Math.sin((coefficient * row * column) / (double) in.length);
+                    innerSum[1] = innerSum[1] * Math.sin((coefficient * row * column) / (double) in.length) + innerSum[1] * Math.cos((coefficient * row * column) / (double) in.length);
+                    outerSum[0] += innerSum[0];
+                    outerSum[1] += innerSum[1];
+                }
+                out[row][column][0] = outerSum[0];
+                out[row][column][1] = outerSum[1];
+            }
+        }
+
+        for (int row = 0; row < in.length; row++){
+            for (int column = 0; column < in.length; column++){
+                System.out.print(Math.round(out[row][column][0]) + " ");
+            }
+            System.out.print("\n");
+        }
+        return out;
+    }
+    public int[][] nonReducedHadamard(int size){
+        int[][] out = new int[size][size];
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                out[row][col] = row & col;
+            }
+        }
+        return out;
+    }
 
 }

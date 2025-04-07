@@ -11,7 +11,7 @@ import java.util.Random;
  * a hexadecimal codeword ECA rule pair together that minimize the discrepancies between the input and the ECA output using the codeword as the
  * initial value
  */
-public class errorMinimizationHash {
+public class HashTruthTables {
     /**
      * Last max codeword tile found
      */
@@ -185,7 +185,7 @@ public class errorMinimizationHash {
      * Initializes everything to size 4, therefore truth tables are 65536 long.
      * If you want a different size run initialize(size)
      */
-    public errorMinimizationHash() {
+    public HashTruthTables() {
         int size = 4;
         sameErrorMin = new int[256][(int) Math.pow(2, size)];
         sameErrorMax = new int[256][(int) Math.pow(2, size)];
@@ -401,7 +401,7 @@ public class errorMinimizationHash {
      * @param rule ECA 0-255 rule
      * @return the square of the input and its ECA output
      */
-    public int[][] generateWrappedECAsquare(int[] in, int rule) {
+    public int[][] generateCodewordTile(int[] in, int rule) {
         int[][] out = new int[in.length][in.length];
         for (int row = 0; row < in.length; row++) {
             out[0][row] = in[row];
@@ -433,7 +433,7 @@ public class errorMinimizationHash {
      * @param rule  ECA 0-255 rule
      * @return the square of the input and its ECA output
      */
-    public int[][] generateWrappedECAsquare(int inInt, int rule) {
+    public int[][] generateCodewordTile(int inInt, int rule) {
         int[] in = new int[4];
         for (int row = 0; row < in.length; row++) {
             in[row] = ((inInt) / (int) Math.pow(2, row) % 2);

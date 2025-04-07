@@ -13,11 +13,12 @@ import java.util.Random;
 /**
  *
  */
-public class HashTransformManager {
+public class HashCollisions {
     /**
      * Middle layer of transform code
      */
     public HashTransform hash = new HashTransform();
+
 
     /**
      * Attempts to reconstruct the original bitmap raster after doing one iteration of the hash transform
@@ -212,7 +213,7 @@ public class HashTransformManager {
                 for (int input = 0; input < 16; input++) {
                     //Compare a single codeword tile's voting pattern
                     //to that codeword's Hadamard parity
-                    int[][] cell = hash.m.generateWrappedECAsquare(input, hash.unpackedList[t]);
+                    int[][] cell = hash.m.generateCodewordTile(input, hash.unpackedList[t]);
                     //Do the voting
                     int error = 0;
                     for (int row = 0; row < 4; row++) {
@@ -246,6 +247,43 @@ public class HashTransformManager {
         //I have no direct explanation yet, only that codeword addition is
         //the non-reduced boolean Hadamard matrix
         System.out.println("totDifferent: " + totDifferent);
+        System.out.println("totDifferent = " + totDifferent + " out of 256, errors/address = " + (double)totDifferent/256.0 + " correlation rate = (totLocations-errors)/numAddresses = " + (double)(256-totDifferent)/256.0);
+        System.out.println("this analysis is comparing ECA minMax hash transform addition and Hadamard parity");
+        System.out.println("Hadamard parity is the number of ones in its binary representation mod 2" );
+    }
+
+    /**
+     * This function takes all 16 min max codewords for each of the 65536 4x4 neighborhoods
+     * and compares them with all other tuple sets in the truth table to check for uniqueness.
+     * On their own they are not unique roughly 1/256 pairs are collisions. To force it to be unique
+     * see checkUnitWrappedTupleUniqueness() which is what the optional non-collision loop is based on
+     * @return whether the tuple sets in the truth tables are distinct
+     */
+    public boolean checkTupleUniqueness(){
+        hash.initWolframs();
+        boolean out = true;
+        int[][] innerOuterTuples = new int[2][16];
+        int numSame = 0;
+        for (int address = 0; address < 65536; address++) {
+            if (address % 256 == 0) System.out.println("address: " + address);
+            for (int t = 0; t < 8; t++) {
+                innerOuterTuples[0][t] = hash.flatWolframs[0][t][address];
+                innerOuterTuples[0][t+8] = hash.flatWolframs[1][t][address];
+            }
+            for (int add = 0; add < address; add++) {
+                for (int t = 0; t < 8; t++){
+                    innerOuterTuples[1][t] = hash.flatWolframs[0][t][add];
+                    innerOuterTuples[1][t+8] = hash.flatWolframs[1][t][add];
+                }
+                if (Arrays.equals(innerOuterTuples[0], innerOuterTuples[1])){
+                    out = false;
+                    numSame++;
+                }
+            }
+        }
+        System.out.println("uniqueness: " + out);
+        System.out.println("numSame: " + numSame);
+        return out;
     }
 
     public void checkCollisions() {
@@ -337,11 +375,11 @@ public class HashTransformManager {
      * @param inInt integer value of the input neighborhood
      * @return a square integer array of 1 row of input and the rest ECA output
      */
-    public int[][] gridOfInt(int size, int inInt) {
+    public int[][] addressToArray(int size, int inInt) {
         int[][] out = new int[size][size];
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
-                out[row][column] = ((inInt >> (4 * row + column)) % 2);
+                out[row][column] = ((inInt >> (size * row + column)) % 2);
             }
         }
         return out;
@@ -352,7 +390,7 @@ public class HashTransformManager {
      * when the codeword is wrapped with itself. Instead of just collisions between sets of codewords, its checking for collisions
      * between sets of codeword neighborhoods. The 0-65536 value that the truth table is addressed by is a binary 4x4 array.
      */
-    public void wrappedTileCodewords() {
+    public void checkUnitWrappedTupleUniqueness() {
         //Each of the 65536 neighborhoods are wrapped with themselves
         //The original binary neighborhood's origin is changed from simply the (0,0) codeword
         //to all (0..4,0,..4) centered codewords. That is, if the neighborhood is
@@ -369,7 +407,7 @@ public class HashTransformManager {
         //For every address find its wrapped neighborhood set's integer values
         for (int address = 0; address < 65536; address++) {
             //Generate the address's neighborhood array
-            int[][] grid = gridOfInt(4, address);
+            int[][] grid = addressToArray(4, address);
             //For every wrapped sub-array
             for (int r = 0; r < 4; r++) {
                 for (int c = 0; c < 4; c++) {
@@ -403,22 +441,24 @@ public class HashTransformManager {
                 }
             }
         }
+        System.out.println("numErrors: " + numErrors);
     }
 
     /**
-     * Checks random input for codeword collisions
+     * Checks random input for codeword array collisions. In isolation, very local collisions happen. When the influence neighborhoods
+     * overlap and wrap bits collisions disappear experimentally even without the optional unit cell non-collision loop.
      */
     public void randomizedCollisionChecker() {
         //Address's next door neighbor integer values
-        int[][] slidingAddresses = new int[65536][4];
+        int[][] windowAddresses = new int[65536][4];
         //Rule subset truth tables for every adddress
-        int[][][] slidingTuples = new int[65536][4][16];
+        int[][][] windowTuples = new int[65536][4][16];
         //Initialize truth tables
         hash.initWolframs();
         //This initializes the truth tables for the sliding window on a single cell, just one row, one column, or one row and one column
         //A shorter version of the same thing in wrappedTileCodeWords()
         for (int address = 0; address < 65536; address++) {
-            int[][] grid = gridOfInt(4, address);
+            int[][] grid = addressToArray(4, address);
             for (int r = 0; r < 2; r++) {
                 for (int c = 0; c < 2; c++) {
                     int tot = 0;
@@ -427,23 +467,25 @@ public class HashTransformManager {
                             tot += (1 << (4 * row + col)) * grid[(row + r) % 4][(col + c) % 4];
                         }
                     }
-                    slidingAddresses[address][2 * r + c] = tot;
+                    windowAddresses[address][2 * r + c] = tot;
                     for (int posNeg = 0; posNeg < 2; posNeg++) {
                         for (int t = 0; t < 8; t++) {
-                            slidingTuples[address][2 * r + c][8 * posNeg + t] = hash.flatWolframs[posNeg][t][slidingAddresses[address][2 * r + c]];
+                            windowTuples[address][2 * r + c][8 * posNeg + t] = hash.flatWolframs[posNeg][t][windowAddresses[address][2 * r + c]];
                         }
                     }
                 }
             }
         }
+        int widthWindow = 5;
+
         //Random number generator
         Random rand = new Random();
         //Original addresses randomly changed new codewords
-        int[][] changedSlidingTuples = new int[25][16];
+        int[][] outerTuples = new int[widthWindow*widthWindow][16];
         //Comparison codewords
-        int[][] otherTuple = new int[25][16];
+        int[][] otherTuple = new int[widthWindow*widthWindow][16];
         //A single addresses
-        int[] changedSlidingAddresses = new int[25];
+        int[] outerAddresses = new int[25];
         //Total number of errors detected
         int numErrors = 0;
         //A loop counter
@@ -471,17 +513,19 @@ public class HashTransformManager {
         int address;
         //Next door addresses
         int[] otherAddress = new int[25];
+        //Total number of random samples taken
+        long checksDone = 0;
         //These loops originally checked exhaustively and were adapted to random
         //So a loop is a change in the randomness for that loop
         //
          //
          //
          //Outer loop
-        for (int addressCounter = 0; addressCounter < 65536; addressCounter++) {
-            if (addressCounter % 256 * 16 == 0) System.out.println("address: " + addressCounter);
+        for (int addressCounter = 0; addressCounter < 65536*256; addressCounter++) {
+            //if (addressCounter % 1024 * 32 == 0) System.out.println("address: " + addressCounter + " addresses left: " + (65536*256 - addressCounter));
             //for (int numChanges = 1; numChanges < 16; numChanges++) {
             address = rand.nextInt(0, 65536);
-            for (trial = 0; trial < 512; trial++) {
+            for (trial = 0; trial < 256; trial++) {
                 //initializes the neighborhood
                 trial = rand.nextInt(0, 512);
                 //ingrid = gridOfInt(4, address);
@@ -499,18 +543,18 @@ public class HashTransformManager {
                 }
 
                 //gets the tuples of its neighbors on the sliding window
-                for (r = 0; r < 5; r++) {
-                    for (c = 0; c < 5; c++) {
+                for (r = 0; r < widthWindow; r++) {
+                    for (c = 0; c < widthWindow; c++) {
                         tot = 0;
                         for (row = 0; row < 4; row++) {
                             for (col = 0; col < 4; col++) {
                                 tot += (1 << (4 * row + col)) * grid[(row + r) % 5][(col + c) % 5];
                             }
                         }
-                        changedSlidingAddresses[5 * r + c] = tot;
+                        outerAddresses[5 * r + c] = tot;
                         for (posNeg = 0; posNeg < 2; posNeg++) {
                             for (t = 0; t < 8; t++) {
-                                changedSlidingTuples[5 * r + c][8 * posNeg + t] = hash.flatWolframs[posNeg][t][changedSlidingAddresses[5 * r + c]];
+                                outerTuples[5 * r + c][8 * posNeg + t] = hash.flatWolframs[posNeg][t][outerAddresses[5 * r + c]];
                             }
                         }
                     }
@@ -519,11 +563,11 @@ public class HashTransformManager {
                  //
                  //
                  //Inner loop
-                for (add = 0; add < 65536; add++) {
+                for (add = 0; add < 256; add++) {
                     add = rand.nextInt(0, 65536);
-                    for (tr = 0; tr < 512; tr++) {
+                    for (tr = 0; tr < 256; tr++) {
                         //initializes the neighborhood
-                        tr = rand.nextInt(0, 65536);
+                        tr = rand.nextInt(0, 512);
                         if (add == address && trial == tr) continue;
                         //ingrid = gridOfInt(4, add);
                         grid = new int[5][5];
@@ -540,8 +584,8 @@ public class HashTransformManager {
                         }
 
                         //gets the tuple codewords for the sliding window on the neighborhood
-                        for (r = 0; r < 5; r++) {
-                            for (c = 0; c < 5; c++) {
+                        for (r = 0; r < widthWindow; r++) {
+                            for (c = 0; c < widthWindow; c++) {
                                 tot = 0;
                                 for (row = 0; row < 4; row++) {
                                     for (col = 0; col < 4; col++) {
@@ -556,24 +600,27 @@ public class HashTransformManager {
                                 }
                             }
                         }
+                        checksDone++;
                         //Check for equality and tally
-                        if (Arrays.deepEquals(changedSlidingTuples, otherTuple)) {
+                        if (Arrays.deepEquals(outerTuples, otherTuple)) {
                             numErrors++;
                             double aLoops = 512 * address + trial;
                             double bLoops = 512 * add + tr;
-                            errorRate = numErrors / (aLoops * (65536 * 512) + bLoops);
+                            errorRate = (double) numErrors / (checksDone);
                             System.out.println("error: " + numErrors + " errors/attempt = " + errorRate);
                             System.out.println("attempts/error = " + (1 / errorRate));
+                            System.out.println(address+" " + trial + " " + add + " " + tr);
                         }
                     }
                 }
             }
         }
         System.out.println("numErrors = " + numErrors);
+        System.out.println("errorRate = " + errorRate);
     }
 
     /**
-     * Shows a negative. Even though the tuple rules are linear the minMax errorScore for a tile depends on more than the last row.
+     * Proves a negative. Even though the tuple rules are linear the minMax errorScore for a tile depends on more than just the last row.
      * Changes in other rows besides the last row affect the code word as well. This is checked by finding codewords of random grids,
      * then making random changes in the grid anywhere but the last row, finding the codeword for the changed grid,
      * and see if the two codewords remain the same.
@@ -640,9 +687,9 @@ public class HashTransformManager {
             }
         }
         //Display
-        System.out.println(numSame);
-        System.out.println(numDifferent);
-        System.out.println((numSame + numDifferent));
+        System.out.println("numSame = " + numSame);
+        System.out.println("numDifferent = " + numDifferent);
+        System.out.println("total = " + (numSame + numDifferent));
     }
 }
 
