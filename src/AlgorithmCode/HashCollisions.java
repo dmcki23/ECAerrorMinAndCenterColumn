@@ -159,7 +159,7 @@ public class HashCollisions {
         int[][][] changes = new int[256][16][16];
         int[][][] shiftChanges = new int[256][16][16];
         int[][][] trackedZero = new int[2][16][16];
-        for (int row  = 0; row < 16; row++) {
+        for (int row = 0; row < 16; row++) {
             Arrays.fill(trackedZero[0][row], -1);
             Arrays.fill(trackedZero[1][row], -1);
         }
@@ -237,7 +237,6 @@ public class HashCollisions {
                 }
                 int[][][] cinverted = hash.reconstructDepthD(chashed, 1);
                 int[][][] inverted = hash.reconstructDepthD(hashed, 1);
-
                 int[][] finalized = hash.hashInverseDepth0(inverted, 1, 0);
                 int[][] cfinalized = hash.hashInverseDepth0(cinverted, 1, 0);
                 int quantityErrors = 0;
@@ -251,7 +250,6 @@ public class HashCollisions {
                         quantityErrors += finalized[(row) % 16][col] ^ out[row][col];
                     }
                 }
-
                 CustomArray.plusArrayDisplay(finalized, true, true, "finalized");
                 int[][] shifted = new int[16][16];
                 int[][] cshifted = new int[16][16];
@@ -305,6 +303,385 @@ public class HashCollisions {
         }
         CustomArray.plusArrayDisplay(trackedZero[0], false, false, "trackedZero");
         CustomArray.plusArrayDisplay(trackedZero[1], false, false, "trackedZero");
+    }
+
+    public void checkChangesPerTransform(int size) {
+        int[][] out = new int[size][size];
+        hash.initWolframs();
+        Random rand = new Random();
+        int[][][] changes = new int[size * size][size][size];
+        int[][][] shiftChanges = new int[size * size][size][size];
+        int[][][] trackedZero = new int[2][size][size];
+        for (int row = 0; row < size; row++) {
+            Arrays.fill(trackedZero[0][row], -1);
+            Arrays.fill(trackedZero[1][row], -1);
+        }
+        Hadamard hadamard = new Hadamard();
+        int[][] h = hadamard.nonReducedHadamard(size);
+        int[][] changed = new int[size][size];
+        for (int cr = 0; cr < size; cr++) {
+            for (int cc = 0; cc < size; cc++) {
+                for (int row = 0; row < size; row++) {
+                    for (int col = 0; col < size; col++) {
+                        //
+                        //
+                        //This one the zeros are at !((row^col)%2)
+                        //The offset extra change variable location is irrelevant
+                        //to the location of the fish
+                        out[row][col] = (row ^ col) % 2;
+                        //
+                        //
+                        //This one is the same as first one
+                        //out[row][col] = (row + col) % 2;
+                        //
+                        //
+                        //This one produces zeros with 5! = 120 votes at every cell, weighted, in the reconstruction finalOutput array
+                        //out[row][col] = (row & col) % 2;
+                        //
+                        //
+                        //This one is all ones unless the extra change produces that odd and evens trackedZero matrix
+                        //the trackedZero matrix doesn't apply to the other equations
+                        //out[row][col] = (row | col) % 2;
+                        //
+                        //
+                        //Same as the first one
+                        //out[row][col] = ((row*3)^(col*7)+2)%2;
+                        //
+                        //
+                        //Same as the first one
+                        //out[row][col] = ((3*row)+col)%2;
+                        //
+                        //
+                        //out[row][col] = h[cr][cc]%2;
+                        changed[row][col] = out[row][col];
+                    }
+                }
+                int a = 0;
+                int b = 0;
+                int shift = 2;
+                int cshift = 2;
+                for (int change = 0; change < 1; change++) {
+                    a = cr;
+                    b = cc;
+                    out[cr][cc] ^= 1;
+                    changed[cr][cc] ^= 1;
+                    changed[(cr + shift) % size][(cr + shift) % size] ^= 1;
+                    System.out.println("a = " + a + ", b = " + b);
+                }
+                int[][][] preHash = new int[16][size][size];
+                int[][][] cpre = new int[16][size][size];
+                for (int posNeg = 0; posNeg < 2; posNeg++) {
+                    for (int t = 0; t < 8; t++) {
+                        preHash[t] = hash.initializeDepthZero(out, hash.unpackedList[t])[1];
+                        preHash[8 + t] = hash.initializeDepthMax(out, hash.unpackedList[t])[1];
+                        cpre[t] = hash.initializeDepthZero(changed, hash.unpackedList[t])[1];
+                        cpre[8 + t] = hash.initializeDepthMax(changed, hash.unpackedList[t])[1];
+                    }
+                }
+                int[][][] hashed = new int[16][size][size];
+                int[][][] chashed = new int[16][size][size];
+                for (int posNeg = 0; posNeg < 2; posNeg++) {
+                    for (int t = 0; t < 8; t++) {
+                        hashed[t] = hash.ecaMinTransform(preHash[t], hash.unpackedList[t], 1)[1];
+                        hashed[8 + t] = hash.ecaMaxTransform(preHash[8 + t], hash.unpackedList[t], 1)[1];
+                        chashed[t] = hash.ecaMinTransform(cpre[t], hash.unpackedList[t], 1)[1];
+                        chashed[t + 8] = hash.ecaMaxTransform(cpre[t + 8], hash.unpackedList[t], 1)[1];
+                    }
+                }
+                int[][][] cinverted = hash.reconstructDepthD(chashed, 1);
+                int[][][] inverted = hash.reconstructDepthD(hashed, 1);
+                int[][] finalized = hash.hashInverseDepth0(inverted, 1, 0);
+                int[][] cfinalized = hash.hashInverseDepth0(cinverted, 1, 0);
+                int quantityErrors = 0;
+                for (int row = 0; row < size; row++) {
+                    for (int col = 0; col < size; col++) {
+                        //finalized[row][col] ^= out[row][col];
+                        if (finalized[row][col] == 0) {
+                            trackedZero[0][cr][cc] = row;
+                            trackedZero[1][cr][cc] = col;
+                        }
+                        quantityErrors += finalized[(row) % size][col] ^ out[row][col];
+                    }
+                }
+                CustomArray.plusArrayDisplay(finalized, true, true, "finalized");
+                int[][] shifted = new int[size][size];
+                int[][] cshifted = new int[size][size];
+                for (int row = 0; row < size; row++) {
+                    for (int col = 0; col < size; col++) {
+                        shifted[row][col] = finalized[(row + a + size / 2) % size][(col + b + size / 2) % size];
+                        cshifted[row][col] = cfinalized[(row + a + size / 2) % size][(col + b + size / 2) % size];
+                    }
+                }
+                CustomArray.plusArrayDisplay(shifted, true, true, "shifted");
+                for (int row = 0; row < size; row++) {
+                    for (int col = 0; col < size; col++) {
+                        changes[size * cr + cc][row][col] = shifted[row][col];
+                        shiftChanges[size * cr + cc][row][col] = cshifted[row][col];
+                        //changes[size*cr+cc][row][col] = finalized[row][col];
+                    }
+                }
+                CustomArray.plusArrayDisplay(shiftChanges[size * cr + cc], true, true, "shiftedChanges");
+            }
+        }
+        int[][] total = new int[size][size];
+        int[][] zeros = new int[size][size];
+        for (int cr = 0; cr < size; cr++) {
+            for (int cc = 0; cc < size; cc++) {
+                boolean isZeros = true;
+                for (int row = 0; row < size; row++) {
+                    for (int col = 0; col < size; col++) {
+                        total[row][col] += changes[size * cr + cc][row][col];
+                        if (changes[size * cr + cc][row][col] != 0) isZeros = false;
+                    }
+                }
+                if (!isZeros) {
+                    zeros[cr][cc] = 1;
+                }
+            }
+        }
+        int[] operation = new int[4];
+        Arrays.fill(operation, -1);
+        for (int cccc = 0; cccc < size * size; cccc++) {
+            for (int row = 0; row < size; row++) {
+                for (int col = 0; col < size; col++) {
+                    int x = changes[cccc][row][col];
+                    int y = shiftChanges[cccc][row][col];
+                    int z = 2 * x + y;
+                }
+            }
+        }
+        CustomArray.plusArrayDisplay(total, false, false, "total");
+        CustomArray.plusArrayDisplay(zeros, false, false, "zeros");
+        for (int row = 0; row < size * size; row++) {
+        }
+        CustomArray.plusArrayDisplay(trackedZero[0], false, false, "trackedZero");
+        CustomArray.plusArrayDisplay(trackedZero[1], false, false, "trackedZero");
+    }
+
+    int[] truthTable;
+    int[] singleChangeTruthTable;
+
+    public void checkChangesPerTransformAllChanges(int size) {
+        int[][] out = new int[size][size];
+        //hash.initWolframs();
+
+        truthTable = new int[65536];
+
+        Hadamard hadamard = new Hadamard();
+        int[][] h = hadamard.nonReducedHadamard(size);
+        int[][] changed = new int[size][size];
+        int[][] tile;
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                //
+                //
+                //This one the zeros are at !((row^col)%2)
+                //The offset extra change variable location is irrelevant
+                //to the location of the fish
+                out[row][col] = (row ^ col) % 2;
+                //
+                //
+                //This one is the same as first one
+                //out[row][col] = (row + col) % 2;
+                //
+                //
+                //This one produces zeros with 5! = 120 votes at every cell, weighted, in the reconstruction finalOutput array
+                //out[row][col] = (row & col) % 2;
+                //
+                //
+                //This one is all ones unless the extra change produces that odd and evens trackedZero matrix
+                //the trackedZero matrix doesn't apply to the other equations
+                //out[row][col] = (row | col) % 2;
+                //
+                //
+                //Same as the first one
+                //out[row][col] = ((row*3)^(col*7)+2)%2;
+                //
+                //
+                //Same as the first one
+                //out[row][col] = ((3*row)+col)%2;
+                //
+                //
+                //out[row][col] = h[cr][cc]%2;
+            }
+        }
+        for (int address = 0; address < 65536; address++) {
+            tile = hash.m.generateAddressTile(address, size);
+            //for (int cr = 0; cr < size; cr++) {
+            //for (int cc = 0; cc < size; cc++) {
+            for (int row = 0; row < size; row++) {
+                for (int col = 0; col < 4; col++) {
+                    //out[row][col] ^= tile[row][col];
+                    changed[row][col] = tile[row][col] ^ out[row][col];
+                }
+            }
+            int[][][] preHash = new int[16][size][size];
+            int[][][] cpre = new int[16][size][size];
+            for (int posNeg = 0; posNeg < 2; posNeg++) {
+                for (int t = 0; t < 8; t++) {
+                    //preHash[t] = hash.initializeDepthZero(out, hash.unpackedList[t])[1];
+                    //preHash[8 + t] = hash.initializeDepthMax(out, hash.unpackedList[t])[1];
+                    cpre[t] = hash.initializeDepthZero(changed, hash.unpackedList[t])[1];
+                    cpre[8 + t] = hash.initializeDepthMax(changed, hash.unpackedList[t])[1];
+                }
+            }
+            int[][][] hashed = new int[16][size][size];
+            int[][][] chashed = new int[16][size][size];
+            for (int posNeg = 0; posNeg < 2; posNeg++) {
+                for (int t = 0; t < 8; t++) {
+                    //hashed[t] = hash.ecaMinTransform(preHash[t], hash.unpackedList[t], 1)[1];
+                    //hashed[8 + t] = hash.ecaMaxTransform(preHash[8 + t], hash.unpackedList[t], 1)[1];
+                    chashed[t] = hash.ecaMinTransform(cpre[t], hash.unpackedList[t], 1)[1];
+                    chashed[t + 8] = hash.ecaMaxTransform(cpre[t + 8], hash.unpackedList[t], 1)[1];
+                }
+            }
+            int[][][] cinverted = hash.reconstructDepthD(chashed, 1);
+            //int[][][] inverted = hash.reconstructDepthD(hashed, 1);
+            //int[][] finalized = hash.hashInverseDepth0(inverted, 1, 0);
+            int[][] cfinalized = hash.hashInverseDepth0(cinverted, 1, 0);
+            for (int row = 0; row < size; row++) {
+                for (int col = 0; col < size; col++) {
+                    truthTable[address] += (1 << (size * row + col) )* cfinalized[row][col];
+                }
+            }
+        }
+    }
+
+    public void checkChangesPerTransformAllSingleChanges(int size) {
+        int[][] out = new int[size][size];
+        //hash.initWolframs();
+        singleChangeTruthTable = new int[size*size];
+        Hadamard hadamard = new Hadamard();
+        int[][] h = hadamard.nonReducedHadamard(size);
+        int[][] changed = new int[size][size];
+        int[][] tile;
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                //
+                //
+                //This one the zeros are at !((row^col)%2)
+                //The offset extra change variable location is irrelevant
+                //to the location of the fish
+                out[row][col] = (row ^ col) % 2;
+                //
+                //
+                //This one is the same as first one
+                //out[row][col] = (row + col) % 2;
+                //
+                //
+                //This one produces zeros with 5! = 120 votes at every cell, weighted, in the reconstruction finalOutput array
+                //out[row][col] = (row & col) % 2;
+                //
+                //
+                //This one is all ones unless the extra change produces that odd and evens trackedZero matrix
+                //the trackedZero matrix doesn't apply to the other equations
+                //out[row][col] = (row | col) % 2;
+                //
+                //
+                //Same as the first one
+                //out[row][col] = ((row*3)^(col*7)+2)%2;
+                //
+                //
+                //Same as the first one
+                //out[row][col] = ((3*row)+col)%2;
+                //
+                //
+                //out[row][col] = h[cr][cc]%2;
+            }
+        }
+        for (int address = 0; address < size * size; address++) {
+            //tile = hash.m.generateAddressTile(address, size);
+            //for (int cr = 0; cr < size; cr++) {
+            //for (int cc = 0; cc < size; cc++) {
+            for (int row = 0; row < size; row++) {
+                for (int col = 0; col < 4; col++) {
+                    //out[row][col] ^= tile[row][col];
+                    //changed[row][col] = tile[row][col] ^ out[row][col];
+                    changed[row][col] = out[row][col];
+                }
+            }
+            changed[address / size][address % size] ^= 1;
+            int[][][] preHash = new int[16][size][size];
+            int[][][] cpre = new int[16][size][size];
+            for (int posNeg = 0; posNeg < 2; posNeg++) {
+                for (int t = 0; t < 8; t++) {
+                    //preHash[t] = hash.initializeDepthZero(out, hash.unpackedList[t])[1];
+                    //preHash[8 + t] = hash.initializeDepthMax(out, hash.unpackedList[t])[1];
+                    cpre[t] = hash.initializeDepthZero(changed, hash.unpackedList[t])[1];
+                    cpre[8 + t] = hash.initializeDepthMax(changed, hash.unpackedList[t])[1];
+                }
+            }
+            int[][][] hashed = new int[16][size][size];
+            int[][][] chashed = new int[16][size][size];
+            for (int posNeg = 0; posNeg < 2; posNeg++) {
+                for (int t = 0; t < 8; t++) {
+                    //hashed[t] = hash.ecaMinTransform(preHash[t], hash.unpackedList[t], 1)[1];
+                    //hashed[8 + t] = hash.ecaMaxTransform(preHash[8 + t], hash.unpackedList[t], 1)[1];
+                    chashed[t] = hash.ecaMinTransform(cpre[t], hash.unpackedList[t], 1)[1];
+                    chashed[t + 8] = hash.ecaMaxTransform(cpre[t + 8], hash.unpackedList[t], 1)[1];
+                }
+            }
+            int[][][] cinverted = hash.reconstructDepthD(chashed, 1);
+            //int[][][] inverted = hash.reconstructDepthD(hashed, 1);
+            //int[][] finalized = hash.hashInverseDepth0(inverted, 1, 0);
+            int[][] cfinalized = hash.hashInverseDepth0(cinverted, 1, 0);
+            int[][] shifted = new int[size][size];
+            for (int row = 0; row < size; row++){
+                for (int col = 0; col < size; col++){
+                    shifted[row][col] = cfinalized[(row+size/2)%size][(col+size/2)%size];
+                }
+            }
+            for (int row = 0; row < size; row++) {
+                for (int col = 0; col < size; col++) {
+                    singleChangeTruthTable[address] += (1 << (size * row + col) * shifted[row][col]);
+                }
+            }
+        }
+    }
+    public void checkSinglesAgainstAll(int size){
+        hash.initWolframs();
+        checkChangesPerTransformAllChanges(size);
+        int totZeros = 0;
+        for (int address = 0; address < 65536; address++) {
+            if (truthTable[address] == 0) {
+                totZeros++;
+            }
+        }
+        System.out.println("totZeros " + totZeros);
+        checkChangesPerTransformAllSingleChanges(size);
+        int[][] changeTile = new int[size][size];
+        int[][] successBoard = new int[size*size][size*size];
+        for (int changeZero = 0; changeZero < size*size; changeZero++) {
+            for (int changeOne = 0; changeOne < size*size; changeOne++) {
+                changeTile = new int[size][size];
+                changeTile[changeZero/size][changeZero%size] ^= 1;
+                changeTile[changeOne/size][changeOne%size] ^= 1;
+                int tot = 0;
+                for (int row = 0; row < size; row++) {
+                    for (int col = 0; col < size; col++) {
+                        tot += (1<<(size*row+col))*changeTile[row][col];
+                    }
+                }
+                int cz = singleChangeTruthTable[changeZero];
+                int co = singleChangeTruthTable[changeOne];
+                int cc = truthTable[tot];
+                int[][] combinedSingles = new int[size][size];
+                int[][] czsquare = hash.m.generateAddressTile(cz,size);
+                int[][] cosquare = hash.m.generateAddressTile(co,size);
+                int[][] ccSquare = hash.m.generateAddressTile(cc,size);
+                for (int row = 0; row < size; row++) {
+                    for (int col = 0; col < size; col++) {
+                        combinedSingles[row][col] = ((czsquare[row][col] ^ cosquare[row][col]))%2;
+                    }
+                }
+                if (Arrays. deepEquals(ccSquare,combinedSingles)) {
+                    System.out.println("Success at " + changeZero + " " + changeOne);
+                    successBoard[changeZero][changeOne] = 1;
+                    //if (cc == 0) successBoard[changeZero][changeOne] = 1;
+                }
+            }
+        }
+        CustomArray.plusArrayDisplay(successBoard,true,false,"successBoard");
     }
 
     /**

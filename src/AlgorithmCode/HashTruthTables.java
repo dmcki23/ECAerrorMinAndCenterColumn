@@ -459,6 +459,15 @@ public class HashTruthTables {
         }
         return out;
     }
+    public int[][] generateAddressTile(int in, int size){
+        int[][] out = new int[size][size];
+        for (int row = 0; row < size; row++) {
+            for (int column = 0; column < size; column++) {
+                out[row][column] = (in>>(size*row+column))%2;
+            }
+        }
+        return out;
+    }
 
     /**
      * Exhaustively generates all 0-255 ECA rule hash algorithm truth tables and minMax codeword sets;

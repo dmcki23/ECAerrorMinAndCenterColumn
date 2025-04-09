@@ -103,8 +103,10 @@ public class Main {
         //hash.check();
         //hashCollisions.runXORtableThroughHash();
         //hashCollisions.runThroughHash();
-        hashCollisions.checkChangesPerTransform();
+        //hashCollisions.checkChangesPerTransform();
         //hash.bitmapTransform();
+        //hashCollisions.checkChangesPerTransform(4);
+        hashCollisions.checkSinglesAgainstAll(4);
 
     }
 }

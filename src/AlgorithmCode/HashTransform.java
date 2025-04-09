@@ -244,7 +244,7 @@ public class HashTransform {
             for (int col = 0; col < input[0].length; col++) {
                 //apply its vote to every location that it influences
                 //including itself
-                int[][] generatedGuess = m.generateCodewordTile(input[row][col], unpackedList[ruleSetIndex/8]);
+                int[][] generatedGuess = m.generateCodewordTile(input[row][col], unpackedList[ruleSetIndex / 8]);
                 for (int r = 0; r < 4; r++) {
                     for (int c = 0; c < 4; c++) {
                         //for (int power = 0; power < 4; power++) {
@@ -311,9 +311,9 @@ public class HashTransform {
                             for (int c = 0; c < 4; c++) {
                                 //for (int power = 0; power < 4; power++) {
                                 if (generatedGuess[r][c] == posNeg) {
-                                    votes[8 * posNeg + t][(row + neighborDistance * ((r / 2) % 2)) % input.length][(col + neighborDistance * (r % 2)) % input[0].length][c] += (1 << r);
+                                    votes[8 * posNeg + t][(row + neighborDistance * ((r / 2) % 2)) % input[0].length][(col + neighborDistance * (r % 2)) % input[0][0].length][c] += (1 << r);
                                 } else {
-                                    votes[8 * posNeg + t][(row + neighborDistance * ((r / 2) % 2)) % input.length][(col + neighborDistance * (r % 2)) % input[0].length][c] -= (1 << r);
+                                    votes[8 * posNeg + t][(row + neighborDistance * ((r / 2) % 2)) % input[0].length][(col + neighborDistance * (r % 2)) % input[0][0].length][c] -= (1 << r);
                                 }
                                 //}
                             }
@@ -357,10 +357,10 @@ public class HashTransform {
 //                }
 //            }
 //        }
-        System.out.println("totDifferent: " + totDifferent);
-        System.out.println("totArea: " + (input.length * input[0].length));
-        System.out.println("different/Area=errors/bit= " + ((double) totDifferent / (double) (input.length * input[0].length)));
-        CustomArray.plusArrayDisplay(finalOutput, false, false, "finalOutput");
+        //System.out.println("totDifferent: " + totDifferent);
+        //System.out.println("totArea: " + (input.length * input[0].length));
+        ////System.out.println("different/Area=errors/bit= " + ((double) totDifferent / (double) (input.length * input[0].length)));
+        //CustomArray.plusArrayDisplay(finalOutput, false, false, "finalOutput");
         return outResult;
     }
 
@@ -376,7 +376,7 @@ public class HashTransform {
         int[] inRaster = ((DataBufferInt) inImage.getRaster().getDataBuffer()).getData();
         int size = inImage.getWidth();
         int depth = (int) (Math.log(inImage.getWidth() * inImage.getWidth()) / Math.log(2));
-        depth = 5;
+        depth = 30;
         int[][][] framesOfHashing = new int[depth][inImage.getHeight()][inImage.getWidth() * 8];
         int[][] field = new int[inImage.getHeight()][inImage.getWidth() * 8];
         int[][] bfield = new int[inImage.getHeight()][inImage.getWidth() * 32];
@@ -405,9 +405,9 @@ public class HashTransform {
             for (int column = 0; column < inImage.getWidth(); column++) {
                 for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
                     for (int power = 0; power < 8; power++) {
-                        bfield[row][32 * column] = (int) Math.abs((inRaster[row * inImage.getWidth() + column] >> (8 * rgbbyte + power)) % 2);
+                        bfield[row][32 * column + 8 * rgbbyte + power] = (int) Math.abs((inRaster[row * inImage.getWidth() + column] >> (8 * rgbbyte + power)) % 2);
                         for (int posNegt = 0; posNegt < 16; posNegt++) {
-                            bFieldSet[posNegt][row][32 * column] = bfield[row][32 * column];
+                            bFieldSet[posNegt][row][32 * column + 8 * rgbbyte + power] = bfield[row][32 * column + 8 * rgbbyte + power];
                         }
                     }
                 }
@@ -417,10 +417,7 @@ public class HashTransform {
         initWolframs();
         //Change the RGB 4-bytes broken down into 32 bits into its depth 0 codewords
         bfield = initializeDepthZero(bfield, unpackedList[3])[1];
-        for (int posNegt = 0; posNegt < 8; posNegt++) {
-            bFieldSet[posNegt] = initializeDepthZero(bFieldSet[posNegt], unpackedList[posNegt])[1];
-            bFieldSet[posNegt + 8] = initializeDepthZeroMax(bFieldSet[posNegt + 8], unpackedList[posNegt])[1];
-        }
+
         //Do the transform
         framesOfHashing = ecaMinTransform(bfield, unpackedList[3], depth);
         //Convert the transform back into appropriate bitmap RGB format
@@ -449,7 +446,7 @@ public class HashTransform {
         gifWriter.prepareWriteSequence(null);
         BufferedImage outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_INT_RGB);
         for (int repeat = 0; repeat < 1; repeat++) {
-            for (int d = 0; d <= 0; d++) {
+            for (int d = 0; d < depth; d++) {
                 File outFile = new File("src/ImagesProcessed/GifOutput/processedDepth" + d + ".bmp");
                 outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_INT_RGB);
                 outRaster = ((DataBufferInt) outImage.getRaster().getDataBuffer()).getData();
@@ -462,8 +459,12 @@ public class HashTransform {
             }
         }
         gifWriter.endWriteSequence();
+
         System.out.println("depth: " + depth);
         System.out.println("done with gif");
+        //
+        //
+        //
         //
         //
         //
@@ -477,7 +478,11 @@ public class HashTransform {
             }
         }
         System.out.println("undoInput[3].length: " + undoInput[0].length + " " + undoInput[1][0].length);
-        int[][] undo = reconstructDepthD(bfield, 1, 3);
+        for (int posNegt = 0; posNegt < 8; posNegt++) {
+            bFieldSet[posNegt] = initializeDepthZero(bFieldSet[posNegt], unpackedList[posNegt])[1];
+            bFieldSet[posNegt + 8] = initializeDepthMax(bFieldSet[posNegt + 8], unpackedList[posNegt])[1];
+        }
+        int[][] undo = hashInverseDepth0(bFieldSet, 1, 3);
         int[][] undoRasterized = new int[inverse.getHeight()][inverse.getWidth()];
         System.out.println("inverse.getHeight(): " + inverse.getHeight() + " inverse.getWidth(): " + inverse.getWidth());
         System.out.println(undo.length + " " + undo[0].length);
@@ -487,7 +492,7 @@ public class HashTransform {
                 for (int column = 0; column < inverse.getWidth(); column++) {
                     for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
                         for (int power = 0; power < 8; power++) {
-                            undoRasterized[row][column] += undo[row][column * 32 + 8 * rgbbyte + power];
+                            undoRasterized[row][column] += undo[row][column * 32 + 8 * rgbbyte + power]<<(8*rgbbyte+power);
                         }
                     }
                 }
@@ -501,7 +506,7 @@ public class HashTransform {
             }
         }
         File inverseFile = new File("src/ImagesProcessed/inverse.bmp");
-        ImageIO.write(outImage, "bmp", inverseFile);
+        ImageIO.write(inverse, "bmp", inverseFile);
     }
 
     /**
@@ -619,7 +624,7 @@ public class HashTransform {
         //System.out.println("totArea: " + (in.length * in[0].length));
         //System.out.println("different/Area=errors/bit= " + ((double) totDifferent / (double) (in.length * in[0].length)));
         //CustomArray.plusArrayDisplay(outVotes, true, false, "outVotes");
-        System.out.println("outResult.getHeight: " + " " + outResult.length + outResult[0].length);
+        //System.out.println("outResult.getHeight: " + " " + outResult.length + outResult[0].length);
         return outResult;
     }
 }

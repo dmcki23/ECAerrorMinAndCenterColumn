@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="bitmapCheck() ?? is working with a mod function on the phaseShift. It doesn't look like it's losing much information compared to the last iteration of the gif function">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="changed a bunch of stuff in HashTransform that don't affect changePerTransform() in HashCollisions but don't entirely work in bitmapTransform(), the memory issue of all 16 bitmaps in the tuple set for one, two ??">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTruthTables.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTruthTables.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -128,7 +128,7 @@
       <workItem from="1743965259483" duration="20933000" />
       <workItem from="1744162680217" duration="2723000" />
       <workItem from="1744204471539" duration="4507000" />
-      <workItem from="1744209224946" duration="1634000" />
+      <workItem from="1744209224946" duration="11511000" />
     </task>
     <task id="LOCAL-00001" summary="Have gathered the code from several local projects into this, initial commit">
       <option name="closed" value="true" />
@@ -362,7 +362,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744172001351</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="changed a bunch of stuff in HashTransform that don't affect changePerTransform() in HashCollisions but don't entirely work in bitmapTransform(), the memory issue of all 16 bitmaps in the tuple set for one, two ??">
+      <option name="closed" value="true" />
+      <created>1744211316243</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1744211316243</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -420,7 +428,8 @@
     <MESSAGE value="some testing has been done on the recent rebuild, the list is in Main" />
     <MESSAGE value="checkChangesPerTransform() is working spectacularly" />
     <MESSAGE value="bitmapCheck() ?? is working with a mod function on the phaseShift. It doesn't look like it's losing much information compared to the last iteration of the gif function" />
-    <option name="LAST_COMMIT_MESSAGE" value="bitmapCheck() ?? is working with a mod function on the phaseShift. It doesn't look like it's losing much information compared to the last iteration of the gif function" />
+    <MESSAGE value="changed a bunch of stuff in HashTransform that don't affect changePerTransform() in HashCollisions but don't entirely work in bitmapTransform(), the memory issue of all 16 bitmaps in the tuple set for one, two ??" />
+    <option name="LAST_COMMIT_MESSAGE" value="changed a bunch of stuff in HashTransform that don't affect changePerTransform() in HashCollisions but don't entirely work in bitmapTransform(), the memory issue of all 16 bitmaps in the tuple set for one, two ??" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
