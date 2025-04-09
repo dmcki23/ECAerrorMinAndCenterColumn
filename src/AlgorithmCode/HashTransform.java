@@ -9,8 +9,6 @@ import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 
 /**
@@ -30,19 +28,7 @@ public class HashTransform {
      * and unique codewords for every input
      */
     public int[] unpackedList = new int[]{0, 15, 51, 85, 170, 204, 240, 255};
-
     public OneDHashTransform oneDHashTransform = new OneDHashTransform(this);
-
-    /**
-     * Does the Hash transform on 1D input
-     *
-     * @param input binary array
-     * @return
-     */
-    public int[] oneD(int[] input) {
-        int[] out = new int[input.length];
-        return out;
-    }
 
     /**
      * Takes raw binary data and does the initial conversion to one codeword per point covering its
@@ -75,6 +61,41 @@ public class HashTransform {
                 }
                 //finds the neighborhood's codeword
                 deepInput[1][row][col] = m.minSolutionsAsWolfram[rule][cell];
+            }
+        }
+        return deepInput;
+    }
+    /**
+     * Takes raw binary data and does the initial conversion to one codeword per point covering its
+     * area of influence, before comparing them with neighbors in ecaMinMaxTransform()
+     *
+     * @param input a 2D binary array
+     * @param rule  an ECA rule
+     * @return a set of 2D arrays with input in layer 0, and layer 1 is the codeword-ified input,
+     * the rest is empty
+     */
+    public int[][][] initializeDepthMax(int[][] input, int rule) {
+        int rows = input.length;
+        int cols = input[0].length;
+        int[][][] deepInput = new int[4][rows][cols];
+        //initialize layer 0 to the input
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                deepInput[0][row][col] = input[row][col];
+            }
+        }
+        //for every location in the bitmap
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                //gets its neighborhood
+                int cell = 0;
+                for (int r = 0; r < 4; r++) {
+                    for (int c = 0; c < 4; c++) {
+                        cell += (int) Math.pow(2, 4 * r + c) * deepInput[0][(row + r) % rows][(col + c) % cols];
+                    }
+                }
+                //finds the neighborhood's codeword
+                deepInput[1][row][col] = m.maxSolutionsAsWolfram[rule][cell];
             }
         }
         return deepInput;
@@ -163,8 +184,8 @@ public class HashTransform {
      * Initializes the set of hash truth tables for [0,15,51,85,170,204,240,255]
      */
     public void initWolframs() {
-        for (int r = 0; r < 8; r++){
-            m.individualRule(unpackedList[r],4,false,0,false,0,false);
+        for (int r = 0; r < 8; r++) {
+            m.individualRule(unpackedList[r], 4, false, 0, false, 0, false);
         }
         //Initialize the truth tables for both the min and max codewords of the set
         for (int spot = 0; spot < 8; spot++) {
@@ -174,64 +195,75 @@ public class HashTransform {
             }
         }
     }
-    public int[][] reconstruct(int[][] input, int depth){
-        int[][] out = new int[input.length][input[0].length];
 
-        return out;
-    }
-    public int[] reconstruct(int[] input, int depth){
-        int[] out = new int[input.length];
-        return out;
-    }
-
-    public void writeSetToFile() throws IOException {
-        String filename = "src/AlgorithmCode/tupleWolframs.txt";
-        initWolframs();
-        File file = new File(filename);
-        FileWriter fw = new FileWriter(file);
+    public int[][][] reconstructDepthD(int[][][] input, int depth) {
+        int neighborDistance = 1 << (depth - 1);
+        neighborDistance = 1;
+        int[][][][] votes = new int[16][input.length][input[0].length][4];
+        for (int row = 0; row < input.length; row++) {
+            for (int col = 0; col < input[0].length; col++) {
+                for (int posNeg = 0; posNeg < 2; posNeg++) {
+                    for (int t = 0; t < 8; t++) {
+                        //apply its vote to every location that it influences
+                        //including itself
+                        int[][] generatedGuess = m.generateCodewordTile(input[8 * posNeg + t][row][col], unpackedList[t]);
+                        for (int r = 0; r < 4; r++) {
+                            for (int c = 0; c < 4; c++) {
+                                //for (int power = 0; power < 4; power++) {
+                                if (generatedGuess[r][c] == posNeg) {
+                                    votes[8 * posNeg + t][(row + neighborDistance * ((r / 2) % 2)) % input.length][(col + neighborDistance * (r % 2)) % input[0].length][c] += (1 <<r);
+                                } else {
+                                    votes[8 * posNeg + t][(row + neighborDistance * ((r / 2) % 2)) % input.length][(col + neighborDistance * (r % 2)) % input[0].length][c] -= (1<<r);
+                                }
+                                //}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //for each location, based on whether the final tally of the vote was positive or negative
+        //output a 0 if positive and 1 if negative, if the vote result is not what the
+        //original data is increment the error counter for analysis
+        int[][][] outResult = new int[16][input.length][input[0].length];
+        int[][] outCompare = new int[input.length][input[0].length];
+        int totDifferent = 0;
+        int[][] finalOutput = new int[input.length][input[0].length];
         for (int posNeg = 0; posNeg < 2; posNeg++) {
             for (int t = 0; t < 8; t++) {
-                String outstring = "";
-                for (int row = 0; row < 256 * 256; row++) {
-                    outstring += flatWolframs[posNeg][t][row]+" ";
+                for (int row = 0; row < input.length; row++) {
+                    for (int column = 0; column < input[0].length; column++) {
+                        for (int power = 0; power < 4; power++) {
+                            if (votes[8 * posNeg + t][row][column][power] >= 0) {
+                                outResult[8 * posNeg + t][row][column] += 0;
+                                finalOutput[row][column] += 0;
+                            } else {
+                                outResult[8 * posNeg + t][row][column] += (1 << power);
+                                finalOutput[row][column] += (1 << power);
+                            }
+                        }
+                        //outCompare[row][column] = outResult[row][column] ^ input[row][column];
+                        totDifferent += outCompare[row][column];
+                    }
                 }
-                fw.write(outstring+"\n");
+            }
+        }
+        for (int row = 0; row < input.length; row++) {
+            for (int col = 0; col < input[0].length; col++) {
+                if (finalOutput[row][col] >= 0) {
+                    //finalOutput[row][col] += 0;
+                } else {
+                    //finalOutput[row][col] = 0;
+                }
+            }
+        }
+        System.out.println("totDifferent: " + totDifferent);
+        System.out.println("totArea: " + (input.length * input[0].length));
+        System.out.println("different/Area=errors/bit= " + ((double) totDifferent / (double) (input.length * input[0].length)));
+        CustomArray.plusArrayDisplay(finalOutput, false, false, "finalOutput");
+        return outResult;
+    }
 
-            }
-        }
-        fw.close();
-    }
-    public void readSetFromFile() throws IOException {
-        String filename = "src/AlgorithmCode/tupleWolframs.txt";
-        flatWolframs = new int[2][8][65536];
-        File file = new File(filename);
-        FileReader reader = new FileReader(file);
-        int length = 1;
-        char[] buffer = new char[length];
-        int charactersRead = reader.read(buffer, 0, length);
-        String fileString = "";
-        while (charactersRead != -1) {
-            fileString += new String(buffer, 0, charactersRead);
-        }
-        int index = 0;
-        int posNeg = 0;
-        int t = 0;
-        String[][] wolframStrings = new String[2][8];
-        int start = 0;
-        int end = 0;
-        for (int fileSpot = 0; fileSpot < fileString.length(); fileSpot++) {
-            if (fileString.charAt(fileSpot) == '\n') {
-                end = fileSpot;
-                wolframStrings[posNeg][t] = fileString.substring(start, end);
-                start = end + 2;
-                t++;
-                if (t == 8) {
-                    t = 0;
-                    posNeg = 1;
-                }
-            }
-        }
-    }
     /**
      * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
      *
@@ -260,9 +292,9 @@ public class HashTransform {
                 for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
                     for (int lr = 0; lr < 2; lr++) {
                         int rasterCoordX = row * inImage.getWidth() + column;
-                        field[row][8 * column + 2 * rgbbyte + lr] = (int) Math.abs((inRaster[rasterCoordX] >> (4 * rgbbyte + 2*lr)) % 16);
-                        for (int power = 0; power < 4; power++){
-                            bfield[row][32*column+8*rgbbyte+4*lr+power] = (field[row][8*column+2*rgbbyte+lr]>>power)%2;
+                        field[row][8 * column + 2 * rgbbyte + lr] = (int) Math.abs((inRaster[rasterCoordX] >> (4 * rgbbyte + 2 * lr)) % 16);
+                        for (int power = 0; power < 4; power++) {
+                            bfield[row][32 * column + 8 * rgbbyte + 4 * lr + power] = (field[row][8 * column + 2 * rgbbyte + lr] >> power) % 2;
                         }
                     }
                 }
@@ -271,14 +303,14 @@ public class HashTransform {
         for (int row = 0; row < inImage.getHeight(); row++) {
             for (int column = 0; column < inImage.getWidth(); column++) {
                 for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
-                    for (int power = 0; power < 8; power++){
-                        bfield[row][32*column] = (int)Math.abs((inRaster[row*inImage.getWidth() + column]>>(8*rgbbyte+power)) % 2);
+                    for (int power = 0; power < 8; power++) {
+                        bfield[row][32 * column] = (int) Math.abs((inRaster[row * inImage.getWidth() + column] >> (8 * rgbbyte + power)) % 2);
                     }
                 }
             }
         }
         initWolframs();
-        bfield = initializeDepthZero(bfield,unpackedList[3])[1];
+        bfield = initializeDepthZero(bfield, unpackedList[3])[1];
         //Do the transform
         framesOfHashing = ecaMinTransform(bfield, unpackedList[3], depth);
         //Convert the transform back into appropriate bitmap RGB format
@@ -299,13 +331,12 @@ public class HashTransform {
                 for (int column = 0; column < inImage.getWidth(); column++) {
                     for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
                         for (int power = 0; power < 8; power++) {
-                            rasterized[d][row][column] += (1<<(8*rgbbyte+power)) * framesOfHashing[d][row][32*column  + 8 * rgbbyte + power];
+                            rasterized[d][row][column] += (1 << (8 * rgbbyte + power)) * framesOfHashing[d][row][32 * column + 8 * rgbbyte + power];
                         }
                     }
                 }
             }
         }
-
         //
         //
         //
@@ -315,7 +346,7 @@ public class HashTransform {
         ImageWriter gifWriter = ImageIO.getImageWritersByFormatName("gif").next();
         ImageOutputStream outputStream = ImageIO.createImageOutputStream(new File("src/ImagesProcessed/screenShotGIF.gif"));
         gifWriter.setOutput(outputStream);
-        int[] outRaster = new int[inImage.getHeight()*inImage.getWidth()];
+        int[] outRaster = new int[inImage.getHeight() * inImage.getWidth()];
         gifWriter.prepareWriteSequence(null);
         BufferedImage outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_INT_RGB);
         for (int repeat = 0; repeat < 1; repeat++) {
@@ -335,6 +366,7 @@ public class HashTransform {
         System.out.println("depth: " + depth);
         System.out.println("done with gif");
     }
+
     /**
      * Attempts to reconstruct the original bitmap raster after doing one iteration of the hash transform
      *
@@ -361,8 +393,10 @@ public class HashTransform {
             }
         }
         CustomArray.plusArrayDisplay(binaryArray, true, true, "binaryArray");
-        checkInverse(initializeDepthZero(binaryArray,51)[1]);
+        binaryArray = ecaMinTransform(binaryArray, unpackedList[2], 1)[1];
+        //hashInverseDepth0(binaryArray, 1, unpackedList[2]);
     }
+
     /**
      * Does the legwork of reconstituting input from sets of codewords
      * The commented out code that includes a and generatedGuess() is the original voting mechanism
@@ -376,15 +410,17 @@ public class HashTransform {
      *
      * @param in 2D codeword input array
      */
-    public void checkInverse(int[][] in) {
+    public int[][] hashInverseDepth0(int[][][] in, int depth, int rule) {
+        int neighborDistance = 1 << (depth - 1);
         //load the minMax 8 tuple subset Wolfram codes
-        initWolframs();
+        //initWolframs();
         int[][][][] depthChart = new int[2][8][in.length][in[0].length];
         //puts the input data as layer 0 of the output data
         for (int posNeg = 0; posNeg < 2; posNeg++) {
             for (int t = 0; t < 8; t++) {
-                System.out.println("posNeg: " + posNeg + " t: " + t);
-                depthChart[posNeg][t] = initializeDepthZero(in, unpackedList[t])[1];
+                //System.out.println("posNeg: " + posNeg + " t: " + t);
+                //depthChart[posNeg][t] = initializeDepthZero(in, unpackedList[t])[1];
+                //depthChart[posNeg][t] =
             }
         }
         //this array is the vote tally, location is influenced by 16 neighborhoods within a distance of 4
@@ -401,27 +437,23 @@ public class HashTransform {
         int column;
         //for every location in the transformed bitmap data
         for (row = 0; row < in.length; row++) {
-            System.out.println("row: " + row + " out of " + in.length);
+            //System.out.println("row: " + row + " out of " + in.length);
             for (column = 0; column < in[0].length; column++) {
                 //for every term in its min max codeword set
                 for (posNeg = 0; posNeg < 2; posNeg++) {
                     for (t = 0; t < 8; t++) {
                         //apply its vote to every location that it influences
                         //including itself
-                        //int[][] generatedGuess = m.generateGuess(depthChart[posNeg][t][row][column], fmt.unpackedList[t]);
-                        hadamardValue = 0;
-                        for (power = 0; power < 4; power++) {
-                            hadamardValue += ((depthChart[posNeg][t][row][column] >> power) % 2);
-                        }
-                        hadamardValue %= 2;
+                        int[][] generatedGuess = m.generateCodewordTile(in[8 * posNeg + t][row][column], unpackedList[t]);
+                        //CustomArray.plusArrayDisplay(generatedGuess, false, true, "generatedGuess");
                         for (r = 0; r < 4; r++) {
                             for (c = 0; c < 4; c++) {
                                 //int a = (generatedGuess[r][c] );
-                                //if (generatedGuess[r][c] == posNeg) {
-                                if (hadamardValue == posNeg) {
-                                    outVotes[(row + r) % in.length][(column + c) % in[0].length] += (1 << r);
+                                if (generatedGuess[r][c] == posNeg) {
+                                    //if (hadamardValue == posNeg) {
+                                    outVotes[(row +  (r )) % in.length][(column +  (c )) % in[0].length] += (1 <<r);
                                 } else {
-                                    outVotes[(row + r) % in.length][(column + c) % in[0].length] -= (1 << r);
+                                    outVotes[(row +  (r ) ) % in.length][(column + (c)) % in[0].length] -= (1 <<r);
                                 }
                             }
                         }
@@ -442,13 +474,15 @@ public class HashTransform {
                 } else {
                     outResult[row][column] = 1;
                 }
-                outCompare[row][column] = outResult[row][column] ^ in[row][column];
+                //outCompare[row][column] = outResult[row][column] ^ in[row][column];
                 totDifferent += outCompare[row][column];
             }
         }
-        System.out.println("totDifferent: " + totDifferent);
-        System.out.println("totArea: " + (in.length * in[0].length));
-        System.out.println("different/Area=errors/bit= " + ((double) totDifferent / (double) (in.length * in[0].length)));
+        //System.out.println("totDifferent: " + totDifferent);
+        //System.out.println("totArea: " + (in.length * in[0].length));
+        //System.out.println("different/Area=errors/bit= " + ((double) totDifferent / (double) (in.length * in[0].length)));
+        //CustomArray.plusArrayDisplay(outVotes, true, false, "outVotes");
+        return outResult;
     }
 }
 

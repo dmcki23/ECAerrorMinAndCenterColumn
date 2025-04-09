@@ -101,6 +101,49 @@ public class OneDHashTransform {
         }
         return deepInput;
     }
+    public int[] reconstructDepthD(int[] input, int depth) {
+        int neighborDistance = 1 << (depth - 1);
+        int[][] votes = new int[input.length][4];
+        for (int row = 0; row < input.length; row++) {
+            for (int posNeg = 0; posNeg < 2; posNeg++) {
+                for (int t = 0; t < 8; t++) {
+                    //apply its vote to every location that it influences
+                    //including itself
+                    int[][] generatedGuess = hash.m.generateCodewordTile(input[row], hash.unpackedList[t]);
+                    for (int r = 0; r < 4; r++) {
+                        for (int c = 0; c < 4; c++) {
+                            if (generatedGuess[r][c] == posNeg) {
+                                votes[(row + neighborDistance * (4*r+c)) % input.length][c] += (1 << r);
+                            } else {
+                                votes[(row + neighborDistance * (4*r+c)) % input.length][c] -= (1 << r);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //for each location, based on whether the final tally of the vote was positive or negative
+        //output a 0 if positive and 1 if negative, if the vote result is not what the
+        //original data is increment the error counter for analysis
+        int[] outResult = new int[input.length];
+        int[] outCompare = new int[input.length];
+        int totDifferent = 0;
+        for (int row = 0; row < input.length; row++) {
+            for (int power = 0; power < 4; power++) {
+                if (votes[row][power] >= 0) {
+                    outResult[row] += 0;
+                } else {
+                    outResult[row] += (1 << power);
+                }
+            }
+            outCompare[row] = outResult[row] ^ input[row];
+            totDifferent += outCompare[row];
+        }
+        System.out.println("totDifferent: " + totDifferent);
+        System.out.println("totLength: " + (input.length ));
+        System.out.println("different/Area=errors/bit= " + ((double) totDifferent / (double) (input.length )));
+        return outResult;
+    }
 
     /**
      * Does the legwork of reconstituting input from sets of codewords
@@ -115,7 +158,7 @@ public class OneDHashTransform {
      *
      * @param in 2D codeword input array
      */
-    public void checkInverse(int[] in, int depth) {
+    public void reconstructDepth0(int[] in, int depth) {
         //load the minMax 8 tuple subset Wolfram codes
         hash.initWolframs();
         //Operating set

@@ -19,6 +19,290 @@ public class HashCollisions {
      */
     public HashTransform hash = new HashTransform();
 
+    public int[][][] runXORtableThroughHash() {
+        int[][] out = new int[16][16];
+        hash.initWolframs();
+        for (int row = 0; row < 16; row++) {
+            for (int col = 0; col < 16; col++) {
+                out[row][col] = row ^ col;
+            }
+        }
+        int[][][] hashed = new int[16][16][16];
+        int[][][] inverse = new int[16][16][16];
+        for (int posNeg = 0; posNeg < 2; posNeg++) {
+            for (int t = 0; t < 8; t++) {
+                hashed[8 * posNeg + t] = hash.ecaMinTransform(out, hash.unpackedList[t], 1)[1];
+                //CustomArray.plusArrayDisplay(hashed[8*posNeg+t], true, false, "hashed");
+                //inverse = hash.reconstructDepthD(hashed,1,hash.unpackedList[t],posNeg);
+                //CustomArray.plusArrayDisplay(inverse, true, false, "inverse");
+            }
+        }
+        inverse = hash.reconstructDepthD(hashed, 1);
+        for (int posNeg = 0; posNeg < 1; posNeg++) {
+            for (int t = 0; t < 8; t++) {
+                CustomArray.plusArrayDisplay(inverse[8 * posNeg + t], false, false, "inverse");
+                for (int row = 0; row < 16; row++) {
+                    for (int col = 0; col < 16; col++) {
+                    }
+                }
+                //System.out.println("\n\n\n\n\n\n\n");
+            }
+        }
+        //CustomArray.plusArrayDisplay(inverse,false,false,"inverse");
+        return inverse;
+    }
+
+    public void runThroughHash() {
+        int[][] out = new int[16][16];
+        hash.initWolframs();
+        Random rand = new Random();
+        for (int row = 0; row < 16; row++) {
+            for (int col = 0; col < 16; col++) {
+                out[row][col] = (row ^ col) % 2;
+                //out[row][col] = (row + col) % 2;
+                //out[row][col] = rand.nextInt(0,2);
+                //out[row][col] = (row & col) % 2;
+                //out[row][col] = (row | col) % 2;
+                //out[row][col] = ((row*3)^(col*7)+2)%2;
+                //out[row][col] = ((3*row)+col)%2;
+            }
+        }
+        int a = 0;
+        int b = 0;
+        for (int change = 0; change < 1; change++) {
+            a = rand.nextInt(0, 16);
+            b = rand.nextInt(0, 16);
+            System.out.println("a = " + a + ", b = " + b);
+            out[a][b] ^= 1;
+        }
+        CustomArray.plusArrayDisplay(out, false, false, "out");
+        int[][][] preHash = new int[16][16][16];
+        for (int posNeg = 0; posNeg < 2; posNeg++) {
+            for (int t = 0; t < 8; t++) {
+                preHash[t] = hash.initializeDepthZero(out, hash.unpackedList[t])[1];
+                preHash[8 + t] = hash.initializeDepthMax(out, hash.unpackedList[t])[1];
+            }
+        }
+        int[][][] hashed = new int[16][16][16];
+        for (int posNeg = 0; posNeg < 2; posNeg++) {
+            for (int t = 0; t < 8; t++) {
+                hashed[t] = hash.ecaMinTransform(preHash[t], hash.unpackedList[t], 1)[1];
+                hashed[8 + t] = hash.ecaMaxTransform(preHash[8 + t], hash.unpackedList[t], 1)[1];
+            }
+        }
+        int[][][] inverted = hash.reconstructDepthD(hashed, 1);
+        int[][][] in = new int[16][2][2];
+        int[][][] outt = new int[16][2][2];
+        int[][][] inv = new int[16][2][2];
+        for (int posNeg = 0; posNeg < 2; posNeg++) {
+            for (int t = 0; t < 8; t++) {
+                for (int row = 0; row < 16; row++) {
+                    for (int col = 0; col < 16; col++) {
+                        //inverted[8 * posNeg + t][row][col] ^= preHash[8 * posNeg + t][row][col];
+                        //in[8 * posNeg + t][row][col] = preHash[8 * posNeg + t][row][col];
+                        //outt[8 * posNeg + t][row][col] = hashed[8 * posNeg + t][row][col];
+                        //inv[8 * posNeg + t][row][col] = inverted[8 * posNeg + t][row][col];
+                    }
+                }
+                System.out.println("posNeg: " + posNeg + " t: " + t);
+                CustomArray.plusArrayDisplay(preHash[8 * posNeg + t], false, false, "preHash");
+                CustomArray.plusArrayDisplay(hashed[8 * posNeg + t], false, false, "hashed ");
+                CustomArray.plusArrayDisplay(inverted[8 * posNeg + t], false, false, "inverse");
+            }
+        }
+        int[][] finalized = hash.hashInverseDepth0(inverted, 1, 0);
+        int quantityErrors = 0;
+        for (int row = 0; row < 16; row++) {
+            for (int col = 0; col < 16; col++) {
+                //finalized[row][col] ^= out[row][col];
+                quantityErrors += finalized[(row) % 16][col] ^ out[row][col];
+            }
+        }
+        System.out.println("quantityErrors: " + quantityErrors);
+        System.out.println("a: " + a + ", b: " + b);
+        CustomArray.plusArrayDisplay(finalized, true, true, "finalized");
+        int[][] shifted = new int[16][16];
+        for (int row = 0; row < 16; row++) {
+            for (int col = 0; col < 16; col++) {
+                shifted[row][col] = finalized[(row + a) % 16][(col + b) % 16];
+            }
+        }
+        CustomArray.plusArrayDisplay(shifted, true, true, "shifted");
+        for (int t = 0; t < 0; t++) {
+            for (int posNeg = 0; posNeg < 2; posNeg++) {
+                System.out.println("posNeg: " + posNeg + " t: " + t);
+                for (int row = 0; row < 2; row++) {
+                    for (int col = 0; col < 2; col++) {
+                        System.out.print(in[8 * posNeg + t][row][col] + "\t");
+                    }
+                    System.out.print("\t\t");
+                    for (int col = 0; col < 2; col++) {
+                        System.out.print(outt[8 * posNeg + t][row][col] + "\t");
+                    }
+                    System.out.print("\t\t");
+                    for (int col = 0; col < 2; col++) {
+                        System.out.print(inverted[8 * posNeg + t][row][col] + "\t");
+                    }
+                    System.out.print("\n");
+                }
+                System.out.print("\n");
+                //finalized[8*posNeg+t] = hash.hashInverseDepth0(inverted,1,hash.unpackedList[t]);
+                //CustomArray.plusArrayDisplay(finalized[8*posNeg+t],false,false,"finalized");
+            }
+        }
+    }
+
+    public void checkChangesPerTransform() {
+        int[][] out = new int[16][16];
+        hash.initWolframs();
+        Random rand = new Random();
+        int[][][] changes = new int[256][16][16];
+        int[][][] shiftChanges = new int[256][16][16];
+        int[][][] trackedZero = new int[2][16][16];
+        for (int row  = 0; row < 16; row++) {
+            Arrays.fill(trackedZero[0][row], -1);
+            Arrays.fill(trackedZero[1][row], -1);
+        }
+        int[][] changed = new int[16][16];
+        for (int cr = 0; cr < 16; cr++) {
+            for (int cc = 0; cc < 16; cc++) {
+                for (int row = 0; row < 16; row++) {
+                    for (int col = 0; col < 16; col++) {
+                        //
+                        //
+                        //This one the zeros are at !((row^col)%2)
+                        //The offset extra change variable location is irrelevant
+                        //to the location of the fish
+                        //out[row][col] = (row ^ col) % 2;
+                        //
+                        //
+                        //This one is the same as first one
+                        //out[row][col] = (row + col) % 2;
+                        //
+                        //
+                        //This one produces zeros with 5! = 120 votes at every cell, weighted, in the reconstruction finalOutput array
+                        //out[row][col] = (row & col) % 2;
+                        //
+                        //
+                        //This one is all ones unless the extra change produces that odd and evens trackedZero matrix
+                        //the trackedZero matrix doesn't apply to the other equations
+                        out[row][col] = (row | col) % 2;
+                        //
+                        //
+                        //Same as the first one
+                        //out[row][col] = ((row*3)^(col*7)+2)%2;
+                        //
+                        //
+                        //Same as the first one
+                        //out[row][col] = ((3*row)+col)%2;
+                        //
+                        //
+                        changed[row][col] = out[row][col];
+                    }
+                }
+                int a = 0;
+                int b = 0;
+                int shift = 2;
+                int cshift = 2;
+                for (int change = 0; change < 1; change++) {
+                    a = cr;
+                    b = cc;
+                    out[cr][cc] ^= 1;
+                    changed[cr][cc] ^= 1;
+                    changed[(cr + shift) % 16][(cr + shift) % 16] ^= 1;
+                    System.out.println("a = " + a + ", b = " + b);
+                }
+                int[][][] preHash = new int[16][16][16];
+                int[][][] cpre = new int[16][16][16];
+                for (int posNeg = 0; posNeg < 2; posNeg++) {
+                    for (int t = 0; t < 8; t++) {
+                        preHash[t] = hash.initializeDepthZero(out, hash.unpackedList[t])[1];
+                        preHash[8 + t] = hash.initializeDepthMax(out, hash.unpackedList[t])[1];
+                        cpre[t] = hash.initializeDepthZero(changed, hash.unpackedList[t])[1];
+                        cpre[8 + t] = hash.initializeDepthMax(changed, hash.unpackedList[t])[1];
+                    }
+                }
+                int[][][] hashed = new int[16][16][16];
+                int[][][] chashed = new int[16][16][16];
+                for (int posNeg = 0; posNeg < 2; posNeg++) {
+                    for (int t = 0; t < 8; t++) {
+                        hashed[t] = hash.ecaMinTransform(preHash[t], hash.unpackedList[t], 1)[1];
+                        hashed[8 + t] = hash.ecaMaxTransform(preHash[8 + t], hash.unpackedList[t], 1)[1];
+                        chashed[t] = hash.ecaMinTransform(cpre[t], hash.unpackedList[t], 1)[1];
+                        chashed[t + 8] = hash.ecaMaxTransform(cpre[t + 8], hash.unpackedList[t], 1)[1];
+                    }
+                }
+                int[][][] cinverted = hash.reconstructDepthD(chashed, 1);
+                int[][][] inverted = hash.reconstructDepthD(hashed, 1);
+
+                int[][] finalized = hash.hashInverseDepth0(inverted, 1, 0);
+                int[][] cfinalized = hash.hashInverseDepth0(cinverted, 1, 0);
+                int quantityErrors = 0;
+                for (int row = 0; row < 16; row++) {
+                    for (int col = 0; col < 16; col++) {
+                        //finalized[row][col] ^= out[row][col];
+                        if (finalized[row][col] == 0) {
+                            trackedZero[0][cr][cc] = row;
+                            trackedZero[1][cr][cc] = col;
+                        }
+                        quantityErrors += finalized[(row) % 16][col] ^ out[row][col];
+                    }
+                }
+
+                CustomArray.plusArrayDisplay(finalized, true, true, "finalized");
+                int[][] shifted = new int[16][16];
+                int[][] cshifted = new int[16][16];
+                for (int row = 0; row < 16; row++) {
+                    for (int col = 0; col < 16; col++) {
+                        shifted[row][col] = finalized[(row + a + 8) % 16][(col + b + 8) % 16];
+                        cshifted[row][col] = cfinalized[(row + a + 8) % 16][(col + b + 8) % 16];
+                    }
+                }
+                CustomArray.plusArrayDisplay(shifted, true, true, "shifted");
+                for (int row = 0; row < 16; row++) {
+                    for (int col = 0; col < 16; col++) {
+                        changes[16 * cr + cc][row][col] = shifted[row][col];
+                        shiftChanges[16 * cr + cc][row][col] = cshifted[row][col];
+                        //changes[16*cr+cc][row][col] = finalized[row][col];
+                    }
+                }
+                CustomArray.plusArrayDisplay(shiftChanges[16 * cr + cc], true, true, "shiftedChanges");
+            }
+        }
+        int[][] total = new int[16][16];
+        int[][] zeros = new int[16][16];
+        for (int cr = 0; cr < 16; cr++) {
+            for (int cc = 0; cc < 16; cc++) {
+                boolean isZeros = true;
+                for (int row = 0; row < 16; row++) {
+                    for (int col = 0; col < 16; col++) {
+                        total[row][col] += changes[16 * cr + cc][row][col];
+                        if (changes[16 * cr + cc][row][col] != 0) isZeros = false;
+                    }
+                }
+                if (!isZeros) {
+                    zeros[cr][cc] = 1;
+                }
+            }
+        }
+        int[] operation = new int[4];
+        Arrays.fill(operation, -1);
+        for (int cccc = 0; cccc < 256; cccc++) {
+            for (int row = 0; row < 16; row++) {
+                for (int col = 0; col < 16; col++) {
+                    int x = changes[cccc][row][col];
+                    int y = shiftChanges[cccc][row][col];
+                    int z = 2 * x + y;
+                }
+            }
+        }
+        CustomArray.plusArrayDisplay(total, false, false, "total");
+        CustomArray.plusArrayDisplay(zeros, false, false, "zeros");
+        for (int row = 0; row < 256; row++) {
+        }
+        CustomArray.plusArrayDisplay(trackedZero[0], false, false, "trackedZero");
+        CustomArray.plusArrayDisplay(trackedZero[1], false, false, "trackedZero");
+    }
 
     /**
      * Attempts to reconstruct the original bitmap raster after doing one iteration of the hash transform
@@ -247,9 +531,9 @@ public class HashCollisions {
         //I have no direct explanation yet, only that codeword addition is
         //the non-reduced boolean Hadamard matrix
         System.out.println("totDifferent: " + totDifferent);
-        System.out.println("totDifferent = " + totDifferent + " out of 256, errors/address = " + (double)totDifferent/256.0 + " correlation rate = (totLocations-errors)/numAddresses = " + (double)(256-totDifferent)/256.0);
+        System.out.println("totDifferent = " + totDifferent + " out of 256, errors/address = " + (double) totDifferent / 256.0 + " correlation rate = (totLocations-errors)/numAddresses = " + (double) (256 - totDifferent) / 256.0);
         System.out.println("this analysis is comparing ECA minMax hash transform addition and Hadamard parity");
-        System.out.println("Hadamard parity is the number of ones in its binary representation mod 2" );
+        System.out.println("Hadamard parity is the number of ones in its binary representation mod 2");
     }
 
     /**
@@ -257,9 +541,10 @@ public class HashCollisions {
      * and compares them with all other tuple sets in the truth table to check for uniqueness.
      * On their own they are not unique roughly 1/256 pairs are collisions. To force it to be unique
      * see checkUnitWrappedTupleUniqueness() which is what the optional non-collision loop is based on
+     *
      * @return whether the tuple sets in the truth tables are distinct
      */
-    public boolean checkTupleUniqueness(){
+    public boolean checkTupleUniqueness() {
         hash.initWolframs();
         boolean out = true;
         int[][] innerOuterTuples = new int[2][16];
@@ -268,14 +553,14 @@ public class HashCollisions {
             if (address % 256 == 0) System.out.println("address: " + address);
             for (int t = 0; t < 8; t++) {
                 innerOuterTuples[0][t] = hash.flatWolframs[0][t][address];
-                innerOuterTuples[0][t+8] = hash.flatWolframs[1][t][address];
+                innerOuterTuples[0][t + 8] = hash.flatWolframs[1][t][address];
             }
             for (int add = 0; add < address; add++) {
-                for (int t = 0; t < 8; t++){
+                for (int t = 0; t < 8; t++) {
                     innerOuterTuples[1][t] = hash.flatWolframs[0][t][add];
-                    innerOuterTuples[1][t+8] = hash.flatWolframs[1][t][add];
+                    innerOuterTuples[1][t + 8] = hash.flatWolframs[1][t][add];
                 }
-                if (Arrays.equals(innerOuterTuples[0], innerOuterTuples[1])){
+                if (Arrays.equals(innerOuterTuples[0], innerOuterTuples[1])) {
                     out = false;
                     numSame++;
                 }
@@ -397,8 +682,8 @@ public class HashCollisions {
         //wrapped column-wise and row-wise and the boundaries of the neighborhood are moved
         //you get the same binary array reconfigured
         //
-         //
-         //All the neighborhoods' wrapped addresses
+        //
+        //All the neighborhoods' wrapped addresses
         int[][] slidingAddresses = new int[65536][16];
         //All the neighborhoods' wrapped addresses' minMax codeword set values
         int[][][] slidingTuples = new int[65536][16][16];
@@ -477,13 +762,12 @@ public class HashCollisions {
             }
         }
         int widthWindow = 5;
-
         //Random number generator
         Random rand = new Random();
         //Original addresses randomly changed new codewords
-        int[][] outerTuples = new int[widthWindow*widthWindow][16];
+        int[][] outerTuples = new int[widthWindow * widthWindow][16];
         //Comparison codewords
-        int[][] otherTuple = new int[widthWindow*widthWindow][16];
+        int[][] otherTuple = new int[widthWindow * widthWindow][16];
         //A single addresses
         int[] outerAddresses = new int[25];
         //Total number of errors detected
@@ -493,9 +777,9 @@ public class HashCollisions {
         //A wrapped ECA tile
         int[][] grid;
         //
-         //
-         //
-         //These are declared here to save time on the inner loops
+        //
+        //
+        //These are declared here to save time on the inner loops
         //They're all loop counters
         int power;
         int r;
@@ -518,10 +802,10 @@ public class HashCollisions {
         //These loops originally checked exhaustively and were adapted to random
         //So a loop is a change in the randomness for that loop
         //
-         //
-         //
-         //Outer loop
-        for (int addressCounter = 0; addressCounter < 65536*256; addressCounter++) {
+        //
+        //
+        //Outer loop
+        for (int addressCounter = 0; addressCounter < 65536 * 256; addressCounter++) {
             //if (addressCounter % 1024 * 32 == 0) System.out.println("address: " + addressCounter + " addresses left: " + (65536*256 - addressCounter));
             //for (int numChanges = 1; numChanges < 16; numChanges++) {
             address = rand.nextInt(0, 65536);
@@ -541,7 +825,6 @@ public class HashCollisions {
                 for (power = 0; power < 4; power++) {
                     grid[3 - power][4] = ((trial / (1 << (power + 5))) % 2);
                 }
-
                 //gets the tuples of its neighbors on the sliding window
                 for (r = 0; r < widthWindow; r++) {
                     for (c = 0; c < widthWindow; c++) {
@@ -560,9 +843,9 @@ public class HashCollisions {
                     }
                 }
                 //
-                 //
-                 //
-                 //Inner loop
+                //
+                //
+                //Inner loop
                 for (add = 0; add < 256; add++) {
                     add = rand.nextInt(0, 65536);
                     for (tr = 0; tr < 256; tr++) {
@@ -582,7 +865,6 @@ public class HashCollisions {
                         for (power = 0; power < 4; power++) {
                             grid[3 - power][4] = ((tr / (1 << (power + 5))) % 2);
                         }
-
                         //gets the tuple codewords for the sliding window on the neighborhood
                         for (r = 0; r < widthWindow; r++) {
                             for (c = 0; c < widthWindow; c++) {
@@ -609,7 +891,7 @@ public class HashCollisions {
                             errorRate = (double) numErrors / (checksDone);
                             System.out.println("error: " + numErrors + " errors/attempt = " + errorRate);
                             System.out.println("attempts/error = " + (1 / errorRate));
-                            System.out.println(address+" " + trial + " " + add + " " + tr);
+                            System.out.println(address + " " + trial + " " + add + " " + tr);
                         }
                     }
                 }

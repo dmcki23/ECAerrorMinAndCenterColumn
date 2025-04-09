@@ -98,8 +98,11 @@ public class Main {
         //hashTransform.check();
         Hadamard hadamard = new Hadamard();
         //hadamard.dftOfHadamard(8);
-        a.testAllLogic();
-
+        //a.testAllLogic();
+        //hashTransform.check();
+        //hashCollisions.runXORtableThroughHash();
+        //hashCollisions.runThroughHash();
+        hashCollisions.checkChangesPerTransform();
 
     }
 }
