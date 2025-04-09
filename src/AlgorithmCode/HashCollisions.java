@@ -175,7 +175,7 @@ public class HashCollisions {
                         //This one the zeros are at !((row^col)%2)
                         //The offset extra change variable location is irrelevant
                         //to the location of the fish
-                        //out[row][col] = (row ^ col) % 2;
+                        out[row][col] = (row ^ col) % 2;
                         //
                         //
                         //This one is the same as first one
@@ -188,7 +188,7 @@ public class HashCollisions {
                         //
                         //This one is all ones unless the extra change produces that odd and evens trackedZero matrix
                         //the trackedZero matrix doesn't apply to the other equations
-                        out[row][col] = (row | col) % 2;
+                        //out[row][col] = (row | col) % 2;
                         //
                         //
                         //Same as the first one
@@ -199,7 +199,7 @@ public class HashCollisions {
                         //out[row][col] = ((3*row)+col)%2;
                         //
                         //
-                        out[row][col] = h[cr][cc]%2;
+                        //out[row][col] = h[cr][cc]%2;
                         changed[row][col] = out[row][col];
                     }
                 }

@@ -9,7 +9,6 @@ import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
 /**
@@ -66,6 +65,43 @@ public class HashTransform {
         }
         return deepInput;
     }
+
+    /**
+     * Takes raw binary data and does the initial conversion to one codeword per point covering its
+     * area of influence, before comparing them with neighbors in ecaMinMaxTransform()
+     *
+     * @param input a 2D binary array
+     * @param rule  an ECA rule
+     * @return a set of 2D arrays with input in layer 0, and layer 1 is the codeword-ified input,
+     * the rest is empty
+     */
+    public int[][][] initializeDepthZeroMax(int[][] input, int rule) {
+        int rows = input.length;
+        int cols = input[0].length;
+        int[][][] deepInput = new int[4][rows][cols];
+        //initialize layer 0 to the input
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                deepInput[0][row][col] = input[row][col];
+            }
+        }
+        //for every location in the bitmap
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                //gets its neighborhood
+                int cell = 0;
+                for (int r = 0; r < 4; r++) {
+                    for (int c = 0; c < 4; c++) {
+                        cell += (int) Math.pow(2, 4 * r + c) * deepInput[0][(row + r) % rows][(col + c) % cols];
+                    }
+                }
+                //finds the neighborhood's codeword
+                deepInput[1][row][col] = m.maxSolutionsAsWolfram[rule][cell];
+            }
+        }
+        return deepInput;
+    }
+
     /**
      * Takes raw binary data and does the initial conversion to one codeword per point covering its
      * area of influence, before comparing them with neighbors in ecaMinMaxTransform()
@@ -131,10 +167,10 @@ public class HashTransform {
                 for (int col = 0; col < cols; col++) {
                     //gets its neighborhood
                     int cell = 0;
-                    int phasePower = (1<<((d-1)%16));
+                    int phasePower = (1 << ((d - 1) % 16));
                     for (int r = 0; r < 2; r++) {
                         for (int c = 0; c < 2; c++) {
-                            cell += (int)Math.pow(16,2*r+c) * deepInput[d - 1][(row + phasePower * r) % rows][(col + phasePower * c) % cols];
+                            cell += (int) Math.pow(16, 2 * r + c) * deepInput[d - 1][(row + phasePower * r) % rows][(col + phasePower * c) % cols];
                         }
                     }
                     //stores the neighborhood's codeword
@@ -200,12 +236,72 @@ public class HashTransform {
         }
     }
 
+    public int[][] reconstructDepthD(int[][] input, int depth, int ruleSetIndex) {
+        int neighborDistance = 1 << (depth - 1);
+        neighborDistance = 1;
+        int[][][] votes = new int[input.length][input[0].length][4];
+        for (int row = 0; row < input.length; row++) {
+            for (int col = 0; col < input[0].length; col++) {
+                //apply its vote to every location that it influences
+                //including itself
+                int[][] generatedGuess = m.generateCodewordTile(input[row][col], unpackedList[ruleSetIndex/8]);
+                for (int r = 0; r < 4; r++) {
+                    for (int c = 0; c < 4; c++) {
+                        //for (int power = 0; power < 4; power++) {
+                        if (generatedGuess[r][c] == ruleSetIndex / 8) {
+                            votes[(row + neighborDistance * ((r / 2) % 2)) % input.length][(col + neighborDistance * (r % 2)) % input[0].length][c] += (1 << r);
+                        } else {
+                            votes[(row + neighborDistance * ((r / 2) % 2)) % input.length][(col + neighborDistance * (r % 2)) % input[0].length][c] -= (1 << r);
+                        }
+                        //}
+                    }
+                }
+            }
+        }
+        //for each location, based on whether the final tally of the vote was positive or negative
+        //output a 0 if positive and 1 if negative, if the vote result is not what the
+        //original data is increment the error counter for analysis
+        int[][] outResult = new int[input.length][input[0].length];
+        int[][] outCompare = new int[input.length][input[0].length];
+        int totDifferent = 0;
+        int[][] finalOutput = new int[input.length][input[0].length];
+        for (int row = 0; row < input.length; row++) {
+            for (int column = 0; column < input[0].length; column++) {
+                for (int power = 0; power < 4; power++) {
+                    if (votes[row][column][power] >= 0) {
+                        outResult[row][column] += 0;
+                        finalOutput[row][column] += 0;
+                    } else {
+                        outResult[row][column] += (1 << power);
+                        finalOutput[row][column] += (1 << power);
+                    }
+                }
+                //outCompare[row][column] = outResult[row][column] ^ input[row][column];
+                totDifferent += outCompare[row][column];
+            }
+        }
+//        for (int row = 0; row < input.length; row++) {
+//            for (int col = 0; col < input[0].length; col++) {
+//                if (finalOutput[row][col] >= 0) {
+//                    //finalOutput[row][col] += 0;
+//                } else {
+//                    //finalOutput[row][col] = 0;
+//                }
+//            }
+//        }
+        //System.out.println("totDifferent: " + totDifferent);
+        //System.out.println("totArea: " + (input.length * input[0].length));
+        //System.out.println("different/Area=errors/bit= " + ((double) totDifferent / (double) (input.length * input[0].length)));
+        //CustomArray.plusArrayDisplay(finalOutput, false, false, "finalOutput");
+        return outResult;
+    }
+
     public int[][][] reconstructDepthD(int[][][] input, int depth) {
         int neighborDistance = 1 << (depth - 1);
         neighborDistance = 1;
-        int[][][][] votes = new int[16][input.length][input[0].length][4];
-        for (int row = 0; row < input.length; row++) {
-            for (int col = 0; col < input[0].length; col++) {
+        int[][][][] votes = new int[16][input[0].length][input[0][0].length][4];
+        for (int row = 0; row < input[0].length; row++) {
+            for (int col = 0; col < input[0][0].length; col++) {
                 for (int posNeg = 0; posNeg < 2; posNeg++) {
                     for (int t = 0; t < 8; t++) {
                         //apply its vote to every location that it influences
@@ -215,9 +311,9 @@ public class HashTransform {
                             for (int c = 0; c < 4; c++) {
                                 //for (int power = 0; power < 4; power++) {
                                 if (generatedGuess[r][c] == posNeg) {
-                                    votes[8 * posNeg + t][(row + neighborDistance * ((r / 2) % 2)) % input.length][(col + neighborDistance * (r % 2)) % input[0].length][c] += (1 <<r);
+                                    votes[8 * posNeg + t][(row + neighborDistance * ((r / 2) % 2)) % input.length][(col + neighborDistance * (r % 2)) % input[0].length][c] += (1 << r);
                                 } else {
-                                    votes[8 * posNeg + t][(row + neighborDistance * ((r / 2) % 2)) % input.length][(col + neighborDistance * (r % 2)) % input[0].length][c] -= (1<<r);
+                                    votes[8 * posNeg + t][(row + neighborDistance * ((r / 2) % 2)) % input.length][(col + neighborDistance * (r % 2)) % input[0].length][c] -= (1 << r);
                                 }
                                 //}
                             }
@@ -229,14 +325,14 @@ public class HashTransform {
         //for each location, based on whether the final tally of the vote was positive or negative
         //output a 0 if positive and 1 if negative, if the vote result is not what the
         //original data is increment the error counter for analysis
-        int[][][] outResult = new int[16][input.length][input[0].length];
-        int[][] outCompare = new int[input.length][input[0].length];
+        int[][][] outResult = new int[16][input[0].length][input[0][0].length];
+        int[][] outCompare = new int[input[0].length][input[0][0].length];
         int totDifferent = 0;
-        int[][] finalOutput = new int[input.length][input[0].length];
+        int[][] finalOutput = new int[input[0].length][input[0][0].length];
         for (int posNeg = 0; posNeg < 2; posNeg++) {
             for (int t = 0; t < 8; t++) {
-                for (int row = 0; row < input.length; row++) {
-                    for (int column = 0; column < input[0].length; column++) {
+                for (int row = 0; row < input[0].length; row++) {
+                    for (int column = 0; column < input[0][0].length; column++) {
                         for (int power = 0; power < 4; power++) {
                             if (votes[8 * posNeg + t][row][column][power] >= 0) {
                                 outResult[8 * posNeg + t][row][column] += 0;
@@ -252,15 +348,15 @@ public class HashTransform {
                 }
             }
         }
-        for (int row = 0; row < input.length; row++) {
-            for (int col = 0; col < input[0].length; col++) {
-                if (finalOutput[row][col] >= 0) {
-                    //finalOutput[row][col] += 0;
-                } else {
-                    //finalOutput[row][col] = 0;
-                }
-            }
-        }
+//        for (int row = 0; row < input.length; row++) {
+//            for (int col = 0; col < input[0].length; col++) {
+//                if (finalOutput[row][col] >= 0) {
+//                    //finalOutput[row][col] += 0;
+//                } else {
+//                    //finalOutput[row][col] = 0;
+//                }
+//            }
+//        }
         System.out.println("totDifferent: " + totDifferent);
         System.out.println("totArea: " + (input.length * input[0].length));
         System.out.println("different/Area=errors/bit= " + ((double) totDifferent / (double) (input.length * input[0].length)));
@@ -279,7 +375,7 @@ public class HashTransform {
         BufferedImage inImage = ImageIO.read(file);
         int[] inRaster = ((DataBufferInt) inImage.getRaster().getDataBuffer()).getData();
         int size = inImage.getWidth();
-        int depth = (int) (Math.log(inImage.getWidth()*inImage.getWidth())/Math.log(2));
+        int depth = (int) (Math.log(inImage.getWidth() * inImage.getWidth()) / Math.log(2));
         depth = 5;
         int[][][] framesOfHashing = new int[depth][inImage.getHeight()][inImage.getWidth() * 8];
         int[][] field = new int[inImage.getHeight()][inImage.getWidth() * 8];
@@ -291,45 +387,44 @@ public class HashTransform {
         System.out.println("inRaster.length/inImage.getWidth(): " + inRaster.length / inImage.getWidth());
         System.out.println("inRaster.length/inImage.getHeight()/inImage.getWidth(): " + inRaster.length / inImage.getHeight() / inImage.getWidth());
         //Transforms the image into its appropriate local algorithm format
-        for (int row = 0; row < inImage.getHeight(); row++) {
-            for (int column = 0; column < inImage.getWidth(); column++) {
-                for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
-                    for (int lr = 0; lr < 2; lr++) {
-                        int rasterCoordX = row * inImage.getWidth() + column;
-                        field[row][8 * column + 2 * rgbbyte + lr] = (int) Math.abs((inRaster[rasterCoordX] >> (4 * rgbbyte + 2 * lr)) % 16);
-                        for (int power = 0; power < 4; power++) {
-                            bfield[row][32 * column + 8 * rgbbyte + 4 * lr + power] = (field[row][8 * column + 2 * rgbbyte + lr] >> power) % 2;
-                        }
-                    }
-                }
-            }
-        }
-        for (int row = 0; row < inImage.getHeight(); row++) {
-            for (int column = 0; column < inImage.getWidth(); column++) {
-                for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
-                    for (int power = 0; power < 8; power++) {
-                        bfield[row][32 * column] = (int) Math.abs((inRaster[row * inImage.getWidth() + column] >> (8 * rgbbyte + power)) % 2);
-                    }
-                }
-            }
-        }
-        initWolframs();
-        bfield = initializeDepthZero(bfield, unpackedList[3])[1];
-        //Do the transform
-        framesOfHashing = ecaMinTransform(bfield, unpackedList[3], depth);
-        //Convert the transform back into appropriate bitmap RGB format
-        int[][][] rasterized = new int[depth + 1][inImage.getHeight()][inImage.getWidth()];
-//        for (int d = 0; d <= depth; d++) {
-//            for (int row = 0; row < inImage.getHeight(); row++) {
-//                for (int column = 0; column < inImage.getWidth(); column++) {
-//                    for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
-//                        for (int lr = 0; lr < 2; lr++) {
-//                            rasterized[d][row][column] +=  (framesOfHashing[d][row][column * 8 + 2 * rgbbyte + lr] << (8*rgbbyte+4*lr));
+//        for (int row = 0; row < inImage.getHeight(); row++) {
+//            for (int column = 0; column < inImage.getWidth(); column++) {
+//                for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
+//                    for (int lr = 0; lr < 2; lr++) {
+//                        int rasterCoordX = row * inImage.getWidth() + column;
+//                        field[row][8 * column + 2 * rgbbyte + lr] = (int) Math.abs((inRaster[rasterCoordX] >> (4 * rgbbyte + 2 * lr)) % 16);
+//                        for (int power = 0; power < 4; power++) {
+//                            bfield[row][32 * column + 8 * rgbbyte + 4 * lr + power] = (field[row][8 * column + 2 * rgbbyte + lr] >> power) % 2;
 //                        }
 //                    }
 //                }
 //            }
 //        }
+        int[][][] bFieldSet = new int[16][bfield.length][bfield[0].length];
+        for (int row = 0; row < inImage.getHeight(); row++) {
+            for (int column = 0; column < inImage.getWidth(); column++) {
+                for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
+                    for (int power = 0; power < 8; power++) {
+                        bfield[row][32 * column] = (int) Math.abs((inRaster[row * inImage.getWidth() + column] >> (8 * rgbbyte + power)) % 2);
+                        for (int posNegt = 0; posNegt < 16; posNegt++) {
+                            bFieldSet[posNegt][row][32 * column] = bfield[row][32 * column];
+                        }
+                    }
+                }
+            }
+        }
+        //Initialize the minMax codeword truth table set
+        initWolframs();
+        //Change the RGB 4-bytes broken down into 32 bits into its depth 0 codewords
+        bfield = initializeDepthZero(bfield, unpackedList[3])[1];
+        for (int posNegt = 0; posNegt < 8; posNegt++) {
+            bFieldSet[posNegt] = initializeDepthZero(bFieldSet[posNegt], unpackedList[posNegt])[1];
+            bFieldSet[posNegt + 8] = initializeDepthZeroMax(bFieldSet[posNegt + 8], unpackedList[posNegt])[1];
+        }
+        //Do the transform
+        framesOfHashing = ecaMinTransform(bfield, unpackedList[3], depth);
+        //Convert the transform back into appropriate bitmap RGB format
+        int[][][] rasterized = new int[depth + 1][inImage.getHeight()][inImage.getWidth()];
         for (int d = 0; d <= depth; d++) {
             for (int row = 0; row < inImage.getHeight(); row++) {
                 for (int column = 0; column < inImage.getWidth(); column++) {
@@ -369,23 +464,30 @@ public class HashTransform {
         gifWriter.endWriteSequence();
         System.out.println("depth: " + depth);
         System.out.println("done with gif");
+        //
+        //
+        //
+        //
+        //
         BufferedImage inverse = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_INT_RGB);
         int[][][] undoInput = new int[16][inImage.getHeight()][inImage.getWidth()];
         for (int row = 0; row < inImage.getHeight(); row++) {
             for (int column = 0; column < inImage.getWidth(); column++) {
-                undoInput[3][row][column] = framesOfHashing[3][row][column];
+                undoInput[3][row][column] = bfield[row][column];
             }
         }
-        int[][] undo = hashInverseDepth0(undoInput, 3, unpackedList[3]);
+        System.out.println("undoInput[3].length: " + undoInput[0].length + " " + undoInput[1][0].length);
+        int[][] undo = reconstructDepthD(bfield, 1, 3);
         int[][] undoRasterized = new int[inverse.getHeight()][inverse.getWidth()];
         System.out.println("inverse.getHeight(): " + inverse.getHeight() + " inverse.getWidth(): " + inverse.getWidth());
         System.out.println(undo.length + " " + undo[0].length);
+        System.out.println(undoRasterized.length + " " + undoRasterized[0].length);
         for (int d = 0; d <= 0; d++) {
             for (int row = 0; row < inverse.getHeight(); row++) {
                 for (int column = 0; column < inverse.getWidth(); column++) {
                     for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
                         for (int power = 0; power < 8; power++) {
-                            undoRasterized[row][column] += (1 << (8 * rgbbyte + power)) * undo[row][32 * column + 8 * rgbbyte + power];
+                            undoRasterized[row][column] += undo[row][column * 32 + 8 * rgbbyte + power];
                         }
                     }
                 }
@@ -399,7 +501,6 @@ public class HashTransform {
             }
         }
         File inverseFile = new File("src/ImagesProcessed/inverse.bmp");
-
         ImageIO.write(outImage, "bmp", inverseFile);
     }
 
@@ -462,7 +563,7 @@ public class HashTransform {
         //this array is the vote tally, location is influenced by 16 neighborhoods within a distance of 4
         //each of these neighborhoods has 16 terms in the min max codeword set of the 8 tuple
         //every term of every vote is weighted by 2^RelativeRow
-        int[][] outVotes = new int[in.length][in[0].length];
+        int[][] outVotes = new int[in[0].length][in[0][0].length];
         int r;
         int c;
         int t;
@@ -472,9 +573,9 @@ public class HashTransform {
         int row;
         int column;
         //for every location in the transformed bitmap data
-        for (row = 0; row < in.length; row++) {
+        for (row = 0; row < in[0].length; row++) {
             //System.out.println("row: " + row + " out of " + in.length);
-            for (column = 0; column < in[0].length; column++) {
+            for (column = 0; column < in[0][0].length; column++) {
                 //for every term in its min max codeword set
                 for (posNeg = 0; posNeg < 2; posNeg++) {
                     for (t = 0; t < 8; t++) {
@@ -487,9 +588,9 @@ public class HashTransform {
                                 //int a = (generatedGuess[r][c] );
                                 if (generatedGuess[r][c] == posNeg) {
                                     //if (hadamardValue == posNeg) {
-                                    outVotes[(row +  (r )) % in.length][(column +  (c )) % in[0].length] += (1 <<r);
+                                    outVotes[(row + (r)) % in[0].length][(column + (c)) % in[0][0].length] += (1 << r);
                                 } else {
-                                    outVotes[(row +  (r ) ) % in.length][(column + (c)) % in[0].length] -= (1 <<r);
+                                    outVotes[(row + (r)) % in[0].length][(column + (c)) % in[0][0].length] -= (1 << r);
                                 }
                             }
                         }
@@ -500,11 +601,11 @@ public class HashTransform {
         //for each location, based on whether the final tally of the vote was positive or negative
         //output a 0 if positive and 1 if negative, if the vote result is not what the
         //original data is increment the error counter for analysis
-        int[][] outResult = new int[in.length][in[0].length];
-        int[][] outCompare = new int[in.length][in[0].length];
+        int[][] outResult = new int[in[0].length][in[0][0].length];
+        int[][] outCompare = new int[in[0].length][in[0][0].length];
         int totDifferent = 0;
-        for (row = 0; row < in.length; row++) {
-            for (column = 0; column < in[0].length; column++) {
+        for (row = 0; row < in[0].length; row++) {
+            for (column = 0; column < in[0][0].length; column++) {
                 if (outVotes[row][column] >= 0) {
                     outResult[row][column] = 0;
                 } else {
@@ -518,6 +619,7 @@ public class HashTransform {
         //System.out.println("totArea: " + (in.length * in[0].length));
         //System.out.println("different/Area=errors/bit= " + ((double) totDifferent / (double) (in.length * in[0].length)));
         //CustomArray.plusArrayDisplay(outVotes, true, false, "outVotes");
+        System.out.println("outResult.getHeight: " + " " + outResult.length + outResult[0].length);
         return outResult;
     }
 }
