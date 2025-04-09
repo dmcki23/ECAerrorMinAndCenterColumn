@@ -8,6 +8,17 @@ import java.util.Arrays;
  * Hadamard matrix
  */
 public class Hadamard {
+    public int[] hadamardParity;
+    public Hadamard(){
+        hadamardParity = new int[4096];
+        for (int n = 0; n < 4096; n++) {
+            int tot = 0;
+            for (int power = 0; power < 12; power++) {
+                tot += ((n>>power)%2);
+            }
+            hadamardParity[n] = tot%2;
+        }
+    }
     /**
      * boolean Hadamard matrix
      * @param size size of the array desired

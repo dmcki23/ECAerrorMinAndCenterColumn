@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="some testing has been done on the recent rebuild, the list is in Main">
-      <change afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashUtilities.java" afterDir="false" />
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="checkChangesPerTransform() is working spectacularly">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hadamard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hadamard.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/OneDHashTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/OneDHashTransform.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -59,30 +58,30 @@
     <option name="showLibraryContents" value="true" />
     <option name="sortKey" value="BY_TIME_DESCENDING" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Unnamed.executor": "Run",
-    "DefaultHtmlFileTemplate": "HTML File",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "reconstruction",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/daniel/IdeaProjects/ECAminErrorFit",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "/home/daniel/IdeaProjects/ECAerrorMinAndCenterColumn/src/Main.java",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.general",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Unnamed.executor&quot;: &quot;Run&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;reconstruction&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/daniel/IdeaProjects/ECAminErrorFit&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;/home/daniel/IdeaProjects/ECAerrorMinAndCenterColumn/src/Main.java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="Unnamed" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
@@ -127,6 +126,7 @@
       <workItem from="1743870066775" duration="32266000" />
       <workItem from="1743965167020" duration="77000" />
       <workItem from="1743965259483" duration="20933000" />
+      <workItem from="1744162680217" duration="342000" />
     </task>
     <task id="LOCAL-00001" summary="Have gathered the code from several local projects into this, initial commit">
       <option name="closed" value="true" />
@@ -336,7 +336,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743912679682</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="checkChangesPerTransform() is working spectacularly">
+      <option name="closed" value="true" />
+      <created>1744159941084</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1744159941084</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -392,7 +400,8 @@
     <MESSAGE value="Rough draft Javadoc comments done" />
     <MESSAGE value="rough draft inline comments are done" />
     <MESSAGE value="some testing has been done on the recent rebuild, the list is in Main" />
-    <option name="LAST_COMMIT_MESSAGE" value="some testing has been done on the recent rebuild, the list is in Main" />
+    <MESSAGE value="checkChangesPerTransform() is working spectacularly" />
+    <option name="LAST_COMMIT_MESSAGE" value="checkChangesPerTransform() is working spectacularly" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

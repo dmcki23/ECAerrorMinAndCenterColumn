@@ -70,24 +70,24 @@ public class Main {
         //
         //Testing post trim, post javadoc, post inline commenting, post april 5 2025
         //Everything after this line has been tested post 4-5-2025, DM
-        HashTransform hashTransform = new HashTransform();
+        HashTransform hash = new HashTransform();
         //HashCollisions hashCollisions = new HashCollisions();
         //m.doAllRules(4,false,0,false,0,false);
-        //hashTransform.hash.initWolframs();
+        //hash.hash.initWolframs();
         //for (int posNeg = 0; posNeg < 2; posNeg++) {
         //    for (int row = 0; row < 8; row++) {
         //        for (int col = 0; col < 64; col++) {
-        //            System.out.print(hashTransform.hash.flatWolframs[posNeg][row][col] + "\t");
+        //            System.out.print(hash.hash.flatWolframs[posNeg][row][col] + "\t");
         //        }
         //        System.out.print("\n");
         //    }
         //}
         //
-        //hashTransform.check();
+        //hash.check();
         //Hadamard hadamard = new Hadamard();
         //hadamard.test(16);
         //m.oneFiftyDisplay();
-        //hashTransform.getImage();
+        //hash.getImage();
         //hashCollisions.checkErrorScoreVsHadamard();
         //hashCollisions.checkTupleUniqueness();
         //hashCollisions.checkUnitWrappedTupleUniqueness();
@@ -95,14 +95,16 @@ public class Main {
         //hashCollisions.checkLastRowWeight();
         //a = new Addition();
         //a.testXOR();
-        //hashTransform.check();
+        //Somewhere around here new features began
+        //hash.check();
         Hadamard hadamard = new Hadamard();
         //hadamard.dftOfHadamard(8);
         //a.testAllLogic();
-        //hashTransform.check();
+        //hash.check();
         //hashCollisions.runXORtableThroughHash();
         //hashCollisions.runThroughHash();
         hashCollisions.checkChangesPerTransform();
+        //hash.bitmapTransform();
 
     }
 }

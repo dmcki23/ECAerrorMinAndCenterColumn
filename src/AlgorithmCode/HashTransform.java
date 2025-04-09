@@ -113,7 +113,7 @@ public class HashTransform {
         //initWolframs();
         int rows = input.length;
         int cols = input[0].length;
-        int[][][] deepInput = new int[depth + 1][rows][cols];
+        int[][][] deepInput = new int[depth + 2][rows][cols];
         //initialize layer 0 to the input
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
@@ -122,15 +122,18 @@ public class HashTransform {
         }
         //for however many iterations you want to do, typically log2(inputWidth+inputHeight)
         for (int d = 1; d <= depth; d++) {
+            //This is to skip the negative flip on the integer
+            //it would not be necessary with unsigned integers
+            //if (d%32 == 31) d++;
             //for every (row,column) location in the image
             for (int row = 0; row < rows; row++) {
                 for (int col = 0; col < cols; col++) {
                     //gets its neighborhood
                     int cell = 0;
-                    int phasePower = (int) Math.pow(2, d - 1);
+                    int phasePower = (1<<((d-1)%16));
                     for (int r = 0; r < 2; r++) {
                         for (int c = 0; c < 2; c++) {
-                            cell += (int) Math.pow(16, 2 * r + c) * deepInput[d - 1][(row + phasePower * r) % rows][(col + phasePower * c) % cols];
+                            cell += (int)Math.pow(16,2*r+c) * deepInput[d - 1][(row + phasePower * r) % rows][(col + phasePower * c) % cols];
                         }
                     }
                     //stores the neighborhood's codeword
@@ -275,8 +278,8 @@ public class HashTransform {
         BufferedImage inImage = ImageIO.read(file);
         int[] inRaster = ((DataBufferInt) inImage.getRaster().getDataBuffer()).getData();
         int size = inImage.getWidth();
-        int depth = inImage.getWidth();
-        depth = 5;
+        int depth = (int) (Math.log(inImage.getWidth()*inImage.getWidth())/Math.log(2));
+        depth = 100;
         int[][][] framesOfHashing = new int[depth][inImage.getHeight()][inImage.getWidth() * 8];
         int[][] field = new int[inImage.getHeight()][inImage.getWidth() * 8];
         int[][] bfield = new int[inImage.getHeight()][inImage.getWidth() * 32];

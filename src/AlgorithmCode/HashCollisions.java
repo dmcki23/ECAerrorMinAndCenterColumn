@@ -163,6 +163,8 @@ public class HashCollisions {
             Arrays.fill(trackedZero[0][row], -1);
             Arrays.fill(trackedZero[1][row], -1);
         }
+        Hadamard hadamard = new Hadamard();
+        int[][] h = hadamard.nonReducedHadamard(16);
         int[][] changed = new int[16][16];
         for (int cr = 0; cr < 16; cr++) {
             for (int cc = 0; cc < 16; cc++) {
@@ -197,6 +199,7 @@ public class HashCollisions {
                         //out[row][col] = ((3*row)+col)%2;
                         //
                         //
+                        out[row][col] = h[cr][cc]%2;
                         changed[row][col] = out[row][col];
                     }
                 }
