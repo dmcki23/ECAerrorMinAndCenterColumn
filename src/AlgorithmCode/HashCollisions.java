@@ -22,6 +22,10 @@ public class HashCollisions {
     int[] singleChangeTruthTable;
     int[][] localChanges = new int[65536][16];
     int[][] twoChanges;
+    int[][][] everything = new int[16][16][4];
+    int[][] shiftedSingles;
+    int[][][] shiftedDoubles;
+    int[][][] shiftedEverything;
 
     public int[][][] runXORtableThroughHash() {
         int[][] out = new int[16][16];
@@ -313,7 +317,6 @@ public class HashCollisions {
         int[][] out = new int[size][size];
 //        hash.initWolframs();
         singleChangeTruthTable = new int[size * size];
-        Random rand = new Random();
         int[][][] changes = new int[size * size][size][size];
         int[][][] shiftChanges = new int[size * size][size][size];
         int[][][] trackedZero = new int[2][size][size];
@@ -326,41 +329,42 @@ public class HashCollisions {
         int[][] changed = new int[size][size];
         for (int cr = 0; cr < size; cr++) {
             for (int cc = 0; cc < size; cc++) {
-                for (int row = 0; row < size; row++) {
-                    for (int col = 0; col < size; col++) {
-                        //
-                        //
-                        //This one the zeros are at !((row^col)%2)
-                        //The offset extra change variable location is irrelevant
-                        //to the location of the fish
-                        out[row][col] = (row ^ col) % 2;
-                        //
-                        //
-                        //This one is the same as first one
-                        //out[row][col] = (row + col) % 2;
-                        //
-                        //
-                        //This one produces zeros with 5! = 120 votes at every cell, weighted, in the reconstruction finalOutput array
-                        //out[row][col] = (row & col) % 2;
-                        //
-                        //
-                        //This one is all ones unless the extra change produces that odd and evens trackedZero matrix
-                        //the trackedZero matrix doesn't apply to the other equations
-                        //out[row][col] = (row | col) % 2;
-                        //
-                        //
-                        //Same as the first one
-                        //out[row][col] = ((row*3)^(col*7)+2)%2;
-                        //
-                        //
-                        //Same as the first one
-                        //out[row][col] = ((3*row)+col)%2;
-                        //
-                        //
-                        //out[row][col] = h[cr][cc]%2;
-                        changed[row][col] = out[row][col];
-                    }
-                }
+//                for (int row = 0; row < size; row++) {
+//                    for (int col = 0; col < size; col++) {
+//                        //
+//                        //
+//                        //This one the zeros are at !((row^col)%2)
+//                        //The offset extra change variable location is irrelevant
+//                        //to the location of the fish
+//                        out[row][col] = (row ^ col) % 2;
+//                        //
+//                        //
+//                        //This one is the same as first one
+//                        //out[row][col] = (row + col) % 2;
+//                        //
+//                        //
+//                        //This one produces zeros with 5! = 120 votes at every cell, weighted, in the reconstruction finalOutput array
+//                        //out[row][col] = (row & col) % 2;
+//                        //
+//                        //
+//                        //This one is all ones unless the extra change produces that odd and evens trackedZero matrix
+//                        //the trackedZero matrix doesn't apply to the other equations
+//                        //out[row][col] = (row | col) % 2;
+//                        //
+//                        //
+//                        //Same as the first one
+//                        //out[row][col] = ((row*3)^(col*7)+2)%2;
+//                        //
+//                        //
+//                        //Same as the first one
+//                        //out[row][col] = ((3*row)+col)%2;
+//                        //
+//                        //
+//                        //out[row][col] = h[cr][cc]%2;
+//                        changed[row][col] = out[row][col];
+//                    }
+//                }
+                out = generateFunctionTile(size);
                 int a = 0;
                 int b = 0;
                 int shift = 2;
@@ -450,18 +454,58 @@ public class HashCollisions {
         CustomArray.plusArrayDisplay(trackedZero[0], false, false, "trackedZero");
         CustomArray.plusArrayDisplay(trackedZero[1], false, false, "trackedZero");
     }
-    public void exploreTwoChanges(){
-        int size = 4;
+
+    public void combinationsTwoChanges(int size) {
+        //hash.initWolframs();
+        checkChangesPerTransformAllSingleChanges(size);
+        checkTableForTwoChanges(size);
         int[][] none = generateFunctionTile(size);
-        for (int oneChange = 0; oneChange < 16; oneChange++) {
-            int[][] one = hash.m.generateAddressTile(singleChangeTruthTable[oneChange],size);
-            for (int nextChange = 0; nextChange < 16; nextChange++) {
-                int[][] next = hash.m.generateAddressTile(singleChangeTruthTable[nextChange],size);
-                int[][] both = hash.m.generateAddressTile(twoChanges[oneChange][nextChange],size);
+        int[][][] all = new int[4][size][size];
+        int[][][] everyCell = new int[size * size][size * size][4];
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                all[0][row][col] = none[row][col];
+            }
+        }
+        for (int oneChange = 0; oneChange < size*size; oneChange++) {
+            int[][] one = hash.m.generateAddressTile(singleChangeTruthTable[oneChange], size);
+            for (int row = 0; row < size; row++) {
+                for (int col = 0; col < size; col++) {
+                    all[1][row][col] = one[row][col];
+                }
+            }
+            for (int nextChange = 0; nextChange < size*size; nextChange++) {
+                int[][] next = hash.m.generateAddressTile(singleChangeTruthTable[nextChange], size);
+                int[][] both = hash.m.generateAddressTile(twoChanges[oneChange][nextChange], size);
+                for (int row = 0; row < size; row++) {
+                    for (int col = 0; col < size; col++) {
+                        all[2][row][col] = next[row][col];
+                        all[3][row][col] = both[row][col];
+                    }
+                }
+                for (int v = 0; v < 4; v++) {
+                    everyCell[oneChange][nextChange][v] = hash.m.addressTileToInteger(all[v]);
+                    everything[oneChange][nextChange][v] = everyCell[oneChange][nextChange][v];
+                }
             }
         }
     }
-    public int[][] generateFunctionTile(int size){
+
+    public void exploreTwoChanges(int size) {
+        hash.initWolframs();
+        combinationsTwoChanges(size);
+        int[][][] table = new int[4][size*size][size*size];
+        for (int v = 0; v < 4; v++) {
+            for (int oneChange = 0; oneChange < size*size; oneChange++) {
+                for (int nextChange = 0; nextChange < size*size; nextChange++) {
+                    table[v][oneChange][nextChange] = everything[oneChange][nextChange][v];
+                }
+            }
+            CustomArray.plusArrayDisplay(table[v], true, false, "table " + v);
+        }
+    }
+
+    public int[][] generateFunctionTile(int size) {
         int[][] out = new int[size][size];
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
@@ -501,14 +545,14 @@ public class HashCollisions {
         return out;
     }
 
-    public void checkTableForTwoChanges() {
-        hash.initWolframs();
-        checkChangesPerTransform(4);
-        int size = 4;
-        twoChanges = new int[16][16];
-        for (int oneChange = 0; oneChange < 16; oneChange++) {
+    public void checkTableForTwoChanges(int size) {
+        //hash.initWolframs();
+        //checkChangesPerTransform(size);
+        //int size = 4;
+        twoChanges = new int[size*size][size*size];
+        for (int oneChange = 0; oneChange < size*size; oneChange++) {
             int[][] referenceTile = hash.m.generateAddressTile(singleChangeTruthTable[oneChange], size);
-            for (int nextChange = 0; nextChange < 16; nextChange++) {
+            for (int nextChange = 0; nextChange < size*size; nextChange++) {
                 int[][] tile = hash.m.generateAddressTile(singleChangeTruthTable[oneChange], size);
                 int cr = nextChange / size;
                 int cc = nextChange % size;
@@ -697,7 +741,7 @@ public class HashCollisions {
                 //out[row][col] = h[cr][cc]%2;
             }
         }
-        for (int address = 0; address < 65536; address++) {
+        for (int address = 0; address < 1; address++) {
             for (int change = 0; change < 16; change++) {
                 for (int row = 0; row < size; row++) {
                     for (int col = 0; col < 4; col++) {
@@ -731,7 +775,7 @@ public class HashCollisions {
                 }
                 for (int row = 0; row < size; row++) {
                     for (int col = 0; col < size; col++) {
-                        localChanges[address][change] += (1 << (size * row + col) * shifted[row][col]);
+                        singleChangeTruthTable[change] += (1 << (size * row + col) * shifted[row][col]);
                     }
                 }
             }
