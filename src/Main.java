@@ -104,7 +104,7 @@ public class Main {
         //hashCollisions.runXORtableThroughHash();
         //hashCollisions.runThroughHash();
         //hashCollisions.checkChangesPerTransform();
-        //hash.bitmapTransform();
+        //hash.bitmapTransform(0);
         //hashCollisions.checkChangesPerTransform(4);
         hashCollisions.checkSinglesAgainstAll(4);
 

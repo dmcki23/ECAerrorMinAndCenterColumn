@@ -18,6 +18,8 @@ public class HashCollisions {
      * Middle layer of transform code
      */
     public HashTransform hash = new HashTransform();
+    int[] truthTable;
+    int[] singleChangeTruthTable;
 
     public int[][][] runXORtableThroughHash() {
         int[][] out = new int[16][16];
@@ -458,15 +460,10 @@ public class HashCollisions {
         CustomArray.plusArrayDisplay(trackedZero[1], false, false, "trackedZero");
     }
 
-    int[] truthTable;
-    int[] singleChangeTruthTable;
-
     public void checkChangesPerTransformAllChanges(int size) {
         int[][] out = new int[size][size];
         //hash.initWolframs();
-
         truthTable = new int[65536];
-
         Hadamard hadamard = new Hadamard();
         int[][] h = hadamard.nonReducedHadamard(size);
         int[][] changed = new int[size][size];
@@ -541,7 +538,7 @@ public class HashCollisions {
             int[][] cfinalized = hash.hashInverseDepth0(cinverted, 1, 0);
             for (int row = 0; row < size; row++) {
                 for (int col = 0; col < size; col++) {
-                    truthTable[address] += (1 << (size * row + col) )* cfinalized[row][col];
+                    truthTable[address] += (1 << (size * row + col)) * cfinalized[row][col];
                 }
             }
         }
@@ -550,7 +547,7 @@ public class HashCollisions {
     public void checkChangesPerTransformAllSingleChanges(int size) {
         int[][] out = new int[size][size];
         //hash.initWolframs();
-        singleChangeTruthTable = new int[size*size];
+        singleChangeTruthTable = new int[size * size];
         Hadamard hadamard = new Hadamard();
         int[][] h = hadamard.nonReducedHadamard(size);
         int[][] changed = new int[size][size];
@@ -626,9 +623,9 @@ public class HashCollisions {
             //int[][] finalized = hash.hashInverseDepth0(inverted, 1, 0);
             int[][] cfinalized = hash.hashInverseDepth0(cinverted, 1, 0);
             int[][] shifted = new int[size][size];
-            for (int row = 0; row < size; row++){
-                for (int col = 0; col < size; col++){
-                    shifted[row][col] = cfinalized[(row+size/2)%size][(col+size/2)%size];
+            for (int row = 0; row < size; row++) {
+                for (int col = 0; col < size; col++) {
+                    shifted[row][col] = cfinalized[(row + size / 2) % size][(col + size / 2) % size];
                 }
             }
             for (int row = 0; row < size; row++) {
@@ -638,7 +635,8 @@ public class HashCollisions {
             }
         }
     }
-    public void checkSinglesAgainstAll(int size){
+
+    public void checkSinglesAgainstAll(int size) {
         hash.initWolframs();
         checkChangesPerTransformAllChanges(size);
         int totZeros = 0;
@@ -650,38 +648,68 @@ public class HashCollisions {
         System.out.println("totZeros " + totZeros);
         checkChangesPerTransformAllSingleChanges(size);
         int[][] changeTile = new int[size][size];
-        int[][] successBoard = new int[size*size][size*size];
-        for (int changeZero = 0; changeZero < size*size; changeZero++) {
-            for (int changeOne = 0; changeOne < size*size; changeOne++) {
+        int[][] successBoard = new int[size * size][size * size];
+        int[] successfulGates = new int[256];
+        int[][] function = new int[size][size];
+        int functionAddress = 0;
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                function[row][col] = (row ^ col) % 2;
+                functionAddress += (1 << (size * row + col)) * function[row][col];
+            }
+        }
+        for (int changeZero = 0; changeZero < size * size; changeZero++) {
+            for (int changeOne = 0; changeOne < size * size; changeOne++) {
                 changeTile = new int[size][size];
-                changeTile[changeZero/size][changeZero%size] ^= 1;
-                changeTile[changeOne/size][changeOne%size] ^= 1;
-                int tot = 0;
                 for (int row = 0; row < size; row++) {
                     for (int col = 0; col < size; col++) {
-                        tot += (1<<(size*row+col))*changeTile[row][col];
+                        changeTile[row][col] = function[row][col];
                     }
                 }
-                int cz = singleChangeTruthTable[changeZero];
-                int co = singleChangeTruthTable[changeOne];
-                int cc = truthTable[tot];
+                int[][] czsquare = new int[size][size];
+                int[][] cosquare = new int[size][size];
+                int[][] ccSquare = new int[size][size];
+                for (int row = 0; row < size; row++) {
+                    for (int col = 0; col < size; col++) {
+                        czsquare[row][col] = function[row][col];
+                        cosquare[row][col] = function[row][col];
+                        ccSquare[row][col] = function[row][col];
+                    }
+                }
+                cosquare[changeOne / size][changeOne % size] ^= 1;
+                czsquare[changeZero / size][changeZero % size] ^= 1;
+                ccSquare[changeZero / size][changeZero % size] ^= 1;
+                ccSquare[changeOne / size][changeOne % size] ^= 1;
+                cosquare = hash.m.generateAddressTile(functionAddress^(1<<changeOne),4);
+                czsquare = hash.m.generateAddressTile(functionAddress^(1<<changeZero),4);
+                ccSquare = hash.m.generateAddressTile(functionAddress^(1<<changeOne)^(1<<changeZero),4);
                 int[][] combinedSingles = new int[size][size];
-                int[][] czsquare = hash.m.generateAddressTile(cz,size);
-                int[][] cosquare = hash.m.generateAddressTile(co,size);
-                int[][] ccSquare = hash.m.generateAddressTile(cc,size);
-                for (int row = 0; row < size; row++) {
-                    for (int col = 0; col < size; col++) {
-                        combinedSingles[row][col] = ((czsquare[row][col] ^ cosquare[row][col]))%2;
+
+                for (int gate = 0; gate < 256; gate++) {
+                    for (int row = 0; row < size; row++) {
+                        for (int col = 0; col < size; col++) {
+                            int a = 4*ccSquare[row][col] + 2 * czsquare[row][col] + cosquare[row][col];
+                            combinedSingles[row][col] = ((gate >> a) % 2);
+                        }
                     }
-                }
-                if (Arrays. deepEquals(ccSquare,combinedSingles)) {
-                    System.out.println("Success at " + changeZero + " " + changeOne);
-                    successBoard[changeZero][changeOne] = 1;
-                    //if (cc == 0) successBoard[changeZero][changeOne] = 1;
+                    if (Arrays.deepEquals(function, combinedSingles)) {
+                        successBoard[changeZero][changeOne] = 1;
+                        successfulGates[gate]++;
+                    }
                 }
             }
         }
-        CustomArray.plusArrayDisplay(successBoard,true,false,"successBoard");
+        CustomArray.plusArrayDisplay(successBoard, true, false, "successBoard");
+        for (int n = 0; n < 256; n++) {
+            System.out.println("n: " + n + " " + successfulGates[n]);
+        }
+        int[][] subboard = new int[size * size / 2][size * size / 2];
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                subboard[row][col] = successBoard[row * 2][col * 2];
+            }
+        }
+        CustomArray.plusArrayDisplay(subboard, true, false, "subboard");
     }
 
     /**
