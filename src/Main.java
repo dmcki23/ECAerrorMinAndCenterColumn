@@ -106,7 +106,8 @@ public class Main {
         //hashCollisions.checkChangesPerTransform();
         //hash.bitmapTransform(0);
         //hashCollisions.checkChangesPerTransform(4);
-        hashCollisions.checkSinglesAgainstAll(4);
+        //hashCollisions.checkSinglesAgainstAll(4);
+        hashCollisions.checkTableForTwoChanges();
 
     }
 }

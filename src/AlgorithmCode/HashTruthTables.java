@@ -468,6 +468,16 @@ public class HashTruthTables {
         }
         return out;
     }
+    public int addressTileToInteger(int[][] in){
+        int size = in.length;
+        int out = 0;
+        for (int row = 0; row < size; row++) {
+            for (int column = 0; column < size; column++) {
+                out += (1<<(size*row+column))*in[row][column];
+            }
+        }
+        return out;
+    }
 
     /**
      * Exhaustively generates all 0-255 ECA rule hash algorithm truth tables and minMax codeword sets;

@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="added truth tables for changes">
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="checkChangesPerTransformAllSingleChanges() is sort of working">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTruthTables.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTruthTables.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -127,7 +127,8 @@
       <workItem from="1743965259483" duration="20933000" />
       <workItem from="1744162680217" duration="2723000" />
       <workItem from="1744204471539" duration="4507000" />
-      <workItem from="1744209224946" duration="22472000" />
+      <workItem from="1744209224946" duration="23113000" />
+      <workItem from="1744293139507" duration="4132000" />
     </task>
     <task id="LOCAL-00001" summary="Have gathered the code from several local projects into this, initial commit">
       <option name="closed" value="true" />
@@ -377,7 +378,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744224778580</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="checkChangesPerTransformAllSingleChanges() is sort of working">
+      <option name="closed" value="true" />
+      <created>1744258029698</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1744258029698</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -412,7 +421,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Have gathered the code from several local projects into this, initial commit" />
     <MESSAGE value="Merge branch 'Main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/modules.xml" />
     <MESSAGE value="added some javadoc comments" />
     <MESSAGE value="feature branch node, have been no fundamental alterations since last season and prior to gathering the files from several projects post thesis joss arxiv" />
@@ -437,7 +445,8 @@
     <MESSAGE value="bitmapCheck() ?? is working with a mod function on the phaseShift. It doesn't look like it's losing much information compared to the last iteration of the gif function" />
     <MESSAGE value="changed a bunch of stuff in HashTransform that don't affect changePerTransform() in HashCollisions but don't entirely work in bitmapTransform(), the memory issue of all 16 bitmaps in the tuple set for one, two ??" />
     <MESSAGE value="added truth tables for changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="added truth tables for changes" />
+    <MESSAGE value="checkChangesPerTransformAllSingleChanges() is sort of working" />
+    <option name="LAST_COMMIT_MESSAGE" value="checkChangesPerTransformAllSingleChanges() is sort of working" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
