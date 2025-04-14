@@ -180,6 +180,7 @@ public class HashTruthTables {
      * Random number generator
      */
     Random rand = new Random();
+    Hadamard hadamard = new Hadamard();
 
     /**
      * Initializes everything to size 4, therefore truth tables are 65536 long.
@@ -474,6 +475,84 @@ public class HashTruthTables {
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
                 out += (1<<(size*row+column))*in[row][column];
+            }
+        }
+        return out;
+    }
+    /**
+     * Does the 4 bit version of the 8 bit ECA left-right-black-white symmetries
+     *
+     * @return
+     */
+    public int[][][] lrbwFourTemplate() {
+        int[][][] out = new int[16][4][4];
+        for (int row = 0; row < 16; row++) {
+            for (int power = 0; power < 4; power++) {
+                out[row][0][power] = row;
+            }
+            for (int lr = 0; lr < 2; lr++) {
+                for (int power = 0; power < 4 && lr == 1; power++) {
+                    int a = power % 2;
+                    int b = (power / 2) % 2;
+                    int c = 2 * a + b;
+                    out[row][1][lr] = c;
+                    out[row][3][lr] = c;
+                }
+                for (int bw = 0; bw < 2; bw++) {
+                    int[] temp = new int[4];
+                    for (int power = 0; power < 4 && bw == 1; power++) {
+                        temp[power] = out[row][lr][3 - power];
+                    }
+                    for (int power = 0; power < 4 && bw == 1; power++) {
+                        out[row][2 * bw + lr][power] = (temp[power] + 1) % 2;
+                    }
+                }
+            }
+        }
+        int[][] inDec = new int[16][4];
+        for (int row = 0; row < 16; row++) {
+            for (int column = 0; column < 4; column++) {
+                for (int power = 0; power < 4; power++) {
+                    inDec[row][column] += (int) Math.pow(2, power) * out[row][column][power];
+                }
+            }
+        }
+        return out;
+    }
+    /**
+     * Basic unit of the hash. A power of 2 size square, 4x4 in the paper, with the input in row 0,
+     * the columns wrapped - the left boundary rolls over to the right boundary and vice versa. The rest of the rows
+     * are ECA output on that wrapped space.
+     *
+     * @param size  length of the square
+     * @param inInt integer value of the input neighborhood
+     * @return a square integer array of 1 row of input and the rest ECA output
+     */
+    public int[][] addressToArray(int size, int inInt) {
+        int[][] out = new int[size][size];
+        for (int row = 0; row < size; row++) {
+            for (int column = 0; column < size; column++) {
+                out[row][column] = ((inInt >> (size * row + column)) % 2);
+            }
+        }
+        return out;
+    }
+
+    /**
+     * Does the 4 bit version of the 8 bit ECA left, right, black, white symmetries, leaving the place value instead of reducing
+     *
+     * @return
+     */
+    public int[][] lrbwCodewordTemplate() {
+        int[][][] in = lrbwFourTemplate();
+        int[][] out = new int[in.length][in[0].length];
+        for (int row = 0; row < in.length; row++) {
+            for (int lr = 0; lr < 2; lr++) {
+                for (int bw = 0; bw < 2; bw++) {
+                    for (int power = 0; power < 4; power++) {
+                        out[row][2 * lr + bw] += (1 << in[row][2 * lr + bw][power]) * ((row >> power) % 2);
+                    }
+                }
             }
         }
         return out;

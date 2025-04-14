@@ -8,6 +8,8 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.awt.image.DataBufferShort;
+import java.awt.image.DataBufferUShort;
 import java.io.File;
 import java.io.IOException;
 
@@ -19,6 +21,7 @@ public class HashTransform {
      * Hash subroutines
      */
     public HashTruthTables m = new HashTruthTables();
+
     /**
      * The entire set of min and max codewords of [0,15,51,85,170,204,240,255]
      */
@@ -171,6 +174,48 @@ public class HashTransform {
                     for (int r = 0; r < 2; r++) {
                         for (int c = 0; c < 2; c++) {
                             cell += (int) Math.pow(16, 2 * r + c) * output[d - 1][(row + phasePower * r) % rows][(col + phasePower * c) % cols];
+                        }
+                    }
+                    //stores the neighborhood's codeword
+                    output[d][row][col] = (m.minSolutionsAsWolfram[rule][cell]);
+                }
+            }
+        }
+        return output;
+    }
+    /**
+     * Takes in a 2D array of hashed data in codeword form, then rehashes sets of codewords increasingly far apart in steps of powers of 2, 1 apart 2 apart 4 apart ... 2^n apart
+     *
+     * @param input a 2D array of hashed data
+     * @param rule  one of {0,15,51,85,170,204,240,255}
+     * @param depth iterative depth, also the power of how far away its neighbors are
+     * @return the input data, rehashed with neighbors 2^depth apart
+     */
+    public int[][][] ecaMinTransformRGBrowNorm(int[][] input, int rule, int depth) {
+        //initWolframs();
+        int rows = input.length;
+        int cols = input[0].length;
+        int[][][] output = new int[depth + 2][rows][cols];
+        //initialize layer 0 to the input
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                output[0][row][col] = input[row][col];
+            }
+        }
+        //for however many iterations you want to do, typically log2(inputWidth+inputHeight)
+        for (int d = 1; d <= depth; d++) {
+            //This is to skip the negative flip on the integer
+            //it would not be necessary with unsigned integers
+            //if (d%32 == 31) d++;
+            //for every (row,column) location in the image
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < cols; col++) {
+                    //gets its neighborhood
+                    int cell = 0;
+                    int phasePower = (1 << ((d - 1) % 16));
+                    for (int r = 0; r < 2; r++) {
+                        for (int c = 0; c < 2; c++) {
+                            cell += (int) Math.pow(16, 2 * r + c) * output[d - 1][(row ) % rows][(col + (2*r+c)) % cols];
                         }
                     }
                     //stores the neighborhood's codeword
@@ -370,13 +415,13 @@ public class HashTransform {
      * @throws IOException
      */
     public void bitmapTransform() throws IOException {
-        String filepath = "testScreenshotCMYK.bmp";
+        String filepath = "frontYard.bmp";
         File file = new File(filepath);
         BufferedImage inImage = ImageIO.read(file);
         int[] inRaster = ((DataBufferInt) inImage.getRaster().getDataBuffer()).getData();
         int size = inImage.getWidth();
         int depth = (int) (Math.log(inImage.getWidth() * inImage.getWidth()) / Math.log(2));
-        depth = 2;
+        depth = 15;
         int[][][] framesOfHashing = new int[depth][inImage.getHeight()][inImage.getWidth() * 8];
         int[][] field = new int[inImage.getHeight()][inImage.getWidth() * 8];
         int[][] bfield = new int[inImage.getHeight()][inImage.getWidth() * 32];
@@ -403,9 +448,9 @@ public class HashTransform {
         int[][][] bFieldSet = new int[16][bfield.length][bfield[0].length];
         for (int row = 0; row < inImage.getHeight(); row++) {
             for (int column = 0; column < inImage.getWidth(); column++) {
-                for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
+                for (int rgbbyte = 0; rgbbyte < 3; rgbbyte++) {
                     for (int power = 0; power < 8; power++) {
-                        bfield[row][32 * column + 8 * rgbbyte + power] = (int) Math.abs((inRaster[row * inImage.getWidth() + column] >> (8 * rgbbyte + power)) % 2);
+                        bfield[row][32 * column + 8 * rgbbyte + power+(rgbbyte*8+power)/3] = (int) Math.abs((inRaster[row * inImage.getWidth() + column] >> (8 * rgbbyte + power)) % 2);
                         for (int posNegt = 0; posNegt < 16; posNegt++) {
                             bFieldSet[posNegt][row][32 * column + 8 * rgbbyte + power] = bfield[row][32 * column + 8 * rgbbyte + power];
                         }
@@ -451,8 +496,8 @@ public class HashTransform {
         int[] outRaster = new int[inImage.getHeight() * inImage.getWidth()];
         gifWriter.prepareWriteSequence(null);
         BufferedImage outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_INT_RGB);
-        for (int repeat = 0; repeat < 0; repeat++) {
-            for (int d = 0; d < depth; d++) {
+        for (int repeat = 0; repeat < 1; repeat++) {
+            for (int d = 0; d <= depth; d++) {
                 File outFile = new File("src/ImagesProcessed/GifOutput/processedDepth" + d + ".bmp");
                 outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_INT_RGB);
                 outRaster = ((DataBufferInt) outImage.getRaster().getDataBuffer()).getData();
@@ -500,9 +545,9 @@ public class HashTransform {
         for (int d = 0; d <= 0; d++) {
             for (int row = 0; row < inverse.getHeight(); row++) {
                 for (int column = 0; column < inverse.getWidth(); column++) {
-                    for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
+                    for (int rgbbyte = 0; rgbbyte < 3; rgbbyte++) {
                         for (int power = 0; power < 8; power++) {
-                            undoRasterized[row][column] += undo[row][column * 32 + 8 * rgbbyte + power]<<(8*rgbbyte+power);
+                            undoRasterized[row][column] += undo[row][column * 32 + 8 * rgbbyte + power]<<(8*rgbbyte+power-((8*rgbbyte+power)/3));
                         }
                     }
                 }
@@ -536,7 +581,7 @@ public class HashTransform {
                 for (int column = 0; column < inverse.getWidth(); column++) {
                     for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
                         for (int power = 0; power < 8; power++) {
-                            undoRasterized[row][column] += undo[row][column * 32 + 8 * rgbbyte + power]<<(8*rgbbyte+power);
+                            undoRasterized[row][column] += undo[row][column * 32 + 8 * rgbbyte + power]<<(8*rgbbyte+power-((8*rgbbyte+power)/3));
                         }
                     }
                 }
@@ -557,10 +602,10 @@ public class HashTransform {
      * @throws IOException
      */
     public void bitmapTransform(int dummy) throws IOException {
-        String filepath = "testScreenshotCMYK.bmp";
+        String filepath = "kitchenAlteredRGB.bmp";
         File file = new File(filepath);
         BufferedImage inImage = ImageIO.read(file);
-        int[] inRaster = ((DataBufferInt) inImage.getRaster().getDataBuffer()).getData();
+        short[] inRaster = ((DataBufferUShort) inImage.getRaster().getDataBuffer()).getData();
         int size = inImage.getWidth();
         int depth = (int) (Math.log(inImage.getWidth() * inImage.getWidth()) / Math.log(2));
         depth = 24;
@@ -608,7 +653,7 @@ public class HashTransform {
         //Do the transform
         framesOfHashing = ecaMinTransform(bfield, unpackedList[3], depth);
         //Convert the transform back into appropriate bitmap RGB format
-        int[][][] rasterized = new int[depth + 1][inImage.getHeight()][inImage.getWidth()];
+        short[][][] rasterized = new short[depth + 1][inImage.getHeight()][inImage.getWidth()];
         for (int d = 0; d <= depth; d++) {
             for (int row = 0; row < inImage.getHeight(); row++) {
                 for (int column = 0; column < inImage.getWidth(); column++) {
@@ -635,14 +680,14 @@ public class HashTransform {
         ImageWriter gifWriter = ImageIO.getImageWritersByFormatName("gif").next();
         ImageOutputStream outputStream = ImageIO.createImageOutputStream(new File("src/ImagesProcessed/screenShotGIF.gif"));
         gifWriter.setOutput(outputStream);
-        int[] outRaster = new int[inImage.getHeight() * inImage.getWidth()];
+        short[] outRaster = new short[inImage.getHeight() * inImage.getWidth()];
         gifWriter.prepareWriteSequence(null);
-        BufferedImage outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_INT_RGB);
-        for (int repeat = 0; repeat < 0; repeat++) {
-            for (int d = 0; d < depth; d++) {
+        BufferedImage outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_USHORT_565_RGB);
+        for (int repeat = 0; repeat < 1; repeat++) {
+            for (int d = 0; d <= depth; d++) {
                 File outFile = new File("src/ImagesProcessed/GifOutput/processedDepth" + d + ".bmp");
-                outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_INT_RGB);
-                outRaster = ((DataBufferInt) outImage.getRaster().getDataBuffer()).getData();
+                outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_USHORT_565_RGB);
+                outRaster = ((DataBufferUShort) outImage.getRaster().getDataBuffer()).getData();
                 for (int index = 0; index < outRaster.length; index++) {
                     outRaster[index] = rasterized[d][index / inImage.getWidth()][index % inImage.getWidth()];
                 }
@@ -667,7 +712,7 @@ public class HashTransform {
         //
         //
         //
-        BufferedImage inverse = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+        BufferedImage inverse = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_USHORT_565_RGB);
         int[][][] undoInput = new int[16][inImage.getHeight()][inImage.getWidth()];
         for (int row = 0; row < inImage.getHeight(); row++) {
             for (int column = 0; column < inImage.getWidth(); column++) {
@@ -680,7 +725,7 @@ public class HashTransform {
             bFieldSet[posNegt + 8] = initializeDepthMax(bFieldSet[posNegt + 8], unpackedList[posNegt])[1];
         }
         int[][] undo = hashInverseDepth0(bFieldSet, 1, 3);
-        int[][] undoRasterized = new int[inverse.getHeight()][inverse.getWidth()];
+        short[][] undoRasterized = new short[inverse.getHeight()][inverse.getWidth()];
         System.out.println("inverse.getHeight(): " + inverse.getHeight() + " inverse.getWidth(): " + inverse.getWidth());
         System.out.println(undo.length + " " + undo[0].length);
         System.out.println(undoRasterized.length + " " + undoRasterized[0].length);
@@ -695,7 +740,7 @@ public class HashTransform {
                 }
             }
         }
-        int[] inverseImageRaster = ((DataBufferInt) inverse.getRaster().getDataBuffer()).getData();
+        short[] inverseImageRaster = ((DataBufferUShort) inverse.getRaster().getDataBuffer()).getData();
         for (int row = 0; row < inverse.getHeight(); row++) {
             for (int column = 0; column < inverse.getWidth(); column++) {
                 //if (row == 655 || column == 655) { System.out.println("row: " + row + ", column: " + column); }
@@ -714,10 +759,10 @@ public class HashTransform {
         //
         //
         //
-        inverse = new BufferedImage(inverse.getWidth(), inverse.getHeight(), BufferedImage.TYPE_INT_RGB);
-        inverseImageRaster = ((DataBufferInt) inverse.getRaster().getDataBuffer()).getData();
+        inverse = new BufferedImage(inverse.getWidth(), inverse.getHeight(), BufferedImage.TYPE_USHORT_565_RGB);
+        inverseImageRaster = ((DataBufferUShort) inverse.getRaster().getDataBuffer()).getData();
         undo = reconstructDepthD(framesOfHashing[1],1,3);
-        undoRasterized = new int[inverse.getHeight()][inverse.getWidth()];
+        undoRasterized = new short[inverse.getHeight()][inverse.getWidth()];
         for (int d = 0; d <= 0; d++) {
             for (int row = 0; row < inverse.getHeight(); row++) {
                 for (int column = 0; column < inverse.getWidth(); column++) {

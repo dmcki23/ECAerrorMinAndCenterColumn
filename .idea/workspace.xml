@@ -4,9 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="After an hour's work">
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="before the afternoon cleanup">
+      <change afterPath="$PROJECT_DIR$/src/AlgorithmCode/EdgeDetection.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisionsTrim.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/AlgorithmCode/SinglesAndDoubles.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hadamard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hadamard.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTruthTables.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTruthTables.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashUtilities.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashUtilities.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -127,7 +137,8 @@
       <workItem from="1744162680217" duration="2723000" />
       <workItem from="1744204471539" duration="4507000" />
       <workItem from="1744209224946" duration="23113000" />
-      <workItem from="1744293139507" duration="9165000" />
+      <workItem from="1744293139507" duration="45329000" />
+      <workItem from="1744498981718" duration="27764000" />
     </task>
     <task id="LOCAL-00001" summary="Have gathered the code from several local projects into this, initial commit">
       <option name="closed" value="true" />
@@ -393,7 +404,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744302736326</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="before the afternoon cleanup">
+      <option name="closed" value="true" />
+      <created>1744320460824</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1744320460824</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -428,7 +447,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added some javadoc comments" />
     <MESSAGE value="feature branch node, have been no fundamental alterations since last season and prior to gathering the files from several projects post thesis joss arxiv" />
     <MESSAGE value="Basic functions working&#10;&#10;The prime stretch is working in PrimeCAstagingLONG in doLogReductionPrimeTwo()&#10;&#10;The exhaustive and numTrials versions in minErrorStaging ecaBestFitHashCollision ... (), the numTrials parameter is redundant in the exhaustive version&#10;&#10;Next up is a lot of organizing polishing and cosmetic work" />
     <MESSAGE value="Moved some staging classes to Trim (a recycle bin)&#10;&#10;Cut all unnecessary functions, only essential functions left (probably, ftm)" />
@@ -453,7 +471,8 @@
     <MESSAGE value="added truth tables for changes" />
     <MESSAGE value="checkChangesPerTransformAllSingleChanges() is sort of working" />
     <MESSAGE value="After an hour's work" />
-    <option name="LAST_COMMIT_MESSAGE" value="After an hour's work" />
+    <MESSAGE value="before the afternoon cleanup" />
+    <option name="LAST_COMMIT_MESSAGE" value="before the afternoon cleanup" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

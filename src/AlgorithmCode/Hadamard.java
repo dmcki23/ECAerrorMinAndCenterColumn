@@ -37,7 +37,7 @@ public class Hadamard {
                 out[row][col] = quantity % 2;
             }
         }
-        CustomArray.plusArrayDisplay(out, false, false, "generateByRCmult");
+        //CustomArray.plusArrayDisplay(out, false, false, "generateByRCmult");
         return out;
     }
 
@@ -65,7 +65,7 @@ public class Hadamard {
                 //out[row][col] = (out[row][col] == 0) ? -1 : 1;
             }
         }
-        CustomArray.plusArrayDisplay(out, false, false, "generateByRCmult");
+        //CustomArray.plusArrayDisplay(out, false, false, "generateByRCmult");
         return out;
     }
 

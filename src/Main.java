@@ -108,7 +108,21 @@ public class Main {
         //hashCollisions.checkChangesPerTransform(4);
         //hashCollisions.checkSinglesAgainstAll(4);
         //hashCollisions.checkTableForTwoChanges();
-        hashCollisions.exploreTwoChanges(4);
+        //hashCollisions.exploreTwoChanges(4);
+        HashUtilities hashUtilities = new HashUtilities();
+        //hashUtilities.exploreTwoChanges(4);
+        //hashUtilities.checkSinglesAgainstAllVisualize(8);
+        //hashUtilities.generateAbsolutelyEverything(4);
+        //hash.bitmapTransform();
+        //hashUtilities.zerosRelativeTruthTable();
+        EdgeDetection edgeDetection = new EdgeDetection();
+        //edgeDetection.bitmapTransform();
+        //hashUtilities.zerosRelativeTruthTable();
+        //hashUtilities.checkDoubles();
+        //edgeDetection.bitmapTransform();
+        //hashUtilities.zerosRelativeTruthTable();
+        hashUtilities.checkDoublesSetsFunctions();
+        //hashUtilities.generateEveryHadamardishFunction(4);
 
     }
 }
