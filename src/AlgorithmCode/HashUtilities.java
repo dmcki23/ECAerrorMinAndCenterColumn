@@ -7,7 +7,10 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.image.DataBufferUShort;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
@@ -36,6 +39,10 @@ public class HashUtilities {
      * to XOR the function
      */
     int[] relativeTruthTable;
+
+    public HashUtilities() {
+        hash.hashUtilities = this;
+    }
 
     /**
      * First generate a 4x4 binary array based on a function such as row ^ column % 2, (row + column)%2
@@ -119,6 +126,24 @@ public class HashUtilities {
         return out;
     }
 
+    public int[][][][] generateEveryECAfunctionTable(int size) {
+        int logLength = (int) (Math.log(size) / Math.log(2));
+        int[][][][] out = new int[256 * logLength][size][size][size];
+        for (int gate = 0; gate < 256; gate++) {
+            for (int row = 0; row < size; row++) {
+                for (int col = 0; col < size; col++) {
+                    for (int zee = 0; zee < size; zee++) {
+                        for (int place = 0; place < logLength; place++) {
+                            int tot = 4 * ((row >> place) % 2) + 2 * ((col >> place) % 2) + ((zee >> place) % 2);
+                            out[logLength * gate + place][row][col][zee] = ((gate >> tot) % 2);
+                        }
+                    }
+                }
+            }
+        }
+        return out;
+    }
+
     public int[][][] generateEveryLogicFunction(int size) {
         int logLength = (int) (Math.log(size) / Math.log(2));
         int[][][] out = new int[16 * logLength][size][size];
@@ -126,12 +151,35 @@ public class HashUtilities {
             for (int row = 0; row < size; row++) {
                 for (int col = 0; col < size; col++) {
                     for (int place = 0; place < logLength; place++) {
-                        out[logLength * gate + place][row][col] = (2 * ((row >> place) % 2) + (col >> place) % 2);
-                        out[logLength * gate + place][row][col] = ((gate >> out[gate][row][col])) % 2;
+                        out[logLength * gate + place][row][col] = (2 * ((row >> place) % 2) + ((col >> place) % 2));
+                        out[logLength * gate + place][row][col] = ((gate >> out[logLength * gate + place][row][col])) % 2;
                     }
                 }
             }
         }
+        int[][][] temp = new int[size * size * 16 * logLength][size][size];
+        for (int index = 0; index < out.length; index++) {
+            for (int row = 0; row < size; row++) {
+                for (int col = 0; col < size; col++) {
+                    for (int r = 0; r < size; r++) {
+                        for (int c = 0; c < size; c++) {
+                            temp[index * size * size + size * row + col][r][c] = out[index][(row + r) % size][(col + c) % size];
+                        }
+                    }
+                }
+            }
+        }
+//        for (int gate = 0; gate < 16; gate++) {
+//            for (int place = 0; place < logLength; place++) {
+//                temp[logLength * gate + place] = out[logLength * gate + place];
+//                for (int row = 0; row < size; row++) {
+//                    for (int col = 0; col < size; col++) {
+//                        temp[logLength * gate + place + logLength * 16][row][col] = (out[logLength * gate + place][row][col] + 1) % 2;
+//                    }
+//                }
+//                //CustomArray.plusArrayDisplay(out[logLength * gate + place], true, false, "gate " + gate + " place " + place);
+//            }
+//        }
         return out;
     }
 
@@ -144,19 +192,20 @@ public class HashUtilities {
             for (int col = 0; col < cols; col++) {
                 //gets its neighborhood
                 int cell = 0;
-                int phasePower = (int)Math.pow(2,depth);
+                int phasePower = (int) Math.pow(2, depth);
                 for (int r = 0; r < 2; r++) {
                     for (int c = 0; c < 2; c++) {
                         cell += (int) Math.pow(16, 2 * r + c) * input[(row + phasePower * r) % rows][(col + phasePower * c) % cols];
                     }
                 }
                 //stores the neighborhood's codeword
-                //out[row][col] = (truthTableTransform[cell] % 16);
+                out[row][col] = (truthTableTransform[cell] % 16);
                 for (int r = 0; r < 2; r++) {
                     for (int c = 0; c < 2; c++) {
-                        out[(row + phasePower * r) % rows][(col + phasePower * c) % cols] = ((truthTableTransform[cell] /(int)Math.pow(16,2*r+c))) % 16;
+                        //out[(row + phasePower * r) % rows][(col + phasePower * c) % cols] = ((truthTableTransform[cell] / (int) Math.pow(16, 2 * r + c))) % 16;
                     }
                 }
+                out[row][col] = 15 - out[row][col];
             }
         }
 //        for (int row = 0; row < rows; row++) {
@@ -203,7 +252,7 @@ public class HashUtilities {
             }
             for (int row = 0; row < rows; row++) {
                 for (int col = 0; col < cols; col++) {
-                    input[row][col] = out[row][col];
+                    input[row][col] = 15 - out[row][col];
                 }
             }
         }
@@ -251,7 +300,7 @@ public class HashUtilities {
         for (int row = 0; row < inImage.getHeight(); row++) {
             for (int column = 0; column < inImage.getWidth(); column++) {
                 for (int rgbhex = 0; rgbhex < numHexChars; rgbhex++) {
-                    bfield[row][numHexChars * column + rgbhex] = ((int) Math.abs((inRaster[row * inImage.getWidth() + column] /(int) Math.pow(2,(4 * rgbhex))) % 16));
+                    bfield[row][numHexChars * column + rgbhex] = ((int) Math.abs((inRaster[row * inImage.getWidth() + column] / (int) Math.pow(2, (4 * rgbhex))) % 16));
                     for (int posNegt = 0; posNegt < 0; posNegt++) {
                         //bFieldSet[posNegt][row][4 * column + 4 * rgbhex + power] = bfield[row][4 * column + 4 * rgbhex + power];
                     }
@@ -299,14 +348,16 @@ public class HashUtilities {
         File outFile = new File("src/denProcessedTwoRGB.bmp");
         ImageIO.write(outImage, "bmp", outFile);
     }
+
     /**
      * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
      *
      * @throws IOException
      */
-    public void bitmapTransformTwoRGBBytes(int dummy) throws IOException {
-        String filepath = "denTwoByteRGB.bmp";
+    public void bitmapTransformTwoRGBBytes(String filepath, int dummy) throws IOException {
+        //String filepath = "kitchenAlteredRGB.bmp";
         File file = new File(filepath);
+        filepath = filepath.substring(0, filepath.lastIndexOf("."));
         BufferedImage inImage = ImageIO.read(file);
         short[] inRaster = ((DataBufferUShort) inImage.getRaster().getDataBuffer()).getData();
         int size = inImage.getWidth();
@@ -327,7 +378,7 @@ public class HashUtilities {
         for (int row = 0; row < inImage.getHeight(); row++) {
             for (int column = 0; column < inImage.getWidth(); column++) {
                 for (int rgbhex = 0; rgbhex < numHexChars; rgbhex++) {
-                    bfield[row][numHexChars * column + rgbhex] = ((int) Math.abs((inRaster[row * inImage.getWidth() + column] /(int) Math.pow(2,(4 * rgbhex))) % 16));
+                    bfield[row][numHexChars * column + rgbhex] = ((int) Math.abs((inRaster[row * inImage.getWidth() + column] / (int) Math.pow(2, (4 * rgbhex))) % 16));
                     for (int posNegt = 0; posNegt < 0; posNegt++) {
                         //bFieldSet[posNegt][row][4 * column + 4 * rgbhex + power] = bfield[row][4 * column + 4 * rgbhex + power];
                     }
@@ -349,7 +400,7 @@ public class HashUtilities {
         //edges = doTransform(edges, 0, 4);
         //edges = doTransform(edges, 1, 4);
         //edges = doTransform(edges, 2, 4);
-        for (int d = 0; d < 0; d++){
+        for (int d = 0; d < 3; d++) {
             edges = doTransform(edges, d, 4);
         }
         //edges = detectEdges(framesOfHashing[1]);
@@ -366,9 +417,8 @@ public class HashUtilities {
                 for (int column = 0; column < inImage.getWidth(); column++) {
                     for (int rgbhex = 0; rgbhex < numHexChars; rgbhex++) {
                         rasterized[d][row][column] += (int) Math.pow(2, 4 * rgbhex) * edges[row][numHexChars * column + rgbhex];
-
                     }
-                    //rasterized[d][row][column] ^= inRaster[row * inImage.getWidth() + column];
+                    rasterized[d][row][column] ^= inRaster[row * inImage.getWidth() + column];
                 }
             }
         }
@@ -379,9 +429,29 @@ public class HashUtilities {
                 outRaster[inImage.getWidth() * row + column] = rasterized[0][row][column];
             }
         }
-        File outFile = new File("src/denProcessedTwoRGBdiffTransXOR.bmp");
+        File outFile = new File("src/ImagesProcessed/" + filepath + "hashedXORoriginal.bmp");
+        ImageIO.write(outImage, "bmp", outFile);
+        for (int d = 0; d <= 0; d++) {
+            for (int row = 0; row < inImage.getHeight(); row++) {
+                for (int column = 0; column < inImage.getWidth(); column++) {
+                    for (int rgbhex = 0; rgbhex < numHexChars; rgbhex++) {
+                        rasterized[d][row][column] += (int) Math.pow(2, 4 * rgbhex) * edges[row][numHexChars * column + rgbhex];
+                    }
+                    //rasterized[d][row][column] ^= inRaster[row * inImage.getWidth() + column];
+                }
+            }
+        }
+        outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+        outRaster = ((DataBufferInt) outImage.getRaster().getDataBuffer()).getData();
+        for (int row = 0; row < inImage.getHeight(); row++) {
+            for (int column = 0; column < inImage.getWidth(); column++) {
+                outRaster[inImage.getWidth() * row + column] = rasterized[0][row][column];
+            }
+        }
+        outFile = new File("src/ImagesProcessed/" + filepath + "hashed.bmp");
         ImageIO.write(outImage, "bmp", outFile);
     }
+
     public void testWriteToFile() throws IOException {
         generateAbsolutelyEverything(4);
         writeToFile();
@@ -391,7 +461,7 @@ public class HashUtilities {
             comp[0][row] = truthTableTransform[row];
         }
         for (int posNeg = 0; posNeg < 2; posNeg++) {
-            for (int t = 0; t < 8; t++){
+            for (int t = 0; t < 8; t++) {
                 for (int index = 0; index < 65536; index++) {
                     flatComp[0][posNeg][t][index] = hash.flatWolframs[posNeg][t][index];
                 }
@@ -399,7 +469,7 @@ public class HashUtilities {
         }
         System.out.println("doneWritingToFile");
         readFromFile();
-        for (int row = 0; row < 65536; row++){
+        for (int row = 0; row < 65536; row++) {
             comp[1][row] = truthTableTransform[row];
         }
         int numDifferent = 0;
@@ -411,7 +481,7 @@ public class HashUtilities {
         System.out.println("numDifferent: " + numDifferent);
         numDifferent = 0;
         for (int posNeg = 0; posNeg < 2; posNeg++) {
-            for (int t = 0; t < 8; t++){
+            for (int t = 0; t < 8; t++) {
                 for (int index = 0; index < 65536; index++) {
                     flatComp[1][posNeg][t][index] = hash.flatWolframs[posNeg][t][index];
                     if (flatComp[0][posNeg][t][index] != flatComp[1][posNeg][t][index]) {
@@ -422,11 +492,12 @@ public class HashUtilities {
         }
         System.out.println("numDifferent: " + numDifferent);
     }
+
     public void writeToFile() throws IOException {
         //generateAbsolutelyEverything(4);
         File file = new File("fourByfour.dat");
         FileOutputStream out = new FileOutputStream(file);
-        ByteBuffer buffer = ByteBuffer.allocate(truthTableTransform.length*4);
+        ByteBuffer buffer = ByteBuffer.allocate(truthTableTransform.length * 4);
         for (int index = 0; index < truthTableTransform.length; index++) {
             buffer.putInt(truthTableTransform[index]);
         }
@@ -435,8 +506,8 @@ public class HashUtilities {
         file = new File("minMaxCodewords.dat");
         out = new FileOutputStream(file);
         for (int posNeg = 0; posNeg < 2; posNeg++) {
-            for (int t = 0; t < 8; t++){
-                buffer = ByteBuffer.allocate(65536*4);
+            for (int t = 0; t < 8; t++) {
+                buffer = ByteBuffer.allocate(65536 * 4);
                 for (int index = 0; index < 65536; index++) {
                     buffer.putInt(hash.flatWolframs[posNeg][t][index]);
                 }
@@ -445,6 +516,7 @@ public class HashUtilities {
         }
         out.close();
     }
+
     public void readFromFile() throws IOException {
         File file = new File("fourByfour.dat");
         FileInputStream in = new FileInputStream(file);
@@ -462,13 +534,11 @@ public class HashUtilities {
         in = new FileInputStream(file);
         data = new byte[(int) file.length()];
         hash.flatWolframs = new int[2][8][65536];
-
         for (int posNeg = 0; posNeg < 2; posNeg++) {
-            for (int t = 0; t < 8; t++){
-
+            for (int t = 0; t < 8; t++) {
                 for (int index = 0; index < 65536; index++) {
-                    for (int place = 0; place < 4; place++){
-                        hash.flatWolframs[posNeg][t][index] += (int)Math.pow(4,place)*(int)data[4*index+place];
+                    for (int place = 0; place < 4; place++) {
+                        hash.flatWolframs[posNeg][t][index] += (int) Math.pow(4, place) * (int) data[4 * index + place];
                     }
                 }
             }
@@ -692,16 +762,26 @@ public class HashUtilities {
         int sizeSquare = 16;
         int[][] oneChangeZeros = new int[sizeSquare][sizeSquare];
         int[][][] logicFunctions = generateEveryLogicFunction(16);
+        int[][][][] cubicLogic = generateEveryECAfunctionTable(16);
         int[][][] hadamardishFunctions = generateEveryHadamardishFunction(16);
         int[] addressAccountedFor = new int[65536];
         int[] workingLogicFunctions = new int[logicFunctions.length];
         int[] workingHadamardishFunctions = new int[hadamardishFunctions.length];
+        int[] workingECA = new int[256];
         int[][][] addSubMult = generateAddSubtractMultiplyFunction(16);
+        int[][] both = new int[16][16];
         int[][][] hRows = generateHadamardWaves(16);
+        Hadamard hadamard = new Hadamard();
         gateLoop:
         for (int address = 0; address < 65536; address++) {
             oneChangeZeros = new int[sizeSquare][sizeSquare];
+            both = new int[sizeSquare][sizeSquare];
             for (int row = 0; row < sizeSquare; row++) {
+                if (truthTableTransform[address ^ (1 << row)] == 0) {
+                    //oneChangeZeros[row][0] = 1;
+                    //addressAccountedFor[address ^ (1 << row)] = 1;
+                    //firstZero = true;
+                }
                 for (int col = 0; col < sizeSquare; col++) {
                     int[][] firstChange = hash.m.addressToArray(4, address ^ (1 << row));
                     int[][] secondChange = hash.m.addressToArray(4, address ^ (1 << col));
@@ -719,7 +799,10 @@ public class HashUtilities {
                         secondZero = true;
                     }
                     if (truthTableTransform[address ^ (1 << row) ^ (1 << col)] == 0) {
-                        addressAccountedFor[address ^ (1 << row) ^ (1 << col)] = 1;
+                        //addressAccountedFor[address ^ (1 << row) ^ (1 << col)]--;
+                        both[row][col] = 1;
+                        //oneChangeZeros[row][col] = 1;
+                        //oneChangeZeros[row][col] = 1;
                     }
                     //if (firstZero || secondZero) continue;
                 }
@@ -727,15 +810,71 @@ public class HashUtilities {
             for (int function = 0; function < logicFunctions.length; function++) {
                 if (Arrays.deepEquals(oneChangeZeros, logicFunctions[function])) {
                     workingLogicFunctions[function]++;
+                    //addressAccountedFor[address ^ (1 << row) ^ (1 << col)] = 2;
                     for (int row = 0; row < sizeSquare; row++) {
+                        //if (oneChangeZeros[row][0]  == 1) addressAccountedFor[address ^ (1 << row)] |= 1;
                         for (int col = 0; col < sizeSquare; col++) {
-                            //if (oneChangeZeros[row][col] == 1) addressAccountedFor[address ^ (1 << row)] = 1;
-                            //if (oneChangeZeros[row][col] == 1) addressAccountedFor[address ^ (1 << col)] = 1;
-                            addressAccountedFor[address ^ (1 << row)] = 1;
-                            addressAccountedFor[address ^ (1 << col)] = 1;
+                            //if (oneChangeZeros[row][col] == 1) {
+                            addressAccountedFor[address ^ (1 << row)] |= 1;
+                            addressAccountedFor[address ^ (1 << col)] |= 1;
+                            //}
+                            //addressAccountedFor[address ^ (1 << row)] = 1 | addressAccountedFor[address ^ (1 << row)];
+                            //addressAccountedFor[address ^ (1 << col)] = 1 | addressAccountedFor[address ^ (1 << col)];
+                            //if (both[row][col] == 1) {
+                            addressAccountedFor[address ^ (1 << row) ^ (1 << col)] |= 8 * both[row][col];
+                            //}
+                            //addressAccountedFor[address ^ (1 << row)] = 1;
+                            //addressAccountedFor[address ^ (1 << col)] = 1;
                         }
                     }
-                    addressAccountedFor[address] = 1;
+                    //addressAccountedFor[address] = 1;
+                }
+                if (Arrays.deepEquals(both, logicFunctions[function])) {
+
+
+                    workingLogicFunctions[function]++;
+                    //addressAccountedFor[address ^ (1 << row) ^ (1 << col)] = 2;
+                    for (int row = 0; row < sizeSquare; row++) {
+                        //if (oneChangeZeros[row][0]  == 1) addressAccountedFor[address ^ (1 << row)] |= 1;
+                        for (int col = 0; col < sizeSquare; col++) {
+                            //if (oneChangeZeros[row][col]== 1) {
+                            //addressAccountedFor[address ^ (1 << row)] |= 1;
+                            //addressAccountedFor[address ^ (1 << col)] = 1;
+                            //}
+                            //addressAccountedFor[address ^ (1 << row)] = 1 | addressAccountedFor[address ^ (1 << row)];
+                            //addressAccountedFor[address ^ (1 << col)] = 1 | addressAccountedFor[address ^ (1 << col)];
+                            //if (both[row][col] == 1) {
+                            //addressAccountedFor[address ^ (1 << row) ^ (1 << col)] |= 2;
+                            //}
+                            //addressAccountedFor[address ^ (1 << row)] = 1;
+                            //addressAccountedFor[address ^ (1 << col)] = 1;
+                        }
+                    }
+                    //addressAccountedFor[address] = 1;
+                }
+            }
+            int[][][] cubicChanges = new int[16][16][16];
+            for (int row = 0; row < size; row++) {
+                for (int col = 0; col < size; col++) {
+                    for (int zee = 0; zee < size; zee++) {
+                        int changedAddress = address ^ (1 << row) ^ (1 << col) ^ (1 << zee);
+                        if (truthTableTransform[changedAddress] == 0) {
+                            cubicChanges[row][col][zee] = 1;
+                        }
+                    }
+                }
+            }
+            for (int function = 0; function < cubicLogic.length; function++) {
+                if (Arrays.deepEquals(cubicChanges, cubicLogic[function])) {
+                    workingECA[function]++;
+                    for (int row = 0; row < size; row++) {
+                        for (int col = 0; col < size; col++) {
+                            for (int zee = 0; zee < size; zee++) {
+                                int changedAddress = address ^ (1 << row) ^ (1 << col) ^ (1 << zee);
+                                //addressAccountedFor[changedAddress] |= 4;
+                            }
+                        }
+                    }
                 }
             }
 //            for (int f = 0; f < hadamardishFunctions.length; f++) {
@@ -777,7 +916,7 @@ public class HashUtilities {
         }
         //CustomArray.plusArrayDisplay(oneChangeZeros, true, true, "one change zeros relative truth table");
         System.out.println(Arrays.toString(workingLogicFunctions));
-        System.out.println(Arrays.toString(workingHadamardishFunctions));
+        //System.out.println(Arrays.toString(workingHadamardishFunctions));
         System.out.println("done");
         int unaccounted = 0;
         for (int address = 0; address < 65536; address++) {
@@ -789,12 +928,18 @@ public class HashUtilities {
         int[][] zeros = new int[256][256];
         for (int address = 0; address < 65536; address++) {
             if (addressAccountedFor[address] == 0) {
-                zeros[address / 256][address % 256] = 1;
+                //zeros[address / 256][address % 256] = 1;
             }
+            if (addressAccountedFor[address] < 0) {
+                //zeros[address / 256][address % 256] = 2;
+            }
+            zeros[address / 256][address % 256] = addressAccountedFor[address];
         }
         int[][] transposeCheck = new int[256][256];
+        int[] distro = new int[16];
         for (int row = 0; row < 256; row++) {
             for (int col = 0; col < 256; col++) {
+                distro[zeros[row][col]]++;
                 if (zeros[row][col] == zeros[col][row]) {
                     transposeCheck[row][col] = 0;
                 } else {
@@ -803,8 +948,38 @@ public class HashUtilities {
                 //zeros[row][col] ^= zeros[col][row];
             }
         }
-        zeros = PermutationsFactoradic.grayify(zeros);
+        //zeros = PermutationsFactoradic.grayify(zeros);
+        System.out.println("distro: " + Arrays.toString(distro));
         CustomArray.plusArrayDisplay(zeros, true, true, "zeros");
+        System.out.println("________________________\n\n\n\n\n\n\n");
+        int[][] result = hadamard.matrixMultiply(zeros, zeros);
+        //result = hadamard.matrixMultiply(zeros,result);
+        //result = hadamard.matrixMultiply(zeros,result);
+        //result = hadamard.matrixMultiply(zeros,result);
+        //result = hadamard.matrixMultiply(zeros,result);
+        CustomArray.plusArrayDisplay(result, true, false, "zeros * zeros = result");
+        for (int function = 0; function < logicFunctions.length; function++) {
+
+            //System.out.println("n: " + function + " gate " + (function / 4) + " place " + ((function / 4) % 4) + " posNeg " + ((function/(16*4)) % 2) + " " + (workingLogicFunctions[function]));
+            int gate = function / 4;
+            int place = function % 4;
+            if (workingLogicFunctions[function] != 0) {
+                System.out.println("gate: " + gate + " place: " + place);
+            }
+
+        }
+        for (int function = 0; function < 0; function++) {
+
+            //System.out.println("n: " + function + " gate " + (function / 4) + " place " + ((function / 4) % 4) + " posNeg " + ((function/(16*4)) % 2) + " " + (workingLogicFunctions[function]));
+            int gate = function / 4/16/16;
+            int place = (function/16/16) % 4;
+            if (workingLogicFunctions[function] != 0) {
+                System.out.println("gate: " + gate + " place: " + place);
+            }
+
+        }
+
+        System.out.println("workingECA " + Arrays.toString(workingECA));
     }
 
     public void checkDoublesRand() {

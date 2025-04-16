@@ -125,7 +125,10 @@ public class Main {
         //hashUtilities.generateEveryHadamardishFunction(4);
         //hashUtilities.bitmapTransformTwoRGBBytes(0);
         //hashUtilities.testWriteToFile();
-        hashUtilities.checkDoublesSetsFunctions();
+        //hashUtilities.checkDoublesSetsFunctions();
+        //hashUtilities.generateEveryLogicFunction(16);
+        hashUtilities.hash.bitmapTransform("OtherRoom.bmp",0);
+        //hashUtilities.checkDoublesSetsFunctions();
 
     }
 }
