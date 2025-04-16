@@ -3,6 +3,14 @@ package AlgorithmCode;
 import CustomLibrary.CustomArray;
 import CustomLibrary.PermutationsFactoradic;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
+import java.awt.image.DataBufferUShort;
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -110,10 +118,10 @@ public class HashUtilities {
         }
         return out;
     }
+
     public int[][][] generateEveryLogicFunction(int size) {
         int logLength = (int) (Math.log(size) / Math.log(2));
         int[][][] out = new int[16 * logLength][size][size];
-
         for (int gate = 0; gate < 16; gate++) {
             for (int row = 0; row < size; row++) {
                 for (int col = 0; col < size; col++) {
@@ -124,8 +132,347 @@ public class HashUtilities {
                 }
             }
         }
-
         return out;
+    }
+
+    public int[][] doTransform(int[][] input, int depth, int subsetIndex) {
+        int rows = input.length;
+        int cols = input[0].length;
+        int[][] out = new int[rows][cols];
+        int[][][] temp = new int[4][rows][cols];
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                //gets its neighborhood
+                int cell = 0;
+                int phasePower = (int)Math.pow(2,depth);
+                for (int r = 0; r < 2; r++) {
+                    for (int c = 0; c < 2; c++) {
+                        cell += (int) Math.pow(16, 2 * r + c) * input[(row + phasePower * r) % rows][(col + phasePower * c) % cols];
+                    }
+                }
+                //stores the neighborhood's codeword
+                //out[row][col] = (truthTableTransform[cell] % 16);
+                for (int r = 0; r < 2; r++) {
+                    for (int c = 0; c < 2; c++) {
+                        out[(row + phasePower * r) % rows][(col + phasePower * c) % cols] = ((truthTableTransform[cell] /(int)Math.pow(16,2*r+c))) % 16;
+                    }
+                }
+            }
+        }
+//        for (int row = 0; row < rows; row++) {
+//            for (int col = 0; col < cols; col++) {
+//                int cell = 0;
+//                for (int r = 0; r < 2; r++){
+//                    for (int c = 0; c < 2; c++){
+//                        cell += (int)Math.pow(16,2*r+c)*temp[2*r+c][row][col];
+//                    }
+//                }
+//                int index = subsetIndex%8;
+//                int negSign = subsetIndex/8;
+//                //out[row][col] = hash.flatWolframs[negSign][index][cell];
+//                //out[row][col] = truthTableTransform[cell]%16;
+//            }
+//        }
+        return out;
+    }
+
+    public int[][] doTransformNormalizePixels(int[][] input, int depth) {
+        int rows = input.length;
+        int cols = input[0].length;
+        depth = 1;
+        int[][] out = new int[input.length][input[0].length];
+        for (int iter = 0; iter < depth; iter++) {
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < cols; col++) {
+                    //gets its neighborhood
+                    int cell = 0;
+                    int phasePower = (1 << (iter));
+                    for (int r = 0; r < 2; r++) {
+                        for (int c = 0; c < 2; c++) {
+                            cell += (int) Math.pow(16, 2 * r + c) * input[(row) % rows][(col + phasePower * (2 * r + c)) % cols];
+                        }
+                    }
+                    //stores the neighborhood's codeword
+                    for (int r = 0; r < 2; r++) {
+                        for (int c = 0; c < 2; c++) {
+                            out[(row) % rows][(col + phasePower * (2 * r + c)) % cols] = (truthTableTransform[cell] >> (4 * (2 * r + c))) % 16;
+                        }
+                    }
+                    //out[row][col] = (truthTableTransform[cell] % 16);
+                }
+            }
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < cols; col++) {
+                    input[row][col] = out[row][col];
+                }
+            }
+        }
+        return input;
+    }
+
+    /**
+     * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
+     *
+     * @throws IOException
+     */
+    public void bitmapTransform(int dummy) throws IOException {
+        String filepath = "denTwoByteRGB.bmp";
+        File file = new File(filepath);
+        BufferedImage inImage = ImageIO.read(file);
+        int[] inRaster = ((DataBufferInt) inImage.getRaster().getDataBuffer()).getData();
+        int size = inImage.getWidth();
+        int depth = (int) (Math.log(inImage.getWidth() * inImage.getWidth()) / Math.log(2));
+        depth = 1;
+        int[][][] framesOfHashing = new int[depth][inImage.getHeight()][inImage.getWidth() * 8];
+        int[][] field = new int[inImage.getHeight()][inImage.getWidth() * 8];
+        int numHexChars = 4;
+        int[][] bfield = new int[inImage.getHeight()][inImage.getWidth() * numHexChars];
+        System.out.println("inRaster: " + inRaster.length);
+        System.out.println("imImage.getHeight(): " + inImage.getHeight());
+        System.out.println("imImage.getWidth(): " + inImage.getWidth());
+        System.out.println("inRaster.length/inImage.getHeight(): " + inRaster.length / inImage.getHeight());
+        System.out.println("inRaster.length/inImage.getWidth(): " + inRaster.length / inImage.getWidth());
+        System.out.println("inRaster.length/inImage.getHeight()/inImage.getWidth(): " + inRaster.length / inImage.getHeight() / inImage.getWidth());
+        //Transforms the image into its appropriate local algorithm format
+//        for (int row = 0; row < inImage.getHeight(); row++) {
+//            for (int column = 0; column < inImage.getWidth(); column++) {
+//                for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
+//                    for (int lr = 0; lr < 2; lr++) {
+//                        int rasterCoordX = row * inImage.getWidth() + column;
+//                        field[row][8 * column + 2 * rgbbyte + lr] = (int) Math.abs((inRaster[rasterCoordX] >> (4 * rgbbyte + 2 * lr)) % 16);
+//                        for (int power = 0; power < 4; power++) {
+//                            bfield[row][32 * column + 8 * rgbbyte + 4 * lr + power] = (field[row][8 * column + 2 * rgbbyte + lr] >> power) % 2;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+        int[][][] bFieldSet = new int[16][bfield.length][bfield[0].length];
+        for (int row = 0; row < inImage.getHeight(); row++) {
+            for (int column = 0; column < inImage.getWidth(); column++) {
+                for (int rgbhex = 0; rgbhex < numHexChars; rgbhex++) {
+                    bfield[row][numHexChars * column + rgbhex] = ((int) Math.abs((inRaster[row * inImage.getWidth() + column] /(int) Math.pow(2,(4 * rgbhex))) % 16));
+                    for (int posNegt = 0; posNegt < 0; posNegt++) {
+                        //bFieldSet[posNegt][row][4 * column + 4 * rgbhex + power] = bfield[row][4 * column + 4 * rgbhex + power];
+                    }
+                }
+            }
+        }
+        //Initialize the minMax codeword truth table set
+        //hash.initWolframs();
+        //generateAbsolutelyEverything(4);
+        readFromFile();
+        //Change the RGB 4-bytes broken down into 32 bits into its depth 0 codewords
+        //bfield = hash.initializeDepthZero(bfield, hash.unpackedList[3])[1];
+        //Do the transform
+        //bfield = hash.ecaMinTransformRGBrowNorm(bfield, hash.unpackedList[3], 1)[1];
+        //framesOfHashing = hash.ecaMinTransform(bfield, hash.unpackedList[3], 1);
+        int[][] edges = new int[1][1];
+        edges = doTransformNormalizePixels(bfield, depth);
+//        edges = doTransform(bfield, 0);
+        //edges = doTransform(edges, 0, 4);
+        //edges = detectEdges(framesOfHashing[1]);
+        // edges = detectEdges(bfield);
+        for (int cycle = 0; cycle < 1; cycle++) {
+            //edges = detectEdges(edges);
+        }
+        //edges = detectEdges(edges);
+        //edges = detectEdges(edges);
+        //Convert the transform back into appropriate bitmap RGB format
+        int[][][] rasterized = new int[depth + 1][inImage.getHeight()][inImage.getWidth()];
+        for (int d = 0; d <= 0; d++) {
+            for (int row = 0; row < inImage.getHeight(); row++) {
+                for (int column = 0; column < inImage.getWidth(); column++) {
+                    for (int rgbhex = 0; rgbhex < numHexChars; rgbhex++) {
+                        rasterized[d][row][column] += (int) Math.pow(2, 4 * rgbhex) * edges[row][numHexChars * column + rgbhex];
+                    }
+                }
+            }
+        }
+        BufferedImage outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+        int[] outRaster = ((DataBufferInt) outImage.getRaster().getDataBuffer()).getData();
+        for (int row = 0; row < inImage.getHeight(); row++) {
+            for (int column = 0; column < inImage.getWidth(); column++) {
+                outRaster[inImage.getWidth() * row + column] = rasterized[0][row][column];
+            }
+        }
+        File outFile = new File("src/denProcessedTwoRGB.bmp");
+        ImageIO.write(outImage, "bmp", outFile);
+    }
+    /**
+     * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
+     *
+     * @throws IOException
+     */
+    public void bitmapTransformTwoRGBBytes(int dummy) throws IOException {
+        String filepath = "denTwoByteRGB.bmp";
+        File file = new File(filepath);
+        BufferedImage inImage = ImageIO.read(file);
+        short[] inRaster = ((DataBufferUShort) inImage.getRaster().getDataBuffer()).getData();
+        int size = inImage.getWidth();
+        int depth = (int) (Math.log(inImage.getWidth() * inImage.getWidth()) / Math.log(2));
+        depth = 1;
+        int[][][] framesOfHashing = new int[depth][inImage.getHeight()][inImage.getWidth() * 8];
+        int[][] field = new int[inImage.getHeight()][inImage.getWidth() * 8];
+        int numHexChars = 4;
+        int[][] bfield = new int[inImage.getHeight()][inImage.getWidth() * numHexChars];
+        System.out.println("inRaster: " + inRaster.length);
+        System.out.println("imImage.getHeight(): " + inImage.getHeight());
+        System.out.println("imImage.getWidth(): " + inImage.getWidth());
+        System.out.println("inRaster.length/inImage.getHeight(): " + inRaster.length / inImage.getHeight());
+        System.out.println("inRaster.length/inImage.getWidth(): " + inRaster.length / inImage.getWidth());
+        System.out.println("inRaster.length/inImage.getHeight()/inImage.getWidth(): " + inRaster.length / inImage.getHeight() / inImage.getWidth());
+        //Transforms the image into its appropriate local algorithm format
+        int[][][] bFieldSet = new int[16][bfield.length][bfield[0].length];
+        for (int row = 0; row < inImage.getHeight(); row++) {
+            for (int column = 0; column < inImage.getWidth(); column++) {
+                for (int rgbhex = 0; rgbhex < numHexChars; rgbhex++) {
+                    bfield[row][numHexChars * column + rgbhex] = ((int) Math.abs((inRaster[row * inImage.getWidth() + column] /(int) Math.pow(2,(4 * rgbhex))) % 16));
+                    for (int posNegt = 0; posNegt < 0; posNegt++) {
+                        //bFieldSet[posNegt][row][4 * column + 4 * rgbhex + power] = bfield[row][4 * column + 4 * rgbhex + power];
+                    }
+                }
+            }
+        }
+        //Initialize the minMax codeword truth table set
+        //hash.initWolframs();
+        //generateAbsolutelyEverything(4);
+        readFromFile();
+        //Change the RGB 4-bytes broken down into 32 bits into its depth 0 codewords
+        //bfield = hash.initializeDepthZero(bfield, hash.unpackedList[3])[1];
+        //Do the transform
+        //bfield = hash.ecaMinTransformRGBrowNorm(bfield, hash.unpackedList[3], 1)[1];
+        //framesOfHashing = hash.ecaMinTransform(bfield, hash.unpackedList[3], 1);
+        int[][] edges = new int[1][1];
+        edges = doTransformNormalizePixels(bfield, depth);
+//        edges = doTransform(bfield, 0);
+        //edges = doTransform(edges, 0, 4);
+        //edges = doTransform(edges, 1, 4);
+        //edges = doTransform(edges, 2, 4);
+        for (int d = 0; d < 0; d++){
+            edges = doTransform(edges, d, 4);
+        }
+        //edges = detectEdges(framesOfHashing[1]);
+        // edges = detectEdges(bfield);
+        for (int cycle = 0; cycle < 0; cycle++) {
+            //edges = detectEdges(edges);
+        }
+        //edges = detectEdges(edges);
+        //edges = detectEdges(edges);
+        //Convert the transform back into appropriate bitmap RGB format
+        int[][][] rasterized = new int[depth + 1][inImage.getHeight()][inImage.getWidth()];
+        for (int d = 0; d <= 0; d++) {
+            for (int row = 0; row < inImage.getHeight(); row++) {
+                for (int column = 0; column < inImage.getWidth(); column++) {
+                    for (int rgbhex = 0; rgbhex < numHexChars; rgbhex++) {
+                        rasterized[d][row][column] += (int) Math.pow(2, 4 * rgbhex) * edges[row][numHexChars * column + rgbhex];
+
+                    }
+                    //rasterized[d][row][column] ^= inRaster[row * inImage.getWidth() + column];
+                }
+            }
+        }
+        BufferedImage outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+        int[] outRaster = ((DataBufferInt) outImage.getRaster().getDataBuffer()).getData();
+        for (int row = 0; row < inImage.getHeight(); row++) {
+            for (int column = 0; column < inImage.getWidth(); column++) {
+                outRaster[inImage.getWidth() * row + column] = rasterized[0][row][column];
+            }
+        }
+        File outFile = new File("src/denProcessedTwoRGBdiffTransXOR.bmp");
+        ImageIO.write(outImage, "bmp", outFile);
+    }
+    public void testWriteToFile() throws IOException {
+        generateAbsolutelyEverything(4);
+        writeToFile();
+        int[][] comp = new int[2][65536];
+        int[][][][] flatComp = new int[2][2][8][65536];
+        for (int row = 0; row < 65536; row++) {
+            comp[0][row] = truthTableTransform[row];
+        }
+        for (int posNeg = 0; posNeg < 2; posNeg++) {
+            for (int t = 0; t < 8; t++){
+                for (int index = 0; index < 65536; index++) {
+                    flatComp[0][posNeg][t][index] = hash.flatWolframs[posNeg][t][index];
+                }
+            }
+        }
+        System.out.println("doneWritingToFile");
+        readFromFile();
+        for (int row = 0; row < 65536; row++){
+            comp[1][row] = truthTableTransform[row];
+        }
+        int numDifferent = 0;
+        for (int row = 0; row < 65536; row++) {
+            if (comp[0][row] != comp[1][row]) {
+                numDifferent++;
+            }
+        }
+        System.out.println("numDifferent: " + numDifferent);
+        numDifferent = 0;
+        for (int posNeg = 0; posNeg < 2; posNeg++) {
+            for (int t = 0; t < 8; t++){
+                for (int index = 0; index < 65536; index++) {
+                    flatComp[1][posNeg][t][index] = hash.flatWolframs[posNeg][t][index];
+                    if (flatComp[0][posNeg][t][index] != flatComp[1][posNeg][t][index]) {
+                        numDifferent++;
+                    }
+                }
+            }
+        }
+        System.out.println("numDifferent: " + numDifferent);
+    }
+    public void writeToFile() throws IOException {
+        //generateAbsolutelyEverything(4);
+        File file = new File("fourByfour.dat");
+        FileOutputStream out = new FileOutputStream(file);
+        ByteBuffer buffer = ByteBuffer.allocate(truthTableTransform.length*4);
+        for (int index = 0; index < truthTableTransform.length; index++) {
+            buffer.putInt(truthTableTransform[index]);
+        }
+        out.write(buffer.array());
+        out.close();
+        file = new File("minMaxCodewords.dat");
+        out = new FileOutputStream(file);
+        for (int posNeg = 0; posNeg < 2; posNeg++) {
+            for (int t = 0; t < 8; t++){
+                buffer = ByteBuffer.allocate(65536*4);
+                for (int index = 0; index < 65536; index++) {
+                    buffer.putInt(hash.flatWolframs[posNeg][t][index]);
+                }
+                out.write(buffer.array());
+            }
+        }
+        out.close();
+    }
+    public void readFromFile() throws IOException {
+        File file = new File("fourByfour.dat");
+        FileInputStream in = new FileInputStream(file);
+        byte[] data = new byte[(int) file.length()];
+        in.read(data);
+        truthTableTransform = new int[65536];
+        IntBuffer intBuf =
+                ByteBuffer.wrap(data)
+                        .order(ByteOrder.BIG_ENDIAN)
+                        .asIntBuffer();
+        int[] array = new int[intBuf.remaining()];
+        intBuf.get(truthTableTransform);
+        in.close();
+        file = new File("minMaxCodewords.dat");
+        in = new FileInputStream(file);
+        data = new byte[(int) file.length()];
+        hash.flatWolframs = new int[2][8][65536];
+
+        for (int posNeg = 0; posNeg < 2; posNeg++) {
+            for (int t = 0; t < 8; t++){
+
+                for (int index = 0; index < 65536; index++) {
+                    for (int place = 0; place < 4; place++){
+                        hash.flatWolframs[posNeg][t][index] += (int)Math.pow(4,place)*(int)data[4*index+place];
+                    }
+                }
+            }
+        }
     }
 
     public int[][][] generateAddSubtractMultiplyFunction(int size) {
@@ -337,8 +684,9 @@ public class HashUtilities {
         }
     }
 
-    public void checkDoublesSetsFunctions() {
-        generateAbsolutelyEverything(4);
+    public void checkDoublesSetsFunctions() throws IOException {
+        //generateAbsolutelyEverything(4);
+        readFromFile();
         //generateRelativeToFunctionTile();
         int size = 4;
         int sizeSquare = 16;
@@ -456,7 +804,7 @@ public class HashUtilities {
             }
         }
         zeros = PermutationsFactoradic.grayify(zeros);
-        CustomArray.plusArrayDisplay(zeros,true, true, "zeros");
+        CustomArray.plusArrayDisplay(zeros, true, true, "zeros");
     }
 
     public void checkDoublesRand() {

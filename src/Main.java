@@ -121,8 +121,11 @@ public class Main {
         //hashUtilities.checkDoubles();
         //edgeDetection.bitmapTransform();
         //hashUtilities.zerosRelativeTruthTable();
-        hashUtilities.checkDoublesSetsFunctions();
+        //hashUtilities.checkDoublesSetsFunctions();
         //hashUtilities.generateEveryHadamardishFunction(4);
+        //hashUtilities.bitmapTransformTwoRGBBytes(0);
+        //hashUtilities.testWriteToFile();
+        hashUtilities.checkDoublesSetsFunctions();
 
     }
 }
