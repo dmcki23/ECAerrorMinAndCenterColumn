@@ -127,8 +127,11 @@ public class Main {
         //hashUtilities.testWriteToFile();
         //hashUtilities.checkDoublesSetsFunctions();
         //hashUtilities.generateEveryLogicFunction(16);
-        hashUtilities.hash.bitmapTransform("OtherRoom.bmp",0);
+        //hashUtilities.bitmapTransformTwoRGBBytes("linesTwoByteRGB.bmp",0);
         //hashUtilities.checkDoublesSetsFunctions();
+        //edgeDetection.bitmapTransform("OtherRoom");
+        //a.testAllLogic();
+        hash.bitmapTransformCompleteSet("OtherRoom.bmp",0);
 
     }
 }

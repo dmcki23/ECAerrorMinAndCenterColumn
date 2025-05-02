@@ -211,6 +211,30 @@ public class Addition {
             }
         }
         System.out.println(Arrays.toString(gateDistro));
+        int[] gateDistro2 = new int[16];
+        int[] comp = new int[16];
+        Arrays.fill(comp, 1);
+        int[][] connected = new int[16][16];
+        for (int element = 0; element < 16; element++) {
+            gateDistro2 = new int[16];
+            for (int gate = 0; gate < 16; gate++) {
+                gateDistro2[tupleDistro[gate][element]]++;
+                //connected[gate][element] = 1;
+                //connected[element][gate] = 1;
+                //connected[tupleDistro[gate][element]][tupleDistro[element][gate]] = 1;
+                //connected[tupleDistro[element][gate]][tupleDistro[gate][element]] = 1;
+                connected[gate][tupleDistro[element][gate]] = 1;
+                connected[tupleDistro[gate][element]][gate] = 1;
+                connected[element][tupleDistro[gate][element]] = 1;
+                connected[tupleDistro[element][gate]][element] = 1;
+            }
+            if (Arrays.equals(comp, gateDistro2)) {
+                System.out.println("element: " + element);
+            }
+        }
+        CustomArray.plusArrayDisplay(connected,false,false,"connected");
+
+
     }
 
     public int[][] generateGatePlacesFractal(int gate, int size) {

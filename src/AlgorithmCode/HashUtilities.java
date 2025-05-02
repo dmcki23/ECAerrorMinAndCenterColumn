@@ -981,6 +981,233 @@ public class HashUtilities {
 
         System.out.println("workingECA " + Arrays.toString(workingECA));
     }
+    public void checkDoublesSetsFunctionsTwo() throws IOException {
+        //generateAbsolutelyEverything(4);
+        readFromFile();
+        //generateRelativeToFunctionTile();
+        int size = 4;
+        int sizeSquare = 16;
+        int[][] oneChangeZeros = new int[sizeSquare][sizeSquare];
+        int[][][] logicFunctions = generateEveryLogicFunction(16);
+        int[][][][] cubicLogic = generateEveryECAfunctionTable(16);
+        int[][][] hadamardishFunctions = generateEveryHadamardishFunction(16);
+        int[] addressAccountedFor = new int[65536];
+        int[] workingLogicFunctions = new int[logicFunctions.length];
+        int[] workingHadamardishFunctions = new int[hadamardishFunctions.length];
+        int[] workingECA = new int[256];
+        int[][][] addSubMult = generateAddSubtractMultiplyFunction(16);
+        int[][] both = new int[16][16];
+        int[][][] hRows = generateHadamardWaves(16);
+        Hadamard hadamard = new Hadamard();
+        gateLoop:
+        for (int address = 0; address < 65536; address++) {
+            oneChangeZeros = new int[sizeSquare][sizeSquare];
+            both = new int[sizeSquare][sizeSquare];
+            for (int row = 0; row < sizeSquare; row++) {
+                if (truthTableTransform[address ^ (1 << row)] == 0) {
+                    //oneChangeZeros[row][0] = 1;
+                    //addressAccountedFor[address ^ (1 << row)] = 1;
+                    //firstZero = true;
+                }
+                for (int col = 0; col < sizeSquare; col++) {
+                    int[][] firstChange = hash.m.addressToArray(4, address ^ (1 << row));
+                    int[][] secondChange = hash.m.addressToArray(4, address ^ (1 << col));
+                    int[][] bothChanges = hash.m.addressToArray(4, address ^ (1 << row) ^ (1 << col));
+                    boolean firstZero = false;
+                    if (truthTableTransform[address ^ (1 << row)] == 0) {
+                        oneChangeZeros[row][col] = 1;
+                        //addressAccountedFor[address ^ (1 << row)] = 1;
+                        firstZero = true;
+                    }
+                    boolean secondZero = false;
+                    if (truthTableTransform[address ^ (1 << col)] == 0) {
+                        oneChangeZeros[row][col] = 1;
+                        //addressAccountedFor[address ^ (1 << col)] = 1;
+                        secondZero = true;
+                    }
+                    if (truthTableTransform[address ^ (1 << row) ^ (1 << col)] == 0) {
+                        //addressAccountedFor[address ^ (1 << row) ^ (1 << col)]--;
+                        both[row][col] = 1;
+                        //oneChangeZeros[row][col] = 1;
+                        //oneChangeZeros[row][col] = 1;
+                    }
+                    //if (firstZero || secondZero) continue;
+                }
+            }
+            for (int function = 0; function < logicFunctions.length; function++) {
+                if (Arrays.deepEquals(oneChangeZeros, logicFunctions[function])) {
+                    workingLogicFunctions[function]++;
+                    //addressAccountedFor[address ^ (1 << row) ^ (1 << col)] = 2;
+                    for (int row = 0; row < sizeSquare; row++) {
+                        //if (oneChangeZeros[row][0]  == 1) addressAccountedFor[address ^ (1 << row)] |= 1;
+                        for (int col = 0; col < sizeSquare; col++) {
+                            //if (oneChangeZeros[row][col] == 1) {
+                            addressAccountedFor[address ^ (1 << row)] |= 1;
+                            addressAccountedFor[address ^ (1 << col)] |= 1;
+                            //}
+                            //addressAccountedFor[address ^ (1 << row)] = 1 | addressAccountedFor[address ^ (1 << row)];
+                            //addressAccountedFor[address ^ (1 << col)] = 1 | addressAccountedFor[address ^ (1 << col)];
+                            //if (both[row][col] == 1) {
+                            addressAccountedFor[address ^ (1 << row) ^ (1 << col)] |= 8 * both[row][col];
+                            //}
+                            //addressAccountedFor[address ^ (1 << row)] = 1;
+                            //addressAccountedFor[address ^ (1 << col)] = 1;
+                        }
+                    }
+                    //addressAccountedFor[address] = 1;
+                }
+                if (Arrays.deepEquals(both, logicFunctions[function])) {
+
+
+                    workingLogicFunctions[function]++;
+                    //addressAccountedFor[address ^ (1 << row) ^ (1 << col)] = 2;
+                    for (int row = 0; row < sizeSquare; row++) {
+                        //if (oneChangeZeros[row][0]  == 1) addressAccountedFor[address ^ (1 << row)] |= 1;
+                        for (int col = 0; col < sizeSquare; col++) {
+                            //if (oneChangeZeros[row][col]== 1) {
+                            //addressAccountedFor[address ^ (1 << row)] |= 1;
+                            //addressAccountedFor[address ^ (1 << col)] = 1;
+                            //}
+                            //addressAccountedFor[address ^ (1 << row)] = 1 | addressAccountedFor[address ^ (1 << row)];
+                            //addressAccountedFor[address ^ (1 << col)] = 1 | addressAccountedFor[address ^ (1 << col)];
+                            //if (both[row][col] == 1) {
+                            //addressAccountedFor[address ^ (1 << row) ^ (1 << col)] |= 2;
+                            //}
+                            //addressAccountedFor[address ^ (1 << row)] = 1;
+                            //addressAccountedFor[address ^ (1 << col)] = 1;
+                        }
+                    }
+                    //addressAccountedFor[address] = 1;
+                }
+            }
+            int[][][] cubicChanges = new int[16][16][16];
+            for (int row = 0; row < size; row++) {
+                for (int col = 0; col < size; col++) {
+                    for (int zee = 0; zee < size; zee++) {
+                        int changedAddress = address ^ (1 << row) ^ (1 << col) ^ (1 << zee);
+                        if (truthTableTransform[changedAddress] == 0) {
+                            cubicChanges[row][col][zee] = 1;
+                        }
+                    }
+                }
+            }
+            for (int function = 0; function < cubicLogic.length; function++) {
+                if (Arrays.deepEquals(cubicChanges, cubicLogic[function])) {
+                    workingECA[function]++;
+                    for (int row = 0; row < size; row++) {
+                        for (int col = 0; col < size; col++) {
+                            for (int zee = 0; zee < size; zee++) {
+                                int changedAddress = address ^ (1 << row) ^ (1 << col) ^ (1 << zee);
+                                //addressAccountedFor[changedAddress] |= 4;
+                            }
+                        }
+                    }
+                }
+            }
+//            for (int f = 0; f < hadamardishFunctions.length; f++) {
+//                if (Arrays.deepEquals(hadamardishFunctions[f], oneChangeZeros)) {
+//                    addressAccountedFor[address] = 1;
+//                    workingHadamardishFunctions[f] = 1;
+//                    for (int row = 0; row < sizeSquare; row++) {
+//                        for (int col = 0; col < sizeSquare; col++) {
+//                            if (oneChangeZeros[row][col] == 1) addressAccountedFor[address ^ (1 << row)] = 1;
+//                            if (oneChangeZeros[row][col] == 1) addressAccountedFor[address ^ (1 << col)] = 1;
+//                        }
+//                    }
+//                }
+//            }
+//            for (int f = 0; f < addSubMult.length; f++) {
+//                if (Arrays.deepEquals(addSubMult[f], oneChangeZeros)) {
+//                    addressAccountedFor[address] = 1;
+//                    //workingHadamardishFunctions[f] = 1;
+//                    for (int row = 0; row < sizeSquare; row++) {
+//                        for (int col = 0; col < sizeSquare; col++) {
+//                            if (oneChangeZeros[row][col] == 1) addressAccountedFor[address ^ (1 << row)] = 1;
+//                            if (oneChangeZeros[row][col] == 1) addressAccountedFor[address ^ (1 << col)] = 1;
+//                        }
+//                    }
+//                }
+//            }
+//            for (int f = 0; f < hRows.length; f++) {
+//                if (Arrays.deepEquals(hRows[f], oneChangeZeros)) {
+//                    addressAccountedFor[address] = 1;
+//                    //workingHadamardishFunctions[f] = 1;
+//                    for (int row = 0; row < sizeSquare; row++) {
+//                        for (int col = 0; col < sizeSquare; col++) {
+//                            if (oneChangeZeros[row][col] == 1) addressAccountedFor[address ^ (1 << row)] = 1;
+//                            if (oneChangeZeros[row][col] == 1) addressAccountedFor[address ^ (1 << col)] = 1;
+//                        }
+//                    }
+//                }
+//            }
+        }
+        //CustomArray.plusArrayDisplay(oneChangeZeros, true, true, "one change zeros relative truth table");
+        System.out.println(Arrays.toString(workingLogicFunctions));
+        //System.out.println(Arrays.toString(workingHadamardishFunctions));
+        System.out.println("done");
+        int unaccounted = 0;
+        for (int address = 0; address < 65536; address++) {
+            if (addressAccountedFor[address] == 0) {
+                unaccounted++;
+            }
+        }
+        System.out.println("unaccounted: " + unaccounted);
+        int[][] zeros = new int[256][256];
+        for (int address = 0; address < 65536; address++) {
+            if (addressAccountedFor[address] == 0) {
+                //zeros[address / 256][address % 256] = 1;
+            }
+            if (addressAccountedFor[address] < 0) {
+                //zeros[address / 256][address % 256] = 2;
+            }
+            zeros[address / 256][address % 256] = addressAccountedFor[address];
+        }
+        int[][] transposeCheck = new int[256][256];
+        int[] distro = new int[16];
+        for (int row = 0; row < 256; row++) {
+            for (int col = 0; col < 256; col++) {
+                distro[zeros[row][col]]++;
+                if (zeros[row][col] == zeros[col][row]) {
+                    transposeCheck[row][col] = 0;
+                } else {
+                    transposeCheck[row][col] = 1;
+                }
+                //zeros[row][col] ^= zeros[col][row];
+            }
+        }
+        //zeros = PermutationsFactoradic.grayify(zeros);
+        System.out.println("distro: " + Arrays.toString(distro));
+        CustomArray.plusArrayDisplay(zeros, true, true, "zeros");
+        System.out.println("________________________\n\n\n\n\n\n\n");
+        int[][] result = hadamard.matrixMultiply(zeros, zeros);
+        //result = hadamard.matrixMultiply(zeros,result);
+        //result = hadamard.matrixMultiply(zeros,result);
+        //result = hadamard.matrixMultiply(zeros,result);
+        //result = hadamard.matrixMultiply(zeros,result);
+        CustomArray.plusArrayDisplay(result, true, false, "zeros * zeros = result");
+        for (int function = 0; function < logicFunctions.length; function++) {
+
+            //System.out.println("n: " + function + " gate " + (function / 4) + " place " + ((function / 4) % 4) + " posNeg " + ((function/(16*4)) % 2) + " " + (workingLogicFunctions[function]));
+            int gate = function / 4;
+            int place = function % 4;
+            if (workingLogicFunctions[function] != 0) {
+                System.out.println("gate: " + gate + " place: " + place);
+            }
+
+        }
+        for (int function = 0; function < 0; function++) {
+
+            //System.out.println("n: " + function + " gate " + (function / 4) + " place " + ((function / 4) % 4) + " posNeg " + ((function/(16*4)) % 2) + " " + (workingLogicFunctions[function]));
+            int gate = function / 4/16/16;
+            int place = (function/16/16) % 4;
+            if (workingLogicFunctions[function] != 0) {
+                System.out.println("gate: " + gate + " place: " + place);
+            }
+
+        }
+
+        System.out.println("workingECA " + Arrays.toString(workingECA));
+    }
 
     public void checkDoublesRand() {
         generateAbsolutelyEverything(4);
