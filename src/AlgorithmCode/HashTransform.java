@@ -344,7 +344,7 @@ public class HashTransform {
         //CustomArray.plusArrayDisplay(finalOutput, false, false, "finalOutput");
         return outResult;
     }
-
+    int[][][] outResult;
     public int[][] reconstructDepthD(int[][][] input, int depth) {
         int neighborDistance = 1 << (depth - 1);
         neighborDistance = 1;
@@ -374,7 +374,7 @@ public class HashTransform {
         //for each location, based on whether the final tally of the vote was positive or negative
         //output a 0 if positive and 1 if negative, if the vote result is not what the
         //original data is increment the error counter for analysis
-        int[][][] outResult = new int[16][input[0].length][input[0][0].length];
+        outResult = new int[16][input[0].length][input[0][0].length];
         int[][] outCompare = new int[input[0].length][input[0][0].length];
         int totDifferent = 0;
         int[][] finalOutput = new int[input[0].length][input[0][0].length];
@@ -859,15 +859,17 @@ public class HashTransform {
         //Change the RGB 4-bytes broken down into 32 bits into its depth 0 codewords
         bfield = initializeDepthZero(bfield, unpackedList[3])[1];
         for (int t = 0; t < 8; t++) {
-            bFieldSet[t] = initializeDepthZero(bFieldSet[t], unpackedList[t])[1];
-            bFieldSet[8 + t] = initializeDepthMax(bFieldSet[8 + t], unpackedList[t])[1];
+            //bFieldSet[t] = initializeDepthZero(bFieldSet[t], unpackedList[t])[1];
+            //bFieldSet[8 + t] = initializeDepthMax(bFieldSet[8 + t], unpackedList[t])[1];
         }
         //Do the transform
         framesOfHashing = ecaMinTransform(bfield, unpackedList[3], depth);
         int[][][] hashSet = new int[16][inImage.getHeight()][inImage.getWidth()];
         for (int t = 0; t < 8; t++) {
-            hashSet[t] = ecaMinTransform(bFieldSet[t], unpackedList[t], depth)[1];
-            hashSet[8 + t] = ecaMaxTransform(bFieldSet[8 + t], unpackedList[t], depth)[1];
+            //hashSet[t] = ecaMinTransform(bFieldSet[t], unpackedList[t], depth)[1];
+            //hashSet[8 + t] = ecaMaxTransform(bFieldSet[8 + t], unpackedList[t], depth)[1];
+            hashSet[t] = bFieldSet[t];
+            hashSet[8 + t] = bFieldSet[8 + t];
         }
         //Convert the transform back into appropriate bitmap RGB format
         short[][][] rasterized = new short[depth + 1][inImage.getHeight()][inImage.getWidth()];

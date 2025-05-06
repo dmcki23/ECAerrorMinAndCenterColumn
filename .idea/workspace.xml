@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="the zeros with checkDoublesSetsFunctions() accounting for all 65536 addresses, and all zeros within Hamming distance 2 of a logic gate truth table bitmask on the address">
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="HashTranform bitmapTransformCompleteSet() does the transform for every rule in the minMax set and the inverse has a correct rate of 75%">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Addition.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Addition.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/EdgeDetection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/EdgeDetection.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashUtilities.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashUtilities.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
@@ -134,7 +133,9 @@
       <workItem from="1744766280977" duration="28340000" />
       <workItem from="1745105572235" duration="5270000" />
       <workItem from="1745331672965" duration="9943000" />
-      <workItem from="1746130008050" duration="4553000" />
+      <workItem from="1746130008050" duration="6826000" />
+      <workItem from="1746222737027" duration="2508000" />
+      <workItem from="1746277665684" duration="18268000" />
     </task>
     <task id="LOCAL-00001" summary="Have gathered the code from several local projects into this, initial commit">
       <option name="closed" value="true" />
@@ -440,7 +441,15 @@
       <option name="project" value="LOCAL" />
       <updated>1745055438970</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="HashTranform bitmapTransformCompleteSet() does the transform for every rule in the minMax set and the inverse has a correct rate of 75%">
+      <option name="closed" value="true" />
+      <created>1746145825600</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1746145825600</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -475,7 +484,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added some inline algorithm comments" />
     <MESSAGE value="consolidated ecaBestFitHashCollision() versions into errorMinimizationManager()&#10;&#10;renamed many variables with better names, declared some loop variables at a higher scope for performance, added a few parameters for random/exhaustive consolidation and performance" />
     <MESSAGE value="the bulk of the rearranging is done, has NOT been tested at all yet" />
     <MESSAGE value="the minErrorStaging proportions are at least somewhat correct" />
@@ -500,7 +508,8 @@
     <MESSAGE value="HashUtilities every zero accounted for through generateEveryLogicFunction() and checkDoublesSetsFunctions()" />
     <MESSAGE value="worked on bitmapTransform() in HashUtilities&#10;&#10;about to work on sorting out and fine tuning the zeros with checkDoublesSetsFunctions()" />
     <MESSAGE value="the zeros with checkDoublesSetsFunctions() accounting for all 65536 addresses, and all zeros within Hamming distance 2 of a logic gate truth table bitmask on the address" />
-    <option name="LAST_COMMIT_MESSAGE" value="the zeros with checkDoublesSetsFunctions() accounting for all 65536 addresses, and all zeros within Hamming distance 2 of a logic gate truth table bitmask on the address" />
+    <MESSAGE value="HashTranform bitmapTransformCompleteSet() does the transform for every rule in the minMax set and the inverse has a correct rate of 75%" />
+    <option name="LAST_COMMIT_MESSAGE" value="HashTranform bitmapTransformCompleteSet() does the transform for every rule in the minMax set and the inverse has a correct rate of 75%" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -998,6 +998,10 @@ public class HashUtilities {
         int[][][] addSubMult = generateAddSubtractMultiplyFunction(16);
         int[][] both = new int[16][16];
         int[][][] hRows = generateHadamardWaves(16);
+        int[][][] differentOneChangeZeros = new int[65536][sizeSquare][sizeSquare];
+        int[][][] differentBoth = new int[65536][sizeSquare][sizeSquare];
+        int numDiffOneChangeZeros = 0;
+        int numDiffBoth = 0;
         Hadamard hadamard = new Hadamard();
         gateLoop:
         for (int address = 0; address < 65536; address++) {
@@ -1033,6 +1037,26 @@ public class HashUtilities {
                     }
                     //if (firstZero || secondZero) continue;
                 }
+            }
+            boolean alreadyExists = false;
+            for (int index = 0; index < numDiffOneChangeZeros; index++) {
+                if (Arrays.deepEquals(oneChangeZeros,differentOneChangeZeros[index])) {
+                    alreadyExists = true;
+                }
+            }
+            if (!alreadyExists) {
+                differentOneChangeZeros[numDiffOneChangeZeros] = oneChangeZeros;
+                numDiffOneChangeZeros++;
+            }
+            alreadyExists = false;
+            for (int index = 0; index < numDiffBoth; index++) {
+                if (Arrays.deepEquals(both,differentBoth[index])) {
+                    alreadyExists = true;
+                }
+            }
+            if (!alreadyExists) {
+                differentBoth[numDiffBoth] = both;
+                numDiffBoth++;
             }
             for (int function = 0; function < logicFunctions.length; function++) {
                 if (Arrays.deepEquals(oneChangeZeros, logicFunctions[function])) {
@@ -1207,6 +1231,8 @@ public class HashUtilities {
         }
 
         System.out.println("workingECA " + Arrays.toString(workingECA));
+        System.out.println("numDifferentOneChangeZeros: " + numDiffOneChangeZeros);
+        System.out.println("numDifferentBoth: " + numDiffBoth);
     }
 
     public void checkDoublesRand() {
@@ -1333,7 +1359,8 @@ public class HashUtilities {
                 }
             }
             //int[][][] cinverted = hash.reconstructDepthD(chashed, 1);
-            int[][][] inverted = hash.reconstructDepthD(hashed, 1);
+            hash.reconstructDepthD(hashed, 1);
+            int[][][] inverted = hash.outResult;
             int[][] finalized = hash.hashInverseDepth0(inverted, 1, 0);
             //int[][] cfinalized = hash.hashInverseDepth0(cinverted, 1, 0);
             int[][] shifted = new int[size][size];
@@ -1392,7 +1419,8 @@ public class HashUtilities {
                     }
                 }
                 //int[][][] cinverted = hash.reconstructDepthD(chashed, 1);
-                int[][][] inverted = hash.reconstructDepthD(hashed, 1);
+                hash.reconstructDepthD(hashed, 1);
+                int[][][] inverted = hash.outResult;
                 int[][] finalized = hash.hashInverseDepth0(inverted, 1, 0);
                 //int[][] cfinalized = hash.hashInverseDepth0(cinverted, 1, 0);
                 int[][] shifted = new int[size][size];
@@ -1448,7 +1476,8 @@ public class HashUtilities {
                     }
                 }
                 //int[][][] cinverted = hash.reconstructDepthD(chashed, 1);
-                int[][][] inverted = hash.reconstructDepthD(hashed, 1);
+                hash.reconstructDepthD(hashed, 1);
+                int[][][] inverted = hash.outResult;
                 int[][] finalized = hash.hashInverseDepth0(inverted, 1, 0);
                 //int[][] cfinalized = hash.hashInverseDepth0(cinverted, 1, 0);
                 int quantityErrors = 0;

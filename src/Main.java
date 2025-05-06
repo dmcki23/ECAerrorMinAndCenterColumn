@@ -131,7 +131,10 @@ public class Main {
         //hashUtilities.checkDoublesSetsFunctions();
         //edgeDetection.bitmapTransform("OtherRoom");
         //a.testAllLogic();
-        hash.bitmapTransformCompleteSet("OtherRoom.bmp",0);
+        //hash.bitmapTransformCompleteSet("OtherRoom.bmp",0);
+        //hash.bitmapTransformCompleteSet("OtherRoom.bmp",0);
+        //hashUtilities.checkDoublesSetsFunctionsTwo();
+        a.bitmapTransformCompleteSet("OtherRoom.bmp",0);
 
     }
 }
