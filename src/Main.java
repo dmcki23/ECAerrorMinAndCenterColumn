@@ -134,7 +134,7 @@ public class Main {
         //hash.bitmapTransformCompleteSet("OtherRoom.bmp",0);
         //hash.bitmapTransformCompleteSet("OtherRoom.bmp",0);
         //hashUtilities.checkDoublesSetsFunctionsTwo();
-        a.bitmapTransformCompleteSet("OtherRoom.bmp",0);
+        a.bitmapTransformCompleteSetNextMorning("kitchenShrunk.bmp",0);
 
     }
 }

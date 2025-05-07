@@ -8,6 +8,7 @@ import java.awt.image.DataBufferUShort;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * Two hash tiles combined by layering and voting (binary (a,b)->{0,0,1,1}), then rehashing,
@@ -143,10 +144,48 @@ public class Addition {
                         }
                         //store it in the table
                         additionTables[posNeg][t][a][b] = result;
+                        if (posNeg == 1) additionTables[posNeg][t][a][b] = hash.lastMaxCodeword;
                     }
                 }
             }
         }
+        int[][][] attemptedLogicTransform = new int[16][16][4];
+        for (int g = 0; g < 16; g++) {
+            for (int gg = 0; gg < 16; gg++) {
+                Arrays.fill(attemptedLogicTransform[g][gg], -1);
+            }
+        }
+        int[][] distro = new int[16][16];
+        for (int posNeg = 0; posNeg < 2; posNeg++) {
+            for (int t = 0; t < 8; t++) {
+                testGateLoop:
+                for (int g = 0; g < 16; g++) {
+                    for (int a = 0; a < 16; a++) {
+                        for (int b = 0; b < 16; b++) {
+                            for (int power = 0; power < 4; power++) {
+                                int ab = (a >> power) % 2 + 2 *( (b >> power) % 2);
+                                int c = (additionTables[posNeg][t][a][b] >> power) % 2;
+                                if ((g >> ab) % 2 != c) {
+                                    continue testGateLoop;
+                                }
+                            }
+                        }
+                    }
+                    distro[8 * posNeg + t][g]++;
+                }
+            }
+        }
+        for (int posNeg = 0; posNeg < 2; posNeg++) {
+            for (int t = 0; t < 8; t++) {
+                testGateLoop:
+                for (int g = 0; g < 16; g++) {
+                    if (distro[8 * posNeg + t][g] == 1) {
+                        tupleDistro[gate][8 * posNeg + t] = g;
+                    }
+                }
+            }
+        }
+        CustomArray.plusArrayDisplay(distro, false, false, "distro");
         //Display
         for (int posNeg = 0; posNeg < 2; posNeg++) {
             for (int t = 0; t < 8; t++) {
@@ -168,12 +207,12 @@ public class Addition {
         }
         for (int posNeg = 0; posNeg < 2; posNeg++) {
             for (int t = 0; t < 8; t++) {
-                for (int power = 0; power < 1; power++) {
+                for (int power = 0; power < 4; power++) {
                     int[][] display = new int[2][2];
                     for (int row = 0; row < 2; row++) {
                         for (int col = 0; col < 2; col++) {
                             display[row][col] = (additionTables[posNeg][t][row][col] >> power) % 2;
-                            tupleDistro[gate][8 * posNeg + t] += (display[row][col] << (2 * row + col));
+                         //   tupleDistro[gate][8 * posNeg + t] += (display[row][col] << (2 * row + col));
                         }
                     }
                     //CustomArray.plusArrayDisplay(display, false, false, "posNeg: " + posNeg + " t: " + t + " " + power);
@@ -382,7 +421,7 @@ public class Addition {
         //framesOfHashing = hash.ecaMinTransform(bfield, hash.unpackedList[3], depth);
         int[][][] hashSet = new int[16][inImage.getHeight()][inImage.getWidth()];
         depth = 3;
-        int gate = 6;
+        int gate = 8;
         for (int t = 0; t < 8; t++) {
             System.out.println("t: " + t);
             hashSet[t] = hash.ecaMinTransform(bFieldSet[t], hash.unpackedList[t], depth)[depth];
@@ -398,10 +437,10 @@ public class Addition {
             System.out.println("t: " + t);
             for (int row = 0; row < modifiedSet[0].length; row++) {
                 for (int column = 0; column < modifiedSet[0][0].length; column++) {
-                    modifiedSet[t][row][column] = bFieldSet[t][row][column] + 2*modification[row][column];
-                    modifiedSet[8 + t][row][column] = bFieldSet[8 + t][row][column] +2* modification[row][column];
-                    modifiedSet[t][row][column] = (gate>>modifiedSet[t][row][column]) % 2;
-                    modifiedSet[8 + t][row][column] = (gate>>modifiedSet[8 + t][row][column]) % 2;
+                    modifiedSet[t][row][column] = bFieldSet[t][row][column] + 2 * modification[row][column];
+                    modifiedSet[8 + t][row][column] = bFieldSet[8 + t][row][column] + 2 * modification[row][column];
+                    modifiedSet[t][row][column] = (gate >> modifiedSet[t][row][column]) % 2;
+                    modifiedSet[8 + t][row][column] = (gate >> modifiedSet[8 + t][row][column]) % 2;
                 }
             }
             modificationTransformed[t] = hash.ecaMinTransform(modification, hash.unpackedList[t], depth)[depth];
@@ -411,25 +450,22 @@ public class Addition {
             for (int row = 0; row < modifiedSet[0].length; row++) {
                 for (int column = 0; column < modifiedSet[0][0].length; column++) {
                     int tot = 0;
-                    for (int power = 0; power < 4; power++){
-                        int ab = ((hashSet[t][row][column]>>power)%2)+2*((modificationTransformed[t][row][column]>>power)%2);
-                        ab = (logicTransform[gate][t]>>ab)%2;
-                        tot += (1<<power)*ab;
-
+                    for (int power = 0; power < 4; power++) {
+                        int ab = ((hashSet[t][row][column] >> power) % 2) + 2 * ((modificationTransformed[t][row][column] >> power) % 2);
+                        ab = (logicTransform[gate][t] >> ab) % 2;
+                        tot += (1 << power) * ab;
                     }
                     internallyModifiedSet[t][row][column] = tot;
-
                     tot = 0;
-                    for (int power = 0; power < 4; power++){
-                        int ab = ((hashSet[8 + t][row][column]>>power)%2)+2*((modificationTransformed[8 + t][row][column]>>power)%2);
-                        ab = (logicTransform[gate][8 + t]>>ab)%2;
-                        tot += (1<<power)*ab;
+                    for (int power = 0; power < 4; power++) {
+                        int ab = ((hashSet[8 + t][row][column] >> power) % 2) + 2 * ((modificationTransformed[8 + t][row][column] >> power) % 2);
+                        ab = (logicTransform[gate][8 + t] >> ab) % 2;
+                        tot += (1 << power) * ab;
                     }
                     internallyModifiedSet[8 + t][row][column] = tot;
                 }
             }
         }
-
         int[] numDifferent = new int[16];
         for (int t = 0; t < 8; t++) {
             for (int row = 0; row < modifiedSet[0].length; row++) {
@@ -440,175 +476,139 @@ public class Addition {
             }
         }
         System.out.println("numDifferent: " + Arrays.toString(numDifferent));
-        //Convert the transform back into appropriate bitmap RGB format
-//        short[][][] rasterized = new short[depth + 1][inImage.getHeight()][inImage.getWidth()];
-//        for (int d = 0; d <= depth; d++) {
-//            for (int row = 0; row < inImage.getHeight(); row++) {
-//                for (int column = 0; column < inImage.getWidth(); column++) {
-//                    for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
-//                        for (int power = 0; power < 8; power++) {
-//                            rasterized[d][row][column] += (1 << (8 * rgbbyte + power)) * framesOfHashing[d][row][16 * column + 8 * rgbbyte + power];
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        short[][][] rasterizedSet = new short[16][inImage.getHeight()][inImage.getWidth()];
-//        for (int t = 0; t < 8; t++) {
-//            for (int row = 0; row < inImage.getHeight(); row++) {
-//                for (int column = 0; column < inImage.getWidth(); column++) {
-//                    for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
-//                        for (int power = 0; power < 8; power++) {
-//                            rasterizedSet[t][row][column] += (1 << (8 * rgbbyte + power)) * hashSet[t][row][16 * column + 8 * rgbbyte + power];
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        //
-//        //
-//        //
-//        //
-//        //
-//        //
-//        //
-//        //
-//        //
-//        //This does the GIF file
-//        BufferedImage[] images = new BufferedImage[rasterized.length];
-//        int[][] imagesRasters = new int[depth + 1][inImage.getHeight() * inImage.getWidth()];
-//        ImageWriter gifWriter = ImageIO.getImageWritersByFormatName("gif").next();
-//        ImageOutputStream outputStream = ImageIO.createImageOutputStream(new File("src/ImagesProcessed/" + filepath + "gif.gif"));
-//        gifWriter.setOutput(outputStream);
-//        short[] outRaster = new short[inImage.getHeight() * inImage.getWidth()];
-//        gifWriter.prepareWriteSequence(null);
-//        BufferedImage outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_USHORT_565_RGB);
-//        for (int repeat = 0; repeat < 1; repeat++) {
-//            for (int d = 0; d <= depth; d++) {
-//                File outFile = new File("src/ImagesProcessed/GifOutput/" + filepath + "iteration" + d + ".bmp");
-//                outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_USHORT_565_RGB);
-//                outRaster = ((DataBufferUShort) outImage.getRaster().getDataBuffer()).getData();
-//                for (int index = 0; index < outRaster.length; index++) {
-//                    outRaster[index] = rasterized[d][index / inImage.getWidth()][index % inImage.getWidth()];
-//                }
-//                ImageIO.write(outImage, "bmp", outFile);
-//                IIOImage image = new IIOImage(outImage, null, null);
-//                gifWriter.writeToSequence(image, null);
-//            }
-//        }
-//        gifWriter.endWriteSequence();
-//        System.out.println("depth: " + depth);
-//        System.out.println("done with gif");
-//        //
-//        //
-//        //
-//        //
-//        //
-//        //
-//        //
-//        //
-//        //
-//        //
-//        //
-//        //
-//        BufferedImage inverse = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_USHORT_565_RGB);
-//        int[][][] undoInput = new int[16][inImage.getHeight()][inImage.getWidth()];
+    }
+    /**
+     * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
+     *
+     * @throws IOException
+     */
+    public void bitmapTransformCompleteSetNextMorning(String filepath, int dummy) throws IOException {
+        //String filepath = "kitchenAlteredRGB.bmp";
+        HashTransform hash = new HashTransform();
+        File file = new File(filepath);
+        filepath = filepath.substring(0, filepath.length() - 4);
+        BufferedImage inImage = ImageIO.read(file);
+        short[] inRaster = ((DataBufferUShort) inImage.getRaster().getDataBuffer()).getData();
+        int size = inImage.getWidth();
+        int depth = (int) (Math.log(inImage.getWidth() * inImage.getWidth()) / Math.log(2));
+        depth = 1;
+        int[][][] framesOfHashing = new int[depth][inImage.getHeight()][inImage.getWidth() * 8];
+        int[][] field = new int[inImage.getHeight()][inImage.getWidth() * 8];
+        int[][] bfield = new int[inImage.getHeight()][inImage.getWidth() * 16];
+        System.out.println("inRaster: " + inRaster.length);
+        System.out.println("imImage.getHeight(): " + inImage.getHeight());
+        System.out.println("imImage.getWidth(): " + inImage.getWidth());
+        System.out.println("inRaster.length/inImage.getHeight(): " + inRaster.length / inImage.getHeight());
+        System.out.println("inRaster.length/inImage.getWidth(): " + inRaster.length / inImage.getWidth());
+        System.out.println("inRaster.length/inImage.getHeight()/inImage.getWidth(): " + inRaster.length / inImage.getHeight() / inImage.getWidth());
+        //Transforms the image into its appropriate local algorithm format
 //        for (int row = 0; row < inImage.getHeight(); row++) {
 //            for (int column = 0; column < inImage.getWidth(); column++) {
-//                undoInput[3][row][column] = bfield[row][column];
-//            }
-//        }
-//        System.out.println("undoInput[3].length: " + undoInput[0].length + " " + undoInput[1][0].length);
-//        int[][] undoSet = hash.reconstructDepthD(hashSet,1);
-//        for (int t = 0; t < 8; t++) {
-//            //undoSet[t] = initializeDepthZero(bFieldSet[t], unpackedList[t])[1];
-//
-//        }
-//        int[][] undo = hash.hashInverseDepth0(bFieldSet, 1, 3);
-//        short[][] undoRasterized = new short[inverse.getHeight()][inverse.getWidth()];
-//        short[][] undoRasterizedSet = new short[inverse.getHeight()][inverse.getWidth()];
-//        System.out.println("inverse.getHeight(): " + inverse.getHeight() + " inverse.getWidth(): " + inverse.getWidth());
-//        System.out.println(undo.length + " " + undo[0].length);
-//        System.out.println(undoRasterized.length + " " + undoRasterized[0].length);
-//        for (int d = 0; d <= 0; d++) {
-//            for (int row = 0; row < inverse.getHeight(); row++) {
-//                for (int column = 0; column < inverse.getWidth(); column++) {
-//                    for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
-//                        for (int power = 0; power < 8; power++) {
-//                            undoRasterized[row][column] += undo[row][column * 16 + 8 * rgbbyte + power] << (8 * rgbbyte + power);
-//                            undoRasterizedSet[row][column] += undoSet[row][column * 16 + 8 * rgbbyte + power] << (8 * rgbbyte + power);
+//                for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
+//                    for (int lr = 0; lr < 2; lr++) {
+//                        int rasterCoordX = row * inImage.getWidth() + column;
+//                        field[row][8 * column + 2 * rgbbyte + lr] = (int) Math.abs((inRaster[rasterCoordX] >> (4 * rgbbyte + 2 * lr)) % 16);
+//                        for (int power = 0; power < 4; power++) {
+//                            bfield[row][32 * column + 8 * rgbbyte + 4 * lr + power] = (field[row][8 * column + 2 * rgbbyte + lr] >> power) % 2;
 //                        }
 //                    }
 //                }
 //            }
 //        }
-//
-//        short[] inverseImageRaster = ((DataBufferUShort) inverse.getRaster().getDataBuffer()).getData();
-//        short[] inverseImageRasterSet = new short[inverse.getHeight() * inverse.getWidth()];
-//        for (int row = 0; row < inverse.getHeight(); row++) {
-//            for (int column = 0; column < inverse.getWidth(); column++) {
-//                //if (row == 655 || column == 655) { System.out.println("row: " + row + ", column: " + column); }
-//                inverseImageRaster[row * inImage.getWidth() + column] = (short) (undoRasterized[row][column] ^ inRaster[row * inImage.getWidth() + column]);
-//                inverseImageRasterSet[row * inImage.getWidth() + column] = (short) (undoRasterizedSet[row][column] ^ inRaster[inImage.getWidth() * row + column]);
-//            }
-//        }
-//
-//        File inverseFile = new File("src/ImagesProcessed/" + filepath + "inverse.bmp");
-//        ImageIO.write(inverse, "bmp", inverseFile);
-//        //
-//        //
-//        //
-//        //
-//        //
-//        //
-//        //
-//        //
-//        //
-//        //
-//        inverse = new BufferedImage(inverse.getWidth(), inverse.getHeight(), BufferedImage.TYPE_USHORT_565_RGB);
-//        inverseImageRaster = ((DataBufferUShort) inverse.getRaster().getDataBuffer()).getData();
-//        undo = hash.reconstructDepthD(framesOfHashing[1], 1, 3);
-//        undoRasterized = new short[inverse.getHeight()][inverse.getWidth()];
-//        for (int d = 0; d <= 0; d++) {
-//            for (int row = 0; row < inverse.getHeight(); row++) {
-//                for (int column = 0; column < inverse.getWidth(); column++) {
-//                    for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
-//                        for (int power = 0; power < 8; power++) {
-//                            undoRasterized[row][column] += undo[row][column * 16 + 8 * rgbbyte + power] << (8 * rgbbyte + power);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        for (int row = 0; row < inverse.getHeight(); row++) {
-//            for (int column = 0; column < inverse.getWidth(); column++) {
-//                //if (row == 655 || column == 655) { System.out.println("row: " + row + ", column: " + column); }
-//                inverseImageRaster[row * inImage.getWidth() + column] = (short) (undoRasterized[row][column] ^ inRaster[inImage.getWidth() * row + column]);
-//            }
-//        }
-//        File inverseDepth1 = new File("src/ImagesProcessed/" + filepath + "inverseDepth1.bmp");
-//        ImageIO.write(inverse, "bmp", inverseDepth1);
-//        int numDifferent = 0;
-//        for (int row = 0; row < inRaster.length; row++) {
-//            long a = inverseImageRasterSet[row] ^ inRaster[row];
-//            a = (long) Math.abs(a);
-//            for (int power = 0; power < 16; power++) {
-//                if (((a >> power)) % 2 == 1) {
-//                    numDifferent++;
-//                }
-//            }
-//        }
-//        System.out.println("numDifferent: " + numDifferent);
-//        long tot = inRaster.length * 16;
-//        double rate = (double) numDifferent / tot;
-//        System.out.println("rate: " + rate);
+        int[][][] bFieldSet = new int[16][bfield.length][bfield[0].length];
+        for (int row = 0; row < inImage.getHeight(); row++) {
+            for (int column = 0; column < inImage.getWidth(); column++) {
+                for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
+                    for (int power = 0; power < 8; power++) {
+                        bfield[row][16 * column + 8 * rgbbyte + power] = (int) Math.abs((inRaster[row * inImage.getWidth() + column] >> (8 * rgbbyte + power)) % 2);
+                        for (int posNegt = 0; posNegt < 16; posNegt++) {
+                            bFieldSet[posNegt][row][16 * column + 8 * rgbbyte + power] = bfield[row][16 * column + 8 * rgbbyte + power];
+                        }
+                    }
+                }
+            }
+        }
+        //Initialize the minMax codeword truth table set
+        hash.initWolframs();
+        testAllLogic();
+        //hashUtilities.readFromFile();
+        //Change the RGB 4-bytes broken down into 32 bits into its depth 0 codewords
+        //bfield = hash.initializeDepthZero(bfield, hash.unpackedList[3])[1];
+        for (int t = 0; t < 8; t++) {
+            //bFieldSet[t] = initializeDepthZero(bFieldSet[t], unpackedList[t])[1];
+            //bFieldSet[8 + t] = initializeDepthMax(bFieldSet[8 + t], unpackedList[t])[1];
+        }
+        //Do the transform
+        //framesOfHashing = hash.ecaMinTransform(bfield, hash.unpackedList[3], depth);
+        int[][][] hashSet = new int[16][inImage.getHeight()][inImage.getWidth()];
+        depth = 3;
+        int gate = 14;
+        for (int t = 0; t < 8; t++) {
+            System.out.println("t: " + t);
+            hashSet[t] = hash.ecaMinTransform(bFieldSet[t], hash.unpackedList[t], depth)[depth];
+            hashSet[8 + t] = hash.ecaMaxTransform(bFieldSet[8 + t], hash.unpackedList[t], depth)[depth];
+            //hashSet[t] = bFieldSet[t];
+            //hashSet[8 + t] = bFieldSet[8 + t];
+        }
+        int[][] modification = generateOperation(hashSet[0].length, hashSet[0][0].length);
+        int[][][] modificationTransformed = new int[16][hashSet[0].length][hashSet[0][0].length];
+        int[][][] modifiedSet = new int[16][hashSet[0].length][hashSet[0][0].length];
+        int[][][] internallyModifiedSet = new int[16][hashSet[0].length][hashSet[0][0].length];
+        for (int t = 0; t < 8; t++) {
+            System.out.println("t: " + t);
+            for (int row = 0; row < modifiedSet[0].length; row++) {
+                for (int column = 0; column < modifiedSet[0][0].length; column++) {
+                    modifiedSet[t][row][column] = bFieldSet[t][row][column] + 2 * modification[row][column];
+                    modifiedSet[8 + t][row][column] = bFieldSet[8 + t][row][column] + 2 * modification[row][column];
+                    modifiedSet[t][row][column] = (gate >> modifiedSet[t][row][column]) % 2;
+                    modifiedSet[8 + t][row][column] = (gate >> modifiedSet[8 + t][row][column]) % 2;
+                }
+            }
+            modificationTransformed[t] = hash.ecaMinTransform(modification, hash.unpackedList[t], depth)[depth];
+            modificationTransformed[8 + t] = hash.ecaMaxTransform(modification, hash.unpackedList[t], depth)[depth];
+            modifiedSet[t] = hash.ecaMinTransform(modifiedSet[t], hash.unpackedList[t], depth)[depth];
+            modifiedSet[8 + t] = hash.ecaMaxTransform(modifiedSet[8 + t], hash.unpackedList[t], depth)[depth];
+            for (int row = 0; row < modifiedSet[0].length; row++) {
+                for (int column = 0; column < modifiedSet[0][0].length; column++) {
+                    int tot = 0;
+                    for (int power = 0; power < 4; power++) {
+                        int ab = ((hashSet[t][row][column] >> power) % 2) + 2 * ((modificationTransformed[t][row][column] >> power) % 2);
+                        ab = (logicTransform[gate][t] >> ab) % 2;
+                        tot += (1 << power) * ab;
+                    }
+                    internallyModifiedSet[t][row][column] = tot;
+                    tot = 0;
+                    for (int power = 0; power < 4; power++) {
+                        int ab = ((hashSet[8 + t][row][column] >> power) % 2) + 2 * ((modificationTransformed[8 + t][row][column] >> power) % 2);
+                        ab = (logicTransform[15-gate][8 + t] >> ab) % 2;
+                        tot += (1 << power) * ab;
+                    }
+                    internallyModifiedSet[8 + t][row][column] = tot;
+                }
+            }
+        }
+        int[] numDifferent = new int[16];
+        for (int t = 0; t < 8; t++) {
+            for (int row = 0; row < modifiedSet[0].length; row++) {
+                for (int column = 0; column < modifiedSet[0][0].length; column++) {
+                    for (int power = 0; power < 16; power++) {
+                        numDifferent[t] += (((modifiedSet[t][row][column]>>power)%2) ^ ((internallyModifiedSet[t][row][column]>>power)%2));
+                        numDifferent[8 + t] += (((modifiedSet[8 + t][row][column]>>power)%2) ^ ((internallyModifiedSet[8 + t][row][column]>>power)%2));
+                    }
+                }
+            }
+        }
+        System.out.println("numDifferent: " + Arrays.toString(numDifferent));
+        System.out.println("numBits: " + (inImage.getHeight()*inImage.getWidth())*16);
     }
 
     public int[][] generateOperation(int rows, int cols) {
         int[][] out = new int[rows][cols];
+        Random rand = new Random();
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 out[row][col] = (row ^ col) % 2;
+                out[row][col] = rand.nextInt(0, 2);
             }
         }
         return out;
