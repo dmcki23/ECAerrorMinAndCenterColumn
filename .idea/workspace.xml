@@ -4,14 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="pushing for backup">
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="HashTransform bitmapTransformCompleteSet() is doing the inverses for any depth with 0 error">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Addition.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Addition.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -141,7 +136,7 @@
       <workItem from="1746572207531" duration="1039000" />
       <workItem from="1746576023160" duration="6691000" />
       <workItem from="1746711325241" duration="2110000" />
-      <workItem from="1746739214453" duration="16364000" />
+      <workItem from="1746739214453" duration="21914000" />
     </task>
     <task id="LOCAL-00001" summary="Have gathered the code from several local projects into this, initial commit">
       <option name="closed" value="true" />
@@ -471,7 +466,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746627968927</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="HashTransform bitmapTransformCompleteSet() is doing the inverses for any depth with 0 error">
+      <option name="closed" value="true" />
+      <created>1746842819479</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1746842819479</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -506,7 +509,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="the minErrorStaging proportions are at least somewhat correct" />
     <MESSAGE value="made the error heat map arrays square and added the double min/max error rate numbers" />
     <MESSAGE value="next up is to add checkAllColumns() to minErrorStaging.java" />
     <MESSAGE value="worked on ECAhashPaper.tex, worked on checkAllColumns() but not tested" />
@@ -531,7 +533,8 @@
     <MESSAGE value="HashTranform bitmapTransformCompleteSet() does the transform for every rule in the minMax set and the inverse has a correct rate of 75%" />
     <MESSAGE value="Addition bitmapTransformCompleteSet is working. I think? I had also added a field to HashTransform because of the difference between binary and hexadecimal array inputs" />
     <MESSAGE value="pushing for backup" />
-    <option name="LAST_COMMIT_MESSAGE" value="pushing for backup" />
+    <MESSAGE value="HashTransform bitmapTransformCompleteSet() is doing the inverses for any depth with 0 error" />
+    <option name="LAST_COMMIT_MESSAGE" value="HashTransform bitmapTransformCompleteSet() is doing the inverses for any depth with 0 error" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

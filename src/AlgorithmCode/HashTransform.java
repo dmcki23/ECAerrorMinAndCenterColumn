@@ -11,6 +11,8 @@ import java.awt.image.DataBufferInt;
 import java.awt.image.DataBufferUShort;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Random;
 
 /**
  *
@@ -817,7 +819,7 @@ public class HashTransform {
         short[] inRaster = ((DataBufferUShort) inImage.getRaster().getDataBuffer()).getData();
         int size = inImage.getWidth();
         int depth = (int) (Math.log(inImage.getWidth() * inImage.getWidth()) / Math.log(2));
-        depth = 24;
+        depth = 7;
         int[][][] framesOfHashing = new int[depth][inImage.getHeight()][inImage.getWidth() * 8];
         int[][] field = new int[inImage.getHeight()][inImage.getWidth() * 8];
         int[][] bfield = new int[inImage.getHeight()][inImage.getWidth() * 16];
@@ -867,16 +869,64 @@ public class HashTransform {
         framesOfHashing = ecaMinTransform(bfield, unpackedList[3], depth);
         int[][][] hashSet = new int[16][inImage.getHeight()][inImage.getWidth()];
         int[][][][] hashed = new int[16][10][inImage.getHeight()][inImage.getWidth()];
+        int[][][] abHashSet = new int[16][inImage.getHeight()][inImage.getWidth()];
+        int[][][][] abHashed = new int[16][10][inImage.getHeight()][inImage.getWidth()];
+        Random rand = new Random();
+        int randCol = rand.nextInt(0,bFieldSet[0][0].length);
+        int randRow = rand.nextInt(0,bFieldSet[0].length);
+        int[][][] abbFieldSet = new int[16][bFieldSet[0].length][bFieldSet[0][0].length];
+        int randNext = rand.nextInt(0,16);
+        int numChanges = 8;
+        for (int t = 0; t < 8; t++) {
+            for (int row = 0; row < bFieldSet[0].length; row++) {
+                for (int column = 0; column < bFieldSet[0][0].length; column++) {
+                    abbFieldSet[t][row][column] = bFieldSet[t][row][column];
+                    abbFieldSet[t+8][row][column] = bFieldSet[t+8][row][column];
+                }
+            }
+
+            //abbFieldSet[t][randRow][randCol] = (15-abbFieldSet[t][randRow][randCol]);
+            //abbFieldSet[t+8][randRow][randCol] = (15-abbFieldSet[t+8][randRow][randCol]);
+            //abbFieldSet[t][randRow][randCol] = randNext;
+            //abbFieldSet[t+8][randRow][randCol] = randNext;
+
+        }
+        for (int change = 0; change < numChanges; change++) {
+            randCol = rand.nextInt(0,bFieldSet[0][0].length);
+            randRow = rand.nextInt(0,bFieldSet[0].length);
+            randNext = rand.nextInt(0,16);
+            for (int t = 0; t < 8; t++) {
+                abbFieldSet[t][randRow][randCol] = randNext;
+                abbFieldSet[t+8][randRow][randCol] = randNext;
+            }
+        }
+        int[] avalancheDifferences = new int[16];
+        System.out.println("depth: " + depth);
         for (int t = 0; t < 8; t++) {
             //hashSet[t] = ecaMinTransform(bFieldSet[t], unpackedList[t], depth)[1];
             //hashSet[8 + t] = ecaMaxTransform(bFieldSet[8 + t], unpackedList[t], depth)[1];
             hashSet[t] = bFieldSet[t];
             hashSet[8 + t] = bFieldSet[8 + t];
+            abHashSet[t] = abbFieldSet[t];
+            abHashSet[8 + t] = abbFieldSet[8 + t];
             hashSet[t] = ecaMinTransform(hashSet[t], unpackedList[t], depth)[depth];
             hashed[t] = ecaMinTransform(hashSet[t], unpackedList[t], depth);
             hashSet[8 + t] = ecaMaxTransform(hashSet[8 + t], unpackedList[t], depth)[depth];
             hashed[t + 8] = ecaMaxTransform(hashSet[8 + t], unpackedList[t], depth);
+            abHashed[t] = ecaMinTransform(abbFieldSet[t], unpackedList[t], depth);
+            abHashed[8 + t] = ecaMaxTransform(abbFieldSet[8 + t], unpackedList[t], depth);
+            for (int row = 0; row < inImage.getHeight(); row++) {
+                for (int column = 0; column < inImage.getWidth(); column++) {
+
+                    for (int bit = 0; bit < 16; bit++){
+                        avalancheDifferences[t] += (((hashed[t][depth][row][column]>>bit)%2)^((abHashed[t][depth][row][column]>>bit)%2));
+                        avalancheDifferences[8+t] += (((hashed[8+t][depth][row][column]>>bit)%2)^((abHashed[8+t][depth][row][column]>>bit)%2));
+
+                    }
+                }
+            }
         }
+        System.out.println("avalancheDifferences: " + Arrays.toString(avalancheDifferences));
         //Convert the transform back into appropriate bitmap RGB format
         short[][][] rasterized = new short[depth + 1][inImage.getHeight()][inImage.getWidth()];
         for (int d = 0; d <= depth; d++) {
@@ -997,6 +1047,30 @@ public class HashTransform {
                     //total += recon[row][column] ^ hashed[t+8][depth-1][row][column];
                     for (int power = 0; power < 4; power++) {
                         total += ((recon[row][column] >> power) % 2) ^ ((hashed[t+8][depth-1][row][column] >> power) % 2);
+                    }
+                }
+            }
+            System.out.println("total: " + total);
+        }
+        for (int t = 0; t <  0; t++){
+            int total = 0;
+            int[][] recon = reconstructDepthD(hashed[t][depth],depth,t);
+            for (int row = 0; row < recon.length; row++) {
+                for (int column = 0; column < recon[0].length; column++) {
+                    //total += recon[row][column] ^ hashed[t][depth-1][row][column];
+                    for (int power = 0; power < 4; power++) {
+                        total += ((recon[row][column] >> power) % 2) ^ ((abHashed[t][depth-1][row][column] >> power) % 2);
+                    }
+                }
+            }
+            System.out.println("total: " + total);
+            total = 0;
+            recon = reconstructDepthD(hashed[t+8][depth],depth,t+8);
+            for (int row = 0; row < recon.length; row++) {
+                for (int column = 0; column < recon[0].length; column++) {
+                    //total += recon[row][column] ^ hashed[t+8][depth-1][row][column];
+                    for (int power = 0; power < 4; power++) {
+                        total += ((recon[row][column] >> power) % 2) ^ ((abHashed[t+8][depth-1][row][column] >> power) % 2);
                     }
                 }
             }
