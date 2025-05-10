@@ -9,8 +9,8 @@
 \usepackage{url}
 
 
-\title{Elementary Cellular Automata as an Error Minimization Cryptographic Hash}
-\date{November 2024}
+\title{Elementary Cellular Automata as Non-Cryptographic Hash Functions}
+\date{May 2025}
 \author{Daniel McKinley}
 
 % Document
@@ -20,10 +20,10 @@
 
 \section{Introduction}
 
-Elementary cellular automata (ECA) are 8 bit extensions of 4 bit logic gate truth tables, done linearly in parallel. \cite{Wolfram}
-Here a subset of 8 of the 256 ECA rules are explored as a hash function and edge detection algorithm in image processing. It utilizes an error-minimization function on 4x4 binary grids. The loops parallel the structure of the Fast Fourier Transform (FFT) and Fast Walsh-Hadamard Transform and the Hadamard matrix shows up as an addition operation. If a Fourier transform breaks a function into sums of proportions of symmetric roots of unity, this hash function breaks a function into a unique set of 4x4 cells of wrapped ECA output with an inverse. The algorithm has applications in image databases and as an edge detection algorithm. General algorithm outline, specific ECA rules, and aggregate properties are discussed. It is implemented in Java at \cite{mygit} along with more images and gifs at the website. \\
-\section{Main Algorithm}
+Elementary cellular automata (ECA) are 8 bit truth tables (Wolfram codes) done linearly in parallel. \cite{Wolfram}
+Here a subset of 8 of the 256 ECA rules are explored as a non-cryptographic hash function using a lossy compression error-minimization function. The hash's key properties are that the codewords are unique and evenly distributed, has an inverse, and that hashed data can be operated on without inversion and without the original data.  The loops parallel the nested $2^n$ structure of the Fast Fourier Transform (FFT) and Fast Walsh-Hadamard Transform and the Hadamard parity of a codeword can be substituted in the inversion process. General algorithm outline, specific ECA rules, and aggregate properties are discussed. It is implemented in Java at \cite{mygit} and applied to bitmap images along with more images and gifs at the website.\\
 
+\section{Main Algorithm}
 \begin{center}
 \includegraphics{testScreenshot}\\
 Original Image\\
@@ -31,60 +31,51 @@ Original Image\\
 Frame 3\\
 \includegraphics{processedDepth6}\\
 Frame 6\\
-\end{center}
-
-\begin{center}
 There are $2^{16}=65536$ binary 4x4 arrays\\
  Where there are $2^4$ possible $row_0$ neighborhoods for a given ECA rule\\
- Each of these 16 input-ECAoutput arrays are scored by\\
+ Each of these 16 input-ECAoutput arrays are scored for errors by\\
 \[  \sum_{r=0}^{3} \sum_{c=0}^{3} 2^r ( compressionAttempt_{r c} \oplus original_{r c}) \]\\
- The value of the neighborhoods of the minimum and maximum of these 16 sums are noted as the codeword pair of the original binary matrix  \\
-\end{center}
-The algorithm first creates a truth table for the lossy compression of square binary matrix using 1D ECA. For all $2^{16}=65536$ possibilities of a 4x4 binary array, wrap the columns so that the grid is cylindrical, use row 0 as the input neighborhood, of which there are $2^4=16$ possible. The remaining three rows for all 16 possible row 0 values is the ECA output on the cylinder. For the input row and three output rows, score the XOR difference between it and its binary 4x4 input. The errorScore for a codeword is the weighted sum of discrepancies between this codeword-produced output and the original 4x4 matrix Input[][], where the weight is a coefficient of $2^{row}$. The lowest and highest scoring neighborhoods out of the 16 calculated are then two hexadecimal codewords for the binary input neighborhood of size 4x4. All 65536 possible binary 4x4 matrices get a minimum and a maximum codeword.\\
-\begin{center}
+ The minimizing and maximizing values of all possible inputs\\
+ are noted as the codeword pair of the original binary matrix\\
 \includegraphics{inputGrid}\\
 \includegraphics{ecaGrid}\\
 \includegraphics{errorGrid}\\
 \end{center}
+The hash algorithm is a kind of lossy compression that operates on 4x4 wrapped cells of binary input data. Within each cell, row 0 is the input neighborhood and the ECA rule's output is calculated for rows 1,2 and 3. All 16 possible row 0 inputs are calculated and then scored where each bitwise discrepancy between the codeword's output and the input is summed with a weight of $2^row$. The input neighborhoods that minimize and maximize the error score are noted as the codeword pair for that 4x4 input and each codeword is 4 bits. Doing this procedure for all  $2^{16}=65536$ possible 4x4 input neighborhoods produces a truth table for a particular ECA rule.\\
 
-
-\begin{center}
-(row,column)..((row+4),(column+4))
-\end{center}
-For every (row,column) location in input, $(row,column)..((row+2^d),(column+2^d))$ is that value's neighborhood's 4x4 square influence where d is depth of iteration. Every location is part of 16 neighborhoods. Transform the input so that each location is the minimizing and maximizing codewords of overlapping neighborhoods of the ECA rule subset described later.  Depths of iteration are the same process with the 4x4 neighborhoods' constituent rows and columns spaced out $2^{depth-1}$ instead of $2^{0}$. Depth 1 is next door neighboring codewords, depth 2 is two spaces away, depth 3 is 4 away. This comparing of neighbors of powers of 2 is the same arrow chart as the FFT and Fast Walsh Transform, except with reminimizations instead of sums and/or products at every level of recursion. These exponential neighborhood expansions guarantee the avalanche property in $log_2(size)$ time. For any given input there is only one possible set of codewords that describe it.\\
+Having produced a truth table as above for a given ECA rule, it is applied to a bitmap image as follows. For every (wrapped) (row,column) location in the input, the 4x4 local cell is the hexadecimal of that location and its right, down, and diagonal right-down neighbors $2^d$ away, $(row,column)..((row+2^d),(column+2^d))$  where d is depth of iteration. The value is replace with the respective minimizing or maximizing codewords. This comparing of neighbors of powers of 2 distance away is the same flow chart as the FFT and Fast Walsh Transform with reminimizations instead of sums and/or products at every level of recursion. These exponential neighborhood expansions guarantee the avalanche property in $log_2(size)$ time. Using the subset of ECA rules described below, there is only one set of codewords that describe it.\\
 \begin{center}
 Below is a Fast Walsh-AlgorithmCode.Hadamard Example \cite{enwiki:1261916659}\\
 \includegraphics{FastWalshHadamard}\\
-If you did the above with the powers of 2 in reverse order you would get this. Below is one axis of this algorithm, and instead of a sum term it's a sum term that gets reminimized. Find the codewords of the codewords, twice as far apart each time.\\
+If you did the above with the powers of 2 in reverse order you would get this. \\
+One axis of this algorithm, and instead of a sum term it's a rehash.\\ 
+Find the codewords of the codewords, twice as far apart each time.\\
 \includegraphics{AlgoStruct}\\
 \end{center}
 
-This transformation has two inverses, one is a lossy conversion from codewords back to output format and the other is an inverse of an iteration which is perfectly invertible. A single rule of the positive 8-tuple of the below is lossy, with an error rate of 3/8. In a rectangular bitmap, the overlapping codeword 4x4 neighbors that influence it, for all 8 of the rules in the subset as well as the 8 max codewords together make a weighted vote on the inverse of the algorithm. Each codeword in the array produces a 4x4 ECA output that is its best guess about the information given to it. Each cell's 4x4 output overlaps with 4 of its neighbors. Each cell of each cell's output is weighted by its relative row and added to its location's tally of votes. At the end if the sum of the votes is positive then it becomes 0, if it is negative it becomes 1. If the inversion is back to output format the votes tally to a single value per location and for an iterational inversion the tallies are made in layers by place value. For a given inversion there is only one possible output.\\
+This transformation has two versions of the inverse, one is a lossy conversion from codewords back to output format and the other is an inverse of a hash iteration which is perfectly invertible. The conversion back to original output format does not generally apply when using more than a few iterations of the hash but may be useful in other application such as signal processing or edge detection. A single rule of the positive 8-tuple of the below is lossy, with an error rate of 3/8, however if the input is hashed as a set with every rule in the tuple, a voting process produces the inverse and the loss rate becomes 1-2\%. With a rectangular bitmap, the overlapping codewords for all 8 of the rules in the subset as well as the 8 max codewords together make a weighted vote on the inverse of the algorithm. Each codeword in the array produces a 4x4 ECA output that is its best guess about the information given to it. The cell's output is weighted by its relative row and added to its location's tally of votes. At the end if the sum of the weighted votes is positive then it becomes 0, if it is negative it becomes 1. \\
 
 This algorithm both minimizes the errorScore in a lossy compression, and maximize the errorScore. There are dual min-max versions of most variables in the implementation. \\
 
 \section{A subset of the 0-255 ECA}
 
-There are 8 [0,15,51,85,170,204,240,255] of the 256 8 bit ECA truth tables that display the properties of unique codewords for any given input and perfectly even distribution of codewords. 0 and 255 are included because in the 4 rows of the output matrix, 1 is neighborhood input and 3 are output, and so still produce an errorScore and therefore a unique solution. This subset works with both errorScore minimization and errorScore maximization. This list shares most of its members with the XOR-additive list. \cite{xorAdditive} These two min max 8-tuples are implemented as sets of relevant Wolfram codes in the hash.\\
+Within the 256 ECA rules, there are 8 [0,15,51,85,170,204,240,255] that have the properties of unique codewords for any given input as well as a perfectly even distribution of codewords across the 65536 neighborhoods in the truth table. 0 and 255 are included because in the 4 rows of the output matrix, 1 is neighborhood input and 3 are output, and so still produce an errorScore and therefore a unique solution. These properties apply to these rules with both errorScore minimization and errorScore maximization. This list shares most of its members with the XOR-additive list. \cite{xorAdditive}.\\
 
 \section{Hash properties}
 
-Avalanche properties of this hash algorithm begin when an input bit has influenced every other input bit. The avalanche property better applies if instead of the FFT-like powers of two spaced neighbors you use sequential neighbors. This property shows up in the animated bitmaps when every single point in the image is static and snowy. If using powers of two the avalanche effect begins at the greater of $log_2 (width) , log_2 (height)$. Once a given input is in minMax codeword form no further data loss occurs and the inverse always produces the input. The lossiness is only when converting from codeword form back into output form.   This localization property can be exploited in communication because in the first few iterations the data is irreversible enough to be imperfectly unencryptable while showing the location of the discrepancy. Doing fewer iterations than the avalanche's diffusion threshold but more than zero limits this property however the edge detection does not need the avalanche effect.\\
+These properties apply to the 8-subset described above unless otherwise specified.\\
 
-This algorithm does not produce collisions. On their own codeword tuples are not distinct even if an individual tuple is; however wrapping the codewords over themselves the tuple becomes unique; the rare artificially produced small neighborhood collisions disappeared when the same sample was wrapped, eliminating the possibility of any collision. An extra wrap loop on each cell adds factor of 16 in both time and memory for an absolute no-collision set. Without that loop, random testing of collisions produced an one in a hundred trillion on a 5x5 matrix that disappeared when the neighborhood was wrapped. Small scale local collisions may be a possibility, large scale collisions are unlikely, and optionally no collisions.\\
+This algorithm does not produce collisions. On their own codeword tuples are not distinct for a given bitmap even if an individual codeword is; however wrapping the codewords over themselves the tuple becomes unique; the rare artificially produced small neighborhood collisions disappeared when the same sample was wrapped, eliminating the possibility of any collision. An extra wrap loop on each cell adds factor of 16 in both time and memory for an absolute no-collision set. Without that loop, random testing of collisions produced an one in a hundred trillion on a 5x5 matrix that disappeared when the neighborhood was wrapped. Small scale local collisions may be a possibility, large scale collisions are unlikely, and optionally no collisions.\\
 
-The 8 Wolfram codes each have 256*256=65536 locations in the truth table. For each truth table, each codeword is used in 4096 locations. In terms of area, 1/256 pairs of locations share a codeword. So for 1 element of the 2 8-tuples collisions are common. When all 16 elements are bundled for a gridpoint in the bitmap input collisions are rare because 1/256 has to line up perfectly 6 times (some elements can be cancelled). When the optional loop is used the wrapping array eliminates any collisions.\\
+The 8 Wolfram codes have an even distribution of codewords. Each 0..15 codeword is used 4096 times, distributed relatively evenly across the 65536 possible binary 4x4 cells.\\
 
-Intuitively this transform can be compared to the Fourier transform where a function is turned into combinations of sin waves. This hash function turns an input into combinations of 4x4 binary ECA tiles. The tiles that make it up are all linear; all the rules in the subset are linear. The Wolfram codes are symmetries of pass left bit, pass middle bit, and pass right bit, resulting in shift left shift right and no change.  So once an input is made into sets of these tiles, the codewords and the inverse is only an approximation of the original using these linear tiles. Any non-linear information disappears from the data. Edges are linear and so get minimized, what happens visually is that the input is made into a contour map with high contrast.\\
+Hashed input can be operated on without the original input and without inverting it. Because the ECA rules in the 8-subset are linear, if you take any 2 of 16 codeword-generated 4x4 cells and OR them together and reminimize, the result is the same as the original two codewords ANDed together.  This shift of logic operations within a hash is uniform within an ECA rule hash and extends to any depth of iteration the hash algorithm transforms not only the input data but also the relative logic gate. For example if I want to retroactively apply a bitmask to a hashed image or IP address without the original image and without inversion, hash the bitmask and lookup the appropriate logic gate tranformation between the hashed image and the hashed bitmask.\\
 
-Codeword addition is each codeword's 4x4 ECA output is laid out flat like a piece of paper with another codeword, added, and then the combination is itself reminimized. In constructing the addition tables for codewords, the result was a table that is exactly the logical operation row AND column. The AlgorithmCode.Hadamard matrix can be constructed using this operation by summing the ones in (row AND column) taking it mod 2 for the boolean AlgorithmCode.Hadamard matrix. Experimentally, in the inverse phase the binary AlgorithmCode.Hadamard value of the codeword was substituted for the codeword's 4x4 ECA output. The result had roughly the same 97\% decompression rate as the the first way. Each tuple rule's entire codeword output set was seperately processed as a weighted voting neighborhood without the overlap of the algorithm's main implementation. The result was 164/256 positively correlated AlgorithmCode.Hadamard value to vote value. Each cell of each rule's Wolfram code does better than one half, then overlaps with 15 others al doing better than 1/2.\\
+\section{Bitmap Implementation and Testing}
 
-\section{Bitmap Implementation}
+The algorithm is prototyped on 4-byte, 3-byte, and 2-byte RGB *.bmp bitmap files, including the first several images which come from a Linux screenshot then into *.bmp by GIMP. The program converts the image's raster in a rectangular hexadecimal array. Animated *.gif files are available at my website. You can see the areas of the image cloning itself 2 by 2 and slowly dissolving into avalanche territory that eventually just looks like noise everywhere. The current image was chosen because you can clearly see parts of the image doubling itself as the avalanche property slowly takes over. The code works with any size bitmap. Future work on the project would include other image formats as it is a color code hexadecimal conversion. \\
 
-The algorithm is prototyped on 4-byte, 3-byte, and 2-byte RGB *.bmp bitmap files, including the first several images which come from a Linux screenshot then into *.bmp by GIMP. The program converts the image's raster in a rectangular hexadecimal matrix. Iteration 0 is the minimizing codewords for each location as is and then further iterations operate on neighboring hexadecimal codewords. Animated *.gif files are available at my website. You can see the areas of the image cloning itself 2 by 2 and slowly dissolving into avalanche territory that eventually just looks like noise everywhere. The current image was chosen because you can clearly see parts of the image doubling itself as the avalanche property slowly takes over. The code works with any size bitmap. Future work on the project would include other image formats as it is a color code hexadecimal conversion. \\
-
-\section{Testing}
-
+Testing
 
 \section{Other rules, shapes, and sizes}
 

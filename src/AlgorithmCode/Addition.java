@@ -163,7 +163,7 @@ public class Addition {
                     for (int a = 0; a < 16; a++) {
                         for (int b = 0; b < 16; b++) {
                             for (int power = 0; power < 4; power++) {
-                                int ab = (a >> power) % 2 + 2 *( (b >> power) % 2);
+                                int ab = (a >> power) % 2 + 2 * ((b >> power) % 2);
                                 int c = (additionTables[posNeg][t][a][b] >> power) % 2;
                                 if ((g >> ab) % 2 != c) {
                                     continue testGateLoop;
@@ -212,7 +212,7 @@ public class Addition {
                     for (int row = 0; row < 2; row++) {
                         for (int col = 0; col < 2; col++) {
                             display[row][col] = (additionTables[posNeg][t][row][col] >> power) % 2;
-                         //   tupleDistro[gate][8 * posNeg + t] += (display[row][col] << (2 * row + col));
+                            //   tupleDistro[gate][8 * posNeg + t] += (display[row][col] << (2 * row + col));
                         }
                     }
                     //CustomArray.plusArrayDisplay(display, false, false, "posNeg: " + posNeg + " t: " + t + " " + power);
@@ -228,6 +228,139 @@ public class Addition {
                 //CustomArray.intoBinary(additionTables[posNeg][t], 4, 2, 2, true,false);
             }
         }
+    }
+
+    /**
+     * The first part of this function generates the addition tables of adding two hash tiles together,
+     * Showing that adding tiles does indeed result in a non-reduced Hadamard matrix. After that
+     * is some experimentation ???
+     */
+    public void testGateTwo(int gate, int[][] tupleDistro, int[][] h) {
+        //hashTransform.initWolframs();
+        int[][][][] additionTables = new int[2][8][16][16];
+        Random rand = new Random();
+        //generate addition table for every (a,b) for every minMax codeword 8-tuple
+        for (int posNeg = 0; posNeg < 2; posNeg++) {
+            for (int t = 0; t < 8; t++) {
+                gloop:
+                for (int g = 0; g < 16; g++) {
+                    //System.out.println("posNeg: " + posNeg + " t: " + t + " g: " + g);
+                    boolean gateWorks = true;
+                    for (int a = 0; a < 16; a++) {
+                        for (int b = 0; b < 16; b++) {
+                            //generate the neighborhoods of a and b
+                            int[][] aa = hash.generateCodewordTile(a,hashTransform.unpackedList[t]);
+                            int[][] bb = hash.generateCodewordTile(b,hashTransform.unpackedList[t]);
+                            int[][] cc = new int[4][4];
+                            //add the neighborhoods together pair-wise
+                            for (int row = 0; row < 4; row++) {
+                                for (int col = 0; col < 4; col++) {
+                                    cc[row][col] = (gate >> (aa[row][col] + 2 * bb[row][col])) % 2;
+                                }
+                            }
+                            //find the codeword of the sum of the neighborhoods
+                            int[][] ccc = hash.findMinimizingCodeword(hashTransform.unpackedList[t], cc);
+                            int result = hash.lastMinCodeword;
+                            if (posNeg == 1) result = hash.lastMaxCodeword;
+                            int next = 0;
+                            for (int power = 0; power < 4; power++){
+                                int ab = ((a>>power)%2) + 2*((b>>power)%2);
+                                next += (1<<power)*((g>>ab)%2);
+                            }
+                            if (next != result){
+                                gateWorks = false;
+
+                                continue gloop;
+                            }
+                        }
+                    }
+                    if (gateWorks){
+                        logicTransform[gate][8*posNeg+t] = g;
+                    }
+                }
+            }
+        }
+        CustomArray.plusArrayDisplay(logicTransform,false,false,"logicTransform");
+//
+//        int[][][] attemptedLogicTransform = new int[16][16][4];
+//        for (int g = 0; g < 16; g++) {
+//            for (int gg = 0; gg < 16; gg++) {
+//                Arrays.fill(attemptedLogicTransform[g][gg], -1);
+//            }
+//        }
+//        int[][] distro = new int[16][16];
+//        for (int posNeg = 0; posNeg < 2; posNeg++) {
+//            for (int t = 0; t < 8; t++) {
+//                testGateLoop:
+//                for (int g = 0; g < 16; g++) {
+//                    for (int a = 0; a < 16; a++) {
+//                        for (int b = 0; b < 16; b++) {
+//                            for (int power = 0; power < 4; power++) {
+//                                int ab = (a >> power) % 2 + 2 * ((b >> power) % 2);
+//                                int c = (additionTables[posNeg][t][a][b] >> power) % 2;
+//                                if ((g >> ab) % 2 != c) {
+//                                    continue testGateLoop;
+//                                }
+//                            }
+//                        }
+//                    }
+//                    distro[8 * posNeg + t][g]++;
+//                }
+//            }
+//        }
+//        for (int posNeg = 0; posNeg < 2; posNeg++) {
+//            for (int t = 0; t < 8; t++) {
+//                testGateLoop:
+//                for (int g = 0; g < 16; g++) {
+//                    if (distro[8 * posNeg + t][g] == 1) {
+//                        tupleDistro[gate][8 * posNeg + t] = g;
+//                    }
+//                }
+//            }
+//        }
+//        CustomArray.plusArrayDisplay(distro, false, false, "distro");
+//        //Display
+//        for (int posNeg = 0; posNeg < 2; posNeg++) {
+//            for (int t = 0; t < 8; t++) {
+//                if (Arrays.deepEquals(additionTables[posNeg][t], h)) {
+//                    System.out.println("posNeg: " + posNeg + " t: " + t);
+//                }
+//                for (int power = 0; power < 4; power++) {
+//                    int[][] display = new int[16][16];
+//                    for (int row = 0; row < 16; row++) {
+//                        for (int col = 0; col < 16; col++) {
+//                            display[row][col] = (additionTables[posNeg][t][row][col] >> power) % 2;
+//                        }
+//                    }
+//                    //CustomArray.plusArrayDisplay(display, false, false, "posNeg: " + posNeg + " t: " + t + " " + power);
+//                    //CustomArray.plusArrayDisplay(additionTables[posNeg][t], true, false, "posNeg: " + posNeg + " t: " + t + " " + hashTransform.unpackedList[t]);
+//                    //CustomArray.intoBinary(additionTables[posNeg][t], 4, 2, 2, true,false);
+//                }
+//            }
+//        }
+//        for (int posNeg = 0; posNeg < 2; posNeg++) {
+//            for (int t = 0; t < 8; t++) {
+//                for (int power = 0; power < 4; power++) {
+//                    int[][] display = new int[2][2];
+//                    for (int row = 0; row < 2; row++) {
+//                        for (int col = 0; col < 2; col++) {
+//                            display[row][col] = (additionTables[posNeg][t][row][col] >> power) % 2;
+//                            //   tupleDistro[gate][8 * posNeg + t] += (display[row][col] << (2 * row + col));
+//                        }
+//                    }
+//                    //CustomArray.plusArrayDisplay(display, false, false, "posNeg: " + posNeg + " t: " + t + " " + power);
+//                    //CustomArray.plusArrayDisplay(additionTables[posNeg][t], true, false, "posNeg: " + posNeg + " t: " + t + " " + hashTransform.unpackedList[t]);
+//                    //CustomArray.intoBinary(additionTables[posNeg][t], 4, 2, 2, true,false);
+//                }
+//            }
+//        }
+//        for (int posNeg = 0; posNeg < 2; posNeg++) {
+//            for (int t = 0; t < 8; t++) {
+//                //CustomArray.plusArrayDisplay(display, false, false, "posNeg: " + posNeg + " t: " + t + " " + power);
+//                //CustomArray.plusArrayDisplay(additionTables[posNeg][t], false, false, "posNeg: " + posNeg + " t: " + t + " " + hashTransform.unpackedList[t]);
+//                //CustomArray.intoBinary(additionTables[posNeg][t], 4, 2, 2, true,false);
+//            }
+//        }
     }
 
     public void testAllLogic() {
@@ -477,6 +610,7 @@ public class Addition {
         }
         System.out.println("numDifferent: " + Arrays.toString(numDifferent));
     }
+
     /**
      * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
      *
@@ -542,7 +676,7 @@ public class Addition {
         //framesOfHashing = hash.ecaMinTransform(bfield, hash.unpackedList[3], depth);
         int[][][] hashSet = new int[16][inImage.getHeight()][inImage.getWidth()];
         depth = 3;
-        int gate = 14;
+        int gate = 8;
         for (int t = 0; t < 8; t++) {
             System.out.println("t: " + t);
             hashSet[t] = hash.ecaMinTransform(bFieldSet[t], hash.unpackedList[t], depth)[depth];
@@ -580,7 +714,7 @@ public class Addition {
                     tot = 0;
                     for (int power = 0; power < 4; power++) {
                         int ab = ((hashSet[8 + t][row][column] >> power) % 2) + 2 * ((modificationTransformed[8 + t][row][column] >> power) % 2);
-                        ab = (logicTransform[15-gate][8 + t] >> ab) % 2;
+                        ab = (logicTransform[15 - gate][8 + t] >> ab) % 2;
                         tot += (1 << power) * ab;
                     }
                     internallyModifiedSet[8 + t][row][column] = tot;
@@ -592,16 +726,188 @@ public class Addition {
             for (int row = 0; row < modifiedSet[0].length; row++) {
                 for (int column = 0; column < modifiedSet[0][0].length; column++) {
                     for (int power = 0; power < 16; power++) {
-                        numDifferent[t] += (((modifiedSet[t][row][column]>>power)%2) ^ ((internallyModifiedSet[t][row][column]>>power)%2));
-                        numDifferent[8 + t] += (((modifiedSet[8 + t][row][column]>>power)%2) ^ ((internallyModifiedSet[8 + t][row][column]>>power)%2));
+                        numDifferent[t] += (((modifiedSet[t][row][column] >> power) % 2) ^ ((internallyModifiedSet[t][row][column] >> power) % 2));
+                        numDifferent[8 + t] += (((modifiedSet[8 + t][row][column] >> power) % 2) ^ ((internallyModifiedSet[8 + t][row][column] >> power) % 2));
                     }
                 }
             }
         }
         System.out.println("numDifferent: " + Arrays.toString(numDifferent));
-        System.out.println("numBits: " + (inImage.getHeight()*inImage.getWidth())*16);
+        System.out.println("numBits: " + (inImage.getHeight() * inImage.getWidth()) * 16);
     }
+    /**
+     * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
+     *
+     * @throws IOException
+     */
+    public void bitmapTransformCompleteSetOneD(String filepath, int dummy) throws IOException {
+        //String filepath = "kitchenAlteredRGB.bmp";
+        HashTransform hash = new HashTransform();
+        File file = new File(filepath);
+        filepath = filepath.substring(0, filepath.length() - 4);
+        BufferedImage inImage = ImageIO.read(file);
+        short[] inRaster = ((DataBufferUShort) inImage.getRaster().getDataBuffer()).getData();
+        int size = inImage.getWidth();
+        int depth = (int) (Math.log(inImage.getWidth() * inImage.getWidth()) / Math.log(2));
+        depth = 1;
+        int[][][] framesOfHashing = new int[depth][inImage.getHeight()][inImage.getWidth() * 8];
+        int[][] field = new int[inImage.getHeight()][inImage.getWidth() * 8];
+        int[][] bfield = new int[inImage.getHeight()][inImage.getWidth() * 16];
+        System.out.println("inRaster: " + inRaster.length);
+        System.out.println("imImage.getHeight(): " + inImage.getHeight());
+        System.out.println("imImage.getWidth(): " + inImage.getWidth());
+        System.out.println("inRaster.length/inImage.getHeight(): " + inRaster.length / inImage.getHeight());
+        System.out.println("inRaster.length/inImage.getWidth(): " + inRaster.length / inImage.getWidth());
+        System.out.println("inRaster.length/inImage.getHeight()/inImage.getWidth(): " + inRaster.length / inImage.getHeight() / inImage.getWidth());
+        //Transforms the image into its appropriate local algorithm format
+//        for (int row = 0; row < inImage.getHeight(); row++) {
+//            for (int column = 0; column < inImage.getWidth(); column++) {
+//                for (int rgbbyte = 0; rgbbyte < 4; rgbbyte++) {
+//                    for (int lr = 0; lr < 2; lr++) {
+//                        int rasterCoordX = row * inImage.getWidth() + column;
+//                        field[row][8 * column + 2 * rgbbyte + lr] = (int) Math.abs((inRaster[rasterCoordX] >> (4 * rgbbyte + 2 * lr)) % 16);
+//                        for (int power = 0; power < 4; power++) {
+//                            bfield[row][32 * column + 8 * rgbbyte + 4 * lr + power] = (field[row][8 * column + 2 * rgbbyte + lr] >> power) % 2;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+        int[][][] bFieldSet = new int[16][bfield.length][bfield[0].length];
+        for (int row = 0; row < inImage.getHeight(); row++) {
+            for (int column = 0; column < inImage.getWidth(); column++) {
+                for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
+                    for (int power = 0; power < 8; power++) {
+                        bfield[row][16 * column + 8 * rgbbyte + power] = (int) Math.abs((inRaster[row * inImage.getWidth() + column] >> (8 * rgbbyte + power)) % 2);
+                        for (int posNegt = 0; posNegt < 16; posNegt++) {
+                            bFieldSet[posNegt][row][16 * column + 8 * rgbbyte + power] = bfield[row][16 * column + 8 * rgbbyte + power];
+                        }
+                    }
+                }
+            }
+        }
+        int[][] flatB = new int[16][bfield.length*bfield[0].length];
+        for (int t = 0; t < 16; t++) {
+            for (int row = 0; row < bfield.length; row++) {
+                for (int column = 0; column < bfield[0].length; column++) {
+                    flatB[t][row*bfield[0].length+column] = bFieldSet[t][row][column];
+                }
+            }
 
+        }
+        //Initialize the minMax codeword truth table set
+        hash.initWolframs();
+        testAllLogic();
+        //hashUtilities.readFromFile();
+        //Change the RGB 4-bytes broken down into 32 bits into its depth 0 codewords
+        //bfield = hash.initializeDepthZero(bfield, hash.unpackedList[3])[1];
+        for (int t = 0; t < 8; t++) {
+            //bFieldSet[t] = initializeDepthZero(bFieldSet[t], unpackedList[t])[1];
+            //bFieldSet[8 + t] = initializeDepthMax(bFieldSet[8 + t], unpackedList[t])[1];
+        }
+        //Do the transform
+        //framesOfHashing = hash.ecaMinTransform(bfield, hash.unpackedList[3], depth);
+        int[][][] hashSet = new int[16][inImage.getHeight()][inImage.getWidth()];
+        int[][] flatHashSet = new int[16][inImage.getHeight()*inImage.getWidth()];
+        depth = 3;
+        int gate = 8;
+        for (int t = 0; t < 8; t++) {
+            System.out.println("t: " + t);
+            hashSet[t] = hash.ecaMinTransform(bFieldSet[t], hash.unpackedList[t], depth)[depth];
+            hashSet[8 + t] = hash.ecaMaxTransform(bFieldSet[8 + t], hash.unpackedList[t], depth)[depth];
+            //hashSet[t] = bFieldSet[t];
+            //hashSet[8 + t] = bFieldSet[8 + t];
+            flatHashSet[t] = hash.oneD(flatB[t],hash.unpackedList[t],1,false,false);
+            flatHashSet[t+8] = hash.oneD(flatB[t+8],hash.unpackedList[t],1,false,true);
+        }
+        int[][] modification = generateOperation(hashSet[0].length, hashSet[0][0].length);
+        int[][][] modificationTransformed = new int[16][hashSet[0].length][hashSet[0][0].length];
+        int[][][] modifiedSet = new int[16][hashSet[0].length][hashSet[0][0].length];
+        int[][][] internallyModifiedSet = new int[16][hashSet[0].length][hashSet[0][0].length];
+        int[][] modTransFlat = new int[16][flatHashSet[0].length];
+        int[][] modSetFlat = new int[16][flatHashSet[0].length];
+        int[][] intModSetFlat = new int[16][flatHashSet[0].length];
+        for (int t = 0; t < 8; t++) {
+            System.out.println("t: " + t);
+            for (int row = 0; row < modifiedSet[0].length; row++) {
+                for (int column = 0; column < modifiedSet[0][0].length; column++) {
+                    modifiedSet[t][row][column] = bFieldSet[t][row][column] + 2 * modification[row][column];
+                    modifiedSet[8 + t][row][column] = bFieldSet[8 + t][row][column] + 2 * modification[row][column];
+                    modifiedSet[t][row][column] = (gate >> modifiedSet[t][row][column]) % 2;
+                    modifiedSet[8 + t][row][column] = (gate >> modifiedSet[8 + t][row][column]) % 2;
+
+                }
+            }
+            for (int row = 0; row < modSetFlat[0].length; row++) {
+                modSetFlat[t][row] = flatB[t][row] + 2 * modification[row/hashSet[0][0].length][row%hashSet[0][0].length];
+                modSetFlat[t+8][row] = flatB[t+8][row] + 2 * modification[row/hashSet[0][0].length][row%hashSet[0][0].length];
+            }
+            modificationTransformed[t] = hash.ecaMinTransform(modification, hash.unpackedList[t], depth)[depth];
+            modificationTransformed[8 + t] = hash.ecaMaxTransform(modification, hash.unpackedList[t], depth)[depth];
+            modifiedSet[t] = hash.ecaMinTransform(modifiedSet[t], hash.unpackedList[t], depth)[depth];
+            modifiedSet[8 + t] = hash.ecaMaxTransform(modifiedSet[8 + t], hash.unpackedList[t], depth)[depth];
+            modTransFlat[t] = hash.oneD(modSetFlat[t],hash.unpackedList[t],1,false,false);
+            modTransFlat[8+t] = hash.oneD(modSetFlat[8+t],hash.unpackedList[t],1,false,true);
+            for (int row = 0; row < modifiedSet[0].length; row++) {
+                for (int column = 0; column < modifiedSet[0][0].length; column++) {
+                    int tot = 0;
+                    for (int power = 0; power < 4; power++) {
+                        int ab = ((hashSet[t][row][column] >> power) % 2) + 2 * ((modificationTransformed[t][row][column] >> power) % 2);
+                        ab = (logicTransform[gate][t] >> ab) % 2;
+                        tot += (1 << power) * ab;
+                    }
+                    internallyModifiedSet[t][row][column] = tot;
+                    tot = 0;
+                    for (int power = 0; power < 4; power++) {
+                        int ab = ((hashSet[8 + t][row][column] >> power) % 2) + 2 * ((modificationTransformed[8 + t][row][column] >> power) % 2);
+                        ab = (logicTransform[15 - gate][8 + t] >> ab) % 2;
+                        tot += (1 << power) * ab;
+                    }
+                    internallyModifiedSet[8 + t][row][column] = tot;
+                }
+            }
+            for (int row = 0; row < modSetFlat[0].length; row++) {
+                int tot = 0;
+                for (int power = 0; power < 4; power++){
+                    int ab = ((flatHashSet[t][row]>>power)%2)+2*((modificationTransformed[t][row/modificationTransformed[t][0].length][row%modificationTransformed[t+8][0].length]>>power)%2);
+                    ab = (logicTransform[gate][t]>>ab)%2;
+                    tot += (1<<power)*ab;
+                }
+                intModSetFlat[t][row] = tot;
+                tot = 0;
+                for (int power = 0; power < 4; power++){
+                    int ab = ((flatHashSet[8+t][row]>>power)%2)+2*((modificationTransformed[8+t][row/modificationTransformed[t][0].length][row%modificationTransformed[t+8][0].length]>>power)%2);
+                    ab = (logicTransform[15-gate][8+t]>>ab)%2;
+                    tot += (1<<power)*ab;
+                }
+                intModSetFlat[8+t][row] = tot;
+            }
+        }
+        int[] numDifferent = new int[16];
+        int[] flatNumDifferent = new int[16];
+        for (int t = 0; t < 8; t++) {
+            for (int row = 0; row < modifiedSet[0].length; row++) {
+                for (int column = 0; column < modifiedSet[0][0].length; column++) {
+                    for (int power = 0; power < 16; power++) {
+                        numDifferent[t] += (((modifiedSet[t][row][column] >> power) % 2) ^ ((internallyModifiedSet[t][row][column] >> power) % 2));
+                        numDifferent[8 + t] += (((modifiedSet[8 + t][row][column] >> power) % 2) ^ ((internallyModifiedSet[8 + t][row][column] >> power) % 2));
+                    }
+                }
+            }
+        }
+        for (int t = 0; t < 8; t++) {
+            for (int row = 0; row < modSetFlat[0].length; row++) {
+                for (int power = 0; power < 16; power++) {
+                    flatNumDifferent[t] += (((modSetFlat[t][row] >> power) % 2) ^ ((intModSetFlat[t][row] >> power) % 2));
+                    flatNumDifferent[8 + t] += (((modSetFlat[8 + t][row] >> power) % 2) ^ ((intModSetFlat[8 + t][row] >> power) % 2));
+                }
+            }
+        }
+        System.out.println("numDifferent: " + Arrays.toString(numDifferent));
+        System.out.println("numBits: " + (inImage.getHeight() * inImage.getWidth()) * 16);
+        System.out.println("flatNumDifferent: " + Arrays.toString(numDifferent));
+        System.out.println("numBits: " + (inImage.getWidth()* inImage.getHeight()*16));
+    }
     public int[][] generateOperation(int rows, int cols) {
         int[][] out = new int[rows][cols];
         Random rand = new Random();

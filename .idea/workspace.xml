@@ -4,9 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="Addition bitmapTransformCompleteSet is working. I think? I had also added a field to HashTransform because of the difference between binary and hexadecimal array inputs">
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="pushing for backup">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Addition.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Addition.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -75,7 +79,7 @@
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propCompiler&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -91,8 +95,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.23774.435" />
-        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-IU-251.23774.435" />
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.109" />
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.109" />
       </set>
     </attachedChunks>
   </component>
@@ -135,7 +139,9 @@
       <workItem from="1746222737027" duration="2508000" />
       <workItem from="1746277665684" duration="24630000" />
       <workItem from="1746572207531" duration="1039000" />
-      <workItem from="1746576023160" duration="1568000" />
+      <workItem from="1746576023160" duration="6691000" />
+      <workItem from="1746711325241" duration="2110000" />
+      <workItem from="1746739214453" duration="16364000" />
     </task>
     <task id="LOCAL-00001" summary="Have gathered the code from several local projects into this, initial commit">
       <option name="closed" value="true" />
@@ -457,7 +463,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746501368421</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="pushing for backup">
+      <option name="closed" value="true" />
+      <created>1746627968927</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1746627968927</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -492,7 +506,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="the bulk of the rearranging is done, has NOT been tested at all yet" />
     <MESSAGE value="the minErrorStaging proportions are at least somewhat correct" />
     <MESSAGE value="made the error heat map arrays square and added the double min/max error rate numbers" />
     <MESSAGE value="next up is to add checkAllColumns() to minErrorStaging.java" />
@@ -517,7 +530,8 @@
     <MESSAGE value="the zeros with checkDoublesSetsFunctions() accounting for all 65536 addresses, and all zeros within Hamming distance 2 of a logic gate truth table bitmask on the address" />
     <MESSAGE value="HashTranform bitmapTransformCompleteSet() does the transform for every rule in the minMax set and the inverse has a correct rate of 75%" />
     <MESSAGE value="Addition bitmapTransformCompleteSet is working. I think? I had also added a field to HashTransform because of the difference between binary and hexadecimal array inputs" />
-    <option name="LAST_COMMIT_MESSAGE" value="Addition bitmapTransformCompleteSet is working. I think? I had also added a field to HashTransform because of the difference between binary and hexadecimal array inputs" />
+    <MESSAGE value="pushing for backup" />
+    <option name="LAST_COMMIT_MESSAGE" value="pushing for backup" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

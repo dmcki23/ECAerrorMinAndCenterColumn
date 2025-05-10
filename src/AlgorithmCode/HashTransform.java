@@ -31,6 +31,7 @@ public class HashTransform {
     public int[] unpackedList = new int[]{0, 15, 51, 85, 170, 204, 240, 255};
     public OneDHashTransform oneDHashTransform = new OneDHashTransform(this);
     HashUtilities hashUtilities;
+    int[][][] outResult;
 
     public HashTransform() {
         //hashUtilities = in;
@@ -287,13 +288,13 @@ public class HashTransform {
 
     public int[][] reconstructDepthD(int[][] input, int depth, int ruleSetIndex) {
         int neighborDistance = 1 << (depth - 1);
-        neighborDistance = 1;
+        //neighborDistance = 1;
         int[][][] votes = new int[input.length][input[0].length][4];
         for (int row = 0; row < input.length; row++) {
             for (int col = 0; col < input[0].length; col++) {
                 //apply its vote to every location that it influences
                 //including itself
-                int[][] generatedGuess = m.generateCodewordTile(input[row][col], unpackedList[ruleSetIndex]);
+                int[][] generatedGuess = m.generateCodewordTile(input[row][col], unpackedList[ruleSetIndex%8]);
                 for (int r = 0; r < 4; r++) {
                     for (int c = 0; c < 4; c++) {
                         //for (int power = 0; power < 4; power++) {
@@ -344,7 +345,7 @@ public class HashTransform {
         //CustomArray.plusArrayDisplay(finalOutput, false, false, "finalOutput");
         return outResult;
     }
-    int[][][] outResult;
+
     public int[][] reconstructDepthD(int[][][] input, int depth) {
         int neighborDistance = 1 << (depth - 1);
         neighborDistance = 1;
@@ -865,11 +866,16 @@ public class HashTransform {
         //Do the transform
         framesOfHashing = ecaMinTransform(bfield, unpackedList[3], depth);
         int[][][] hashSet = new int[16][inImage.getHeight()][inImage.getWidth()];
+        int[][][][] hashed = new int[16][10][inImage.getHeight()][inImage.getWidth()];
         for (int t = 0; t < 8; t++) {
             //hashSet[t] = ecaMinTransform(bFieldSet[t], unpackedList[t], depth)[1];
             //hashSet[8 + t] = ecaMaxTransform(bFieldSet[8 + t], unpackedList[t], depth)[1];
             hashSet[t] = bFieldSet[t];
             hashSet[8 + t] = bFieldSet[8 + t];
+            hashSet[t] = ecaMinTransform(hashSet[t], unpackedList[t], depth)[depth];
+            hashed[t] = ecaMinTransform(hashSet[t], unpackedList[t], depth);
+            hashSet[8 + t] = ecaMaxTransform(hashSet[8 + t], unpackedList[t], depth)[depth];
+            hashed[t + 8] = ecaMaxTransform(hashSet[8 + t], unpackedList[t], depth);
         }
         //Convert the transform back into appropriate bitmap RGB format
         short[][][] rasterized = new short[depth + 1][inImage.getHeight()][inImage.getWidth()];
@@ -950,10 +956,9 @@ public class HashTransform {
             }
         }
         System.out.println("undoInput[3].length: " + undoInput[0].length + " " + undoInput[1][0].length);
-        int[][] undoSet = reconstructDepthD(hashSet,1);
+        int[][] undoSet = reconstructDepthD(hashSet, 2);
         for (int t = 0; t < 8; t++) {
             //undoSet[t] = initializeDepthZero(bFieldSet[t], unpackedList[t])[1];
-
         }
         int[][] undo = hashInverseDepth0(bFieldSet, 1, 3);
         short[][] undoRasterized = new short[inverse.getHeight()][inverse.getWidth()];
@@ -973,7 +978,30 @@ public class HashTransform {
                 }
             }
         }
-
+        for (int t = 0; t <  8; t++){
+            int total = 0;
+            int[][] recon = reconstructDepthD(hashed[t][depth],depth,t);
+            for (int row = 0; row < recon.length; row++) {
+                for (int column = 0; column < recon[0].length; column++) {
+                    //total += recon[row][column] ^ hashed[t][depth-1][row][column];
+                    for (int power = 0; power < 4; power++) {
+                        total += ((recon[row][column] >> power) % 2) ^ ((hashed[t][depth-1][row][column] >> power) % 2);
+                    }
+                }
+            }
+            System.out.println("total: " + total);
+            total = 0;
+            recon = reconstructDepthD(hashed[t+8][depth],depth,t+8);
+            for (int row = 0; row < recon.length; row++) {
+                for (int column = 0; column < recon[0].length; column++) {
+                    //total += recon[row][column] ^ hashed[t+8][depth-1][row][column];
+                    for (int power = 0; power < 4; power++) {
+                        total += ((recon[row][column] >> power) % 2) ^ ((hashed[t+8][depth-1][row][column] >> power) % 2);
+                    }
+                }
+            }
+            System.out.println("total: " + total);
+        }
         short[] inverseImageRaster = ((DataBufferUShort) inverse.getRaster().getDataBuffer()).getData();
         short[] inverseImageRasterSet = new short[inverse.getHeight() * inverse.getWidth()];
         for (int row = 0; row < inverse.getHeight(); row++) {
@@ -983,7 +1011,6 @@ public class HashTransform {
                 inverseImageRasterSet[row * inImage.getWidth() + column] = (short) (undoRasterizedSet[row][column] ^ inRaster[inImage.getWidth() * row + column]);
             }
         }
-
         File inverseFile = new File("src/ImagesProcessed/" + filepath + "inverse.bmp");
         ImageIO.write(inverse, "bmp", inverseFile);
         //
@@ -997,7 +1024,7 @@ public class HashTransform {
         //
         //
         inverse = new BufferedImage(inverse.getWidth(), inverse.getHeight(), BufferedImage.TYPE_USHORT_565_RGB);
-        inverseImageRaster = ((DataBufferUShort) inverse.getRaster().getDataBuffer()).getData();
+        //inverseImageRaster = ((DataBufferUShort) inverse.getRaster().getDataBuffer()).getData();
         undo = reconstructDepthD(framesOfHashing[1], 1, 3);
         undoRasterized = new short[inverse.getHeight()][inverse.getWidth()];
         for (int d = 0; d <= 0; d++) {
@@ -1014,15 +1041,16 @@ public class HashTransform {
         for (int row = 0; row < inverse.getHeight(); row++) {
             for (int column = 0; column < inverse.getWidth(); column++) {
                 //if (row == 655 || column == 655) { System.out.println("row: " + row + ", column: " + column); }
-                inverseImageRaster[row * inImage.getWidth() + column] = (short) (undoRasterized[row][column] ^ inRaster[inImage.getWidth() * row + column]);
+                //inverseImageRaster[row * inImage.getWidth() + column] = (short) (undoRasterized[row][column] ^ inRaster[inImage.getWidth() * row + column]);
             }
         }
         File inverseDepth1 = new File("src/ImagesProcessed/" + filepath + "inverseDepth1.bmp");
         ImageIO.write(inverse, "bmp", inverseDepth1);
         int numDifferent = 0;
         for (int row = 0; row < inRaster.length; row++) {
+            //long a = inverseImageRasterSet[row] ^ inRaster[row];
             long a = inverseImageRasterSet[row] ^ inRaster[row];
-            a = (long) Math.abs(a);
+                    a = (long) Math.abs(a);
             for (int power = 0; power < 16; power++) {
                 if (((a >> power)) % 2 == 1) {
                     numDifferent++;
@@ -1152,6 +1180,45 @@ public class HashTransform {
         //CustomArray.plusArrayDisplay(outVotes, true, false, "outVotes");
         //System.out.println("outResult.getHeight: " + " " + outResult.length + outResult[0].length);
         return outResult;
+    }
+
+    public int[] flatten(int[][] in) {
+        int[] out = new int[in.length * in[0].length];
+        for (int row = 0; row < in.length; row++) {
+            for (int column = 0; column < in[0].length; column++) {
+                out[row * in[0].length + column] = in[row][column];
+            }
+        }
+        return out;
+    }
+
+    public int[] oneDtransformMin(int[] in, int rule, int phasePower, boolean reduce, boolean max) {
+        int spotSkip = 1;
+        if (reduce) spotSkip = 4;
+        int[] out = new int[in.length];
+        for (int spot = 0; spot < in.length; spot += spotSkip) {
+            for (int index = 0; index < 4; index++) {
+                out[spot / spotSkip] += (1 << (4 * index)) * (in[(spot + index * (1 << phasePower)) % in.length]);
+            }
+            out[spot / spotSkip] = m.minSolutionsAsWolfram[rule][out[spot / spotSkip]];
+            if (max) out[spot / spotSkip] = m.maxSolutionsAsWolfram[rule][out[spot / spotSkip]];
+        }
+        return out;
+    }
+
+    public int[] oneD(int[] in, int rule, int length, boolean reduce, boolean max) {
+        int log4 = (int) Math.ceil(Math.log(in.length) / Math.log(4));
+        int[] out = in;
+        for (int iter = 0; iter < log4; iter++) {
+            out = oneDtransformMin(out, rule, iter, false, max);
+        }
+        if (reduce) {
+            log4 -= (int) Math.ceil(Math.log(length) / Math.log(4));
+        }
+        for (int iter = 0; iter < log4; iter++) {
+            out = oneDtransformMin(out, rule, 1, true, max);
+        }
+        return out;
     }
 }
 
