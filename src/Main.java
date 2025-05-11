@@ -6,7 +6,7 @@ import java.io.IOException;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) throws IOException {
-        HashTruthTables m = new HashTruthTables();
+        HashTruthTables m = new HashTruthTables(true);
         //m.manageLengthsMinimizations(150,4,500);
         //m.ecaBestFitHashCollisionExhuastiveSizeTwo(105,2,false,false,500);
         // ruleStretchTemplate = new RuleStretchTemplate();
@@ -136,6 +136,9 @@ public class Main {
         //hashUtilities.checkDoublesSetsFunctionsTwo();
         //a.bitmapTransformCompleteSetOneD("kitchenShrunk.bmp",0);
         //a.testAllLogic();
-        hash.bitmapTransformCompleteSet("kitchenShrunk.bmp",0);
+        //hash.bitmapTransformCompleteSetColumnsToo("kitchenShrunk.bmp",0,false);
+        //hash.m.rowError = false;
+        //hash.m.doAllRules(4,false,0,false,0,false);
+        a.testAllLogic(false);
     }
 }

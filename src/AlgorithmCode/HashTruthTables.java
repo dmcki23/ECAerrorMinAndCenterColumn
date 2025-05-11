@@ -181,13 +181,15 @@ public class HashTruthTables {
      */
     Random rand = new Random();
     Hadamard hadamard = new Hadamard();
+    public boolean rowError;
 
     /**
      * Initializes everything to size 4, therefore truth tables are 65536 long.
      * If you want a different size run initialize(size)
      */
-    public HashTruthTables() {
+    public HashTruthTables(boolean inRowError) {
         int size = 4;
+        rowError = inRowError;
         sameErrorMin = new int[256][(int) Math.pow(2, size)];
         sameErrorMax = new int[256][(int) Math.pow(2, size)];
         minNumberOfSameSolutions = new int[256];
@@ -281,7 +283,7 @@ public class HashTruthTables {
             //
             //
             //Score the error
-            for (row = 0; row < size; row++) {
+            for (row = 0; row < size & rowError; row++) {
                 for (column = 0; column < size; column++) {
                     //
                     //
@@ -294,6 +296,22 @@ public class HashTruthTables {
                     //errorScore[neighborhood] += row* (in[row][column] ^  trialField[row][column]);
                     //errorScore[correction] += (in[row][column] ^ trialField[row][column]);
                     //errorScore[neighborhood] += (int)Math.pow(2, column)*(in[row][column] ^ trialField[row][column]);
+                    //errorScore[correction] += coefficients[row] * trialField[row][column];
+                }
+            }
+            for (row = 0; row < size & !rowError; row++) {
+                for (column = 0; column < size; column++) {
+                    //
+                    //
+                    //Various error-scoring weights tested
+                    //errorScore[neighborhood] += ((int) Math.pow(2, row) * (trialField[row][column] ^ in[row][column]));
+                    //errorScore[neighborhood] +=  ((row*row))*(trialField[row][column] ^ in[row][column]);
+                    //errorScore[correction] += row*row*(trialField[row][column] ^ in[row][column]);
+                    //errorScore[correction] += column*column *(in[row][column] ^  trialField[row][column]);
+                    //errorScore[correction] += column* (in[row][column] ^  trialField[row][column]);
+                    //errorScore[neighborhood] += row* (in[row][column] ^  trialField[row][column]);
+                    //errorScore[correction] += (in[row][column] ^ trialField[row][column]);
+                    errorScore[neighborhood] += (int)Math.pow(2, column)*(in[row][column] ^ trialField[row][column]);
                     //errorScore[correction] += coefficients[row] * trialField[row][column];
                 }
             }

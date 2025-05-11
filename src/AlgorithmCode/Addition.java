@@ -22,7 +22,7 @@ public class Addition {
     /**
      * Used in generating addition tables
      */
-    HashTruthTables hash = new HashTruthTables();
+    HashTruthTables hash = new HashTruthTables(true);
     int[][] logicTransform = new int[16][16];
 
     /**
@@ -114,7 +114,9 @@ public class Addition {
      * Showing that adding tiles does indeed result in a non-reduced Hadamard matrix. After that
      * is some experimentation ???
      */
-    public void testGate(int gate, int[][] tupleDistro, int[][] h) {
+    public void testGate(int gate, int[][] tupleDistro, int[][] h, boolean inRowError) {
+        hash.rowError = inRowError;
+        int listLayer = inRowError ? 0 : 1;
         //hashTransform.initWolframs();
         int[][][][] additionTables = new int[2][8][16][16];
         //generate addition table for every (a,b) for every minMax codeword 8-tuple
@@ -123,8 +125,8 @@ public class Addition {
                 for (int posNeg = 0; posNeg < 2; posNeg++) {
                     for (int t = 0; t < 8; t++) {
                         //generate the neighborhoods of a and b
-                        int[][] aa = hash.generateCodewordTile(a, hashTransform.unpackedList[t]);
-                        int[][] bb = hash.generateCodewordTile(b, hashTransform.unpackedList[t]);
+                        int[][] aa = hash.generateCodewordTile(a, hashTransform.bothLists[listLayer][t]);
+                        int[][] bb = hash.generateCodewordTile(b, hashTransform.bothLists[listLayer][t]);
                         int[][] cc = new int[4][4];
                         int[][] dd = new int[4][4];
                         //add the neighborhoods together pair-wise
@@ -137,14 +139,15 @@ public class Addition {
                             }
                         }
                         //find the codeword of the sum of the neighborhoods
-                        int[][] ccc = hash.findMinimizingCodeword(hashTransform.unpackedList[t], cc);
+                        int[][] ccc = hash.findMinimizingCodeword(hashTransform.bothLists[listLayer][t], cc);
                         int result = 0;
                         for (int column = 0; column < 4; column++) {
                             result += (int) Math.pow(2, column) * ccc[0][column];
                         }
-                        //store it in the table
-                        additionTables[posNeg][t][a][b] = result;
+                        //stortruee it in the table
+                        //additionTables[posNeg][t][a][b] = result;
                         if (posNeg == 1) additionTables[posNeg][t][a][b] = hash.lastMaxCodeword;
+                        else additionTables[posNeg][t][a][b] = hash.lastMinCodeword;
                     }
                 }
             }
@@ -158,12 +161,13 @@ public class Addition {
         int[][] distro = new int[16][16];
         for (int posNeg = 0; posNeg < 2; posNeg++) {
             for (int t = 0; t < 8; t++) {
+                Arrays.fill(distro[8 * posNeg + t], -1);
                 testGateLoop:
                 for (int g = 0; g < 16; g++) {
                     for (int a = 0; a < 16; a++) {
                         for (int b = 0; b < 16; b++) {
                             for (int power = 0; power < 4; power++) {
-                                int ab = (a >> power) % 2 + 2 * ((b >> power) % 2);
+                                int ab = ((a >> power) % 2) + 2 * ((b >> power) % 2);
                                 int c = (additionTables[posNeg][t][a][b] >> power) % 2;
                                 if ((g >> ab) % 2 != c) {
                                     continue testGateLoop;
@@ -171,16 +175,34 @@ public class Addition {
                             }
                         }
                     }
-                    distro[8 * posNeg + t][g]++;
+                    distro[8 * posNeg + t][g] = 1;
+                    break testGateLoop;
                 }
             }
         }
+        Arrays.fill(tupleDistro[gate], -1);
         for (int posNeg = 0; posNeg < 2; posNeg++) {
             for (int t = 0; t < 8; t++) {
                 testGateLoop:
                 for (int g = 0; g < 16; g++) {
                     if (distro[8 * posNeg + t][g] == 1) {
                         tupleDistro[gate][8 * posNeg + t] = g;
+                    }
+                }
+            }
+        }
+        for (int t = 0; t < 16; t++) {
+            if (tupleDistro[gate][t] == -1) {
+                int[][] cc = new int[16][16];
+                for (int r = 0; r < 16; r++) {
+                    for (int c = 0; c < 16; c++) {
+                        int[][] a = hash.generateCodewordTile(r, hashTransform.bothLists[listLayer][t]);
+                        int[][] b = hash.generateCodewordTile(c, hashTransform.bothLists[listLayer][t]);
+                        int tot = 0;
+                        for (int power = 0; power < 4; power++){
+                            int ab = (1<<power)*(((a[r][c]>>power) % 2) + 2 * ((b[r][c]>>power) % 2));
+                            tot += (1<<power)*((gate>>ab)%2);
+                        }
                     }
                 }
             }
@@ -228,6 +250,7 @@ public class Addition {
                 //CustomArray.intoBinary(additionTables[posNeg][t], 4, 2, 2, true,false);
             }
         }
+        //hash.rowError = previousRowError;
     }
 
     /**
@@ -249,8 +272,8 @@ public class Addition {
                     for (int a = 0; a < 16; a++) {
                         for (int b = 0; b < 16; b++) {
                             //generate the neighborhoods of a and b
-                            int[][] aa = hash.generateCodewordTile(a,hashTransform.unpackedList[t]);
-                            int[][] bb = hash.generateCodewordTile(b,hashTransform.unpackedList[t]);
+                            int[][] aa = hash.generateCodewordTile(a, hashTransform.unpackedList[t]);
+                            int[][] bb = hash.generateCodewordTile(b, hashTransform.unpackedList[t]);
                             int[][] cc = new int[4][4];
                             //add the neighborhoods together pair-wise
                             for (int row = 0; row < 4; row++) {
@@ -263,24 +286,23 @@ public class Addition {
                             int result = hash.lastMinCodeword;
                             if (posNeg == 1) result = hash.lastMaxCodeword;
                             int next = 0;
-                            for (int power = 0; power < 4; power++){
-                                int ab = ((a>>power)%2) + 2*((b>>power)%2);
-                                next += (1<<power)*((g>>ab)%2);
+                            for (int power = 0; power < 4; power++) {
+                                int ab = ((a >> power) % 2) + 2 * ((b >> power) % 2);
+                                next += (1 << power) * ((g >> ab) % 2);
                             }
-                            if (next != result){
+                            if (next != result) {
                                 gateWorks = false;
-
                                 continue gloop;
                             }
                         }
                     }
-                    if (gateWorks){
-                        logicTransform[gate][8*posNeg+t] = g;
+                    if (gateWorks) {
+                        logicTransform[gate][8 * posNeg + t] = g;
                     }
                 }
             }
         }
-        CustomArray.plusArrayDisplay(logicTransform,false,false,"logicTransform");
+        CustomArray.plusArrayDisplay(logicTransform, false, false, "logicTransform");
 //
 //        int[][][] attemptedLogicTransform = new int[16][16][4];
 //        for (int g = 0; g < 16; g++) {
@@ -363,7 +385,7 @@ public class Addition {
 //        }
     }
 
-    public void testAllLogic() {
+    public void testAllLogic(boolean rowError) {
         hashTransform.initWolframs();
         int[][] tupleDistro = new int[16][16];
         int[][] h = new int[16][16];
@@ -379,13 +401,13 @@ public class Addition {
             System.out.println("___________________________________________________________________________");
             System.out.println("___________________________________________________________________________");
             System.out.println("gate: " + gate);
-            testGate(gate, tupleDistro, h);
+            testGate(gate, tupleDistro, h, rowError);
         }
         int[] gateDistro = new int[16];
         for (int gate = 0; gate < 16; gate++) {
             System.out.println("gate : " + gate + " tupleDistro : " + Arrays.toString(tupleDistro[gate]));
             for (int element = 0; element < 16; element++) {
-                gateDistro[tupleDistro[gate][element]]++;
+                //gateDistro[tupleDistro[gate][element]]++;
             }
         }
         logicTransform = tupleDistro;
@@ -394,7 +416,7 @@ public class Addition {
         int[] comp = new int[16];
         Arrays.fill(comp, 1);
         int[][] connected = new int[16][16];
-        for (int element = 0; element < 16; element++) {
+        for (int element = 0; element < 0; element++) {
             gateDistro2 = new int[16];
             for (int gate = 0; gate < 16; gate++) {
                 gateDistro2[tupleDistro[gate][element]]++;
@@ -412,6 +434,13 @@ public class Addition {
             }
         }
         CustomArray.plusArrayDisplay(connected, false, false, "connected");
+        int[][] negs = new int[16][16];
+        for (int row = 0; row < 16; row++) {
+            for (int col = 0; col < 16; col++) {
+                negs[row][col] = (tupleDistro[row][col] < 0) ? 1 : 0;
+            }
+        }
+        CustomArray.plusArrayDisplay(negs, false, false, "negs");
     }
 
     public int[][] generateGatePlacesFractal(int gate, int size) {
@@ -542,7 +571,7 @@ public class Addition {
         }
         //Initialize the minMax codeword truth table set
         hash.initWolframs();
-        testAllLogic();
+        testAllLogic(true);
         //hashUtilities.readFromFile();
         //Change the RGB 4-bytes broken down into 32 bits into its depth 0 codewords
         //bfield = hash.initializeDepthZero(bfield, hash.unpackedList[3])[1];
@@ -664,7 +693,7 @@ public class Addition {
         }
         //Initialize the minMax codeword truth table set
         hash.initWolframs();
-        testAllLogic();
+        testAllLogic(true);
         //hashUtilities.readFromFile();
         //Change the RGB 4-bytes broken down into 32 bits into its depth 0 codewords
         //bfield = hash.initializeDepthZero(bfield, hash.unpackedList[3])[1];
@@ -735,6 +764,7 @@ public class Addition {
         System.out.println("numDifferent: " + Arrays.toString(numDifferent));
         System.out.println("numBits: " + (inImage.getHeight() * inImage.getWidth()) * 16);
     }
+
     /**
      * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
      *
@@ -786,18 +816,17 @@ public class Addition {
                 }
             }
         }
-        int[][] flatB = new int[16][bfield.length*bfield[0].length];
+        int[][] flatB = new int[16][bfield.length * bfield[0].length];
         for (int t = 0; t < 16; t++) {
             for (int row = 0; row < bfield.length; row++) {
                 for (int column = 0; column < bfield[0].length; column++) {
-                    flatB[t][row*bfield[0].length+column] = bFieldSet[t][row][column];
+                    flatB[t][row * bfield[0].length + column] = bFieldSet[t][row][column];
                 }
             }
-
         }
         //Initialize the minMax codeword truth table set
         hash.initWolframs();
-        testAllLogic();
+        testAllLogic(true);
         //hashUtilities.readFromFile();
         //Change the RGB 4-bytes broken down into 32 bits into its depth 0 codewords
         //bfield = hash.initializeDepthZero(bfield, hash.unpackedList[3])[1];
@@ -808,7 +837,7 @@ public class Addition {
         //Do the transform
         //framesOfHashing = hash.ecaMinTransform(bfield, hash.unpackedList[3], depth);
         int[][][] hashSet = new int[16][inImage.getHeight()][inImage.getWidth()];
-        int[][] flatHashSet = new int[16][inImage.getHeight()*inImage.getWidth()];
+        int[][] flatHashSet = new int[16][inImage.getHeight() * inImage.getWidth()];
         depth = 3;
         int gate = 8;
         for (int t = 0; t < 8; t++) {
@@ -817,8 +846,8 @@ public class Addition {
             hashSet[8 + t] = hash.ecaMaxTransform(bFieldSet[8 + t], hash.unpackedList[t], depth)[depth];
             //hashSet[t] = bFieldSet[t];
             //hashSet[8 + t] = bFieldSet[8 + t];
-            flatHashSet[t] = hash.oneD(flatB[t],hash.unpackedList[t],1,false,false);
-            flatHashSet[t+8] = hash.oneD(flatB[t+8],hash.unpackedList[t],1,false,true);
+            flatHashSet[t] = hash.oneD(flatB[t], hash.unpackedList[t], 1, false, false);
+            flatHashSet[t + 8] = hash.oneD(flatB[t + 8], hash.unpackedList[t], 1, false, true);
         }
         int[][] modification = generateOperation(hashSet[0].length, hashSet[0][0].length);
         int[][][] modificationTransformed = new int[16][hashSet[0].length][hashSet[0][0].length];
@@ -835,19 +864,18 @@ public class Addition {
                     modifiedSet[8 + t][row][column] = bFieldSet[8 + t][row][column] + 2 * modification[row][column];
                     modifiedSet[t][row][column] = (gate >> modifiedSet[t][row][column]) % 2;
                     modifiedSet[8 + t][row][column] = (gate >> modifiedSet[8 + t][row][column]) % 2;
-
                 }
             }
             for (int row = 0; row < modSetFlat[0].length; row++) {
-                modSetFlat[t][row] = flatB[t][row] + 2 * modification[row/hashSet[0][0].length][row%hashSet[0][0].length];
-                modSetFlat[t+8][row] = flatB[t+8][row] + 2 * modification[row/hashSet[0][0].length][row%hashSet[0][0].length];
+                modSetFlat[t][row] = flatB[t][row] + 2 * modification[row / hashSet[0][0].length][row % hashSet[0][0].length];
+                modSetFlat[t + 8][row] = flatB[t + 8][row] + 2 * modification[row / hashSet[0][0].length][row % hashSet[0][0].length];
             }
             modificationTransformed[t] = hash.ecaMinTransform(modification, hash.unpackedList[t], depth)[depth];
             modificationTransformed[8 + t] = hash.ecaMaxTransform(modification, hash.unpackedList[t], depth)[depth];
             modifiedSet[t] = hash.ecaMinTransform(modifiedSet[t], hash.unpackedList[t], depth)[depth];
             modifiedSet[8 + t] = hash.ecaMaxTransform(modifiedSet[8 + t], hash.unpackedList[t], depth)[depth];
-            modTransFlat[t] = hash.oneD(modSetFlat[t],hash.unpackedList[t],1,false,false);
-            modTransFlat[8+t] = hash.oneD(modSetFlat[8+t],hash.unpackedList[t],1,false,true);
+            modTransFlat[t] = hash.oneD(modSetFlat[t], hash.unpackedList[t], 1, false, false);
+            modTransFlat[8 + t] = hash.oneD(modSetFlat[8 + t], hash.unpackedList[t], 1, false, true);
             for (int row = 0; row < modifiedSet[0].length; row++) {
                 for (int column = 0; column < modifiedSet[0][0].length; column++) {
                     int tot = 0;
@@ -868,19 +896,19 @@ public class Addition {
             }
             for (int row = 0; row < modSetFlat[0].length; row++) {
                 int tot = 0;
-                for (int power = 0; power < 4; power++){
-                    int ab = ((flatHashSet[t][row]>>power)%2)+2*((modificationTransformed[t][row/modificationTransformed[t][0].length][row%modificationTransformed[t+8][0].length]>>power)%2);
-                    ab = (logicTransform[gate][t]>>ab)%2;
-                    tot += (1<<power)*ab;
+                for (int power = 0; power < 4; power++) {
+                    int ab = ((flatHashSet[t][row] >> power) % 2) + 2 * ((modificationTransformed[t][row / modificationTransformed[t][0].length][row % modificationTransformed[t + 8][0].length] >> power) % 2);
+                    ab = (logicTransform[gate][t] >> ab) % 2;
+                    tot += (1 << power) * ab;
                 }
                 intModSetFlat[t][row] = tot;
                 tot = 0;
-                for (int power = 0; power < 4; power++){
-                    int ab = ((flatHashSet[8+t][row]>>power)%2)+2*((modificationTransformed[8+t][row/modificationTransformed[t][0].length][row%modificationTransformed[t+8][0].length]>>power)%2);
-                    ab = (logicTransform[15-gate][8+t]>>ab)%2;
-                    tot += (1<<power)*ab;
+                for (int power = 0; power < 4; power++) {
+                    int ab = ((flatHashSet[8 + t][row] >> power) % 2) + 2 * ((modificationTransformed[8 + t][row / modificationTransformed[t][0].length][row % modificationTransformed[t + 8][0].length] >> power) % 2);
+                    ab = (logicTransform[15 - gate][8 + t] >> ab) % 2;
+                    tot += (1 << power) * ab;
                 }
-                intModSetFlat[8+t][row] = tot;
+                intModSetFlat[8 + t][row] = tot;
             }
         }
         int[] numDifferent = new int[16];
@@ -906,8 +934,9 @@ public class Addition {
         System.out.println("numDifferent: " + Arrays.toString(numDifferent));
         System.out.println("numBits: " + (inImage.getHeight() * inImage.getWidth()) * 16);
         System.out.println("flatNumDifferent: " + Arrays.toString(numDifferent));
-        System.out.println("numBits: " + (inImage.getWidth()* inImage.getHeight()*16));
+        System.out.println("numBits: " + (inImage.getWidth() * inImage.getHeight() * 16));
     }
+
     public int[][] generateOperation(int rows, int cols) {
         int[][] out = new int[rows][cols];
         Random rand = new Random();

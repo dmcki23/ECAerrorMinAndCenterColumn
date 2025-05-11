@@ -1359,7 +1359,7 @@ public class HashUtilities {
                 }
             }
             //int[][][] cinverted = hash.reconstructDepthD(chashed, 1);
-            hash.reconstructDepthD(hashed, 1);
+            hash.reconstructDepthD(hashed, 1,true);
             int[][][] inverted = hash.outResult;
             int[][] finalized = hash.hashInverseDepth0(inverted, 1, 0);
             //int[][] cfinalized = hash.hashInverseDepth0(cinverted, 1, 0);
@@ -1419,7 +1419,7 @@ public class HashUtilities {
                     }
                 }
                 //int[][][] cinverted = hash.reconstructDepthD(chashed, 1);
-                hash.reconstructDepthD(hashed, 1);
+                hash.reconstructDepthD(hashed, 1,true);
                 int[][][] inverted = hash.outResult;
                 int[][] finalized = hash.hashInverseDepth0(inverted, 1, 0);
                 //int[][] cfinalized = hash.hashInverseDepth0(cinverted, 1, 0);
@@ -1476,7 +1476,7 @@ public class HashUtilities {
                     }
                 }
                 //int[][][] cinverted = hash.reconstructDepthD(chashed, 1);
-                hash.reconstructDepthD(hashed, 1);
+                hash.reconstructDepthD(hashed, 1,true);
                 int[][][] inverted = hash.outResult;
                 int[][] finalized = hash.hashInverseDepth0(inverted, 1, 0);
                 //int[][] cfinalized = hash.hashInverseDepth0(cinverted, 1, 0);
