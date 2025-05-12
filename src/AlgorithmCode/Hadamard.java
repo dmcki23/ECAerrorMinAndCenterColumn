@@ -9,18 +9,21 @@ import java.util.Arrays;
  */
 public class Hadamard {
     public int[] hadamardParity;
-    public Hadamard(){
+
+    public Hadamard() {
         hadamardParity = new int[4096];
         for (int n = 0; n < 4096; n++) {
             int tot = 0;
             for (int power = 0; power < 12; power++) {
-                tot += ((n>>power)%2);
+                tot += ((n >> power) % 2);
             }
-            hadamardParity[n] = tot%2;
+            hadamardParity[n] = tot % 2;
         }
     }
+
     /**
      * boolean Hadamard matrix
+     *
      * @param size size of the array desired
      * @return a boolean Hadamard matrix
      */
@@ -43,6 +46,7 @@ public class Hadamard {
 
     /**
      * Hadamard matrix
+     *
      * @param size size of array desired
      * @return Hadamard matrix
      */
@@ -71,6 +75,7 @@ public class Hadamard {
 
     /**
      * Multiplies a * b
+     *
      * @param a a matrix
      * @param b a vector
      * @return a * b
@@ -87,6 +92,7 @@ public class Hadamard {
 
     /**
      * Multiplies a * b
+     *
      * @param a a matrix
      * @param b a matrix
      * @return a * b
@@ -107,10 +113,11 @@ public class Hadamard {
      * Tests the Hadamard and inverse Hadamard matrices. Does the Hadamard-Walsh transform on all 2^size
      * possible binary input arrays of size size. It then does the inverse and if the inverse is not the original,
      * it flags the whole operation as incorrect.
+     *
      * @param size size of matrices to be tested
      * @return Hadamard matrix
      */
-    public int[][] test(int size){
+    public int[][] test(int size) {
         int[][] H = generateHadamard(size);
         int[][] Hnegated = generateHadamard(size);
         for (int row = 0; row < H.length; row++) {
@@ -122,10 +129,10 @@ public class Hadamard {
         int log = (int) (Math.log(size) / Math.log(2));
         System.out.println("log = " + log);
         boolean allMatch = true;
-        for (int in = 0; in < (int)Math.pow(2,size); in++) {
+        for (int in = 0; in < (int) Math.pow(2, size); in++) {
             System.out.println("in = " + in);
             for (int power = 0; power < size; power++) {
-                input[power] = ((in/(int)Math.pow(2, power)) % 2);
+                input[power] = ((in / (int) Math.pow(2, power)) % 2);
             }
             int[] test = matrixMultiply(H, input);
             int[] inverse = matrixMultiply(Hnegated, test);
@@ -133,7 +140,7 @@ public class Hadamard {
                 inverse[spot] /= size;
             }
             for (int spot = 0; spot < size; spot++) {
-                if (inverse[spot] == -1){
+                if (inverse[spot] == -1) {
                     inverse[spot] = 1;
                 } else {
                     inverse[spot] = 0;
@@ -153,28 +160,27 @@ public class Hadamard {
 
     /**
      * Sierpinski gasket in a square matrix
+     *
      * @param size size of array desired
      * @return Pascal triangle square matrix of size size
      */
-    public int[][] pascalDiag(int size){
+    public int[][] pascalDiag(int size) {
         int[][] out = new int[size][size];
         out[0][0] = 1;
         for (int row = 0; row < size; row++) {
             out[0][row] = 1;
             out[row][0] = 1;
         }
-
         for (int row = 2; row < size; row++) {
             for (int col = 1; col < row; col++) {
                 int a = row - col;
                 int b = col;
-                out[a][b] = (out[a - 1][b] + out[a][b - 1])%2;
-
+                out[a][b] = (out[a - 1][b] + out[a][b - 1]) % 2;
             }
         }
         for (int row = 0; row < size; row++) {
             for (int col = 0; col <= row; col++) {
-                out[size-1-row][size-1-col] = out[row][col];
+                out[size - 1 - row][size - 1 - col] = out[row][col];
             }
         }
         CustomArray.plusArrayDisplay(out, false, false, "pascal");
@@ -183,10 +189,11 @@ public class Hadamard {
 
     /**
      * Sierpinski gasket on the diagonal in a square matrix
+     *
      * @param size
      * @return
      */
-    public int[][] pascalLR(int size){
+    public int[][] pascalLR(int size) {
         int[][] out = new int[size][size];
         out[0][0] = 1;
         for (int row = 0; row < size; row++) {
@@ -194,12 +201,11 @@ public class Hadamard {
             out[row][row] = 1;
             out[0][row] = 1;
         }
-
         for (int row = 2; row < size; row++) {
             for (int col = 1; col < row; col++) {
                 int a = row;
                 int b = col;
-                out[a][b] = (out[a - 1][b] + out[a][b - 1])%2;
+                out[a][b] = (out[a - 1][b] + out[a][b - 1]) % 2;
                 out[b][a] = out[a][b];
             }
         }
@@ -209,10 +215,11 @@ public class Hadamard {
 
     /**
      * Sierpinksi gasket XOR Hadmard matrix
+     *
      * @param size length of array
      * @return Sierpinski XOR Hadmard
      */
-    public int[][] pascalXORhadamard(int size){
+    public int[][] pascalXORhadamard(int size) {
         int[][] H = generateHadamardBoolean(size);
         int[][] pascal;
         pascal = pascalLR(size);
@@ -228,7 +235,8 @@ public class Hadamard {
         CustomArray.plusArrayDisplay(out, false, false, "pascalDiag");
         return out;
     }
-    public double[][][] dftOfHadamard(int size){
+
+    public double[][][] dftOfHadamard(int size) {
         double[][][] out = new double[size][size][2];
         int[][] H = generateHadamardBoolean(size);
         for (int row = 0; row < size; row++) {
@@ -239,20 +247,21 @@ public class Hadamard {
         out = dft(out);
         return out;
     }
+
     public double[][] dft(double[][] in) {
         double[][] out = new double[in.length][2];
         double coefficient = -2 * Math.PI;
         for (int row = 0; row < in.length; row++) {
             for (int column = 0; column < in.length; column++) {
-                double r = in[column][0] * Math.cos( (coefficient * row * column) / (double) in.length) - in[column][1] * Math.sin( (coefficient * row * column) / (double) in.length);
-                double c = in[column][0] * Math.sin( (coefficient * row * column) / (double) in.length) + in[column][1] * Math.cos( (coefficient * row * column) / (double) in.length);
+                double r = in[column][0] * Math.cos((coefficient * row * column) / (double) in.length) - in[column][1] * Math.sin((coefficient * row * column) / (double) in.length);
+                double c = in[column][0] * Math.sin((coefficient * row * column) / (double) in.length) + in[column][1] * Math.cos((coefficient * row * column) / (double) in.length);
                 out[row][0] += r;
                 out[row][1] += c;
             }
         }
-
         return out;
     }
+
     public double[][][] dft(double[][][] in) {
         double[][][] out = new double[in.length][in[0].length][2];
         double coefficient = -2 * Math.PI;
@@ -277,16 +286,16 @@ public class Hadamard {
                 out[row][column][1] = outerSum[1];
             }
         }
-
-        for (int row = 0; row < in.length; row++){
-            for (int column = 0; column < in.length; column++){
+        for (int row = 0; row < in.length; row++) {
+            for (int column = 0; column < in.length; column++) {
                 System.out.print(Math.round(out[row][column][0]) + " ");
             }
             System.out.print("\n");
         }
         return out;
     }
-    public int[][] nonReducedHadamard(int size){
+
+    public int[][] nonReducedHadamard(int size) {
         int[][] out = new int[size][size];
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
@@ -295,5 +304,50 @@ public class Hadamard {
         }
         return out;
     }
+    int[][][] allH;
+    public void allHadamardish(int logSize) {
+        int size = (1<<logSize);
+        allH = new int[16][size][size];
+        for (int gate = 0; gate < 16; gate++){
+            int[][] a = new int[2][2];
+            for (int r = 0; r < 2; r++){
+                for (int c = 0; c < 2; c++){
+                    a[r][c] = (gate>>(2*r+c))%2;
+                    allH[gate][r][c] = a[r][c];
+                }
+            }
+            for (int iter = 2; iter <= logSize; iter++) {
+                int localSize = (1<<iter);
+                int[][] temp = new int[localSize][localSize];
 
+                for (int row = 0; row < localSize/2; row++) {
+                    for (int col = 0; col < localSize/2; col++) {
+                        for (int r = 0; r < 2; r++){
+                            for (int c = 0; c < 2; c++){
+                                temp[row+r*localSize/2][col+c*localSize/2] = allH[gate][row][col];
+                            }
+                        }
+                    }
+                }
+                for (int r = 0; r < 2; r++){
+                    for (int c = 0; c < 2; c++){
+                        for (int row = 0; row < localSize/2; row++) {
+                            for (int col = 0; col < localSize/2; col++) {
+                                temp[row+r*localSize/2][col+c*localSize/2] = temp[row][col] ^ a[r][c];
+                            }
+                        }
+                    }
+                }
+                for (int row = 0; row < localSize; row++) {
+                    for (int col = 0; col < localSize; col++) {
+                        allH[gate][row][col] = temp[row][col];
+                    }
+                }
+            }
+
+        }
+        for (int gate = 0; gate < 16; gate++){
+            CustomArray.plusArrayDisplay(allH[gate],false,false,"gate: " + gate);
+        }
+    }
 }

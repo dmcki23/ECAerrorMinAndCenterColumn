@@ -139,6 +139,7 @@ public class Main {
         //hash.bitmapTransformCompleteSetColumnsToo("kitchenShrunk.bmp",0,false);
         //hash.m.rowError = false;
         //hash.m.doAllRules(4,false,0,false,0,false);
-        a.testAllLogic(false);
+        //a.testAllLogic(false);
+        hash.m.oneFiftyDisplay();
     }
 }

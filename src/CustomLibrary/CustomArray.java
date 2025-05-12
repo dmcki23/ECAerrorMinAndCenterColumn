@@ -187,7 +187,7 @@ public class CustomArray {
      * @param modN  which mod
      * @return input with parameters applied
      */
-    static int[][] layerOf(int[][] in, int layer, int base, int modN, boolean noZeros, boolean noSpaces) {
+    public static int[][] layerOf(int[][] in, int layer, int base, int modN, boolean noZeros, boolean noSpaces) {
         int[][] out = new int[in.length][in[0].length];
         for (int row = 0; row < in.length; row++) {
             for (int column = 0; column < in.length; column++) {
@@ -239,6 +239,42 @@ public class CustomArray {
         }
         return out;
     }
-
+    public static int[][] reflectRotateTransposeStatic(int[][] in, int rotation) {
+        int size = in.length;
+        int[][] out = new int[size][size];
+        for (int row = 0; row < size; row++) {
+            for (int column = 0; column < size; column++) {
+                out[row][column] = in[row][column];
+            }
+        }
+        if (rotation % 2 == 1) {
+            int[][] nextTemp = new int[size][size];
+            for (int row = 0; row < size; row++) {
+                for (int column = 0; column < size; column++) {
+                    nextTemp[row][column] = out[size - 1 - row][column];
+                }
+            }
+            out = nextTemp;
+        }
+        if (((rotation / 2) % 2) == 1) {
+            int[][] nextTemp = new int[size][size];
+            for (int row = 0; row < size; row++) {
+                for (int column = 0; column < size; column++) {
+                    nextTemp[row][column] = out[row][size - 1 - column];
+                }
+            }
+            out = nextTemp;
+        }
+        if (((rotation / 4) % 2) == 1) {
+            int[][] nextTemp = new int[size][size];
+            for (int row = 0; row < size; row++) {
+                for (int column = 0; column < size; column++) {
+                    nextTemp[row][column] = out[column][row];
+                }
+            }
+            out = nextTemp;
+        }
+        return out;
+    }
 
 }

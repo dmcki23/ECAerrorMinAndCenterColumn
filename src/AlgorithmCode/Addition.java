@@ -24,6 +24,7 @@ public class Addition {
      */
     HashTruthTables hash = new HashTruthTables(true);
     int[][] logicTransform = new int[16][16];
+    Hadamard hadamard = new Hadamard();
 
     /**
      * The first part of this function generates the addition tables of adding two hash tiles together,
@@ -192,27 +193,72 @@ public class Addition {
             }
         }
         for (int t = 0; t < 16; t++) {
-            if (tupleDistro[gate][t] == -1) {
-                int[][] cc = new int[16][16];
+            if (tupleDistro[gate][t] == -1 ){
+                //if ( (gate == 8 ||gate == 14)) continue;
+                int[][] control = new int[16][16];
                 for (int r = 0; r < 16; r++) {
                     for (int c = 0; c < 16; c++) {
-                        int[][] a = hash.generateCodewordTile(r, hashTransform.bothLists[listLayer][t]);
-                        int[][] b = hash.generateCodewordTile(c, hashTransform.bothLists[listLayer][t]);
-                        int tot = 0;
-                        for (int power = 0; power < 4; power++){
-                            int ab = (1<<power)*(((a[r][c]>>power) % 2) + 2 * ((b[r][c]>>power) % 2));
-                            tot += (1<<power)*((gate>>ab)%2);
+                        int[][] a = hash.generateCodewordTile(r, hashTransform.bothLists[listLayer][t%8]);
+                        int[][] b = hash.generateCodewordTile(c, hashTransform.bothLists[listLayer][t%8]);
+                        int[][] cc = new int[4][4];
+                        int[][] dd = new int[4][4];
+                        for (int row = 0; row < 4; row++) {
+                            for (int col = 0; col < 4; col++) {
+                                int tot = 0;
+                                for (int power = 0; power < 4; power++) {
+                                    int ab = (1 << power) * (((a[row][col] >> power) % 2) + 2 * ((b[row][col] >> power) % 2));
+                                    tot += (1 << power) * ((gate >> ab) % 2);
+                                }
+                                cc[row][col] = tot;
+                            }
+                        }
+                        hash.findMinimizingCodeword(hashTransform.bothLists[listLayer][t % 8], cc);
+                        int codeword = (1 == (t/8)) ? hash.lastMinCodeword : hash.lastMaxCodeword;
+                        control[r][c] = codeword;
+                        int altCodeword = 0;
+                        int altGate = gate;
+                        if (listLayer == 1) altGate = 15 - gate;
+                        for (int power = 4; power < 4; power++) {
+                            altCodeword += (1 << power) * ((altGate >> (((r>>power)%2) + 2 * ((c>>power)%2))) % 2);
+                        }
+                        control[r][c] =  codeword;
+                    }
+                }
+                CustomArray.plusArrayDisplay(control, false, false, "control");
+                for (int power = 0; power < 0; power++) {
+                    int[][] a = CustomArray.layerOf(control,power,2,2,true,false);
+                    int[][] b = CustomArray.layerOf(control,(power+1)%4,2,2,false,false);
+                    int[][] c = new int[16][16];
+                    for (int row = 0; row < 16; row++){
+                        for (int col = 0; col < 16; col++){
+                            c[row][col] = (a[row][col] ^ b[row][col]);
                         }
                     }
+                    CustomArray.plusArrayDisplay(c,true,false,"powers: " + power + " " + ((power+1)%4) );
+                }
+                powerLoop:
+                for (int power = 0; power < 4; power++) {
+                    gLoop:
+                    for (int g = 0; g < 16; g++){
+
+                        for (int r = 0; r < 8; r++){
+                            if (Arrays.deepEquals(hadamard.allH[g],CustomArray.reflectRotateTransposeStatic(CustomArray.layerOf(control,power,2,2, false,false),r))){
+
+                                tupleDistro[gate][t] =  g+16;
+                                continue powerLoop;
+                            }
+                        }
+                    }
+                    CustomArray.plusArrayDisplay(CustomArray.layerOf(control,power,2,2,false,false),false,false,"powers: " + power  );
                 }
             }
         }
-        CustomArray.plusArrayDisplay(distro, false, false, "distro");
+        //CustomArray.plusArrayDisplay(distro, false, false, "distro");
         //Display
         for (int posNeg = 0; posNeg < 2; posNeg++) {
             for (int t = 0; t < 8; t++) {
                 if (Arrays.deepEquals(additionTables[posNeg][t], h)) {
-                    System.out.println("posNeg: " + posNeg + " t: " + t);
+                    //System.out.println("posNeg: " + posNeg + " t: " + t);
                 }
                 for (int power = 0; power < 4; power++) {
                     int[][] display = new int[16][16];
@@ -389,8 +435,9 @@ public class Addition {
         hashTransform.initWolframs();
         int[][] tupleDistro = new int[16][16];
         int[][] h = new int[16][16];
-        Hadamard hadamard = new Hadamard();
+
         h = hadamard.nonReducedHadamard(16);
+        hadamard.allHadamardish(4);
         for (int gate = 0; gate < 16; gate++) {
             System.out.println("___________________________________________________________________________");
             System.out.println("___________________________________________________________________________");
