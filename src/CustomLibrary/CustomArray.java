@@ -277,4 +277,15 @@ public class CustomArray {
         return out;
     }
 
+
+    public int[] flatten(int[][] in) {
+        int[] out = new int[in.length * in[0].length];
+        for (int row = 0; row < in.length; row++) {
+            for (int column = 0; column < in[0].length; column++) {
+                out[row * in[0].length + column] = in[row][column];
+            }
+        }
+        return out;
+    }
+
 }

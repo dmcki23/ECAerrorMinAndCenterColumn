@@ -1,4 +1,4 @@
 /**
- * Files directly related to the LaTex paper of the ECA Error Minimization Hash algorithm
+ * Files directly related to the LaTex paper
  */
 package ECAhashPaper;

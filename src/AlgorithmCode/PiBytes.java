@@ -167,9 +167,9 @@ public class PiBytes {
     public int[][] doConstants() {
         int length = 100;
         int[][] out = new int[4][100];
-        HashTransform hashTransform = new HashTransform();
+        Hash hash = new Hash();
         initializeBinaryConstants();
-        hashTransform.initWolframs();
+        hash.initWolframs();
         int[] tuple = new int[16];
         for (int spot = 0; spot < length; spot++) {
             int activePower = -spot + 4;
@@ -180,8 +180,8 @@ public class PiBytes {
                 }
             }
             for (int t = 0; t < 8; t++) {
-                tuple[t] = hashTransform.flatWolframs[0][t][tot];
-                tuple[t + 8] = hashTransform.flatWolframs[1][t][tot];
+                tuple[t] = hash.flatWolframs[0][t][tot];
+                tuple[t + 8] = hash.flatWolframs[1][t][tot];
             }
         }
         return out;

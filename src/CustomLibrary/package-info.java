@@ -1,4 +1,4 @@
 /**
- * Custom libraries that are shared across many projects that I'm working on
+ * Custom utility libraries for strings and arrays, as well as other supporting classes not directly related to the hash
  */
 package CustomLibrary;

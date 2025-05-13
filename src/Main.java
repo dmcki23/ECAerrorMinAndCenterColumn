@@ -52,7 +52,7 @@ public class Main {
         //fastMinTransformApril.check();
         //fastMinTransform.check();
         //fastMinTransformApril.checkErrorWeights();
-        Addition a = new Addition();
+        HashLogicOpTransform a = new HashLogicOpTransform();
         //a.checkAdditionParity(16);
         //fastMinTransformApril.checkCollisions();
         //fastMinTransformApril.checkWolframCollision();
@@ -70,7 +70,7 @@ public class Main {
         //
         //Testing post trim, post javadoc, post inline commenting, post april 5 2025
         //Everything after this line has been tested post 4-5-2025, DM
-        HashTransform hash = new HashTransform();
+        Hash hash = new Hash();
         //HashCollisions hashCollisions = new HashCollisions();
         //m.doAllRules(4,false,0,false,0,false);
         //hash.hash.initWolframs();
@@ -115,7 +115,7 @@ public class Main {
         //hashUtilities.generateAbsolutelyEverything(4);
         //hash.bitmapTransform();
         //hashUtilities.zerosRelativeTruthTable();
-        EdgeDetection edgeDetection = new EdgeDetection();
+        //EdgeDetection edgeDetection = new EdgeDetection();
         //edgeDetection.bitmapTransform();
         //hashUtilities.zerosRelativeTruthTable();
         //hashUtilities.checkDoubles();
@@ -140,6 +140,7 @@ public class Main {
         //hash.m.rowError = false;
         //hash.m.doAllRules(4,false,0,false,0,false);
         //a.testAllLogic(false);
-        hash.m.oneFiftyDisplay();
+        //hash.m.oneFiftyDisplay();
+        hashCollisions.checkTupleUniqueness();
     }
 }

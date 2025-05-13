@@ -1,4 +1,4 @@
 /**
- * Code directly related to the ECA Error Minimization Hash Transform
+ * Code directly related to the Hash Transform
  */
 package AlgorithmCode;

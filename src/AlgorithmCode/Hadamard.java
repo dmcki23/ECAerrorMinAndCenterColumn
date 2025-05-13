@@ -8,8 +8,28 @@ import java.util.Arrays;
  * Hadamard matrix
  */
 public class Hadamard {
+    /**
+     * The `hadamardParity` array represents the parity of a Hadamard matrix.
+     * This field is used to store parity values, which are typically utilized
+     * in the context of Hadamard matrix operations to determine or validate
+     * the parity of data or structures.
+     *
+     * The array values are computed or modified based on certain operations
+     * involving Hadamard matrices, allowing*/
     public int[] hadamardParity;
 
+    /**
+     * Constructs a Hadamard object and initializes the `hadamardParity` array.
+     *
+     * The `hadamardParity` array contains the parity information for all integers
+     * from 0 to 4095 (inclusive). The parity of each number is determined by the number
+     * of set bits in its binary representation, where an even count results in 0
+     * and an odd count results in 1.
+     *
+     * The process iterates over all 12-bit numbers, counts the number of set bits
+     * in each number, and calculates the parity (even or odd). The calculated parity
+     * is then stored in the corresponding index of the `hadamardParity` array.
+     */
     public Hadamard() {
         hadamardParity = new int[4096];
         for (int n = 0; n < 4096; n++) {
@@ -159,142 +179,12 @@ public class Hadamard {
     }
 
     /**
-     * Sierpinski gasket in a square matrix
+     * Generates a non-reduced Hadamard matrix using bitwise AND operation.
+     * The matrix values are computed based on the bitwise AND of the row and column indices.
      *
-     * @param size size of array desired
-     * @return Pascal triangle square matrix of size size
+     * @param size the size of the square matrix to generate
+     * @return a non-reduced Hadamard matrix of the specified size
      */
-    public int[][] pascalDiag(int size) {
-        int[][] out = new int[size][size];
-        out[0][0] = 1;
-        for (int row = 0; row < size; row++) {
-            out[0][row] = 1;
-            out[row][0] = 1;
-        }
-        for (int row = 2; row < size; row++) {
-            for (int col = 1; col < row; col++) {
-                int a = row - col;
-                int b = col;
-                out[a][b] = (out[a - 1][b] + out[a][b - 1]) % 2;
-            }
-        }
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col <= row; col++) {
-                out[size - 1 - row][size - 1 - col] = out[row][col];
-            }
-        }
-        CustomArray.plusArrayDisplay(out, false, false, "pascal");
-        return out;
-    }
-
-    /**
-     * Sierpinski gasket on the diagonal in a square matrix
-     *
-     * @param size
-     * @return
-     */
-    public int[][] pascalLR(int size) {
-        int[][] out = new int[size][size];
-        out[0][0] = 1;
-        for (int row = 0; row < size; row++) {
-            out[row][0] = 1;
-            out[row][row] = 1;
-            out[0][row] = 1;
-        }
-        for (int row = 2; row < size; row++) {
-            for (int col = 1; col < row; col++) {
-                int a = row;
-                int b = col;
-                out[a][b] = (out[a - 1][b] + out[a][b - 1]) % 2;
-                out[b][a] = out[a][b];
-            }
-        }
-        CustomArray.plusArrayDisplay(out, false, false, "pascal");
-        return out;
-    }
-
-    /**
-     * Sierpinksi gasket XOR Hadmard matrix
-     *
-     * @param size length of array
-     * @return Sierpinski XOR Hadmard
-     */
-    public int[][] pascalXORhadamard(int size) {
-        int[][] H = generateHadamardBoolean(size);
-        int[][] pascal;
-        pascal = pascalLR(size);
-        int[][] pascalDiag = pascalDiag(size);
-        int[][] out = new int[size][size];
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
-                out[row][col] = H[row][col] ^ pascal[col][row];
-                pascalDiag[row][col] = (pascalDiag[row][col] ^ H[row][col]);
-            }
-        }
-        CustomArray.plusArrayDisplay(out, false, false, "pascal");
-        CustomArray.plusArrayDisplay(out, false, false, "pascalDiag");
-        return out;
-    }
-
-    public double[][][] dftOfHadamard(int size) {
-        double[][][] out = new double[size][size][2];
-        int[][] H = generateHadamardBoolean(size);
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
-                out[row][col][0] = H[row][col];
-            }
-        }
-        out = dft(out);
-        return out;
-    }
-
-    public double[][] dft(double[][] in) {
-        double[][] out = new double[in.length][2];
-        double coefficient = -2 * Math.PI;
-        for (int row = 0; row < in.length; row++) {
-            for (int column = 0; column < in.length; column++) {
-                double r = in[column][0] * Math.cos((coefficient * row * column) / (double) in.length) - in[column][1] * Math.sin((coefficient * row * column) / (double) in.length);
-                double c = in[column][0] * Math.sin((coefficient * row * column) / (double) in.length) + in[column][1] * Math.cos((coefficient * row * column) / (double) in.length);
-                out[row][0] += r;
-                out[row][1] += c;
-            }
-        }
-        return out;
-    }
-
-    public double[][][] dft(double[][][] in) {
-        double[][][] out = new double[in.length][in[0].length][2];
-        double coefficient = -2 * Math.PI;
-        for (int row = 0; row < in.length; row++) {
-            for (int column = 0; column < in.length; column++) {
-                double[] innerSum = new double[2];
-                double[] outerSum = new double[2];
-                for (int rr = 0; rr < in.length; rr++) {
-                    innerSum = new double[2];
-                    for (int cc = 0; cc < in[row].length; cc++) {
-                        double r = in[row][column][0] * Math.cos((coefficient * cc * rr) / (double) in.length) - in[row][column][1] * Math.sin((coefficient * cc * rr) / (double) in.length);
-                        double c = in[row][column][0] * Math.sin((coefficient * cc * rr) / (double) in.length) + in[row][column][1] * Math.cos((coefficient * cc * rr) / (double) in.length);
-                        innerSum[0] += r;
-                        innerSum[1] += c;
-                    }
-                    innerSum[0] = innerSum[0] * Math.cos((coefficient * row * column) / (double) in.length) - innerSum[1] * Math.sin((coefficient * row * column) / (double) in.length);
-                    innerSum[1] = innerSum[1] * Math.sin((coefficient * row * column) / (double) in.length) + innerSum[1] * Math.cos((coefficient * row * column) / (double) in.length);
-                    outerSum[0] += innerSum[0];
-                    outerSum[1] += innerSum[1];
-                }
-                out[row][column][0] = outerSum[0];
-                out[row][column][1] = outerSum[1];
-            }
-        }
-        for (int row = 0; row < in.length; row++) {
-            for (int column = 0; column < in.length; column++) {
-                System.out.print(Math.round(out[row][column][0]) + " ");
-            }
-            System.out.print("\n");
-        }
-        return out;
-    }
-
     public int[][] nonReducedHadamard(int size) {
         int[][] out = new int[size][size];
         for (int row = 0; row < size; row++) {
@@ -305,6 +195,15 @@ public class Hadamard {
         return out;
     }
     int[][][] allH;
+
+    /**
+     * Generates all possible Hadamard matrices based on the given logarithmic size.
+     * Populates an internal structure with the computed Hadamard matrices, which are later
+     * displayed using the CustomArray utility.
+     *
+     * @param logSize the logarithmic scale of the size of the matrices to generate.
+     *                The total size will be 2^logSize.
+     */
     public void allHadamardish(int logSize) {
         int size = (1<<logSize);
         allH = new int[16][size][size];

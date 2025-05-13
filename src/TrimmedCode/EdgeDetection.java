@@ -337,7 +337,7 @@ public class EdgeDetection {
                 outRaster[inImage.getWidth() * row + column] = rasterized[0][row][column];
             }
         }
-        File outFile = new File("src/"+filename+"edgeDetection.bmp");
+        File outFile = new File("src/"+filename+ "edgeDetection.bmp");
         ImageIO.write(outImage, "bmp", outFile);
     }
     /**

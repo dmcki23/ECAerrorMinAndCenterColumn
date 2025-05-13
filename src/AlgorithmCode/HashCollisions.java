@@ -1,153 +1,32 @@
 package AlgorithmCode;
 
-import CustomLibrary.CustomArray;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
 /**
- *
+ * The HashCollisions class is designed to analyze and verify various properties of codeword mappings,
+ * particularly focused on identifying and evaluating hash collisions within 4x4 neighborhoods.
+ * It is centered around concepts like uniqueness, error scores, and collisions, with tools to assess
+ * and validate these aspects experimentally and theoretically through verification checks.
+ * <p>
+ * This class provides methods to examine codeword properties, their uniqueness under different conditions,
+ * and the relationship between codeword neighborhoods and their resulting behavior.
  */
 public class HashCollisions {
     /**
      * Middle layer of transform code
      */
-    public HashTransform hash = new HashTransform();
-
-
-
-    /**
-     * Attempts to reconstruct the original bitmap raster after doing one iteration of the hash transform
-     *
-     * @throws IOException
-     */
-    public void check() throws IOException {
-        String filepath = "lion.bmp";
-        File file = new File(filepath);
-        BufferedImage inImage = ImageIO.read(file);
-        int[] inRaster = ((DataBufferInt) inImage.getRaster().getDataBuffer()).getData();
-        int[][] binaryArray = new int[inImage.getHeight()][inImage.getWidth() * 32];
-        //this converts the image's 4 byte rgb code format raster into a binary array
-        //this conversion is done in the column direction, so the data has 8 times the columns
-        //of the input
-        for (int row = 0; row < inImage.getHeight(); row++) {
-            for (int column = 0; column < inImage.getWidth(); column++) {
-                for (int b = 0; b < 3; b++) {
-                    int rgb = (inRaster[inImage.getWidth() * row + column] >> (8 * b)) % 256;
-                    if (rgb < 0) rgb = -rgb;
-                    for (int bb = 0; bb < 8; bb++) {
-                        binaryArray[row][column + 8 * b + bb] = (rgb >> bb) % 2;
-                    }
-                }
-            }
-        }
-        CustomArray.plusArrayDisplay(binaryArray, true, true, "binaryArray");
-        checkInverse(binaryArray);
-    }
-
-    /**
-     * Does the legwork of reconstituting input from sets of codewords
-     * The commented out code that includes a and generatedGuess() is the original voting mechanism
-     * where a codeword generates a square neighborhood to decompress the data back to original
-     * What's here at the moment is the Hadamard parity, which results in the same thing with an
-     * almost identical error rate. The Hadamard parity is count the number of 1s in the bits of
-     * the binary codeword and take that mod 2. For some reason the Hadamard parity can be substituted
-     * for the codeword's generate neighborhood. This was found by experimentation after it was discovered
-     * that codeword addition results in the non-reduced ROW AND COLUMN matrix that produces the boolean
-     * Hadamard matrix.
-     *
-     * @param in 2D codeword input array
-     */
-    public void checkInverse(int[][] in) {
-        //load the minMax 8 tuple subset Wolfram codes
-        hash.initWolframs();
-        int[][][][] depthChart = new int[2][8][in.length][in[0].length];
-        //puts the input data as layer 0 of the output data
-        for (int posNeg = 0; posNeg < 2; posNeg++) {
-            for (int t = 0; t < 8; t++) {
-                System.out.println("posNeg: " + posNeg + " t: " + t);
-                depthChart[posNeg][t] = hash.initializeDepthZero(in, hash.unpackedList[t])[1];
-            }
-        }
-        //this array is the vote tally, location is influenced by 16 neighborhoods within a distance of 4
-        //each of these neighborhoods has 16 terms in the min max codeword set of the 8 tuple
-        //every term of every vote is weighted by 2^RelativeRow
-        int[][] outVotes = new int[in.length][in[0].length];
-        int r;
-        int c;
-        int t;
-        int posNeg;
-        int hadamardValue;
-        int power;
-        int row;
-        int column;
-        //for every location in the transformed bitmap data
-        for (row = 0; row < in.length; row++) {
-            System.out.println("row: " + row + " out of " + in.length);
-            for (column = 0; column < in[0].length; column++) {
-                //for every term in its min max codeword set
-                for (posNeg = 0; posNeg < 2; posNeg++) {
-                    for (t = 0; t < 8; t++) {
-                        //apply its vote to every location that it influences
-                        //including itself
-                        //int[][] generatedGuess = m.generateGuess(depthChart[posNeg][t][row][column], fmt.unpackedList[t]);
-                        hadamardValue = 0;
-                        for (power = 0; power < 4; power++) {
-                            hadamardValue += ((depthChart[posNeg][t][row][column] >> power) % 2);
-                        }
-                        hadamardValue %= 2;
-                        for (r = 0; r < 4; r++) {
-                            for (c = 0; c < 4; c++) {
-                                //int a = (generatedGuess[r][c] );
-                                //if (generatedGuess[r][c] == posNeg) {
-                                if (hadamardValue == posNeg) {
-                                    outVotes[(row + r) % in.length][(column + c) % in[0].length] += (1 << r);
-                                } else {
-                                    outVotes[(row + r) % in.length][(column + c) % in[0].length] -= (1 << r);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        //for each location, based on whether the final tally of the vote was positive or negative
-        //output a 0 if positive and 1 if negative, if the vote result is not what the
-        //original data is increment the error counter for analysis
-        int[][] outResult = new int[in.length][in[0].length];
-        int[][] outCompare = new int[in.length][in[0].length];
-        int totDifferent = 0;
-        for (row = 0; row < in.length; row++) {
-            for (column = 0; column < in[0].length; column++) {
-                if (outVotes[row][column] >= 0) {
-                    outResult[row][column] = 0;
-                } else {
-                    outResult[row][column] = 1;
-                }
-                outCompare[row][column] = outResult[row][column] ^ in[row][column];
-                totDifferent += outCompare[row][column];
-            }
-        }
-        System.out.println("totDifferent: " + totDifferent);
-        System.out.println("totArea: " + (in.length * in[0].length));
-        System.out.println("different/Area=errors/bit= " + ((double) totDifferent / (double) (in.length * in[0].length)));
-    }
-
-
+    public Hash hash = new Hash();
 
     /**
      * For all possible codewords of [0,15,51,85,170,104,240,255] compares the errorScore of its output tile
      * to the codeword's Hadamard parity. This is to make some kind of sense out of why substituting these two values in
      * checkInverse() result in the same reconstitution
      */
-    public void checkErrorScoreVsHadamard() {
+    public void checkErrorScoreVsHadamard(boolean rowError) {
         hash.initWolframs();
         int totDifferent = 0;
+        int listLayer = rowError ? 0 : 1;
         //For every 8-tuple element
         for (int posNeg = 0; posNeg < 1; posNeg++) {
             for (int t = 0; t < 8; t++) {
@@ -155,7 +34,7 @@ public class HashCollisions {
                 for (int input = 0; input < 16; input++) {
                     //Compare a single codeword tile's voting pattern
                     //to that codeword's Hadamard parity
-                    int[][] cell = hash.m.generateCodewordTile(input, hash.unpackedList[t]);
+                    int[][] cell = hash.hashRows.generateCodewordTile(input, hash.bothLists[listLayer][t]);
                     //Do the voting
                     int error = 0;
                     for (int row = 0; row < 4; row++) {
@@ -205,18 +84,23 @@ public class HashCollisions {
     public boolean checkTupleUniqueness() {
         hash.initWolframs();
         boolean out = true;
-        int[][] innerOuterTuples = new int[2][16];
+        int[][] innerOuterTuples = new int[4][16];
         int numSame = 0;
         for (int address = 0; address < 65536; address++) {
             if (address % 256 == 0) System.out.println("address: " + address);
             for (int t = 0; t < 8; t++) {
                 innerOuterTuples[0][t] = hash.flatWolframs[0][t][address];
                 innerOuterTuples[0][t + 8] = hash.flatWolframs[1][t][address];
+                innerOuterTuples[0][t] = hash.flatWolframs[2][t][address];
+                innerOuterTuples[0][t + 8] = hash.flatWolframs[3][t][address];
             }
+            addLoop:
             for (int add = 0; add < address; add++) {
                 for (int t = 0; t < 8; t++) {
                     innerOuterTuples[1][t] = hash.flatWolframs[0][t][add];
                     innerOuterTuples[1][t + 8] = hash.flatWolframs[1][t][add];
+                    innerOuterTuples[0][t] = hash.flatWolframs[2][t][add];
+                    innerOuterTuples[0][t + 8] = hash.flatWolframs[3][t][add];
                 }
                 if (Arrays.equals(innerOuterTuples[0], innerOuterTuples[1])) {
                     out = false;
@@ -229,6 +113,23 @@ public class HashCollisions {
         return out;
     }
 
+    /**
+     * The method checks for collisions between codewords derived from a 5x5 binary array
+     * under various random modifications. The collisions are evaluated based on whether
+     * the derived codewords from the original and randomly modified arrays match.
+     * <p>
+     * The process involves:
+     * 1. Generating a 5x5 binary random array (`field`).
+     * 2. Computing a set of neighborhood-based address values and their corresponding codewords.
+     * 3. Introducing varying levels of random changes (1 to 15) to the original array to produce a new array (`changedField`).
+     * 4. Calculating neighborhood-based address values and codewords for the modified array.
+     * 5. Comparing the codewords of the original and changed arrays to count the collisions
+     * for each level of modifications through `numCollisions`.
+     * 6. Outputting the collision statistics in the form of an array.
+     * <p>
+     * This method helps to analyze the robustness of the hashing or coding mechanism
+     * when subjected to random local changes in input data.
+     */
     public void checkCollisions() {
         int[] numCollisions = new int[16];
         //a 5x5 binary array containing 4 4x4 subarrays that are codeword neighborhoods
@@ -309,65 +210,43 @@ public class HashCollisions {
         System.out.println("numCollisions: " + Arrays.toString(numCollisions));
     }
 
-
-
-    /**
-     * Verifies the optional non-collision loop mentioned in the paper. This checks for collisions between all 65536 minMax 8-tuples,
-     * when the codeword is wrapped with itself. Instead of just collisions between sets of codewords, its checking for collisions
-     * between sets of codeword neighborhoods. The 0-65536 value that the truth table is addressed by is a binary 4x4 array.
-     */
-    public void checkUnitWrappedTupleUniqueness() {
-        //Each of the 65536 neighborhoods are wrapped with themselves
-        //The original binary neighborhood's origin is changed from simply the (0,0) codeword
-        //to all (0..4,0,..4) centered codewords. That is, if the neighborhood is
-        //wrapped column-wise and row-wise and the boundaries of the neighborhood are moved
-        //you get the same binary array reconfigured
-        //
-        //
-        //All the neighborhoods' wrapped addresses
-        int[][] slidingAddresses = new int[65536][16];
-        //All the neighborhoods' wrapped addresses' minMax codeword set values
-        int[][][] slidingTuples = new int[65536][16][16];
-        //Initialize the truth tables
-        hash.initWolframs();
-        //For every address find its wrapped neighborhood set's integer values
-        for (int address = 0; address < 65536; address++) {
-            //Generate the address's neighborhood array
-            int[][] grid = hash.m.addressToArray(4, address);
-            //For every wrapped sub-array
-            for (int r = 0; r < 4; r++) {
-                for (int c = 0; c < 4; c++) {
-                    //Find it's integer value
-                    int tot = 0;
-                    for (int row = 0; row < 4; row++) {
-                        for (int col = 0; col < 4; col++) {
-                            tot += (1 << (4 * row + col)) * grid[(row + r) % 4][(col + c) % 4];
-                        }
+    public void checkCompressionCollisions() {
+        Random rand = new Random();
+        int samples = 1000;
+        int size = 1000;
+        int[] field = new int[size];
+        int[] fieldTwo = new int[size];
+        int depth = 3;
+        int tot = 0;
+        int same = 0;
+        int different = 0;
+        for (int t = 0; t < 8; t++) {
+            for (int layer = 0; layer < 4; layer++) {
+                same = 0;
+                different = 0;
+                tot = 0;
+                for (int sample = 0; sample < samples; sample++) {
+                    for (int index = 0; index < size; index++) {
+                        field[index] = rand.nextInt(0, 2);
                     }
-                    //Store the address
-                    slidingAddresses[address][4 * r + c] = tot;
-                    //Find all the subset's truth table values for that address
-                    for (int posNeg = 0; posNeg < 2; posNeg++) {
-                        for (int t = 0; t < 8; t++) {
-                            slidingTuples[address][4 * r + c][8 * posNeg + t] = hash.flatWolframs[posNeg][t][slidingAddresses[address][4 * r + c]];
+                    int[] fieldHash = hash.oneDHashTransform.hashArrayCompression(field, hash.bothLists[layer][t], depth, (layer % 2 == 0) ? true : false, ((layer / 2) % 2 == 0) ? true : false);
+                    for (int s = 0; s < 100; s++) {
+                        for (int index = 0; index < size; index++) {
+                            fieldTwo[index] = rand.nextInt(0, 2);
                         }
+                        int[] fieldHashTwo = hash.oneDHashTransform.hashArrayCompression(fieldTwo, hash.bothLists[layer][t], depth, (layer % 2 == 0) ? true : false, ((layer / 2) % 2 == 0) ? true : false);
+                        if (Arrays.equals(fieldHash, fieldHashTwo)) {
+                            same++;
+                        } else {
+                            different++;
+                        }
+                        tot++;
                     }
                 }
+                System.out.println("t: " + t + " layer: " + layer + " same: " + same + " different: " + different + " tot: " + tot);
+
             }
         }
-        //Compare all addresses minMax codeword 16 tuple for uniqueness
-        int numErrors = 0;
-        for (int address = 0; address < 65536; address++) {
-            if (address % 256 * 16 == 0) System.out.println("address: " + address / 256);
-            for (int trial = 0; trial < address; trial++) {
-                if (address == trial) continue;
-                if (Arrays.deepEquals(slidingTuples[trial], slidingTuples[address])) {
-                    numErrors++;
-                    System.out.println("error: " + numErrors);
-                }
-            }
-        }
-        System.out.println("numErrors: " + numErrors);
     }
 
     /**
@@ -384,7 +263,7 @@ public class HashCollisions {
         //This initializes the truth tables for the sliding window on a single cell, just one row, one column, or one row and one column
         //A shorter version of the same thing in wrappedTileCodeWords()
         for (int address = 0; address < 65536; address++) {
-            int[][] grid = hash.m.addressToArray(4, address);
+            int[][] grid = hash.hashRows.addressToArray(4, address);
             for (int r = 0; r < 2; r++) {
                 for (int c = 0; c < 2; c++) {
                     int tot = 0;
@@ -577,9 +456,9 @@ public class HashCollisions {
             }
             //Find the minimizing codewords for grid[][]
             for (int t = 0; t < 8; t++) {
-                hash.m.findMinimizingCodeword(hash.unpackedList[t], grid);
-                tuple[t] = hash.m.lastMinCodeword;
-                tuple[8 + t] = hash.m.lastMaxCodeword;
+                hash.hashRows.findMinimizingCodeword(hash.rowList[t], grid);
+                tuple[t] = hash.hashRows.lastMinCodeword;
+                tuple[8 + t] = hash.hashRows.lastMaxCodeword;
             }
             //Randomly change any row of the grid except the last and rehash
             for (int tr = 0; tr < numTrials; tr++) {
@@ -597,9 +476,9 @@ public class HashCollisions {
                 }
                 //Rehash
                 for (int t = 0; t < 8; t++) {
-                    hash.m.findMinimizingCodeword(hash.unpackedList[t], changedGrid);
-                    changedTuple[t] = hash.m.lastMinCodeword;
-                    changedTuple[8 + t] = hash.m.lastMaxCodeword;
+                    hash.hashRows.findMinimizingCodeword(hash.rowList[t], changedGrid);
+                    changedTuple[t] = hash.hashRows.lastMinCodeword;
+                    changedTuple[8 + t] = hash.hashRows.lastMaxCodeword;
                 }
                 //Check against original and tally appropriately
                 if (Arrays.equals(tuple, changedTuple)) {
