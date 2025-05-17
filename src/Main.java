@@ -176,7 +176,7 @@ public class Main {
         //hash.hashBitmap(filepath, hash.bothLists[0][rule],true,false);
         //hash.hashBitmap(filepath, hash.bothLists[1][rule],false,true);
         //needs double checking
-        hash.verifyInverseAndAvalanche(filepath,0,true);
+        hash.verifyInverseAndAvalanche(filepath,0);
         //hash.verifyInverseAndAvalanche(filepath,0,false);
         //hash.hashLogicOpTransform.testAllLogic(true);
         //hash.hashLogicOpTransform.testAllLogic(false);
