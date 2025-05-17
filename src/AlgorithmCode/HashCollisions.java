@@ -223,7 +223,7 @@ public class HashCollisions {
         int size = 1000;
         int[] field = new int[size];
         int[] fieldTwo = new int[size];
-        int depth = 3;
+        int depth = 1;
         int tot = 0;
         int same = 0;
         int different = 0;

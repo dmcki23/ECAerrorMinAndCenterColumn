@@ -162,8 +162,8 @@ public class Main {
         //hash.hashColumns.doAllRules(4,false,0,false,0,false);
         //hash.hashRows.doAllRules(8,false,0,true,1000,false);
         //hash.hashColumns.doAllRules(8,false,0,true,100,false);
-        //needs checking
-        hash.oneDHashTransform.testOneD();
+        //good
+        //hash.oneDHashTransform.testOneD();
         //needs checking
         //hash.hashArrayCompression(new int[1][1],hash.bothLists[0][rule],1,true,true);
         //hash.hashArrayCompression(new int[1][1],hash.bothLists[0][rule],1,false,true);
@@ -176,7 +176,7 @@ public class Main {
         //hash.hashBitmap(filepath, hash.bothLists[0][rule],true,false);
         //hash.hashBitmap(filepath, hash.bothLists[1][rule],false,true);
         //needs double checking
-        //hash.verifyInverseAndAvalanche(filepath,0,true);
+        hash.verifyInverseAndAvalanche(filepath,0,true);
         //hash.verifyInverseAndAvalanche(filepath,0,false);
         //hash.hashLogicOpTransform.testAllLogic(true);
         //hash.hashLogicOpTransform.testAllLogic(false);

@@ -4,20 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="code trim is done, refactoring done, testing NOT done">
-      <change afterPath="$PROJECT_DIR$/src/AlgorithmCode/AnimatedGifEncoder.java" afterDir="false" />
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="a large chunk of testing on the refactor is done">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTransformOneD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransformOneD.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTruthTables.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTruthTables.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashUtilities.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashUtilities.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/PiBytes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/PiBytes.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/minMaxCodewords.dat" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/minMaxCodewords.dat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -156,7 +148,9 @@
       <workItem from="1746576023160" duration="6691000" />
       <workItem from="1746711325241" duration="2110000" />
       <workItem from="1746739214453" duration="73727000" />
-      <workItem from="1747234126123" duration="32942000" />
+      <workItem from="1747234126123" duration="33850000" />
+      <workItem from="1747490671389" duration="2000" />
+      <workItem from="1747491235354" duration="9280000" />
     </task>
     <task id="LOCAL-00001" summary="Have gathered the code from several local projects into this, initial commit">
       <option name="closed" value="true" />
@@ -534,7 +528,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747171282318</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="a large chunk of testing on the refactor is done">
+      <option name="closed" value="true" />
+      <created>1747455979824</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1747455979824</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -569,7 +571,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="moved Wallis product and triangle to the new PiBytes" />
     <MESSAGE value="SwingApplyFastMinTransform working" />
     <MESSAGE value="check() and checkInverse() working to 0.025 error/bit" />
     <MESSAGE value="FastMinTransform Addition and SwingApplyFastMinTransform can be looked up in the javadocs at some point&#10;&#10;removed the center column part of this project to its own intellij project" />
@@ -594,7 +595,8 @@
     <MESSAGE value="the column-weighted minimizations are reasonably well integrated, currently testing the logic transforms" />
     <MESSAGE value="the row weighted code is working, at a good stopping point and about to trim unecessary code" />
     <MESSAGE value="code trim is done, refactoring done, testing NOT done" />
-    <option name="LAST_COMMIT_MESSAGE" value="code trim is done, refactoring done, testing NOT done" />
+    <MESSAGE value="a large chunk of testing on the refactor is done" />
+    <option name="LAST_COMMIT_MESSAGE" value="a large chunk of testing on the refactor is done" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

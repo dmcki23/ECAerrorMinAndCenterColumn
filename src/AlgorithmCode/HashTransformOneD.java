@@ -196,18 +196,18 @@ public class HashTransformOneD {
             for (int r = 0; r < 4 && rowError; r++) {
                 for (int c = 0; c < 4; c++) {
                     if (generatedGuess[r][c] == posNeg) {
-                        votes[(row + neighborDistance * (4 * r + c)) % input.length][c] += (1 << r);
+                        votes[(row + neighborDistance * (r)) % input.length][c] += (1 << r);
                     } else {
-                        votes[(row + neighborDistance * (4 * r + c)) % input.length][c] -= (1 << r);
+                        votes[(row + neighborDistance * (r)) % input.length][c] -= (1 << r);
                     }
                 }
             }
             for (int r = 0; r < 4 && !rowError; r++) {
                 for (int c = 0; c < 4; c++) {
                     if (generatedGuess[r][c] == posNeg) {
-                        votes[(row + neighborDistance * (4 * r + c)) % input.length][c] += (1 << c);
+                        votes[(row + neighborDistance * (r)) % input.length][c] += (1 << c);
                     } else {
-                        votes[(row + neighborDistance * (4 * r + c)) % input.length][c] -= (1 << c);
+                        votes[(row + neighborDistance * (r)) % input.length][c] -= (1 << c);
                     }
                 }
             }
@@ -253,10 +253,12 @@ public class HashTransformOneD {
         int same = 0;
         int diff = 0;
         for (int index = 0; index < size; index++) {
-            if (input[index] == inversion[index]) {
-                same++;
-            } else {
-                diff++;
+            for (int power = 0; power < 4; power++) {
+                if (((input[index]>>power)%2) == ((inversion[index]>>power)%2)) {
+                    same++;
+                } else {
+                    diff++;
+                }
             }
         }
         System.out.println(Arrays.toString(inversion));

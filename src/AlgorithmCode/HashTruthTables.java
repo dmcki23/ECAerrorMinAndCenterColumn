@@ -915,6 +915,23 @@ public class HashTruthTables {
     }
 
     /**
+     * Overload of the other individualRuleManager() for simplicity's sake
+     * @param rule 0-255 ECA rule number
+     * @param size size of the square codeword tile
+     */
+    public void individualRuleManager(int rule, int size){
+        individualRuleManager(rule, size, false, 0, false, 0, false);
+    }
+
+    /**
+     * Overload of the other doAllRules() for simplicity's sake
+     * @param size size of the square codeword tile
+     */
+    public void doAllRules(int size){
+        doAllRules(size, false, 0, false, 0, false);
+    }
+
+    /**
      * Generates the entire truth table for a given size of a particular ECA rule
      *
      * @param rule              0-255 ECA rule
