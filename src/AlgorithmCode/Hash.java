@@ -440,7 +440,7 @@ public class Hash {
         //neighborDistance = 1;
         int listLayer;
         boolean rowError = false;
-        int[][][][] votes = new int[16][input[0].length][input[0][0].length][4];
+        int[][][][] votes = new int[32][input[0].length][input[0][0].length][4];
         int[][][] altVotes = new int[input[0].length][input[0][0].length][4];
         for (int row = 0; row < input[0].length; row++) {
             for (int col = 0; col < input[0][0].length; col++) {
@@ -457,10 +457,10 @@ public class Hash {
                             for (int c = 0; c < 4; c++) {
                                 //for (int power = 0; power < 4; power++) {
                                 if (generatedGuess[r][c] == posNeg) {
-                                    //votes[8 * posNeg + t][(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << r);
+                                    votes[ t][(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << r);
                                     altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << r);
                                 } else {
-                                    //votes[8 * posNeg + t][(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << r);
+                                    votes[ t][(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << r);
                                     altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << r);
                                 }
                                 //}
@@ -471,10 +471,10 @@ public class Hash {
                             for (int c = 0; c < 4; c++) {
                                 //for (int power = 0; power < 4; power++) {
                                 if (generatedGuess[r][c] == posNeg) {
-                                    //votes[ t][(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << c);
+                                    votes[ t][(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << c);
                                     altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << c);
                                 } else {
-                                    //votes[t][(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << c);
+                                    votes[t][(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << c);
                                     altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << c);
                                 }
                                 //}
@@ -491,16 +491,16 @@ public class Hash {
         int[][] outCompare = new int[input[0].length][input[0][0].length];
         int totDifferent = 0;
         int[][] finalOutput = new int[input[0].length][input[0][0].length];
-        for (int posNeg = 0; posNeg < 2; posNeg++) {
-            for (int t = 0; t < 8; t++) {
+        for (int posNeg = 0; posNeg < 1; posNeg++) {
+            for (int t = 0; t < 32; t++) {
                 for (int row = 0; row < input[0].length; row++) {
                     for (int column = 0; column < input[0][0].length; column++) {
                         for (int power = 0; power < 4; power++) {
-                            if (votes[8 * posNeg + t][row][column][power] >= 0) {
-                                outResult[8 * posNeg + t][row][column] += 0;
+                            if (votes[t][row][column][power] >= 0) {
+                                outResult[t][row][column] += 0;
                                 finalOutput[row][column] += 0;
                             } else {
-                                outResult[8 * posNeg + t][row][column] += (1 << power);
+                                outResult[t][row][column] += (1 << power);
                                 finalOutput[row][column] += (1 << power);
                             }
                         }
