@@ -290,36 +290,39 @@ public class HashTruthTables {
             //
             //
             //Score the error
-            for (row = 0; row < size & rowError; row++) {
-                for (column = 0; column < size; column++) {
-                    //
-                    //
-                    //Various error-scoring weights tested
-                    errorScore[neighborhood] += ((int) Math.pow(2, row) * (trialField[row][column] ^ in[row][column]));
-                    //errorScore[neighborhood] +=  ((row*row))*(trialField[row][column] ^ in[row][column]);
-                    //errorScore[correction] += row*row*(trialField[row][column] ^ in[row][column]);
-                    //errorScore[correction] += column*column *(in[row][column] ^  trialField[row][column]);
-                    //errorScore[correction] += column* (in[row][column] ^  trialField[row][column]);
-                    //errorScore[neighborhood] += row* (in[row][column] ^  trialField[row][column]);
-                    //errorScore[correction] += (in[row][column] ^ trialField[row][column]);
-                    //errorScore[neighborhood] += (int)Math.pow(2, column)*(in[row][column] ^ trialField[row][column]);
-                    //errorScore[correction] += coefficients[row] * trialField[row][column];
+            if (rowError) {
+                for (row = 0; row < size; row++) {
+                    for (column = 0; column < size; column++) {
+                        //
+                        //
+                        //Various error-scoring weights tested
+                        errorScore[neighborhood] += ((int) Math.pow(2, row) * (trialField[row][column] ^ in[row][column]));
+                        //errorScore[neighborhood] +=  ((row*row))*(trialField[row][column] ^ in[row][column]);
+                        //errorScore[correction] += row*row*(trialField[row][column] ^ in[row][column]);
+                        //errorScore[correction] += column*column *(in[row][column] ^  trialField[row][column]);
+                        //errorScore[correction] += column* (in[row][column] ^  trialField[row][column]);
+                        //errorScore[neighborhood] += row* (in[row][column] ^  trialField[row][column]);
+                        //errorScore[correction] += (in[row][column] ^ trialField[row][column]);
+                        //errorScore[neighborhood] += (int)Math.pow(2, column)*(in[row][column] ^ trialField[row][column]);
+                        //errorScore[correction] += coefficients[row] * trialField[row][column];
+                    }
                 }
-            }
-            for (row = 0; row < size & !rowError; row++) {
-                for (column = 0; column < size; column++) {
-                    //
-                    //
-                    //Various error-scoring weights tested
-                    //errorScore[neighborhood] += ((int) Math.pow(2, row) * (trialField[row][column] ^ in[row][column]));
-                    //errorScore[neighborhood] +=  ((row*row))*(trialField[row][column] ^ in[row][column]);
-                    //errorScore[correction] += row*row*(trialField[row][column] ^ in[row][column]);
-                    //errorScore[correction] += column*column *(in[row][column] ^  trialField[row][column]);
-                    //errorScore[correction] += column* (in[row][column] ^  trialField[row][column]);
-                    //errorScore[neighborhood] += row* (in[row][column] ^  trialField[row][column]);
-                    //errorScore[correction] += (in[row][column] ^ trialField[row][column]);
-                    errorScore[neighborhood] += (int)Math.pow(2, column)*(in[row][column] ^ trialField[row][column]);
-                    //errorScore[correction] += coefficients[row] * trialField[row][column];
+            } else {
+                for (row = 0; row < size; row++) {
+                    for (column = 0; column < size; column++) {
+                        //
+                        //
+                        //Various error-scoring weights tested
+                        //errorScore[neighborhood] += ((int) Math.pow(2, row) * (trialField[row][column] ^ in[row][column]));
+                        //errorScore[neighborhood] +=  ((row*row))*(trialField[row][column] ^ in[row][column]);
+                        //errorScore[correction] += row*row*(trialField[row][column] ^ in[row][column]);
+                        //errorScore[correction] += column*column *(in[row][column] ^  trialField[row][column]);
+                        //errorScore[correction] += column* (in[row][column] ^  trialField[row][column]);
+                        //errorScore[neighborhood] += row* (in[row][column] ^  trialField[row][column]);
+                        //errorScore[correction] += (in[row][column] ^ trialField[row][column]);
+                        errorScore[neighborhood] += (int) Math.pow(2, column) * (in[row][column] ^ trialField[row][column]);
+                        //errorScore[correction] += coefficients[row] * trialField[row][column];
+                    }
                 }
             }
         }
@@ -1032,6 +1035,7 @@ public class HashTruthTables {
                 for (column = 0; column < size; column++) {
                     totMinErrors += (minVote[row][column] ^ field[row][column]);
                     minErrorMap[rule][row][column] += (minVote[row][column] ^ field[row][column]);
+                    //maxVote[row][column] = (1+maxVote[row][column])%2;
                     totMaxErrors += (((maxVote[row][column] ^ field[row][column])));
                     maxErrorMap[rule][row][column] += (((maxVote[row][column] ^ field[row][column])));
                 }

@@ -49,6 +49,7 @@ public class Hash {
      * The entire set of minMax row column codewords for all 256 ECA
      */
     public int[][][] allTables = new int[4][256][256 * 256];
+
     /**
      * The 8 rules referred to in the paper that have an even distribution of codewords
      * and unique codewords for every input
@@ -252,21 +253,51 @@ public class Hash {
         int[] comp = new int[65536];
         //if (!Arrays.equals(comp, flatWolframs[0][1])) return 0;
         //initWolframs(true);
-        for (int r = 0; r < 8; r++) {
-            hashRows.individualRule(rowList[r], 4, false, 0, false, 0, false);
-            hashColumns.individualRule(columnList[r], 4, false, 0, false, 0, false);
-            allTables[0][rowList[r]] = hashRows.minSolutionsAsWolfram[rowList[r]];
-            allTables[1][rowList[r]] = hashRows.maxSolutionsAsWolfram[rowList[r]];
-            allTables[2][columnList[r]] = hashColumns.minSolutionsAsWolfram[columnList[r]];
-            allTables[3][columnList[r]] = hashColumns.maxSolutionsAsWolfram[columnList[r]];
+        for (int t = 0; t < 8; t++) {
+            hashRows.individualRule(rowList[t], 4, false, 0, false, 0, false);
+            for (int address = 0; address < 256 * 256; address++) {
+                //hashColumns.individualRule(columnList[t], 4, false, 0, false, 0, false);
+                allTables[0][rowList[t]][address] = hashRows.minSolutionsAsWolfram[rowList[t]][address];
+                allTables[1][rowList[t]][address] = hashRows.maxSolutionsAsWolfram[rowList[t]][address];
+                //allTables[2][columnList[t]] = hashColumns.minSolutionsAsWolfram[columnList[t]];
+                //allTables[3][columnList[t]] = hashColumns.maxSolutionsAsWolfram[columnList[t]];
+            }
+        }
+        for (int t = 0; t < 8; t++) {
+            hashColumns.individualRule(columnList[t], 4, false, 0, false, 0, false);
+            for (int address = 0; address < 256 * 256; address++) {
+                //hashRows.individualRule(rowList[t], 4, false, 0, false, 0, false);
+
+                //allTables[0][rowList[t]] = hashRows.minSolutionsAsWolfram[rowList[t]];
+                //allTables[1][rowList[t]] = hashRows.maxSolutionsAsWolfram[rowList[t]];
+                allTables[2][columnList[t]][address] = hashColumns.minSolutionsAsWolfram[columnList[t]][address];
+                allTables[3][columnList[t]][address] = hashColumns.maxSolutionsAsWolfram[columnList[t]][address];
+            }
         }
         //Initialize the truth tables for both the min and max codewords of the set
-        for (int spot = 0; spot < 8; spot++) {
+        for (int t = 0; t < 8; t++) {
             for (int column = 0; column < 256 * 256; column++) {
-                flatWolframs[0][spot][column] = hashRows.minSolutionsAsWolfram[rowList[spot]][column];
-                flatWolframs[1][spot][column] = hashRows.maxSolutionsAsWolfram[rowList[spot]][column];
-                flatWolframs[2][spot][column] = hashColumns.minSolutionsAsWolfram[columnList[spot]][column];
-                flatWolframs[3][spot][column] = hashColumns.maxSolutionsAsWolfram[columnList[spot]][column];
+                flatWolframs[0][t][column] = hashRows.minSolutionsAsWolfram[rowList[t]][column];
+                flatWolframs[1][t][column] = hashRows.maxSolutionsAsWolfram[rowList[t]][column];
+                flatWolframs[2][t][column] = hashColumns.minSolutionsAsWolfram[columnList[t]][column];
+                flatWolframs[3][t][column] = hashColumns.maxSolutionsAsWolfram[columnList[t]][column];
+            }
+        }
+        System.out.println("flatWolframs.length: " + flatWolframs.length);
+        for (int layer = 0; layer < 4; layer++) {
+            for (int t = 0; t < 8; t++) {
+                System.out.println(Arrays.toString(Arrays.copyOfRange(flatWolframs[layer][t], 0, 300)));
+                comp = new int[flatWolframs[layer][t].length];
+                if (Arrays.equals(comp, flatWolframs[layer][t])){
+                    System.out.println("is zero");
+                }
+            }
+        }
+        for (int list = 0; list < 2; list++){
+            for (int posNeg = 0; posNeg < 2; posNeg++) {
+                for (int t= 0; t < 8; t++){
+                    System.out.println(list + " " + posNeg + " " + t + " " + Arrays.toString(Arrays.copyOfRange(allTables[2*list+posNeg][bothLists[list][t]],0,300)));
+                }
             }
         }
         return 0;
@@ -366,25 +397,28 @@ public class Hash {
                 //apply its vote to every location that it influences
                 //including itself
                 int[][] generatedGuess = hashRows.generateCodewordTile(input[row][col], rule);
-                for (int r = 0; r < 4 && rowError; r++) {
-                    for (int c = 0; c < 4; c++) {
-                        //for (int power = 0; power < 4; power++) {
-                        if (generatedGuess[r][c] == negativeSign) {
-                            votes[(row + neighborDistance * ((r) % 2)) % input.length][(col + neighborDistance * ((r / 2) % 2)) % input[0].length][c] += (1 << r);
-                        } else {
-                            votes[(row + neighborDistance * ((r) % 2)) % input.length][(col + neighborDistance * ((r / 2) % 2)) % input[0].length][c] -= (1 << r);
+                if (rowError) {
+                    for (int r = 0; r < 4; r++) {
+                        for (int c = 0; c < 4; c++) {
+                            //for (int power = 0; power < 4; power++) {
+                            if (generatedGuess[r][c] == negativeSign) {
+                                votes[(row + neighborDistance * ((r) % 2)) % input.length][(col + neighborDistance * ((r / 2) % 2)) % input[0].length][c] += (1 << r);
+                            } else {
+                                votes[(row + neighborDistance * ((r) % 2)) % input.length][(col + neighborDistance * ((r / 2) % 2)) % input[0].length][c] -= (1 << r);
+                            }
+                            //}
                         }
-                        //}
                     }
-                }
-                for (int r = 0; r < 4 & !rowError; r++) {
-                    for (int c = 0; c < 4; c++) {
-                        if (generatedGuess[r][c] == negativeSign) {
-                            votes[(row + neighborDistance * ((r) % 2)) % input.length][(col + neighborDistance * ((r / 2) % 2)) % input[0].length][c] += (1 << c);
-                        } else {
-                            votes[(row + neighborDistance * ((r) % 2)) % input.length][(col + neighborDistance * ((r / 2) % 2)) % input[0].length][c] -= (1 << c);
+                } else {
+                    for (int r = 0; r < 4 ; r++) {
+                        for (int c = 0; c < 4; c++) {
+                            if (generatedGuess[r][c] == negativeSign) {
+                                votes[(row + neighborDistance * ((r) % 2)) % input.length][(col + neighborDistance * ((r / 2) % 2)) % input[0].length][c] += (1 << c);
+                            } else {
+                                votes[(row + neighborDistance * ((r) % 2)) % input.length][(col + neighborDistance * ((r / 2) % 2)) % input[0].length][c] -= (1 << c);
+                            }
+                            //}
                         }
-                        //}
                     }
                 }
             }
@@ -445,7 +479,7 @@ public class Hash {
         for (int row = 0; row < input[0].length; row++) {
             for (int col = 0; col < input[0][0].length; col++) {
                 //for (int posNeg = 0; posNeg < 2; posNeg++) {
-                for (int t = 0; t < 32; t++) {
+                for (int t = 0; t < 16; t++) {
                     int posNeg = (t / 8) % 2;
                     listLayer = (t / 16) % 2;
                     rowError = (t / 16) % 2 == 0 ? true : false;
@@ -457,25 +491,25 @@ public class Hash {
                             for (int c = 0; c < 4; c++) {
                                 //for (int power = 0; power < 4; power++) {
                                 if (generatedGuess[r][c] == posNeg) {
-                                    votes[ t][(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << r);
-                                    altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << r);
+                                    votes[t][(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << r);
+                                    altVotes[(row + neighborDistance * ((r/2) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << r);
                                 } else {
-                                    votes[ t][(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << r);
-                                    altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << r);
+                                    votes[t][(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << r);
+                                    altVotes[(row + neighborDistance * ((r/2) % 2)) % input[0].length][(col + neighborDistance * ((r ) % 2)) % input[0][0].length][c] -= (1 << r);
                                 }
                                 //}
                             }
                         }
                     } else {
-                        for (int r = 0; r < 4 ; r++) {
+                        for (int r = 0; r < 4; r++) {
                             for (int c = 0; c < 4; c++) {
                                 //for (int power = 0; power < 4; power++) {
                                 if (generatedGuess[r][c] == posNeg) {
-                                    votes[ t][(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << c);
+                                    votes[t][(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << c);
                                     altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << c);
                                 } else {
                                     votes[t][(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << c);
-                                    altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << c);
+                                    altVotes[(row + neighborDistance * ((r/2) % 2)) % input[0].length][(col + neighborDistance * ((r ) % 2)) % input[0][0].length][c] -= (1 << c);
                                 }
                                 //}
                             }
@@ -491,21 +525,33 @@ public class Hash {
         int[][] outCompare = new int[input[0].length][input[0][0].length];
         int totDifferent = 0;
         int[][] finalOutput = new int[input[0].length][input[0][0].length];
-        for (int posNeg = 0; posNeg < 1; posNeg++) {
-            for (int t = 0; t < 32; t++) {
-                for (int row = 0; row < input[0].length; row++) {
-                    for (int column = 0; column < input[0][0].length; column++) {
-                        for (int power = 0; power < 4; power++) {
-                            if (votes[t][row][column][power] >= 0) {
-                                outResult[t][row][column] += 0;
-                                finalOutput[row][column] += 0;
-                            } else {
-                                outResult[t][row][column] += (1 << power);
-                                finalOutput[row][column] += (1 << power);
-                            }
+        int[][][] intermediateVote = new int[input[0].length][input[0][0].length][4];
+        for (int t = 0; t < 32; t++) {
+            for (int row = 0; row < input[0].length; row++) {
+                for (int column = 0; column < input[0][0].length; column++) {
+                    for (int power = 0; power < 4; power++) {
+                        if (votes[t][row][column][power] >= 0) {
+                            intermediateVote[row][column][power] += 0;
+                            //outResult[t][row][column] += 0;
+                            finalOutput[row][column] += 0;
+                        } else {
+                            intermediateVote[row][column][power] += (1 << power);
+                            //outResult[t][row][column] += (1 << power);
+                            finalOutput[row][column] += (1 << power);
                         }
-                        //outCompare[row][column] = outResult[row][column] ^ input[row][column];
-                        totDifferent += outCompare[row][column];
+                    }
+                    //outCompare[row][column] = outResult[row][column] ^ input[row][column];
+                    totDifferent += outCompare[row][column];
+                }
+            }
+        }
+        for (int row = 0; row < input[0].length; row++) {
+            for (int col = 0; col < input[0][0].length; col++) {
+                for (int power = 0; power < 4; power++) {
+                    if (intermediateVote[row][col][power] >= 0) {
+                        finalOutput[row][col] += 0;
+                    } else {
+                        finalOutput[row][col] += (1 << power);
                     }
                 }
             }
@@ -586,7 +632,6 @@ public class Hash {
                 }
             }
         }
-
         writeGif(rasterized, filepath + "gif.gif", depth, inImage);
         System.out.println("depth: " + depth);
         System.out.println("done with gif");
@@ -779,7 +824,7 @@ public class Hash {
         int[] avalancheDifferences = new int[32];
         System.out.println("depth: " + depth);
         for (int t = 0; t < 32; t++) {
-            listIndex = (t / 16) % 2 == 0 ? 0 : 1;
+            listIndex = (t / 16) % 2;
             rowError = (t / 16) % 2 == 0 ? true : false;
             minimize = (t / 8) % 2 == 0 ? true : false;
             //hashSet[t] = ecaMinTransform(bFieldSet[t], unpackedList[t], depth)[1];
@@ -805,11 +850,15 @@ public class Hash {
         }
         System.out.println("avalancheDifferences: " + Arrays.toString(avalancheDifferences));
         for (int t = 0; t < 32; t++) {
-            listIndex = (t / 16) % 2 == 0 ? 0 : 1;
+            listIndex = (t / 16) % 2;
             rowError = (t / 16) % 2 == 0 ? true : false;
             minimize = (t / 8) % 2 == 0 ? true : false;
             int total = 0;
             int[][] recon = invert(hashSet[t], depth, bothLists[listIndex][t % 8], minimize, rowError);
+            System.out.println("t: " + t);
+            //System.out.println(Arrays.deepToString(hashSet[t]));
+            //System.out.println(Arrays.deepToString(recon));
+            //System.out.println(Arrays.deepToString(bFieldSet[t]));
             for (int row = 0; row < recon.length; row++) {
                 for (int column = 0; column < recon[0].length; column++) {
                     //total += recon[row][column] ^ hashed[t][depth-1][row][column];
@@ -818,7 +867,7 @@ public class Hash {
                     }
                 }
             }
-            System.out.println("total: " + total + " " + (double)(total)/(inRaster.length*16));
+            System.out.println("total: " + total + " " + (double) (total) / (inRaster.length * 16));
         }
         int[][] invertedSet = invert(hashSet, depth);
         int total = 0;
@@ -830,6 +879,7 @@ public class Hash {
             }
         }
         System.out.println("overall total: " + total);
+        //System.out.println(Arrays.toString(allTables[3][165]));
     }
 }
 
