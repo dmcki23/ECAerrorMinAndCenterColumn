@@ -1,13 +1,13 @@
 package AlgorithmCode;
 
-import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferUShort;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -18,20 +18,29 @@ public class Hash {
     /**
      * Hash subroutines
      */
-    public HashTruthTables hashRows = new HashTruthTables(true);
+    public HashTruthTables hashRows;
     /**
      * Hash subroutines
      */
-    public HashTruthTables hashColumns = new HashTruthTables(false);
+    public HashTruthTables hashColumns;
+    /**
+     * Both hashRows and hashColumns in one array, todo maybe get rid of the original version and keep the array
+     */
+    public HashTruthTables[] hashRowsColumns;
     /**
      * Provides utility methods and functionalities related to hashing operations.
      * Used as a helper component within the HashTransform class.
      */
-    HashUtilities hashUtilities;
+    public HashUtilities hashUtilities = new HashUtilities(this);
+    /**
+     * The relative logic gate transform that occurs when hashing
+     */
+    public HashLogicOpTransform hashLogicOpTransform = new HashLogicOpTransform(this);
     /**
      * One D version of the hash
      */
     public HashTransformOneD oneDHashTransform = new HashTransformOneD(this);
+    public HashCollisions hashCollisions;
     /**
      * The entire set of min and max codewords of [0,15,51,85,170,204,240,255]
      */
@@ -49,12 +58,10 @@ public class Hash {
      * Column-weighted ECA rules that have an even distribution and unique solutions
      */
     public int[] columnList = new int[]{0, 15, 85, 90, 165, 170, 240, 255};
-
     /**
      * rowList and columnList in one array
      */
-    int[][] bothLists = new int[][]{{0, 15, 51, 85, 170, 204, 240, 255}, {0, 15, 85, 90, 165, 170, 240, 255}};
-
+    public int[][] bothLists = new int[][]{{0, 15, 51, 85, 170, 204, 240, 255}, {0, 15, 85, 90, 165, 170, 240, 255}};
     /**
      * A three-dimensional integer array used to store the output results of certain hashing
      * transformations. The exact structure and usage are determined by the implementation of
@@ -68,6 +75,17 @@ public class Hash {
      * algorithms in the class.
      */
     int[][][] outResult;
+
+    public Hash() throws IOException {
+        hashRows = new HashTruthTables(true, this);
+        hashColumns = new HashTruthTables(false, this);
+        hashRowsColumns = new HashTruthTables[]{hashRows, hashColumns};
+        hashUtilities = new HashUtilities(this);
+        hashLogicOpTransform = new HashLogicOpTransform(this);
+        oneDHashTransform = new HashTransformOneD(this);
+        hashCollisions = new HashCollisions(this);
+        initWolframs();
+    }
 
     /**
      * Takes in a 2D array of hashed data in codeword form, then rehashes sets of codewords increasingly far apart in steps of powers of 2, 1 apart 2 apart 4 apart ... 2^n apart
@@ -170,7 +188,7 @@ public class Hash {
     /**
      * Initializes the set of hash truth tables for both row and column weighted lists
      */
-    public void initWolframs() {
+    public void initWolframsFromFileTest() throws IOException {
         for (int r = 0; r < 8; r++) {
             hashRows.individualRule(rowList[r], 4, false, 0, false, 0, false);
             hashColumns.individualRule(columnList[r], 4, false, 0, false, 0, false);
@@ -188,6 +206,141 @@ public class Hash {
                 flatWolframs[3][spot][column] = hashColumns.maxSolutionsAsWolfram[columnList[spot]][column];
             }
         }
+        int[][][] compareCopy = new int[4][8][256 * 256];
+        System.out.println("compareCopy.length: " + compareCopy.length);
+        for (int layer = 0; layer < 4; layer++) {
+            for (int element = 0; element < 8; element++) {
+                for (int index = 0; index < 256 * 256; index++) {
+                    compareCopy[layer][element][index] = flatWolframs[layer][element][index];
+                }
+                System.out.println(Arrays.toString(Arrays.copyOfRange(compareCopy[layer][element], 0, 80)));
+            }
+        }
+        writeToFileMinMaxRowColumn();
+        readFromFileMinMaxRowColumn();
+        int same = 0;
+        int different = 0;
+        for (int layer = 0; layer < 4; layer++) {
+            for (int element = 0; element < 8; element++) {
+                for (int address = 0; address < 256 * 256; address++) {
+                    if (compareCopy[layer][element][address] == flatWolframs[layer][element][address]) {
+                        same++;
+                    } else {
+                        different++;
+                    }
+                }
+            }
+        }
+        System.out.println("same: " + same);
+        System.out.println("different: " + different);
+    }
+
+    /**
+     * Initializes the set of hash truth tables for both row and column weighted lists
+     */
+    public void initWolframs(boolean fromFile) throws IOException {
+//        hashRows = new HashTruthTables(true,this);
+//        hashColumns = new HashTruthTables(false,this);
+        readFromFileMinMaxRowColumn();
+    }
+
+    /**
+     * Initializes the set of hash truth tables for both row and column weighted lists
+     */
+    public int initWolframs() {
+        int[] comp = new int[65536];
+        //if (!Arrays.equals(comp, flatWolframs[0][1])) return 0;
+        //initWolframs(true);
+        for (int r = 0; r < 8; r++) {
+            hashRows.individualRule(rowList[r], 4, false, 0, false, 0, false);
+            hashColumns.individualRule(columnList[r], 4, false, 0, false, 0, false);
+            allTables[0][rowList[r]] = hashRows.minSolutionsAsWolfram[rowList[r]];
+            allTables[1][rowList[r]] = hashRows.maxSolutionsAsWolfram[rowList[r]];
+            allTables[2][columnList[r]] = hashColumns.minSolutionsAsWolfram[columnList[r]];
+            allTables[3][columnList[r]] = hashColumns.maxSolutionsAsWolfram[columnList[r]];
+        }
+        //Initialize the truth tables for both the min and max codewords of the set
+        for (int spot = 0; spot < 8; spot++) {
+            for (int column = 0; column < 256 * 256; column++) {
+                flatWolframs[0][spot][column] = hashRows.minSolutionsAsWolfram[rowList[spot]][column];
+                flatWolframs[1][spot][column] = hashRows.maxSolutionsAsWolfram[rowList[spot]][column];
+                flatWolframs[2][spot][column] = hashColumns.minSolutionsAsWolfram[columnList[spot]][column];
+                flatWolframs[3][spot][column] = hashColumns.maxSolutionsAsWolfram[columnList[spot]][column];
+            }
+        }
+        return 0;
+    }
+
+    public void readFromFileMinMaxRowColumn() throws IOException {
+//        File file = new File("src/AlgorithmCode/minMaxCodewordsTest.dat");
+//        FileInputStream in = new FileInputStream(file);
+//        byte[] data = new byte[(int) file.length()];
+//        data = in.readAllBytes();
+//        System.out.println("data.length: " + data.length);
+//        for (int posNeg = 0; posNeg < 2; posNeg++) {
+//            for (int rowColumn = 0; rowColumn < 2; rowColumn++) {
+//                for (int t = 0; t < 8; t++) {
+//                    for (int index = 0; index < 65536; index++) {
+//                        flatWolframs[posNeg + 2 * rowColumn][t][index] = (int) data[index];
+//                        if (posNeg == 0)
+//                            hashRowsColumns[rowColumn].minSolutionsAsWolfram[bothLists[rowColumn][t]][index] = flatWolframs[posNeg + 2 * rowColumn][t][index];
+//                        else
+//                            hashRowsColumns[rowColumn].maxSolutionsAsWolfram[bothLists[rowColumn][t]][index] = flatWolframs[posNeg + 2 * rowColumn][t][index];
+//                    }
+//                }
+//            }
+//        }
+//        System.out.println();
+//        for (int layer = 0; layer < 4; layer++) {
+//            for (int t = 0; t < 8; t++) {
+//                System.out.println(Arrays.toString(Arrays.copyOfRange(flatWolframs[layer][t], 0, 80)));
+//            }
+//        }
+//        in.close();
+//
+//
+//
+//        FileInputStream in = new FileInputStream(file);
+//        byte[] data = new byte[(int) file.length()];
+//        in.read(data);
+//        IntBuffer intBuf =
+//                ByteBuffer.wrap(data)
+//                        .order(ByteOrder.BIG_ENDIAN)
+//                        .asIntBuffer();
+//        int[] array = new int[intBuf.remaining()];
+//        in.close();
+        File file = new File("src/AlgorithmCode/minMaxCodewordsTest.dat");
+        FileInputStream in = new FileInputStream(file);
+        byte[] data = new byte[(int) file.length()];
+        data = in.readAllBytes();
+        //ByteBuffer buffer = ByteBuffer.wrap(data);
+        int indexer = 0;
+        for (int layer = 0; layer < 4; layer++) {
+            for (int t = 0; t < 8; t++) {
+                for (int index = 0; index < 65536; index++) {
+                    flatWolframs[layer][t][index] = data[indexer];
+                    indexer++;
+                }
+            }
+        }
+    }
+
+    public void writeToFileMinMaxRowColumn() throws IOException {
+        File file = new File("src/AlgorithmCode/minMaxCodewordsTest.dat");
+        FileOutputStream out = new FileOutputStream(file);
+        ByteBuffer buffer;
+        byte[] data = new byte[65536 * 32 * 4];
+        for (int layer = 0; layer < 4; layer++) {
+            for (int t = 0; t < 8; t++) {
+                //buffer = ByteBuffer.allocate(65536 * 4);
+                for (int index = 0; index < 65536; index++) {
+                    out.write((byte) flatWolframs[layer][t][index]);
+                    //buffer.putInt(flatWolframs[posNeg + 2 * rowColumn][t][index]);
+                }
+                //out.write(buffer.array());
+            }
+        }
+        out.close();
     }
 
     /**
@@ -355,82 +508,82 @@ public class Hash {
      * @throws IOException
      */
     public void hashBitmap(String filepath, int rule, boolean minimize, boolean rowError) throws IOException {
+        filepath = "src/ImagesProcessed/" + filepath;
         File file = new File(filepath);
         filepath = filepath.substring(0, filepath.length() - 4);
         BufferedImage inImage = ImageIO.read(file);
         short[] inRaster = ((DataBufferUShort) inImage.getRaster().getDataBuffer()).getData();
         int depth = (int) (Math.log(inImage.getWidth() * inImage.getWidth()) / Math.log(2));
-        depth = 7;
+        depth = 100;
         int rows = inImage.getHeight();
-        int cols = inImage.getWidth()*16;
+        int cols = inImage.getWidth() * 4;
         int[][][] framesOfHashing = new int[depth][inImage.getHeight()][inImage.getWidth() * 8];
         System.out.println("inRaster: " + inRaster.length);
         System.out.println("imImage.getHeight(): " + inImage.getHeight());
         System.out.println("imImage.getWidth(): " + inImage.getWidth());
-        int[][] bFieldSet = new int[rows][cols/16];
+        int[][] bFieldSet = new int[rows][cols];
         for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < cols; column++) {
+            for (int column = 0; column < cols / 4; column++) {
                 for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
-                    for (int power = 0; power < 8; power++) {
-
-                            bFieldSet[row][16 * column + 8 * rgbbyte + power] = (Math.abs(inRaster[row*cols+column] >> (8 * rgbbyte + power)) %2);
-
+                    for (int hex = 0; hex < 2; hex++) {
+                        bFieldSet[row][4 * column + 2 * rgbbyte + hex] = ((Math.abs(inRaster[row * (cols / 4) + column]) >> (8 * rgbbyte + 4 * hex)) % 16);
                     }
                 }
             }
         }
         //Initialize the minMax codeword truth table set
         initWolframs();
-        hashRows.individualRule(rule,4,false,0,false,0,false);
+        //initWolframs(true);
+        //hashRows.individualRule(rule,4,false,0,false,0,false);
         //Do the transform
         framesOfHashing = hashArray(bFieldSet, rule, depth, minimize, rowError);
-
         //Convert the transform back into appropriate bitmap RGB format
         short[][][] rasterized = new short[depth + 1][inImage.getHeight()][inImage.getWidth()];
         for (int d = 0; d <= depth; d++) {
             for (int row = 0; row < inImage.getHeight(); row++) {
                 for (int column = 0; column < inImage.getWidth(); column++) {
                     for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
-                        for (int power = 0; power < 8; power++) {
-                            rasterized[d][row][column] += (1 << (8 * rgbbyte + power)) * framesOfHashing[d][row][16 * column + 8 * rgbbyte + power];
+                        for (int hex = 0; hex < 2; hex++) {
+                            rasterized[d][row][column] += (1 << (8 * rgbbyte + 4 * hex)) * framesOfHashing[d][row][4 * column + 2 * rgbbyte + hex];
                         }
                     }
                 }
             }
         }
-
-        //
-        //
-        //
-        //
-        //
-        //
-        //
-        //
-        //
-        //This does the GIF file
-        BufferedImage[] images = new BufferedImage[rasterized.length];
-        int[][] imagesRasters = new int[depth + 1][inImage.getHeight() * inImage.getWidth()];
-        ImageWriter gifWriter = ImageIO.getImageWritersByFormatName("gif").next();
-        ImageOutputStream outputStream = ImageIO.createImageOutputStream(new File("src/ImagesProcessed/" + filepath + "gif.gif"));
-        gifWriter.setOutput(outputStream);
-        short[] outRaster = new short[inImage.getHeight() * inImage.getWidth()];
-        gifWriter.prepareWriteSequence(null);
-        BufferedImage outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_USHORT_565_RGB);
-        for (int repeat = 0; repeat < 1; repeat++) {
-            for (int d = 0; d <= depth; d++) {
-                File outFile = new File("src/ImagesProcessed/GifOutput/" + filepath + "iteration" + d + ".bmp");
-                outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_USHORT_565_RGB);
-                outRaster = ((DataBufferUShort) outImage.getRaster().getDataBuffer()).getData();
-                for (int index = 0; index < outRaster.length; index++) {
-                    outRaster[index] = rasterized[d][index / inImage.getWidth()][index % inImage.getWidth()];
-                }
-                ImageIO.write(outImage, "bmp", outFile);
-                IIOImage image = new IIOImage(outImage, null, null);
-                gifWriter.writeToSequence(image, null);
-            }
-        }
-        gifWriter.endWriteSequence();
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //This does the GIF file
+//        BufferedImage[] images = new BufferedImage[rasterized.length];
+//        int[][] imagesRasters = new int[depth + 1][inImage.getHeight() * inImage.getWidth()];
+//        ImageWriter gifWriter = ImageIO.getImageWritersByFormatName("gif").next();
+//        ImageOutputStream outputStream = ImageIO.createImageOutputStream(new File(filepath + "gif.gif"));
+//        gifWriter.setOutput(outputStream);
+//        short[] outRaster = new short[inImage.getHeight() * inImage.getWidth()];
+//        gifWriter.prepareWriteSequence(null);
+//        BufferedImage outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_USHORT_565_RGB);
+//        for (int repeat = 0; repeat < 1; repeat++) {
+//            for (int d = 0; d <= depth; d++) {
+//                //File outFile = new File(filepath + "iteration" + d + ".bmp");
+//                outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_USHORT_565_RGB);
+//                outRaster = ((DataBufferUShort) outImage.getRaster().getDataBuffer()).getData();
+//                for (int index = 0; index < outRaster.length; index++) {
+//                    outRaster[index] = rasterized[d][index / inImage.getWidth()][index % inImage.getWidth()];
+//                }
+//                //ImageIO.write(outImage, "bmp", outFile);
+//                IIOImage image = new IIOImage(outImage, null, null);
+//
+//                gifWriter.writeToSequence(image, null);
+//            }
+//        }
+//        gifWriter.endWriteSequence();
+        writeGif(rasterized ,filepath + "gif.gif",depth,inImage);
         System.out.println("depth: " + depth);
         System.out.println("done with gif");
         //
@@ -453,8 +606,7 @@ public class Hash {
             }
         }
         System.out.println("undoInput[3].length: " + undoInput[0].length + " " + undoInput[1][0].length);
-
-        int[][] undo = invert(bFieldSet, 1,minimize ? 0 : 8, rowError);
+        int[][] undo = invert(bFieldSet, 1, minimize ? 0 : 8, rowError);
         short[][] undoRasterized = new short[inverse.getHeight()][inverse.getWidth()];
         System.out.println("inverse.getHeight(): " + inverse.getHeight() + " inverse.getWidth(): " + inverse.getWidth());
         System.out.println(undo.length + " " + undo[0].length);
@@ -463,14 +615,13 @@ public class Hash {
             for (int row = 0; row < inverse.getHeight(); row++) {
                 for (int column = 0; column < inverse.getWidth(); column++) {
                     for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
-                        for (int power = 0; power < 8; power++) {
-                            undoRasterized[row][column] += undo[row][column * 16 + 8 * rgbbyte + power] << (8 * rgbbyte + power);
+                        for (int hex = 0; hex < 2; hex++) {
+                            undoRasterized[row][column] += undo[row][column * 4 + 2 * rgbbyte + hex] << (8 * rgbbyte + 4 * hex);
                         }
                     }
                 }
             }
         }
-
         short[] inverseImageRaster = ((DataBufferUShort) inverse.getRaster().getDataBuffer()).getData();
         for (int row = 0; row < inverse.getHeight(); row++) {
             for (int column = 0; column < inverse.getWidth(); column++) {
@@ -478,7 +629,7 @@ public class Hash {
                 inverseImageRaster[row * inImage.getWidth() + column] = (short) (undoRasterized[row][column] ^ inRaster[row * inImage.getWidth() + column]);
             }
         }
-        File inverseFile = new File("src/ImagesProcessed/" + filepath + "inverse.bmp");
+        File inverseFile = new File(filepath + "inverse.bmp");
         ImageIO.write(inverse, "bmp", inverseFile);
         //
         //
@@ -498,15 +649,14 @@ public class Hash {
             for (int row = 0; row < inverse.getHeight(); row++) {
                 for (int column = 0; column < inverse.getWidth(); column++) {
                     for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
-                        for (int power = 0; power < 8; power++) {
-                            undoRasterized[row][column] += undo[row][column * 16 + 8 * rgbbyte + power] << (8 * rgbbyte + power);
+                        for (int hex = 0; hex < 2; hex++) {
+                            undoRasterized[row][column] += undo[row][column * 4 + 2 * rgbbyte + hex] << (8 * rgbbyte + 4 * hex);
                         }
                     }
                 }
             }
         }
-
-        File inverseDepth1 = new File("src/ImagesProcessed/" + filepath + "inverseDepth1.bmp");
+        File inverseDepth1 = new File(filepath + "inverseDepth1.bmp");
         ImageIO.write(inverse, "bmp", inverseDepth1);
         int numDifferent = 0;
         for (int row = 0; row < inRaster.length; row++) {
@@ -525,12 +675,42 @@ public class Hash {
         System.out.println("rate: " + rate);
     }
 
+    public void writeGif(short[][][] frames, String filepath, int depth, BufferedImage inImage) throws IOException {
+        AnimatedGifEncoder animatedGifEncoder = new AnimatedGifEncoder();
+        animatedGifEncoder.start(filepath);
+        animatedGifEncoder.setDelay(1000);
+        BufferedImage[] outImages = new BufferedImage[depth+1];
+        //
+        //
+        //
+        //
+        //
+        //
+        //
+        //
+        //
+        //This does the GIF file
+        short[][] outRaster = new short[depth+1][inImage.getHeight() * inImage.getWidth()];
+        for (int repeat = 0; repeat < 1; repeat++) {
+            for (int d = 0; d <= depth; d++) {
+                outImages[d] = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_USHORT_565_RGB);
+                outRaster[d] = ((DataBufferUShort) outImages[d].getRaster().getDataBuffer()).getData();
+                for (int index = 0; index < outRaster[d].length; index++) {
+                    outRaster[d][index] = frames[d][index / inImage.getWidth()][index % inImage.getWidth()];
+                }
+                animatedGifEncoder.addFrame(outImages[d]);
+            }
+        }
+        animatedGifEncoder.finish();
+    }
+
     /**
      * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
      *
      * @throws IOException
      */
     public void verifyInverseAndAvalanche(String filepath, int dummy, boolean rowError) throws IOException {
+        filepath = "src/ImagesProcessed/" + filepath;
         File file = new File(filepath);
         filepath = filepath.substring(0, filepath.length() - 4);
         BufferedImage inImage = ImageIO.read(file);
@@ -544,11 +724,11 @@ public class Hash {
         int cols = inImage.getWidth() * 16;
         int[][][] bFieldSet = new int[16][rows][cols];
         for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < cols/16; column++) {
+            for (int column = 0; column < cols / 16; column++) {
                 for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
                     for (int power = 0; power < 8; power++) {
                         for (int posNegt = 0; posNegt < 16; posNegt++) {
-                            bFieldSet[posNegt][row][16 * column + 8 * rgbbyte + power] = (Math.abs(inRaster[row*cols+column] >> (8 * rgbbyte + power)) %2);
+                            bFieldSet[posNegt][row][16 * column + 8 * rgbbyte + power] = ((Math.abs(inRaster[row * cols / 16 + column]) >> (8 * rgbbyte + power)) % 2);
                         }
                     }
                 }

@@ -1,5 +1,8 @@
 package AlgorithmCode;
 
+import CustomLibrary.CustomArray;
+
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -16,7 +19,11 @@ public class HashCollisions {
     /**
      * Middle layer of transform code
      */
-    public Hash hash = new Hash();
+    public Hash hash;
+
+    public HashCollisions(Hash inHash) throws IOException {
+        hash = inHash;
+    }
 
     /**
      * For all possible codewords of [0,15,51,85,170,104,240,255] compares the errorScore of its output tile
@@ -244,9 +251,144 @@ public class HashCollisions {
                     }
                 }
                 System.out.println("t: " + t + " layer: " + layer + " same: " + same + " different: " + different + " tot: " + tot);
-
             }
         }
+    }
+
+    public void checkTriplets() {
+        hash.initWolframs();
+        int same = 0;
+        int diff = 0;
+        int[][] symmetries = generateFourBitLRBWsymmetry();
+        for (int layer = 0; layer < 4; layer++) {
+            for (int address = 0; address < 65536; address++) {
+                for (int t = 1; t < 4; t++) {
+                    if (hash.flatWolframs[layer][t][address] != (15 - hash.flatWolframs[layer][t + 4][address])) {
+                        diff++;
+                    } else {
+                        same++;
+                    }
+                }
+            }
+        }
+        System.out.println("same: " + same + " diff: " + diff);
+    }
+
+    public void checkCodewordSymmetry() {
+        hash.initWolframs();
+        int same = 0;
+        int diff = 0;
+        int[][] symmetries = generateFourBitLRBWsymmetry();
+        System.out.println(Arrays.deepToString(symmetries));
+        int[][] equals = new int[4 * 8][4 * 8];
+        for (int layer = 0; layer < 4; layer++) {
+            for (int blayer = 0; blayer < 4; blayer++) {
+                for (int t = 0; t < 8; t++) {
+                    for (int to = 0; to < 8; to++) {
+                        cLoop:
+                        for (int c = 0; c < 4; c++) {
+                            for (int address = 0; address < 65536; address++) {
+                                if (symmetries[hash.flatWolframs[layer][t][address]][0] != (symmetries[hash.flatWolframs[blayer][to][address]][c]))
+                                    continue cLoop;
+                            }
+                            equals[8 * layer + t][8 * blayer + to] = c;
+                        }
+                    }
+                }
+            }
+        }
+        for (int layer = 0; layer < 4; layer++) {
+            for (int blayer = 0; blayer < 4; blayer++) {
+                for (int t = 0; t < 8; t++) {
+                    toLoop:
+                    for (int to = 0; to < 8; to++) {
+                        cLoop:
+                        for (int address = 0; address < 65536; address++) {
+                            if (hash.flatWolframs[layer][t][address] != (15 - hash.flatWolframs[layer][t][address]))
+                                continue toLoop;
+                        }
+                        equals[8 * layer + t][8 * blayer + to] += 2;
+                    }
+                }
+            }
+        }
+        for (int layer = 0; layer < 4; layer++) {
+            for (int blayer = 0; blayer < 4; blayer++) {
+                for (int t = 0; t < 8; t++) {
+                    toLoop:
+                    for (int to = 0; to < 8; to++) {
+                        cLoop:
+                        for (int gate = 0; gate < 16; gate++) {
+                            for (int address = 0; address < 65536; address++) {
+                                int tot = 0;
+                                for (int power = 0; power < 4; power++) {
+                                    int a = (hash.flatWolframs[layer][t][address] >> power) % 2;
+                                    int b = (hash.flatWolframs[blayer][to][address] >> power) % 2;
+                                    int c = (gate>>(a + 2 * b))%2;
+                                    tot += (1 << power) * c;
+                                }
+                                if (hash.flatWolframs[layer][t][address] != (15 - hash.flatWolframs[layer][t][address]))
+                                    continue toLoop;
+                            }
+                            equals[8 * layer + t][8 * blayer + to] += 2;
+                        }
+                    }
+                }
+            }
+        }
+        CustomArray.plusArrayDisplay(equals, true, true, "Symmetries");
+        Hadamard hadamard = new Hadamard();
+        int[][] squared = hadamard.matrixMultiply(equals, equals);
+        CustomArray.plusArrayDisplay(squared, true, true, "Squared Symmetries");
+        squared = hadamard.matrixMultiply(squared, squared);
+        CustomArray.plusArrayDisplay(squared, true, true, "Squared Symmetries squared");
+        int[][] groups = new int[32][32];
+        int numUnique = 0;
+        rowLoop:
+        for (int row = 0; row < 32; row++) {
+            checkLoop:
+            for (int check = 0; check < numUnique; check++) {
+                if (Arrays.equals(groups[check], squared[row])) {
+                    continue rowLoop;
+
+                }
+            }
+            groups[numUnique] = equals[row];
+            numUnique++;
+        }
+        for (int g = 0; g < numUnique; g++) {
+            System.out.println("Group " + g + ": " + Arrays.toString(groups[g]));
+        }
+        System.out.println("numUnique: " + numUnique);
+    }
+
+    public int[][] generateFourBitLRBWsymmetry() {
+        int[][] out = new int[16][4];
+        for (int word = 0; word < 16; word++) {
+            out[word][0] = word;
+            int tot = 0;
+            for (int power = 0; power < 4; power++) {
+                int a = power % 2;
+                int b = (power / 2) % 2;
+                int c = 2 * a + b;
+                tot += (1 << power) * ((word >> power) % 2);
+            }
+            out[word][1] = tot;
+            tot = 0;
+            for (int power = 0; power < 4; power++) {
+                tot += (1 << (3 - power)) * ((word >> power) % 2);
+            }
+            out[word][2] = tot;
+            tot = 0;
+            for (int power = 0; power < 4; power++) {
+                int a = power % 2;
+                int b = (power / 2) % 2;
+                int c = 2 * a + b;
+                tot += (1 << (3 - power)) * ((out[word][1] >> power) % 2);
+            }
+            out[word][3] = tot;
+        }
+        return out;
     }
 
     /**

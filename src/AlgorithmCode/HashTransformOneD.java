@@ -1,5 +1,8 @@
 package AlgorithmCode;
 
+import java.util.Arrays;
+import java.util.Random;
+
 /**
  * One D version of the hash algorith
  */
@@ -11,13 +14,36 @@ public class HashTransformOneD {
 
     /**
      * Sets the algorithm parent
+     *
      * @param inHash Owner of this class
      */
     public HashTransformOneD(Hash inHash) {
         hash = inHash;
     }
 
+    public int[][][] hashArray(int[][][] input, int depth) {
+        int[][][] out = new int[4][8][input.length];
+        for (int layer = 0; layer < 4; layer++) {
+            boolean minimize = (layer % 2) == 0 ? true : false;
+            boolean rowError = (layer / 2) % 2 == 0 ? true : false;
+            for (int t = 0; t < 8; t++) {
+                out[layer][t] = hashArray(input[layer][t], hash.bothLists[layer][t], depth, minimize, rowError)[depth];
+            }
+        }
+        return out;
+    }
 
+    public int[][][] hashCompression(int[][][] input, int depth) {
+        int[][][] out = new int[4][8][input.length];
+        for (int layer = 0; layer < 4; layer++) {
+            boolean minimize = layer % 2 == 0 ? true : false;
+            boolean rowError = (layer / 2) % 2 == 0 ? true : false;
+            for (int t = 0; t < 8; t++) {
+                out[layer][t] = hashArrayCompression(input[layer][t], hash.bothLists[layer][t], depth, minimize, rowError);
+            }
+        }
+        return out;
+    }
 
     /**
      * Takes in a 1D array of hashed data in codeword form, then rehashes sets of codewords increasingly far apart in steps of powers of 2, 1 apart 2 apart 4 apart ... 2^n apart
@@ -32,7 +58,7 @@ public class HashTransformOneD {
         int rows = input.length;
         int[][] output = new int[depth + 1][rows];
         //initialize layer 0 to the input
-        int layer = ((minimize) ? 0 : 1) + 2*(rowError ? 0 : 1);
+        int layer = ((minimize) ? 0 : 1) + 2 * (rowError ? 0 : 1);
         for (int row = 0; row < rows; row++) {
             output[0][row] = input[row];
         }
@@ -52,6 +78,7 @@ public class HashTransformOneD {
         }
         return output;
     }
+
     /**
      * Takes in a 1D array of hashed data in codeword form, then rehashes sets of codewords increasingly far apart in steps of powers of 2, 1 apart 2 apart 4 apart ... 2^n apart
      *
@@ -65,14 +92,14 @@ public class HashTransformOneD {
         int rows = input.length;
         int[][] output = new int[depth + 1][rows];
         //initialize layer 0 to the input
-        int layer = ((minimize) ? 0 : 1) + 2*(rowError ? 0 : 1);
+        int layer = ((minimize) ? 0 : 1) + 2 * (rowError ? 0 : 1);
         for (int row = 0; row < rows; row++) {
             output[0][row] = input[row];
         }
         //for however many iterations you want to do, typically log2(inputWidth+inputHeight)
         for (int d = 1; d <= depth; d++) {
             //for every (row,column) location in the image
-            for (int row = 0; row < rows/(1<<(depth-1)); row++) {
+            for (int row = 0; row < rows / (1 << (depth - 1)); row++) {
                 //gets its neighborhood
                 int cell = 0;
                 int phasePower = (int) Math.pow(2, d - 1);
@@ -83,8 +110,8 @@ public class HashTransformOneD {
                 output[d][row] = (hash.allTables[layer][rule][cell]);
             }
         }
-        int[] out = new int[rows/(1<<(depth-1))];
-        for (int row = 0; row < (1<<(depth-1)); row++) {
+        int[] out = new int[rows / (1 << (depth - 1))];
+        for (int row = 0; row < (1 << (depth - 1)); row++) {
             out[row] = output[depth][row];
         }
         return out;
@@ -92,28 +119,95 @@ public class HashTransformOneD {
 
     /**
      * Inverse operation
+     *
      * @param input input data
      * @param depth iteration number
      * @return inverted input
      */
-    public int[] invert(int[] input, int depth, boolean rowError) {
+    public int[] invert(int[][] input, int depth) {
         int neighborDistance = 1 << (depth - 1);
         int[][] votes = new int[input.length][4];
-        int listLayer = rowError ? 0 : 1;
         for (int row = 0; row < input.length; row++) {
-            for (int posNeg = 0; posNeg < 2; posNeg++) {
+            for (int listLayer = 0; listLayer < 4; listLayer++) {
                 for (int t = 0; t < 8; t++) {
                     //apply its vote to every location that it influences
                     //including itself
-                    int[][] generatedGuess = hash.hashRows.generateCodewordTile(input[row], hash.bothLists[listLayer][t]);
-                    for (int r = 0; r < 4; r++) {
+                    int[][] generatedGuess = hash.hashRowsColumns[listLayer / 2].generateCodewordTile(input[row], hash.bothLists[listLayer][t]);
+                    for (int r = 0; r < 4 && listLayer / 2 % 2 == 0; r++) {
                         for (int c = 0; c < 4; c++) {
-                            if (generatedGuess[r][c] == posNeg) {
-                                votes[(row + neighborDistance * (4*r+c)) % input.length][c] += (1 << r);
+                            if (generatedGuess[r][c] == listLayer % 2) {
+                                votes[(row + neighborDistance * (4 * r + c)) % input.length][c] += (1 << r);
                             } else {
-                                votes[(row + neighborDistance * (4*r+c)) % input.length][c] -= (1 << r);
+                                votes[(row + neighborDistance * (4 * r + c)) % input.length][c] -= (1 << r);
                             }
                         }
+                    }
+                    for (int r = 0; r < 4 && listLayer / 2 % 2 == 1; r++) {
+                        for (int c = 0; c < 4; c++) {
+                            if (generatedGuess[r][c] == listLayer % 2) {
+                                votes[(row + neighborDistance * (4 * r + c)) % input.length][c] += (1 << c);
+                            } else {
+                                votes[(row + neighborDistance * (4 * r + c)) % input.length][c] -= (1 << c);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //for each location, based on whether the final tally of the vote was positive or negative
+        //output a 0 if positive and 1 if negative, if the vote result is not what the
+        //original data is increment the error counter for analysis
+        int[] outResult = new int[input.length];
+        int[] outCompare = new int[input.length];
+        int totDifferent = 0;
+        for (int row = 0; row < input.length; row++) {
+            for (int power = 0; power < 4; power++) {
+                if (votes[row][power] >= 0) {
+                    outResult[row] += 0;
+                } else {
+                    outResult[row] += (1 << power);
+                }
+            }
+            //outCompare[row] = outResult[row] ^ input[row];
+            //totDifferent += outCompare[row];
+        }
+        //System.out.println("totDifferent: " + totDifferent);
+        //System.out.println("totLength: " + (input.length ));
+        //System.out.println("different/Area=errors/bit= " + ((double) totDifferent / (double) (input.length )));
+        return outResult;
+    }
+
+    /**
+     * Inverse operation
+     *
+     * @param input input data
+     * @param depth iteration number
+     * @return inverted input
+     */
+    public int[] invert(int[] input, int rule, int depth, boolean minimize, boolean rowError) {
+        int neighborDistance = 1 << (depth - 1);
+        int[][] votes = new int[input.length][4];
+        int listLayer = rowError ? 0 : 1;
+        int posNeg = minimize ? 0 : 1;
+        for (int row = 0; row < input.length; row++) {
+            //apply its vote to every location that it influences
+            //including itself
+            int[][] generatedGuess = hash.hashRowsColumns[listLayer].generateCodewordTile(input[row], rule);
+            for (int r = 0; r < 4 && rowError; r++) {
+                for (int c = 0; c < 4; c++) {
+                    if (generatedGuess[r][c] == posNeg) {
+                        votes[(row + neighborDistance * (4 * r + c)) % input.length][c] += (1 << r);
+                    } else {
+                        votes[(row + neighborDistance * (4 * r + c)) % input.length][c] -= (1 << r);
+                    }
+                }
+            }
+            for (int r = 0; r < 4 && !rowError; r++) {
+                for (int c = 0; c < 4; c++) {
+                    if (generatedGuess[r][c] == posNeg) {
+                        votes[(row + neighborDistance * (4 * r + c)) % input.length][c] += (1 << c);
+                    } else {
+                        votes[(row + neighborDistance * (4 * r + c)) % input.length][c] -= (1 << c);
                     }
                 }
             }
@@ -135,11 +229,40 @@ public class HashTransformOneD {
             outCompare[row] = outResult[row] ^ input[row];
             totDifferent += outCompare[row];
         }
-        System.out.println("totDifferent: " + totDifferent);
-        System.out.println("totLength: " + (input.length ));
-        System.out.println("different/Area=errors/bit= " + ((double) totDifferent / (double) (input.length )));
+        //System.out.println("totDifferent: " + totDifferent);
+        //System.out.println("totLength: " + (input.length ));
+        //System.out.println("different/Area=errors/bit= " + ((double) totDifferent / (double) (input.length )));
         return outResult;
     }
 
-
+    public void testOneD() {
+        //hash.initWolframs();
+        int size = 100;
+        int depth = 1;
+        int rule = 2;
+        int layer = 0;
+        int[] input = new int[size];
+        Random rand = new Random();
+        for (int index = 0; index < size; index++) {
+            input[index] = rand.nextInt(0, 16);
+        }
+        int[] out = hashArray(input, hash.bothLists[layer][rule], 1, true, true)[1];
+        System.out.println(Arrays.toString(input));
+        System.out.println(Arrays.toString(out));
+        int[] inversion = invert(out, hash.bothLists[layer][rule], 1, true, true);
+        int same = 0;
+        int diff = 0;
+        for (int index = 0; index < size; index++) {
+            if (input[index] == inversion[index]) {
+                same++;
+            } else {
+                diff++;
+            }
+        }
+        System.out.println(Arrays.toString(inversion));
+        System.out.println("same: " + same);
+        System.out.println("diff: " + diff);
+        int[] compressed = hashArrayCompression(input, hash.bothLists[layer][rule], 1, true, true);
+        System.out.println(Arrays.toString(compressed));
+    }
 }

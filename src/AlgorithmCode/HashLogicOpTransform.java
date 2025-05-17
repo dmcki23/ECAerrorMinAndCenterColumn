@@ -15,25 +15,26 @@ import java.util.Random;
  * result in Row AND Column. Hash tile addition is the non-reduced Hadamard matrix.
  */
 public class HashLogicOpTransform {
+    public HashLogicOpTransform(Hash inHash){
+        hash = inHash;
+    }
     /**
      * Used in generating addition tables
      */
-    Hash hash = new Hash();
+    Hash hash;
     /**
      * Used in generating addition tables
      */
-    HashTruthTables hashTruthTables = new HashTruthTables(true);
+    //HashTruthTables hashTruthTables = new HashTruthTables(true);
     int[][] logicTransform = new int[16][16];
     Hadamard hadamard = new Hadamard();
 
-    
     /**
      * The first part of this function generates the addition tables of adding two hash tiles together,
      * Showing that adding tiles does indeed result in a non-reduced Hadamard matrix. After that
      * is some experimentation ???
      */
     public void testGate(int gate, int[][] tupleDistro, int[][] h, boolean inRowError) {
-        hash.hashRows.rowError = inRowError;
         int listLayer = inRowError ? 0 : 1;
         //hashTransform.initWolframs();
         int[][][][] additionTables = new int[2][8][16][16];
@@ -43,8 +44,8 @@ public class HashLogicOpTransform {
                 for (int posNeg = 0; posNeg < 2; posNeg++) {
                     for (int t = 0; t < 8; t++) {
                         //generate the neighborhoods of a and b
-                        int[][] aa = hashTruthTables.generateCodewordTile(a, hash.bothLists[listLayer][t]);
-                        int[][] bb = hashTruthTables.generateCodewordTile(b, hash.bothLists[listLayer][t]);
+                        int[][] aa = hash.hashRows.generateCodewordTile(a, hash.bothLists[listLayer][t]);
+                        int[][] bb = hash.hashColumns.generateCodewordTile(b, hash.bothLists[listLayer][t]);
                         int[][] cc = new int[4][4];
                         int[][] dd = new int[4][4];
                         //add the neighborhoods together pair-wise
@@ -57,15 +58,15 @@ public class HashLogicOpTransform {
                             }
                         }
                         //find the codeword of the sum of the neighborhoods
-                        int[][] ccc = hashTruthTables.findMinimizingCodeword(hash.bothLists[listLayer][t], cc);
+                        int[][] ccc = hash.hashRowsColumns[listLayer].findMinimizingCodeword(hash.bothLists[listLayer][t], cc);
                         int result = 0;
                         for (int column = 0; column < 4; column++) {
                             result += (int) Math.pow(2, column) * ccc[0][column];
                         }
                         //stortruee it in the table
                         //additionTables[posNeg][t][a][b] = result;
-                        if (posNeg == 1) additionTables[posNeg][t][a][b] = hashTruthTables.lastMaxCodeword;
-                        else additionTables[posNeg][t][a][b] = hashTruthTables.lastMinCodeword;
+                        if (posNeg == 1) additionTables[posNeg][t][a][b] = hash.hashRowsColumns[listLayer].lastMaxCodeword;
+                        else additionTables[posNeg][t][a][b] = hash.hashRowsColumns[listLayer].lastMinCodeword;
                     }
                 }
             }
@@ -110,13 +111,13 @@ public class HashLogicOpTransform {
             }
         }
         for (int t = 0; t < 16; t++) {
-            if (tupleDistro[gate][t] == -1 ){
+            if (tupleDistro[gate][t] == -1) {
                 //if ( (gate == 8 ||gate == 14)) continue;
                 int[][] control = new int[16][16];
                 for (int r = 0; r < 16; r++) {
                     for (int c = 0; c < 16; c++) {
-                        int[][] a = hashTruthTables.generateCodewordTile(r, hash.bothLists[listLayer][t%8]);
-                        int[][] b = hashTruthTables.generateCodewordTile(c, hash.bothLists[listLayer][t%8]);
+                        int[][] a = hash.hashRows.generateCodewordTile(r, hash.bothLists[listLayer][t % 8]);
+                        int[][] b = hash.hashRows.generateCodewordTile(c, hash.bothLists[listLayer][t % 8]);
                         int[][] cc = new int[4][4];
                         int[][] dd = new int[4][4];
                         for (int row = 0; row < 4; row++) {
@@ -129,44 +130,42 @@ public class HashLogicOpTransform {
                                 cc[row][col] = tot;
                             }
                         }
-                        hashTruthTables.findMinimizingCodeword(hash.bothLists[listLayer][t % 8], cc);
-                        int codeword = (1 == (t/8)) ? hashTruthTables.lastMinCodeword : hashTruthTables.lastMaxCodeword;
+                        hash.hashRowsColumns[listLayer].findMinimizingCodeword(hash.bothLists[listLayer][t % 8], cc);
+                        int codeword = (1 == (t / 8)) ? hash.hashRowsColumns[listLayer].lastMinCodeword : hash.hashRowsColumns[listLayer].lastMaxCodeword;
                         control[r][c] = codeword;
                         int altCodeword = 0;
                         int altGate = gate;
                         if (listLayer == 1) altGate = 15 - gate;
                         for (int power = 4; power < 4; power++) {
-                            altCodeword += (1 << power) * ((altGate >> (((r>>power)%2) + 2 * ((c>>power)%2))) % 2);
+                            altCodeword += (1 << power) * ((altGate >> (((r >> power) % 2) + 2 * ((c >> power) % 2))) % 2);
                         }
-                        control[r][c] =  codeword;
+                        control[r][c] = codeword;
                     }
                 }
                 CustomArray.plusArrayDisplay(control, false, false, "control");
                 for (int power = 0; power < 0; power++) {
-                    int[][] a = CustomArray.layerOf(control,power,2,2,true,false);
-                    int[][] b = CustomArray.layerOf(control,(power+1)%4,2,2,false,false);
+                    int[][] a = CustomArray.layerOf(control, power, 2, 2, true, false);
+                    int[][] b = CustomArray.layerOf(control, (power + 1) % 4, 2, 2, false, false);
                     int[][] c = new int[16][16];
-                    for (int row = 0; row < 16; row++){
-                        for (int col = 0; col < 16; col++){
+                    for (int row = 0; row < 16; row++) {
+                        for (int col = 0; col < 16; col++) {
                             c[row][col] = (a[row][col] ^ b[row][col]);
                         }
                     }
-                    CustomArray.plusArrayDisplay(c,true,false,"powers: " + power + " " + ((power+1)%4) );
+                    CustomArray.plusArrayDisplay(c, true, false, "powers: " + power + " " + ((power + 1) % 4));
                 }
                 powerLoop:
                 for (int power = 0; power < 4; power++) {
                     gLoop:
-                    for (int g = 0; g < 16; g++){
-
-                        for (int r = 0; r < 8; r++){
-                            if (Arrays.deepEquals(hadamard.allH[g],CustomArray.reflectRotateTransposeStatic(CustomArray.layerOf(control,power,2,2, false,false),r))){
-
-                                tupleDistro[gate][t] =  g+16;
+                    for (int g = 0; g < 16; g++) {
+                        for (int r = 0; r < 8; r++) {
+                            if (Arrays.deepEquals(hadamard.allH[g], CustomArray.reflectRotateTransposeStatic(CustomArray.layerOf(control, power, 2, 2, false, false), r))) {
+                                tupleDistro[gate][t] = g + 16;
                                 continue powerLoop;
                             }
                         }
                     }
-                    CustomArray.plusArrayDisplay(CustomArray.layerOf(control,power,2,2,false,false),false,false,"powers: " + power  );
+                    CustomArray.plusArrayDisplay(CustomArray.layerOf(control, power, 2, 2, false, false), false, false, "powers: " + power);
                 }
             }
         }
@@ -218,13 +217,13 @@ public class HashLogicOpTransform {
 
     /**
      * Internal hash operation transform truth table generator
+     *
      * @param rowError if true, uses 2^row, if false uses 2^column weight on errorScore
      */
-    public void testAllLogic(boolean rowError) {
+    public void testAllLogic(boolean rowError) throws IOException {
         hash.initWolframs();
         int[][] tupleDistro = new int[16][16];
         int[][] h = new int[16][16];
-
         h = hadamard.nonReducedHadamard(16);
         hadamard.allHadamardish(4);
         for (int gate = 0; gate < 16; gate++) {
@@ -279,48 +278,40 @@ public class HashLogicOpTransform {
         CustomArray.plusArrayDisplay(negs, false, false, "negs");
     }
 
-
-
-
-
-
     /**
      * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
      *
      * @throws IOException
      */
     public void verifyLogicOperationHash(String filepath, int dummy, boolean rowError) throws IOException {
-        //String filepath = "kitchenAlteredRGB.bmp";
+        filepath = "src/ImagesProcessed/" + filepath;
         File file = new File(filepath);
         filepath = filepath.substring(0, filepath.length() - 4);
         BufferedImage inImage = ImageIO.read(file);
         short[] inRaster = ((DataBufferUShort) inImage.getRaster().getDataBuffer()).getData();
         int depth = (int) (Math.log(inImage.getWidth() * inImage.getWidth()) / Math.log(2));
         depth = 1;
-
-        int[][] bfield = new int[inImage.getHeight()][inImage.getWidth() * 16];
+        int rows = inImage.getHeight();
+        int cols = inImage.getWidth();
+        int[][] bfield = new int[rows][cols*16];
         System.out.println("inRaster: " + inRaster.length);
         System.out.println("imImage.getHeight(): " + inImage.getHeight());
         System.out.println("imImage.getWidth(): " + inImage.getWidth());
-        System.out.println("inRaster.length/inImage.getHeight(): " + inRaster.length / inImage.getHeight());
-        System.out.println("inRaster.length/inImage.getWidth(): " + inRaster.length / inImage.getWidth());
-        System.out.println("inRaster.length/inImage.getHeight()/inImage.getWidth(): " + inRaster.length / inImage.getHeight() / inImage.getWidth());
-
         int[][][] bFieldSet = new int[16][bfield.length][bfield[0].length];
-        for (int row = 0; row < inImage.getHeight(); row++) {
-            for (int column = 0; column < inImage.getWidth(); column++) {
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < cols/16; column++) {
                 for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
                     for (int power = 0; power < 8; power++) {
-                        bfield[row][16 * column + 8 * rgbbyte + power] = (int) Math.abs((inRaster[row * inImage.getWidth() + column] >> (8 * rgbbyte + power)) % 2);
+                        bfield[row][16 * column + 8 * rgbbyte + power] = (int) ((Math.abs(inRaster[row * inImage.getWidth() + column]) >> (8 * rgbbyte + power)) % 2);
                         for (int posNegt = 0; posNegt < 16; posNegt++) {
-                            bFieldSet[posNegt][row][16 * column + 8 * rgbbyte + power] = bfield[row][16 * column + 8 * rgbbyte + power];
+                            bFieldSet[posNegt][row][16 * column + 8 * rgbbyte + power] = ((Math.abs(inRaster[row*cols/16+column]) >> (8 * rgbbyte + power)) %2);
                         }
                     }
                 }
             }
         }
         //Initialize the minMax codeword truth table set
-        hash.initWolframs();
+        //hash.initWolframs();
         testAllLogic(true);
         //hashUtilities.readFromFile();
         //Change the RGB 4-bytes broken down into 32 bits into its depth 0 codewords
@@ -335,11 +326,10 @@ public class HashLogicOpTransform {
         depth = 3;
         int gate = 8;
         int listLayer = rowError ? 0 : 1;
-
         for (int t = 0; t < 8; t++) {
             System.out.println("t: " + t);
-            hashSet[t] = hash.hashArray(bFieldSet[t], hash.bothLists[listLayer][t], depth,true,rowError)[depth];
-            hashSet[8 + t] = hash.hashArray(bFieldSet[8 + t], hash.bothLists[listLayer][t], depth,false,rowError)[depth];
+            hashSet[t] = hash.hashArray(bFieldSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
+            hashSet[8 + t] = hash.hashArray(bFieldSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
             //hashSet[t] = bFieldSet[t];
             //hashSet[8 + t] = bFieldSet[8 + t];
         }
@@ -357,10 +347,10 @@ public class HashLogicOpTransform {
                     modifiedSet[8 + t][row][column] = (gate >> modifiedSet[8 + t][row][column]) % 2;
                 }
             }
-            modificationTransformed[t] = hash.hashArray(modification, hash.bothLists[listLayer][t], depth,true,rowError)[depth];
-            modificationTransformed[8 + t] = hash.hashArray(modification, hash.bothLists[listLayer][t], depth,false,rowError)[depth];
-            modifiedSet[t] = hash.hashArray(modifiedSet[t], hash.bothLists[listLayer][t], depth,true,rowError)[depth];
-            modifiedSet[8 + t] = hash.hashArray(modifiedSet[8 + t], hash.bothLists[listLayer][t], depth,false,rowError)[depth];
+            modificationTransformed[t] = hash.hashArray(modification, hash.bothLists[listLayer][t], depth, true, rowError)[depth];
+            modificationTransformed[8 + t] = hash.hashArray(modification, hash.bothLists[listLayer][t], depth, false, rowError)[depth];
+            modifiedSet[t] = hash.hashArray(modifiedSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
+            modifiedSet[8 + t] = hash.hashArray(modifiedSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
             for (int row = 0; row < modifiedSet[0].length; row++) {
                 for (int column = 0; column < modifiedSet[0][0].length; column++) {
                     int tot = 0;
@@ -397,6 +387,7 @@ public class HashLogicOpTransform {
 
     /**
      * Generates a binary array with which to test the interal hash operation transform
+     *
      * @param rows number of rows to output
      * @param cols number of columns to output
      * @return

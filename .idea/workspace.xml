@@ -4,29 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="the row weighted code is working, at a good stopping point and about to trim unecessary code">
-      <change afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransformOneD.java" afterDir="false" />
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="code trim is done, refactoring done, testing NOT done">
+      <change afterPath="$PROJECT_DIR$/src/AlgorithmCode/AnimatedGifEncoder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ECAminErrorFit.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ECAminErrorFit.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lion.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Addition.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/EdgeDetection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TrimmedCode/EdgeDetection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hadamard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hadamard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTransform.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTransformOneD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransformOneD.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTruthTables.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTruthTables.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashUtilities.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashUtilities.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/OneDHashTransform.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/PiBytes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/PiBytes.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/SinglesAndDoubles.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CustomLibrary/CustomArray.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CustomLibrary/CustomArray.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/minMaxCodewords.dat" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/minMaxCodewords.dat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testScreenshot.bmp" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,6 +74,7 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;reconstruction&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;/home/daniel/IdeaProjects/ECAminErrorFit&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -100,6 +93,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/AlgorithmCode" />
       <recent name="$PROJECT_DIR$/src/TrimmedCode" />
     </key>
   </component>
@@ -115,8 +109,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.109" />
-        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.109" />
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129" />
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129" />
       </set>
     </attachedChunks>
   </component>
@@ -161,7 +155,8 @@
       <workItem from="1746572207531" duration="1039000" />
       <workItem from="1746576023160" duration="6691000" />
       <workItem from="1746711325241" duration="2110000" />
-      <workItem from="1746739214453" duration="66900000" />
+      <workItem from="1746739214453" duration="73727000" />
+      <workItem from="1747234126123" duration="32942000" />
     </task>
     <task id="LOCAL-00001" summary="Have gathered the code from several local projects into this, initial commit">
       <option name="closed" value="true" />
@@ -523,7 +518,23 @@
       <option name="project" value="LOCAL" />
       <updated>1747059269708</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="code trim is done, refactoring done, testing NOT done">
+      <option name="closed" value="true" />
+      <created>1747171274363</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1747171274363</updated>
+    </task>
+    <task id="LOCAL-00047" summary="code trim is done, refactoring done, testing NOT done">
+      <option name="closed" value="true" />
+      <created>1747171282318</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1747171282318</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -558,7 +569,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added some images to the center column paper&#10;updated doAllRules()" />
     <MESSAGE value="moved Wallis product and triangle to the new PiBytes" />
     <MESSAGE value="SwingApplyFastMinTransform working" />
     <MESSAGE value="check() and checkInverse() working to 0.025 error/bit" />
@@ -583,7 +593,8 @@
     <MESSAGE value="HashTransform bitmapTransformCompleteSet() is successfully checking the avalanche property" />
     <MESSAGE value="the column-weighted minimizations are reasonably well integrated, currently testing the logic transforms" />
     <MESSAGE value="the row weighted code is working, at a good stopping point and about to trim unecessary code" />
-    <option name="LAST_COMMIT_MESSAGE" value="the row weighted code is working, at a good stopping point and about to trim unecessary code" />
+    <MESSAGE value="code trim is done, refactoring done, testing NOT done" />
+    <option name="LAST_COMMIT_MESSAGE" value="code trim is done, refactoring done, testing NOT done" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

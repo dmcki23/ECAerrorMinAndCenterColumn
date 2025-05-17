@@ -1,12 +1,14 @@
 import AlgorithmCode.*;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Random;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) throws IOException {
-        HashTruthTables m = new HashTruthTables(true);
+        //HashTruthTables m = new HashTruthTables(true);
         //m.manageLengthsMinimizations(150,4,500);
         //m.ecaBestFitHashCollisionExhuastiveSizeTwo(105,2,false,false,500);
         // ruleStretchTemplate = new RuleStretchTemplate();
@@ -48,11 +50,11 @@ public class Main {
         //AlgorithmCode.Addition addition = import TrimmedCode.AttemptSize8;
         //new AlgorithmCode.Addition();
         //addition.testAddition();
-        HashCollisions hashCollisions = new HashCollisions();
+        //HashCollisions hashCollisions = new HashCollisions();
         //fastMinTransformApril.check();
         //fastMinTransform.check();
         //fastMinTransformApril.checkErrorWeights();
-        HashLogicOpTransform a = new HashLogicOpTransform();
+        //HashLogicOpTransform a = new HashLogicOpTransform();
         //a.checkAdditionParity(16);
         //fastMinTransformApril.checkCollisions();
         //fastMinTransformApril.checkWolframCollision();
@@ -62,7 +64,7 @@ public class Main {
         //AttemptSize8 attemptSize8 = new AttemptSize8();
         //attemptSize8.checkLastRowWeight();
         //m.individualRuleManager(150,4,false,0,false,0,false);
-        PiBytes piBytes = new PiBytes();
+        //PiBytes piBytes = new PiBytes();
         //piBytes.checkStar();
         //
         //
@@ -70,7 +72,7 @@ public class Main {
         //
         //Testing post trim, post javadoc, post inline commenting, post april 5 2025
         //Everything after this line has been tested post 4-5-2025, DM
-        Hash hash = new Hash();
+        //Hash hash = new Hash();
         //HashCollisions hashCollisions = new HashCollisions();
         //m.doAllRules(4,false,0,false,0,false);
         //hash.hash.initWolframs();
@@ -97,7 +99,7 @@ public class Main {
         //a.testXOR();
         //Somewhere around here new features began
         //hash.check();
-        Hadamard hadamard = new Hadamard();
+        //Hadamard hadamard = new Hadamard();
         //hadamard.dftOfHadamard(8);
         //a.testAllLogic();
         //hash.check();
@@ -109,7 +111,7 @@ public class Main {
         //hashCollisions.checkSinglesAgainstAll(4);
         //hashCollisions.checkTableForTwoChanges();
         //hashCollisions.exploreTwoChanges(4);
-        HashUtilities hashUtilities = new HashUtilities();
+        //HashUtilities hashUtilities = new HashUtilities();
         //hashUtilities.exploreTwoChanges(4);
         //hashUtilities.checkSinglesAgainstAllVisualize(8);
         //hashUtilities.generateAbsolutelyEverything(4);
@@ -141,6 +143,50 @@ public class Main {
         //hash.m.doAllRules(4,false,0,false,0,false);
         //a.testAllLogic(false);
         //hash.m.oneFiftyDisplay();
-        hashCollisions.checkTupleUniqueness();
-    }
+        //hashCollisions.checkTupleUniqueness();
+        //
+         //
+         //
+         //
+         //
+         //From this point: May 13, testing the recent refactor
+        //
+
+        Hash hash = new Hash();
+        //HashCollisions hashCollisions = new HashCollisions();
+        int rule = 2;
+        String filepath = "kitchenShrunk.bmp";
+        //hash.initWolframs(true);
+        //hash.initWolframsFromFileTest();
+        //hash.hashRows.doAllRules(4,false,0,false,0,false);
+        //hash.hashColumns.doAllRules(4,false,0,false,0,false);
+        //hash.hashRows.doAllRules(8,false,0,true,1000,false);
+        //hash.hashColumns.doAllRules(8,false,0,true,100,false);
+        //needs checking
+        hash.oneDHashTransform.testOneD();
+        //needs checking
+        //hash.hashArrayCompression(new int[1][1],hash.bothLists[0][rule],1,true,true);
+        //hash.hashArrayCompression(new int[1][1],hash.bothLists[0][rule],1,false,true);
+        //changeChange() needs tweaking
+        //hash.hashRows.doAllRules(4,true,100,true,100,false);
+        //hash.hashColumns.doAllRules(4,true,100,true,100,false);
+        //most of hashBitmap() is working except the gif
+        //hash.hashBitmap(filepath, hash.bothLists[0][rule],true,true);
+        //hash.hashBitmap(filepath, hash.bothLists[1][rule],false,true);
+        //hash.hashBitmap(filepath, hash.bothLists[0][rule],true,false);
+        //hash.hashBitmap(filepath, hash.bothLists[1][rule],false,true);
+        //needs double checking
+        //hash.verifyInverseAndAvalanche(filepath,0,true);
+        //hash.verifyInverseAndAvalanche(filepath,0,false);
+        //hash.hashLogicOpTransform.testAllLogic(true);
+        //hash.hashLogicOpTransform.testAllLogic(false);
+        //hash.hashLogicOpTransform.verifyLogicOperationHash(filepath,0,true);
+        //hash.hashLogicOpTransform.verifyLogicOperationHash(filepath,0,false);
+        //done, is unique with all 4 layers
+        //hashCollisions.checkTupleUniqueness();
+        //needs doing
+        //hashCollisions.checkCompressionCollisions();
+
+        //hash.hashCollisions.checkCodewordSymmetry();
+        }
 }

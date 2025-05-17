@@ -3,6 +3,11 @@ package AlgorithmCode;
 import CustomLibrary.CustomArray;
 import CustomLibrary.StringPrint;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -182,12 +187,14 @@ public class HashTruthTables {
     Random rand = new Random();
     Hadamard hadamard = new Hadamard();
     public boolean rowError;
+    Hash hash;
 
     /**
      * Initializes everything to size 4, therefore truth tables are 65536 long.
      * If you want a different size run initialize(size)
      */
-    public HashTruthTables(boolean inRowError) {
+    public HashTruthTables(boolean inRowError, Hash inHash) {
+        hash = inHash;
         int size = 4;
         rowError = inRowError;
         sameErrorMin = new int[256][(int) Math.pow(2, size)];
@@ -534,21 +541,44 @@ public class HashTruthTables {
         //
         //
         //Initializes all the data arrays, see Javadoc for detailed variable explanations
-        sameErrorMin = new int[256][(int) Math.pow(2, size)];
-        sameErrorMax = new int[256][(int) Math.pow(2, size)];
-        minNumberOfSameSolutions = new int[256];
-        maxNumberOfSameSolutions = new int[256];
-        localMinSolution = new int[size][size];
-        localMaxSolution = new int[size][size];
-        minSolutionDistro = new int[256][(int) Math.pow(2, size)];
-        maxSolutionDistro = new int[256][(int) Math.pow(2, size)];
-        minErrorMap = new int[256][size][size];
-        maxErrorMap = new int[256][size][size];
-        minErrorBuckets = new int[256];
-        maxErrorBuckets = new int[256];
-        numberBoards = new int[256];
-        minSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
-        maxSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
+        if (size < 5) {
+            sameErrorMin = new int[256][(int) Math.pow(2, size)];
+            sameErrorMax = new int[256][(int) Math.pow(2, size)];
+            minNumberOfSameSolutions = new int[256];
+            maxNumberOfSameSolutions = new int[256];
+            localMinSolution = new int[size][size];
+            localMaxSolution = new int[size][size];
+            minSolutionDistro = new int[256][(int) Math.pow(2, size)];
+            maxSolutionDistro = new int[256][(int) Math.pow(2, size)];
+            minErrorMap = new int[256][size][size];
+            maxErrorMap = new int[256][size][size];
+            minErrorBuckets = new int[256];
+            maxErrorBuckets = new int[256];
+            numberBoards = new int[256];
+            minSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
+            maxSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
+            changeChange = new double[256];
+            errorChange = new int[256];
+            hammingChange = new int[256];
+            changeScore = new int[256];
+        } else {
+            int altSize = 4;
+            sameErrorMin = new int[256][(int) Math.pow(2, altSize)];
+            sameErrorMax = new int[256][(int) Math.pow(2, altSize)];
+            minNumberOfSameSolutions = new int[256];
+            maxNumberOfSameSolutions = new int[256];
+            localMinSolution = new int[size][size];
+            localMaxSolution = new int[size][size];
+            minSolutionDistro = new int[256][(int) Math.pow(2, size)];
+            maxSolutionDistro = new int[256][(int) Math.pow(2, size)];
+            minErrorMap = new int[256][size][size];
+            maxErrorMap = new int[256][size][size];
+            minErrorBuckets = new int[256];
+            maxErrorBuckets = new int[256];
+            numberBoards = new int[256];
+            minSolutionsAsWolfram = new int[256][(int) Math.pow(2, 0)];
+            maxSolutionsAsWolfram = new int[256][(int) Math.pow(2, 0)];
+        }
         //
         //
         //
@@ -615,6 +645,13 @@ public class HashTruthTables {
         }
         for (int n = 0; n < 256; n++) {
             System.out.println(minSorted[n] + " min error/bit " + minErrorPerBit[n] + " max error/bit" + maxErrorPerBit[n]);
+        }
+        if (doChangeScore){
+            System.out.println(Arrays.toString(changeScore));
+            System.out.println(Arrays.toString(changeChange));
+            System.out.println(Arrays.toString(errorChange));
+            System.out.println(Arrays.toString(hammingChange));
+
         }
     }
 
@@ -1080,4 +1117,5 @@ public class HashTruthTables {
         }
         return (double) totHammingChange / (double) totLocalErrors;
     }
+
 }

@@ -1,5 +1,7 @@
 package AlgorithmCode;
 
+import java.io.IOException;
+
 /**
  * Various Pi related functions, most relevant to a 1-2% error rate in reconstructing the lossy compression
  * hash minimums
@@ -164,7 +166,7 @@ public class PiBytes {
      *
      * @return
      */
-    public int[][] doConstants() {
+    public int[][] doConstants() throws IOException {
         int length = 100;
         int[][] out = new int[4][100];
         Hash hash = new Hash();

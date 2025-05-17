@@ -17,7 +17,7 @@ public class HashUtilities {
     /**
      * Middle layer of transform code
      */
-    public Hash hash = new Hash();
+    public Hash hash;
     int[] singles;
     int[][] doubles;
     int[] shiftedSingles;
@@ -36,8 +36,8 @@ public class HashUtilities {
      */
     int[] relativeTruthTable;
 
-    public HashUtilities() {
-        hash.hashUtilities = this;
+    public HashUtilities(Hash inHash) {
+        hash = inHash;
     }
 
     /**
@@ -64,7 +64,7 @@ public class HashUtilities {
         return relativeTruthTable;
     }
 
-    public void zerosRelativeTruthTable(boolean rowError) {
+    public void zerosRelativeTruthTable(boolean rowError) throws IOException {
         generateAbsolutelyEverything(4, rowError);
         int[][] zeros = new int[256][256];
         generateRelativeToFunctionTile();
@@ -255,8 +255,6 @@ public class HashUtilities {
         return input;
     }
 
-
-
     public void testWriteToFile(boolean rowError) throws IOException {
         generateAbsolutelyEverything(4, rowError);
         writeToFile();
@@ -322,6 +320,24 @@ public class HashUtilities {
         out.close();
     }
 
+    public void writeToFileMinMaxRowColumn() throws IOException {
+        File file = new File("AlgorithmCode/minMaxCodewords.dat");
+        FileOutputStream out = new FileOutputStream(file);
+        ByteBuffer buffer;
+        for (int posNeg = 0; posNeg < 2; posNeg++) {
+            for (int rowColumn = 0; rowColumn < 2; rowColumn++) {
+                for (int t = 0; t < 8; t++) {
+                    buffer = ByteBuffer.allocate(65536 * 4);
+                    for (int index = 0; index < 65536; index++) {
+                        buffer.putInt(hash.flatWolframs[posNeg + 2 * rowColumn][t][index]);
+                    }
+                    out.write(buffer.array());
+                }
+            }
+        }
+        out.close();
+    }
+
     public void readFromFile() throws IOException {
         File file = new File("fourByfour.dat");
         FileInputStream in = new FileInputStream(file);
@@ -344,6 +360,23 @@ public class HashUtilities {
                 for (int index = 0; index < 65536; index++) {
                     for (int place = 0; place < 4; place++) {
                         hash.flatWolframs[posNeg][t][index] += (int) Math.pow(4, place) * (int) data[4 * index + place];
+                    }
+                }
+            }
+        }
+    }
+
+    public void readFromFileMinMaxRowColumn() throws IOException {
+        File file = new File("AlgorithmCode/minMaxCodewords.dat");
+        FileInputStream in = new FileInputStream(file);
+        byte[] data = new byte[(int) file.length()];
+        for (int posNeg = 0; posNeg < 2; posNeg++) {
+            for (int rowColumn = 0; rowColumn < 2; rowColumn++) {
+                for (int t = 0; t < 8; t++) {
+                    for (int index = 0; index < 65536; index++) {
+                        for (int place = 0; place < 4; place++) {
+                            hash.flatWolframs[posNeg+2*rowColumn][t][index] += (int) Math.pow(4, place) * (int) data[4 * index + place];
+                        }
                     }
                 }
             }
@@ -567,7 +600,7 @@ public class HashUtilities {
             }
             boolean alreadyExists = false;
             for (int index = 0; index < numDiffOneChangeZeros; index++) {
-                if (Arrays.deepEquals(oneChangeZeros,differentOneChangeZeros[index])) {
+                if (Arrays.deepEquals(oneChangeZeros, differentOneChangeZeros[index])) {
                     alreadyExists = true;
                 }
             }
@@ -577,7 +610,7 @@ public class HashUtilities {
             }
             alreadyExists = false;
             for (int index = 0; index < numDiffBoth; index++) {
-                if (Arrays.deepEquals(both,differentBoth[index])) {
+                if (Arrays.deepEquals(both, differentBoth[index])) {
                     alreadyExists = true;
                 }
             }
@@ -608,8 +641,6 @@ public class HashUtilities {
                     //addressAccountedFor[address] = 1;
                 }
                 if (Arrays.deepEquals(both, logicFunctions[function])) {
-
-
                     workingLogicFunctions[function]++;
                     //addressAccountedFor[address ^ (1 << row) ^ (1 << col)] = 2;
                     for (int row = 0; row < sizeSquare; row++) {
@@ -737,31 +768,25 @@ public class HashUtilities {
         //result = hadamard.matrixMultiply(zeros,result);
         CustomArray.plusArrayDisplay(result, true, false, "zeros * zeros = result");
         for (int function = 0; function < logicFunctions.length; function++) {
-
             //System.out.println("n: " + function + " gate " + (function / 4) + " place " + ((function / 4) % 4) + " posNeg " + ((function/(16*4)) % 2) + " " + (workingLogicFunctions[function]));
             int gate = function / 4;
             int place = function % 4;
             if (workingLogicFunctions[function] != 0) {
                 System.out.println("gate: " + gate + " place: " + place);
             }
-
         }
         for (int function = 0; function < 0; function++) {
-
             //System.out.println("n: " + function + " gate " + (function / 4) + " place " + ((function / 4) % 4) + " posNeg " + ((function/(16*4)) % 2) + " " + (workingLogicFunctions[function]));
-            int gate = function / 4/16/16;
-            int place = (function/16/16) % 4;
+            int gate = function / 4 / 16 / 16;
+            int place = (function / 16 / 16) % 4;
             if (workingLogicFunctions[function] != 0) {
                 System.out.println("gate: " + gate + " place: " + place);
             }
-
         }
-
         System.out.println("workingECA " + Arrays.toString(workingECA));
         System.out.println("numDifferentOneChangeZeros: " + numDiffOneChangeZeros);
         System.out.println("numDifferentBoth: " + numDiffBoth);
     }
-
 
     /**
      * @param in
@@ -786,9 +811,8 @@ public class HashUtilities {
     /**
      * @param size
      */
-    public void generateAbsolutelyEverything(int size, boolean rowError) {
+    public void generateAbsolutelyEverything(int size, boolean rowError) throws IOException {
         int[][] out = new int[size][size];
-
         hash.initWolframs();
         //singles = new int[size * size];
         //shiftedSingles = new int[size * size];
@@ -823,12 +847,12 @@ public class HashUtilities {
             int[][][] hashed = new int[16][size][size];
             for (int posNeg = 0; posNeg < 2; posNeg++) {
                 for (int t = 0; t < 8; t++) {
-                    hashed[t] = hash.hashArray(preHash[t], hash.rowList[t], 1,true,rowError)[1];
-                    hashed[8 + t] = hash.hashArray(preHash[8 + t], hash.rowList[t], 1,false,rowError)[1];
+                    hashed[t] = hash.hashArray(preHash[t], hash.rowList[t], 1, true, rowError)[1];
+                    hashed[8 + t] = hash.hashArray(preHash[8 + t], hash.rowList[t], 1, false, rowError)[1];
                 }
             }
             //int[][][] cinverted = hash.reconstructDepthD(chashed, 1);
-            hash.invert(hashed, 1,true);
+            hash.invert(hashed, 1, true);
             int[][][] inverted = hash.outResult;
             int[][] finalized = hash.invert(inverted, 1, rowError);
             //int[][] cfinalized = hash.hashInverseDepth0(cinverted, 1, 0);
@@ -857,7 +881,6 @@ public class HashUtilities {
 
     public void generateSingles(int size, boolean rowError) {
         int[][] out = new int[size][size];
-
         //hash.initWolframs();
         singles = new int[size * size];
         shiftedSingles = new int[size * size];
@@ -886,12 +909,12 @@ public class HashUtilities {
                 int[][][] hashed = new int[16][size][size];
                 for (int posNeg = 0; posNeg < 2; posNeg++) {
                     for (int t = 0; t < 8; t++) {
-                        hashed[t] = hash.hashArray(preHash[t], hash.bothLists[rowError ? 0 : 1][t], 1,true,rowError)[1];
-                        hashed[8 + t] = hash.hashArray(preHash[8 + t], hash.bothLists[rowError ? 0 : 1][t], 1,false,rowError)[1];
+                        hashed[t] = hash.hashArray(preHash[t], hash.bothLists[rowError ? 0 : 1][t], 1, true, rowError)[1];
+                        hashed[8 + t] = hash.hashArray(preHash[8 + t], hash.bothLists[rowError ? 0 : 1][t], 1, false, rowError)[1];
                     }
                 }
                 //int[][][] cinverted = hash.reconstructDepthD(chashed, 1);
-                hash.invert(hashed, 1,true);
+                hash.invert(hashed, 1, true);
                 int[][][] inverted = hash.outResult;
                 int[][] finalized = hash.invert(inverted, 1, rowError);
                 //int[][] cfinalized = hash.hashInverseDepth0(cinverted, 1, 0);
@@ -917,7 +940,6 @@ public class HashUtilities {
         //hash.initWolframs();
         //checkChangesPerTransform(size);
         //int size = 4;
-
         doubles = new int[size * size][size * size];
         shiftedDoubles = new int[size * size][size * size];
         trackedZero = new int[2][size * size][size * size];
@@ -944,16 +966,16 @@ public class HashUtilities {
                 //int[][][] chashed = new int[16][size][size];
                 for (int posNeg = 0; posNeg < 2; posNeg++) {
                     for (int t = 0; t < 8; t++) {
-                        hashed[t] = hash.hashArray(preHash[t], hash.bothLists[rowError ? 0 : 1][t], 1,true,rowError)[1];
-                        hashed[8 + t] = hash.hashArray(preHash[8 + t], hash.bothLists[rowError ? 0 : 1][t], 1,false,rowError)[1];
+                        hashed[t] = hash.hashArray(preHash[t], hash.bothLists[rowError ? 0 : 1][t], 1, true, rowError)[1];
+                        hashed[8 + t] = hash.hashArray(preHash[8 + t], hash.bothLists[rowError ? 0 : 1][t], 1, false, rowError)[1];
                         //chashed[t] = hash.ecaTransform(cpre[t], hash.unpackedList[t], 1)[1];
                         //chashed[t + 8] = hash.ecaTransform(cpre[t + 8], hash.unpackedList[t], 1)[1];
                     }
                 }
                 //int[][][] cinverted = hash.reconstructDepthD(chashed, 1);
-                hash.invert(hashed, 1,true);
+                hash.invert(hashed, 1, true);
                 int[][][] inverted = hash.outResult;
-                int[][] finalized = hash.invert(inverted, 1,rowError);
+                int[][] finalized = hash.invert(inverted, 1, rowError);
                 //int[][] cfinalized = hash.hashInverseDepth0(cinverted, 1, 0);
                 int quantityErrors = 0;
                 for (int row = 0; row < size; row++) {
