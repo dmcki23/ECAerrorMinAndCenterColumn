@@ -1,8 +1,6 @@
 import AlgorithmCode.*;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Random;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -176,8 +174,9 @@ public class Main {
         //hash.hashBitmap(filepath, hash.bothLists[0][rule],true,false);
         //hash.hashBitmap(filepath, hash.bothLists[1][rule],false,true);
         //needs double checking
-        hash.verifyInverseAndAvalanche(filepath,0);
+        //hash.verifyInverseAndAvalanche(filepath,0);
         //hash.verifyInverseAndAvalanche(filepath,0,false);
+        hash.hashNonHexadecimal.hashBitmapSingleBit(filepath,0);
         //hash.hashLogicOpTransform.testAllLogic(true);
         //hash.hashLogicOpTransform.testAllLogic(false);
         //hash.hashLogicOpTransform.verifyLogicOperationHash(filepath,0,true);

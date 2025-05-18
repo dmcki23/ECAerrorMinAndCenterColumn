@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="the inverse wasn't working well enough and i remembered that the working version did not used hexadecimal it was all single bit and initializeDepthZero() was another step, before the regular hash the bitmap was hashed by initializeDepthZero()" />
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="the inverse wasn't working well enough and i remembered that the working version did not used hexadecimal it was all single bit and initializeDepthZero() was another step, before the regular hash the bitmap was hashed by initializeDepthZero()">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashNonHexadecimal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashNonHexadecimal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

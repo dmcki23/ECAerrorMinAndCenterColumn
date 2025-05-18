@@ -18,6 +18,10 @@ public class Hash {
     /**
      * Hash subroutines
      */
+    public HashNonHexadecimal hashNonHexadecimal;
+    /**
+     * Hash subroutines
+     */
     public HashTruthTables hashRows;
     /**
      * Hash subroutines
@@ -85,6 +89,7 @@ public class Hash {
         hashLogicOpTransform = new HashLogicOpTransform(this);
         oneDHashTransform = new HashTransformOneD(this);
         hashCollisions = new HashCollisions(this);
+        hashNonHexadecimal = new HashNonHexadecimal(this);
         initWolframs();
     }
 
@@ -794,6 +799,135 @@ public class Hash {
         int[][][][] hashed = new int[32][depth + 1][inImage.getHeight()][inImage.getWidth()];
         int[][][] abHashSet = new int[32][inImage.getHeight()][inImage.getWidth()];
         int[][][][] abHashed = new int[32][depth + 1][inImage.getHeight()][inImage.getWidth()];
+        Random rand = new Random();
+        int randCol = rand.nextInt(0, bFieldSet[0][0].length);
+        int randRow = rand.nextInt(0, bFieldSet[0].length);
+        int[][][] abbFieldSet = new int[32][bFieldSet[0].length][bFieldSet[0][0].length];
+        int randNext = rand.nextInt(0, 16);
+        int numChanges = 8;
+        for (int t = 0; t < 32; t++) {
+            for (int row = 0; row < bFieldSet[0].length; row++) {
+                for (int column = 0; column < bFieldSet[0][0].length; column++) {
+                    abbFieldSet[t][row][column] = bFieldSet[t][row][column];
+                    //abbFieldSet[t + 8][row][column] = bFieldSet[t + 8][row][column];
+                }
+            }
+            //abbFieldSet[t][randRow][randCol] = (15-abbFieldSet[t][randRow][randCol]);
+            //abbFieldSet[t+8][randRow][randCol] = (15-abbFieldSet[t+8][randRow][randCol]);
+            //abbFieldSet[t][randRow][randCol] = randNext;
+            //abbFieldSet[t+8][randRow][randCol] = randNext;
+        }
+        for (int change = 0; change < numChanges; change++) {
+            randCol = rand.nextInt(0, bFieldSet[0][0].length);
+            randRow = rand.nextInt(0, bFieldSet[0].length);
+            randNext = rand.nextInt(0, 16);
+            for (int t = 0; t < 32; t++) {
+                abbFieldSet[t][randRow][randCol] = randNext;
+                //abbFieldSet[t + 8][randRow][randCol] = randNext;
+            }
+        }
+        int[] avalancheDifferences = new int[32];
+        System.out.println("depth: " + depth);
+        for (int t = 0; t < 32; t++) {
+            listIndex = (t / 16) % 2;
+            rowError = (t / 16) % 2 == 0 ? true : false;
+            minimize = (t / 8) % 2 == 0 ? true : false;
+            //hashSet[t] = ecaMinTransform(bFieldSet[t], unpackedList[t], depth)[1];
+            //hashSet[8 + t] = ecaMaxTransform(bFieldSet[8 + t], unpackedList[t], depth)[1];
+            //hashSet[t] = bFieldSet[t];
+            //hashSet[8 + t] = bFieldSet[8 + t];
+            //abHashSet[t] = abbFieldSet[t];
+            //abHashSet[8 + t] = abbFieldSet[8 + t];
+            hashSet[t] = hashArray(bFieldSet[t], bothLists[listIndex][t % 8], depth, minimize, rowError)[depth];
+            hashed[t] = hashArray(bFieldSet[t], bothLists[listIndex][t % 8], depth, minimize, rowError);
+            //hashSet[8 + t] = hashArray(hashSet[8 + t], bothLists[listIndex][t], depth, false, rowError)[depth];
+            //hashed[t + 8] = hashArray(hashSet[8 + t], bothLists[listIndex][t], depth, false, rowError);
+            abHashed[t] = hashArray(abbFieldSet[t], bothLists[listIndex][t % 8], depth, minimize, rowError);
+            //abHashed[8 + t] = hashArray(abbFieldSet[8 + t], bothLists[listIndex][t], depth, false, rowError);
+            for (int row = 0; row < rows; row++) {
+                for (int column = 0; column < rows; column++) {
+                    for (int bit = 0; bit < 16; bit++) {
+                        avalancheDifferences[t] += (((hashed[t][depth][row][column] >> bit) % 2) ^ ((abHashed[t][depth][row][column] >> bit) % 2));
+                        //avalancheDifferences[8 + t] += (((hashed[8 + t][depth][row][column] >> bit) % 2) ^ ((abHashed[8 + t][depth][row][column] >> bit) % 2));
+                    }
+                }
+            }
+        }
+        System.out.println("avalancheDifferences: " + Arrays.toString(avalancheDifferences));
+        for (int t = 0; t < 32; t++) {
+            listIndex = (t / 16) % 2;
+            rowError = (t / 16) % 2 == 0 ? true : false;
+            minimize = (t / 8) % 2 == 0 ? true : false;
+            int total = 0;
+            int[][] recon = invert(hashSet[t], depth, bothLists[listIndex][t % 8], minimize, rowError);
+            System.out.println("t: " + t);
+            //System.out.println(Arrays.deepToString(hashSet[t]));
+            //System.out.println(Arrays.deepToString(recon));
+            //System.out.println(Arrays.deepToString(bFieldSet[t]));
+            for (int row = 0; row < recon.length; row++) {
+                for (int column = 0; column < recon[0].length; column++) {
+                    //total += recon[row][column] ^ hashed[t][depth-1][row][column];
+                    for (int power = 0; power < 4; power++) {
+                        total += ((recon[row][column] >> power) % 2) ^ ((bFieldSet[0][row][column] >> power) % 2);
+                    }
+                }
+            }
+            System.out.println("total: " + total + " " + (double) (total) / (inRaster.length * 16));
+        }
+        int[][] invertedSet = invert(hashSet, depth);
+        int total = 0;
+        for (int row = 0; row < invertedSet.length; row++) {
+            for (int col = 0; col < invertedSet[0].length; col++) {
+                for (int power = 0; power < 4; power++) {
+                    total += ((invertedSet[row][col] >> power) % 2) ^ ((bFieldSet[0][row][col] >> power) % 2);
+                }
+            }
+        }
+        System.out.println("overall total: " + total);
+        //System.out.println(Arrays.toString(allTables[3][165]));
+    }
+    /**
+     * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
+     *
+     * @throws IOException
+     */
+    public void verifyInverseAndAvalancheSingleBit(String filepath, int dummy) throws IOException {
+        filepath = "src/ImagesProcessed/" + filepath;
+        File file = new File(filepath);
+        filepath = filepath.substring(0, filepath.length() - 4);
+        BufferedImage inImage = ImageIO.read(file);
+        short[] inRaster = ((DataBufferUShort) inImage.getRaster().getDataBuffer()).getData();
+        int depth = (int) (Math.log(inImage.getWidth() * inImage.getWidth()) / Math.log(2));
+        depth = 1;
+        boolean rowError = true;
+        int listIndex = rowError ? 0 : 1;
+        boolean minimize;
+        System.out.println("inRaster: " + inRaster.length);
+        System.out.println("imImage.getHeight(): " + inImage.getHeight());
+        System.out.println("imImage.getWidth(): " + inImage.getWidth());
+        int rows = inImage.getHeight();
+        int cols = inImage.getWidth() * 16;
+        int[][][] bFieldSet = new int[32][rows][cols];
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < cols / 4; column++) {
+                for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
+                    for (int power = 0; power < 8; power++) {
+                        for (int posNegt = 0; posNegt < 32; posNegt++) {
+                            bFieldSet[posNegt][row][16 * column + 8 * rgbbyte + power] = ((Math.abs(inRaster[row * cols / 16 + column]) >> (8 * rgbbyte +  power)) % 16);
+                        }
+                    }
+                }
+            }
+        }
+        System.out.println(Arrays.deepToString(bFieldSet[0]));
+        //Initialize the minMax codeword truth table set
+        //initWolframs();
+        //Do the transform
+        int[][][] hashSet = new int[32][inImage.getHeight()][inImage.getWidth()];
+        int[][][][] hashed = new int[32][depth + 1][inImage.getHeight()][inImage.getWidth()];
+        int[][][] abHashSet = new int[32][inImage.getHeight()][inImage.getWidth()];
+        int[][][][] abHashed = new int[32][depth + 1][inImage.getHeight()][inImage.getWidth()];
+        int[][][][] initialized = new int[32][depth+1][inImage.getHeight()][inImage.getWidth()];
         Random rand = new Random();
         int randCol = rand.nextInt(0, bFieldSet[0][0].length);
         int randRow = rand.nextInt(0, bFieldSet[0].length);
