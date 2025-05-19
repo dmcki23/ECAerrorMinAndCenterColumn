@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="reintegrated the single bit hash with HashNonHexadecimal, turns out the inverse wasn't perfect it was a misreferenced array">
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="end of night, changes to the paper">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" afterDir="false" />
@@ -149,22 +149,7 @@
       <workItem from="1747234126123" duration="33850000" />
       <workItem from="1747490671389" duration="2000" />
       <workItem from="1747491235354" duration="10870000" />
-    </task>
-    <task id="LOCAL-00004" summary="added some javadoc comments">
-      <option name="closed" value="true" />
-      <created>1740630140039</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1740630140039</updated>
-    </task>
-    <task id="LOCAL-00005" summary="added some javadoc comments">
-      <option name="closed" value="true" />
-      <created>1740773780070</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1740773780070</updated>
+      <workItem from="1747605840877" duration="599000" />
     </task>
     <task id="LOCAL-00006" summary="feature branch node, have been no fundamental alterations since last season and prior to gathering the files from several projects post thesis joss arxiv">
       <option name="closed" value="true" />
@@ -542,7 +527,23 @@
       <option name="project" value="LOCAL" />
       <updated>1747531982100</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="end of night, changes to the paper">
+      <option name="closed" value="true" />
+      <created>1747543350534</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1747543350534</updated>
+    </task>
+    <task id="LOCAL-00054" summary="end of night, changes to the paper">
+      <option name="closed" value="true" />
+      <created>1747543360262</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1747543360262</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -577,7 +578,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Rough draft Javadoc comments done" />
     <MESSAGE value="rough draft inline comments are done" />
     <MESSAGE value="some testing has been done on the recent rebuild, the list is in Main" />
     <MESSAGE value="checkChangesPerTransform() is working spectacularly" />
@@ -602,7 +602,8 @@
     <MESSAGE value="the inverse is doing better than even but it's not zero like it was and i dunno if it's the op or my code atm" />
     <MESSAGE value="the inverse wasn't working well enough and i remembered that the working version did not used hexadecimal it was all single bit and initializeDepthZero() was another step, before the regular hash the bitmap was hashed by initializeDepthZero()" />
     <MESSAGE value="reintegrated the single bit hash with HashNonHexadecimal, turns out the inverse wasn't perfect it was a misreferenced array" />
-    <option name="LAST_COMMIT_MESSAGE" value="reintegrated the single bit hash with HashNonHexadecimal, turns out the inverse wasn't perfect it was a misreferenced array" />
+    <MESSAGE value="end of night, changes to the paper" />
+    <option name="LAST_COMMIT_MESSAGE" value="end of night, changes to the paper" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
