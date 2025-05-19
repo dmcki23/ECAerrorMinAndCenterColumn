@@ -176,7 +176,7 @@ public class Main {
         //needs double checking
         //hash.verifyInverseAndAvalanche(filepath,0);
         //hash.verifyInverseAndAvalanche(filepath,0,false);
-        hash.hashNonHexadecimal.hashBitmapSingleBit(filepath,0);
+        //hash.hashNonHexadecimal.hashBitmapSingleBit(filepath,0);
         //hash.hashLogicOpTransform.testAllLogic(true);
         //hash.hashLogicOpTransform.testAllLogic(false);
         //hash.hashLogicOpTransform.verifyLogicOperationHash(filepath,0,true);
@@ -187,5 +187,6 @@ public class Main {
         //hashCollisions.checkCompressionCollisions();
 
         //hash.hashCollisions.checkCodewordSymmetry();
+        hash.hashRows.doAllRules(4);
         }
 }

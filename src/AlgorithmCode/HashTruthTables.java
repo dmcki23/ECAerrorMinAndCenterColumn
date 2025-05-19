@@ -252,19 +252,11 @@ public class HashTruthTables {
         localMaxSolution = new int[size][size];
         //The final min codeword's output is put here
         localMinSolution = new int[size][size];
-        //Wolfram code of the rule used
-        int[] wolfram = new int[8];
-        for (int power = 0; power < 8; power++) {
-            wolfram[power] = (n / (int) Math.pow(2, power)) % 2;
-        }
         //2D binary array written to be an input and an ECA rule, and scored by weighted error discrepancy
         int[][] trialField = new int[size][size];
         //Declaring these here instead of inline in the loops significantly speeds it up
         int row = 0;
         int column = 0;
-        int a = 0;
-        int b = 0;
-        int c = 0;
         //How many possible row0 input neighborhoods there are
         int maxNeighborhood = (int) Math.pow(2, size);
         //Error score of every possible neighborhood
@@ -273,20 +265,9 @@ public class HashTruthTables {
         //
         //Check every possible input neighborhood of length size
         for (int neighborhood = 0; neighborhood < maxNeighborhood; neighborhood++) {
-            //Initialize trial neighborhood
-            for (column = 0; column < size; column++) {
-                trialField[0][column] = ((neighborhood / (int) Math.pow(2, column)) % 2);
-            }
+
             //Run Wolfram code on array with row 0 input = correction
-            for (row = 1; row < size; row++) {
-                for (column = 0; column < size; column++) {
-                    a = ((column - 1) + size) % size;
-                    b = column;
-                    c = ((column + 1)) % size;
-                    trialField[row][column] = trialField[row - 1][a] + 2 * trialField[row - 1][b] + 4 * trialField[row - 1][c];
-                    trialField[row][column] = wolfram[trialField[row][column]];
-                }
-            }
+            trialField = generateCodewordTile(neighborhood,n);
             //
             //
             //Score the error
@@ -381,43 +362,10 @@ public class HashTruthTables {
         maxSolutionDistro[n][firstMaxSpot]++;
         //
         //
-        //Run the Wolfram code on the minimum neighborhood codeword for function return and class field storage purposes
-        trialField = new int[size][size];
-        for (column = 0; column < size; column++) {
-            trialField[0][column] = ((firstMinSpot / (int) Math.pow(2, column)) % 2);
-            localMaxSolution[0][column] = ((firstMaxSpot / (int) Math.pow(2, column)) % 2);
-            localMinSolution[0][column] = ((firstMinSpot / (int) Math.pow(2, column)) % 2);
-        }
-        //Minimum codeword return array
-        for (row = 1; row < size; row++) {
-            for (column = 0; column < size; column++) {
-                a = ((column - 1) + size) % size;
-                b = column;
-                c = ((column + 1)) % size;
-                trialField[row][column] = trialField[row - 1][a] + 2 * trialField[row - 1][b] + 4 * trialField[row - 1][c];
-                trialField[row][column] = wolfram[trialField[row][column]];
-            }
-        }
-        //Minimum codeword class field array
-        for (row = 1; row < size; row++) {
-            for (column = 0; column < size; column++) {
-                a = ((column - 1) + size) % size;
-                b = column;
-                c = ((column + 1)) % size;
-                localMinSolution[row][column] = localMinSolution[row - 1][a] + 2 * localMinSolution[row - 1][b] + 4 * localMinSolution[row - 1][c];
-                localMinSolution[row][column] = wolfram[localMinSolution[row][column]];
-            }
-        }
-        //Maximum codeword class field array
-        for (row = 1; row < size; row++) {
-            for (column = 0; column < size; column++) {
-                a = ((column - 1) + size) % size;
-                b = column;
-                c = ((column + 1)) % size;
-                localMaxSolution[row][column] = localMaxSolution[row - 1][a] + 2 * localMaxSolution[row - 1][b] + 4 * localMaxSolution[row - 1][c];
-                localMaxSolution[row][column] = wolfram[localMaxSolution[row][column]];
-            }
-        }
+        //Store and return the results
+        localMaxSolution = generateCodewordTile(lastMaxCodeword, n);
+        localMinSolution = generateCodewordTile(lastMinCodeword, n);
+        trialField = generateCodewordTile(lastMinCodeword, n);
         return trialField;
     }
 
@@ -488,6 +436,13 @@ public class HashTruthTables {
         }
         return out;
     }
+
+    /**
+     * For size 4, there are 65536 4x4 binary arrays, this takes in an integer 0-65536 and returns it as a 4x4 binary array
+     * @param in integer between 0-65536
+     * @param size side length of the square
+     * @return the input integer turned into a square binary array of size size
+     */
     public int[][] generateAddressTile(int in, int size){
         int[][] out = new int[size][size];
         for (int row = 0; row < size; row++) {
@@ -497,6 +452,12 @@ public class HashTruthTables {
         }
         return out;
     }
+
+    /**
+     * Takes in a square binary array and returns its value as an integer
+     * @param in square binary array
+     * @return in[][] in integer form
+     */
     public int addressTileToInteger(int[][] in){
         int size = in.length;
         int out = 0;
