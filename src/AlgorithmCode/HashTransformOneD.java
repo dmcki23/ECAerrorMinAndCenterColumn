@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * One D version of the hash algorith
+ * One D version of the hash algorithm
  */
 public class HashTransformOneD {
     /**
@@ -21,6 +21,13 @@ public class HashTransformOneD {
         hash = inHash;
     }
 
+    /**
+     * 1D version of the hash algorithm using all 32 codeword sets, hash-in-place
+     *
+     * @param input a 1D array of data to be hashed
+     * @param depth the iterative depth defining the transformation steps
+     * @return a new 1D array containing the transformed and rehashed data
+     */
     public int[][][] hashArray(int[][][] input, int depth) {
         int[][][] out = new int[4][8][input.length];
         for (int layer = 0; layer < 4; layer++) {
@@ -33,6 +40,12 @@ public class HashTransformOneD {
         return out;
     }
 
+    /**
+     * 1D version of the hash algorithm using all 32 codeword sets, compression version
+     * @param input a 1D array of data to be hashed
+     * @param depth iterative depth of hashing
+     * @return input data compressively hashed to iteration depth
+     */
     public int[][][] hashCompression(int[][][] input, int depth) {
         int[][][] out = new int[4][8][input.length];
         for (int layer = 0; layer < 4; layer++) {
@@ -46,12 +59,12 @@ public class HashTransformOneD {
     }
 
     /**
-     * Takes in a 1D array of hashed data in codeword form, then rehashes sets of codewords increasingly far apart in steps of powers of 2, 1 apart 2 apart 4 apart ... 2^n apart
+     * 1D version of the hash algorithm using only a single codeword set, hash-in-place version
      *
-     * @param input a 2D array of hashed data
-     * @param rule  one of {0,15,51,85,170,204,240,255}
-     * @param depth iterative depth, also the power of how far away its neighbors are
-     * @return the input data, rehashed with neighbors 2^depth apart
+     * @param input a 1D array of hashed data
+     * @param rule  a 0-255 ECA rule, typically within the two standard sets
+     * @param depth how many iterations of hashing to do
+     * @return the input data hashed depth times
      */
     public int[][] hashArray(int[] input, int rule, int depth, boolean minimize, boolean rowError) {
         //initWolframs();
@@ -80,12 +93,12 @@ public class HashTransformOneD {
     }
 
     /**
-     * Takes in a 1D array of hashed data in codeword form, then rehashes sets of codewords increasingly far apart in steps of powers of 2, 1 apart 2 apart 4 apart ... 2^n apart
+     * 1D version of the hash algorithm, single codeword set and compression version
      *
-     * @param input a 2D array of hashed data
-     * @param rule  one of {0,15,51,85,170,204,240,255}
-     * @param depth iterative depth, also the power of how far away its neighbors are
-     * @return the input data, rehashed with neighbors 2^depth apart
+     * @param input a 1D array of input data to be hashed
+     * @param rule  a 0-255 ECA rule
+     * @param depth iterative depth, how many times to hash the data
+     * @return the input data, hashed depth times
      */
     public int[] hashArrayCompression(int[] input, int rule, int depth, boolean minimize, boolean rowError) {
         //initWolframs();
@@ -118,11 +131,11 @@ public class HashTransformOneD {
     }
 
     /**
-     * Inverse operation
+     * 1D version of the hash inversion, all 32 codeword sets
      *
      * @param input input data
-     * @param depth iteration number
-     * @return inverted input
+     * @param depth depth of iteration, how many times to hash and rehash
+     * @return inverted input[][], lossy
      */
     public int[] invert(int[][] input, int depth) {
         int neighborDistance = 1 << (depth - 1);
@@ -178,11 +191,11 @@ public class HashTransformOneD {
     }
 
     /**
-     * Inverse operation
+     * 1D version of the hash inverse operation, single codeword seet
      *
-     * @param input input data
-     * @param depth iteration number
-     * @return inverted input
+     * @param input hashed input data to be inverted
+     * @param depth depth of iteration of the hashed data
+     * @return inverted input[][]
      */
     public int[] invert(int[] input, int rule, int depth, boolean minimize, boolean rowError) {
         int neighborDistance = 1 << (depth - 1);
@@ -235,6 +248,9 @@ public class HashTransformOneD {
         return outResult;
     }
 
+    /**
+     * Tests these 1D hash versions with random data
+     */
     public void testOneD() {
         //hash.initWolframs();
         int size = 100;

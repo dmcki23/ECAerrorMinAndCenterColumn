@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="end of night, changes to the paper" />
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="beginning of day, changes to the paper">
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTransformOneD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransformOneD.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -145,14 +149,7 @@
       <workItem from="1747490671389" duration="2000" />
       <workItem from="1747491235354" duration="10870000" />
       <workItem from="1747605840877" duration="610000" />
-    </task>
-    <task id="LOCAL-00007" summary="Basic functions working&#10;&#10;The prime stretch is working in PrimeCAstagingLONG in doLogReductionPrimeTwo()&#10;&#10;The exhaustive and numTrials versions in minErrorStaging ecaBestFitHashCollision ... (), the numTrials parameter is redundant in the exhaustive version&#10;&#10;Next up is a lot of organizing polishing and cosmetic work">
-      <option name="closed" value="true" />
-      <created>1740876444286</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1740876444286</updated>
+      <workItem from="1747673623691" duration="4378000" />
     </task>
     <task id="LOCAL-00008" summary="Moved some staging classes to Trim (a recycle bin)&#10;&#10;Cut all unnecessary functions, only essential functions left (probably, ftm)">
       <option name="closed" value="true" />
@@ -538,7 +535,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747627706375</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="beginning of day, changes to the paper">
+      <option name="closed" value="true" />
+      <created>1747673643141</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1747673643142</updated>
+    </task>
+    <option name="localTasksCounter" value="57" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -573,7 +578,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="rough draft inline comments are done" />
     <MESSAGE value="some testing has been done on the recent rebuild, the list is in Main" />
     <MESSAGE value="checkChangesPerTransform() is working spectacularly" />
     <MESSAGE value="bitmapCheck() ?? is working with a mod function on the phaseShift. It doesn't look like it's losing much information compared to the last iteration of the gif function" />
@@ -598,7 +602,8 @@
     <MESSAGE value="the inverse wasn't working well enough and i remembered that the working version did not used hexadecimal it was all single bit and initializeDepthZero() was another step, before the regular hash the bitmap was hashed by initializeDepthZero()" />
     <MESSAGE value="reintegrated the single bit hash with HashNonHexadecimal, turns out the inverse wasn't perfect it was a misreferenced array" />
     <MESSAGE value="end of night, changes to the paper" />
-    <option name="LAST_COMMIT_MESSAGE" value="end of night, changes to the paper" />
+    <MESSAGE value="beginning of day, changes to the paper" />
+    <option name="LAST_COMMIT_MESSAGE" value="beginning of day, changes to the paper" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

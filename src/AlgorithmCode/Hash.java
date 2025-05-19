@@ -16,26 +16,22 @@ import java.util.Random;
  */
 public class Hash {
     /**
-     * Hash subroutines
+     * Hash subroutines, single bit processing instead of the hexadecimal used here
      */
     public HashNonHexadecimal hashNonHexadecimal;
     /**
-     * Hash subroutines
+     * Generates the codeword set truth tables as well as some minor functions, this one is set to rowError weighted errorScores
      */
     public HashTruthTables hashRows;
     /**
-     * Hash subroutines
+     * Generates the codeword set truth tables as well as some minor functions, this one is set to columnError weighted errorScores
      */
     public HashTruthTables hashColumns;
     /**
-     * Both hashRows and hashColumns in one array, todo maybe get rid of the original version and keep the array
+     * Both hashRows and hashColumns in one array
      */
     public HashTruthTables[] hashRowsColumns;
-    /**
-     * Provides utility methods and functionalities related to hashing operations.
-     * Used as a helper component within the HashTransform class.
-     */
-    //public HashUtilities hashUtilities = new HashUtilities(this);
+
     /**
      * The relative logic gate transform that occurs when hashing
      */
@@ -44,9 +40,12 @@ public class Hash {
      * One D version of the hash
      */
     public HashTransformOneD oneDHashTransform = new HashTransformOneD(this);
+    /**
+     * Generally tests the hash algorithm for collisions and uniqueness
+     */
     public HashCollisions hashCollisions;
     /**
-     * The entire set of min and max codewords of [0,15,51,85,170,204,240,255]
+     * The entire set of 32 min and max row-column weighted codeword truth tables
      */
     public int[][][] flatWolframs = new int[4][8][256 * 256];
     /**
@@ -67,20 +66,11 @@ public class Hash {
      * rowList and columnList in one array
      */
     public int[][] bothLists = new int[][]{{0, 15, 51, 85, 170, 204, 240, 255}, {0, 15, 85, 90, 165, 170, 240, 255}};
-    /**
-     * A three-dimensional integer array used to store the output results of certain hashing
-     * transformations. The exact structure and usage are determined by the implementation of
-     * the methods within the class.
-     * <p>
-     * The outResult variable is typically populated and manipulated by methods such as
-     * ecaTransform or inverse, which perform transformations and rehashing tasks based on
-     * the inputs provided.
-     * <p>
-     * It serves as a container for data produced during the execution of the hash-related
-     * algorithms in the class.
-     */
-    int[][][] outResult;
 
+    /**
+     * Sets the helper classes and initiates generating the 32 basic codeword tables
+     * @throws IOException
+     */
     public Hash() throws IOException {
         hashRows = new HashTruthTables(true, this);
         hashColumns = new HashTruthTables(false, this);
@@ -94,12 +84,12 @@ public class Hash {
     }
 
     /**
-     * Takes in a 2D array of hashed data in codeword form, then rehashes sets of codewords increasingly far apart in steps of powers of 2, 1 apart 2 apart 4 apart ... 2^n apart
+     * Hashes 2D data with the given parameters, hash-in-place version
      *
      * @param input a 2D array of hashed data
-     * @param rule  one of {0,15,51,85,170,204,240,255}
-     * @param depth iterative depth, also the power of how far away its neighbors are
-     * @return the input data, rehashed with neighbors 2^depth apart
+     * @param rule  a 0-255 ECA rule
+     * @param depth iterative depth, also the power of how far away its neighbors are at each step
+     * @return the input data, hashed
      */
     public int[][][] hashArray(int[][] input, int rule, int depth, boolean minimize, boolean rowError) {
         //initWolframs();
@@ -140,12 +130,12 @@ public class Hash {
     }
 
     /**
-     * Takes in a 2D array of hashed data in codeword form, then rehashes sets of codewords increasingly far apart in steps of powers of 2, 1 apart 2 apart 4 apart ... 2^n apart
+     * Hashes a 2D array of hexadecimal data with the given parameters, compression version
      *
-     * @param input a 2D array of hashed data
-     * @param rule  one of {0,15,51,85,170,204,240,255}
-     * @param depth iterative depth, also the power of how far away its neighbors are
-     * @return the input data, rehashed with neighbors 2^depth apart
+     * @param input a 2D array of data to be hashed
+     * @param rule  a 0-255 ECA rule
+     * @param depth iterative depth
+     * @return the input data, hashed
      */
     public int[][] hashArrayCompression(int[][] input, int rule, int depth, boolean minimize, boolean rowError) {
         //initWolframs();
@@ -193,7 +183,7 @@ public class Hash {
     }
 
     /**
-     * Initializes the set of hash truth tables for both row and column weighted lists
+     * Initializes the set of hash truth tables for both row and column weighted lists, stores it in a file and tests it (not working atm)
      */
     public void initWolframsFromFileTest() throws IOException {
         for (int r = 0; r < 8; r++) {
@@ -243,7 +233,7 @@ public class Hash {
     }
 
     /**
-     * Initializes the set of hash truth tables for both row and column weighted lists
+     * Initializes the set of hash truth tables for both row and column weighted lists, from the file generated in writeToFileMinMaxRowColumn()
      */
     public void initWolframs(boolean fromFile) throws IOException {
 //        hashRows = new HashTruthTables(true,this);
@@ -308,6 +298,10 @@ public class Hash {
         return 0;
     }
 
+    /**
+     * Reads the codeword set truth tables from the file generated in writeToFileMinMaxRowColumn()
+     * @throws IOException
+     */
     public void readFromFileMinMaxRowColumn() throws IOException {
 //        File file = new File("src/AlgorithmCode/minMaxCodewordsTest.dat");
 //        FileInputStream in = new FileInputStream(file);
@@ -381,8 +375,7 @@ public class Hash {
     }
 
     /**
-     * Computes the inverse transformation of a 2D array of hashed data using a voting mechanism
-     * derived from neighboring influences determined through specific rules and parameters.
+     * Computes the inverse transformation of a 2D array of hashed data using a voting mechanism, single codeword set
      *
      * @param input    a 2D array of integers representing the hashed input data
      * @param depth    an integer indicating how far away neighbors are considered (powers of 2, e.g., 2^n)
@@ -467,10 +460,9 @@ public class Hash {
     }
 
     /**
-     * Computes the inverse transformation of a 3D array of hashed data using a voting mechanism
-     * derived from neighboring influences determined through specific rules and parameters.
+     * Computes the inverse transformation of a 2D array of hashed data using a voting mechanism using all 32 codewords
      *
-     * @param input a 3D array of integers representing the hashed input data
+     * @param input 32 codeword sets of 2D hashed data, input[codeword][row][column]
      * @param depth an integer indicating how far away neighbors are considered (powers of 2, e.g., 2^n)
      * @return a 2D array of integers representing the rehashed inverse-transformed data
      */
@@ -526,7 +518,7 @@ public class Hash {
         //for each location, based on whether the final tally of the vote was positive or negative
         //output a 0 if positive and 1 if negative, if the vote result is not what the
         //original data is increment the error counter for analysis
-        outResult = new int[16][input[0].length][input[0][0].length];
+        //outResult = new int[16][input[0].length][input[0][0].length];
         int[][] outCompare = new int[input[0].length][input[0][0].length];
         int totDifferent = 0;
         int[][] finalOutput = new int[input[0].length][input[0][0].length];
@@ -590,7 +582,7 @@ public class Hash {
     }
 
     /**
-     * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
+     * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file using the given parameters
      *
      * @throws IOException
      */
@@ -729,6 +721,15 @@ public class Hash {
         System.out.println("rate: " + rate);
     }
 
+    /**
+     * Generates a gif from hashed data in hashBitmap()
+     * @param frames hashed data from hashBitmap(), frames[a][row][column] where frames[a] is a single frame of the gif
+     * @param filepath name and location of where to put the gif
+     * @param depth depth of iteration, how many frames
+     * @param inImage passed as a parameter mostly for the inImage.getHeight() and .getWidth() information
+     * @throws IOException
+     */
+
     public void writeGif(short[][][] frames, String filepath, int depth, BufferedImage inImage) throws IOException {
         AnimatedGifEncoder animatedGifEncoder = new AnimatedGifEncoder();
         animatedGifEncoder.start(filepath);
@@ -759,7 +760,7 @@ public class Hash {
     }
 
     /**
-     * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
+     * This function experimentally tests the inverse operation and the avalanche property on a bitmap
      *
      * @throws IOException
      */
@@ -887,7 +888,8 @@ public class Hash {
         //System.out.println(Arrays.toString(allTables[3][165]));
     }
     /**
-     * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
+     * Experimentally tests the inverse function and avalanche properties on a bitmap, this one breaks down a bitmap's RGB codes into
+     * single bits instead of the hexadecimal used in verifyInverseAndAvalanche()
      *
      * @throws IOException
      */

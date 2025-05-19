@@ -11,34 +11,43 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * Two hash tiles combined by layering and voting (binary (a,b)->{0,0,1,1}), then rehashing,
- * result in Row AND Column. Hash tile addition is the non-reduced Hadamard matrix.
+ * This class produces and verifies truth tables of logic gate transformation when hashed. If you take a codeword-produced 4x4 tile and combine it with another codeword-produced 4x4 tile
+ * via a bitwise 0-15 logic gate operation and rehash the tile, the logic operation between the original codewords and the result codeword becomes transformed into another logic operation.
+ * AND is 8, OR is 14.
+ *
+ * A logic operation between two inputs pre-hash becomes a different logic operation within the hash. Using these truth tables you can operate on hashed input without lossy inversion
+ * and without the original data.
+ *
+ * This class generates and verifies these operation transformations for all 0-15 logic gates and all 16 row-weighted hashes, the column-weighted hashes have an incomplete set of these transformations.
  */
 public class HashLogicOpTransform {
+    /**
+     * Loads the manager class
+     * @param inHash manager class
+     */
     public HashLogicOpTransform(Hash inHash){
         hash = inHash;
     }
     /**
-     * Used in generating addition tables
+     * Manager class
      */
     Hash hash;
     /**
-     * Used in generating addition tables
+     * Truth table of generated logic op transformations
      */
-    //HashTruthTables hashTruthTables = new HashTruthTables(true);
     int[][] logicTransform = new int[16][16];
+    /**
+     * A class that generates Hadamard matrices, here it is experimental at the moment
+     */
     Hadamard hadamard = new Hadamard();
 
     /**
-     * The first part of this function generates the addition tables of adding two hash tiles together,
-     * Showing that adding tiles does indeed result in a non-reduced Hadamard matrix. After that
-     * is some experimentation ???
+     * This function tests a single 0-15 logic gate against all 16 minMax codeword sets rowError or columnError
      */
-    public void testGate(int gate, int[][] tupleDistro, int[][] h, boolean inRowError) {
+    public void testGate(int gate, int[][] tupleDistro, boolean inRowError) {
         int listLayer = inRowError ? 0 : 1;
-        //hashTransform.initWolframs();
         int[][][][] additionTables = new int[2][8][16][16];
-        //generate addition table for every (a,b) for every minMax codeword 8-tuple
+        //generate addition table for every (a,b) for every minMax codeword set
         for (int a = 0; a < 16; a++) {
             for (int b = 0; b < 16; b++) {
                 for (int posNeg = 0; posNeg < 2; posNeg++) {
@@ -78,6 +87,7 @@ public class HashLogicOpTransform {
             }
         }
         int[][] distro = new int[16][16];
+        //tests the attempted logic transform gate and rejects those that aren't valid
         for (int posNeg = 0; posNeg < 2; posNeg++) {
             for (int t = 0; t < 8; t++) {
                 Arrays.fill(distro[8 * posNeg + t], -1);
@@ -99,6 +109,7 @@ public class HashLogicOpTransform {
                 }
             }
         }
+        //stores results in tupleDistro[][]
         Arrays.fill(tupleDistro[gate], -1);
         for (int posNeg = 0; posNeg < 2; posNeg++) {
             for (int t = 0; t < 8; t++) {
@@ -110,176 +121,173 @@ public class HashLogicOpTransform {
                 }
             }
         }
-        for (int t = 0; t < 16; t++) {
-            if (tupleDistro[gate][t] == -1) {
-                //if ( (gate == 8 ||gate == 14)) continue;
-                int[][] control = new int[16][16];
-                for (int r = 0; r < 16; r++) {
-                    for (int c = 0; c < 16; c++) {
-                        int[][] a = hash.hashRows.generateCodewordTile(r, hash.bothLists[listLayer][t % 8]);
-                        int[][] b = hash.hashRows.generateCodewordTile(c, hash.bothLists[listLayer][t % 8]);
-                        int[][] cc = new int[4][4];
-                        int[][] dd = new int[4][4];
-                        for (int row = 0; row < 4; row++) {
-                            for (int col = 0; col < 4; col++) {
-                                int tot = 0;
-                                for (int power = 0; power < 4; power++) {
-                                    int ab = (1 << power) * (((a[row][col] >> power) % 2) + 2 * ((b[row][col] >> power) % 2));
-                                    tot += (1 << power) * ((gate >> ab) % 2);
-                                }
-                                cc[row][col] = tot;
-                            }
-                        }
-                        hash.hashRowsColumns[listLayer].findMinimizingCodeword(hash.bothLists[listLayer][t % 8], cc);
-                        int codeword = (1 == (t / 8)) ? hash.hashRowsColumns[listLayer].lastMinCodeword : hash.hashRowsColumns[listLayer].lastMaxCodeword;
-                        control[r][c] = codeword;
-                        int altCodeword = 0;
-                        int altGate = gate;
-                        if (listLayer == 1) altGate = 15 - gate;
-                        for (int power = 4; power < 4; power++) {
-                            altCodeword += (1 << power) * ((altGate >> (((r >> power) % 2) + 2 * ((c >> power) % 2))) % 2);
-                        }
-                        control[r][c] = codeword;
-                    }
-                }
-                CustomArray.plusArrayDisplay(control, false, false, "control");
-                for (int power = 0; power < 0; power++) {
-                    int[][] a = CustomArray.layerOf(control, power, 2, 2, true, false);
-                    int[][] b = CustomArray.layerOf(control, (power + 1) % 4, 2, 2, false, false);
-                    int[][] c = new int[16][16];
-                    for (int row = 0; row < 16; row++) {
-                        for (int col = 0; col < 16; col++) {
-                            c[row][col] = (a[row][col] ^ b[row][col]);
-                        }
-                    }
-                    CustomArray.plusArrayDisplay(c, true, false, "powers: " + power + " " + ((power + 1) % 4));
-                }
-                powerLoop:
-                for (int power = 0; power < 4; power++) {
-                    gLoop:
-                    for (int g = 0; g < 16; g++) {
-                        for (int r = 0; r < 8; r++) {
-                            if (Arrays.deepEquals(hadamard.allH[g], CustomArray.reflectRotateTransposeStatic(CustomArray.layerOf(control, power, 2, 2, false, false), r))) {
-                                tupleDistro[gate][t] = g + 16;
-                                continue powerLoop;
-                            }
-                        }
-                    }
-                    CustomArray.plusArrayDisplay(CustomArray.layerOf(control, power, 2, 2, false, false), false, false, "powers: " + power);
-                }
-            }
-        }
-        //CustomArray.plusArrayDisplay(distro, false, false, "distro");
-        //Display
-        for (int posNeg = 0; posNeg < 2; posNeg++) {
-            for (int t = 0; t < 8; t++) {
-                if (Arrays.deepEquals(additionTables[posNeg][t], h)) {
-                    //System.out.println("posNeg: " + posNeg + " t: " + t);
-                }
-                for (int power = 0; power < 4; power++) {
-                    int[][] display = new int[16][16];
-                    for (int row = 0; row < 16; row++) {
-                        for (int col = 0; col < 16; col++) {
-                            display[row][col] = (additionTables[posNeg][t][row][col] >> power) % 2;
-                        }
-                    }
-                    //CustomArray.plusArrayDisplay(display, false, false, "posNeg: " + posNeg + " t: " + t + " " + power);
-                    //CustomArray.plusArrayDisplay(additionTables[posNeg][t], true, false, "posNeg: " + posNeg + " t: " + t + " " + hashTransform.unpackedList[t]);
-                    //CustomArray.intoBinary(additionTables[posNeg][t], 4, 2, 2, true,false);
-                }
-            }
-        }
-        for (int posNeg = 0; posNeg < 2; posNeg++) {
-            for (int t = 0; t < 8; t++) {
-                for (int power = 0; power < 4; power++) {
-                    int[][] display = new int[2][2];
-                    for (int row = 0; row < 2; row++) {
-                        for (int col = 0; col < 2; col++) {
-                            display[row][col] = (additionTables[posNeg][t][row][col] >> power) % 2;
-                            //   tupleDistro[gate][8 * posNeg + t] += (display[row][col] << (2 * row + col));
-                        }
-                    }
-                    //CustomArray.plusArrayDisplay(display, false, false, "posNeg: " + posNeg + " t: " + t + " " + power);
-                    //CustomArray.plusArrayDisplay(additionTables[posNeg][t], true, false, "posNeg: " + posNeg + " t: " + t + " " + hashTransform.unpackedList[t]);
-                    //CustomArray.intoBinary(additionTables[posNeg][t], 4, 2, 2, true,false);
-                }
-            }
-        }
-        for (int posNeg = 0; posNeg < 2; posNeg++) {
-            for (int t = 0; t < 8; t++) {
-                //CustomArray.plusArrayDisplay(display, false, false, "posNeg: " + posNeg + " t: " + t + " " + power);
-                //CustomArray.plusArrayDisplay(additionTables[posNeg][t], false, false, "posNeg: " + posNeg + " t: " + t + " " + hashTransform.unpackedList[t]);
-                //CustomArray.intoBinary(additionTables[posNeg][t], 4, 2, 2, true,false);
-            }
-        }
+        //after this is experimental to see why it doesn't work for the column-weighted set
+//        for (int t = 0; t < 16; t++) {
+//            if (tupleDistro[gate][t] == -1) {
+//                //if ( (gate == 8 ||gate == 14)) continue;
+//                int[][] control = new int[16][16];
+//                for (int r = 0; r < 16; r++) {
+//                    for (int c = 0; c < 16; c++) {
+//                        int[][] a = hash.hashRows.generateCodewordTile(r, hash.bothLists[listLayer][t % 8]);
+//                        int[][] b = hash.hashRows.generateCodewordTile(c, hash.bothLists[listLayer][t % 8]);
+//                        int[][] cc = new int[4][4];
+//                        int[][] dd = new int[4][4];
+//                        for (int row = 0; row < 4; row++) {
+//                            for (int col = 0; col < 4; col++) {
+//                                int tot = 0;
+//                                for (int power = 0; power < 4; power++) {
+//                                    int ab = (1 << power) * (((a[row][col] >> power) % 2) + 2 * ((b[row][col] >> power) % 2));
+//                                    tot += (1 << power) * ((gate >> ab) % 2);
+//                                }
+//                                cc[row][col] = tot;
+//                            }
+//                        }
+//                        hash.hashRowsColumns[listLayer].findMinimizingCodeword(hash.bothLists[listLayer][t % 8], cc);
+//                        int codeword = (1 == (t / 8)) ? hash.hashRowsColumns[listLayer].lastMinCodeword : hash.hashRowsColumns[listLayer].lastMaxCodeword;
+//                        control[r][c] = codeword;
+//                        int altCodeword = 0;
+//                        int altGate = gate;
+//                        if (listLayer == 1) altGate = 15 - gate;
+//                        for (int power = 4; power < 4; power++) {
+//                            altCodeword += (1 << power) * ((altGate >> (((r >> power) % 2) + 2 * ((c >> power) % 2))) % 2);
+//                        }
+//                        control[r][c] = codeword;
+//                    }
+//                }
+//                CustomArray.plusArrayDisplay(control, false, false, "control");
+//                for (int power = 0; power < 0; power++) {
+//                    int[][] a = CustomArray.layerOf(control, power, 2, 2, true, false);
+//                    int[][] b = CustomArray.layerOf(control, (power + 1) % 4, 2, 2, false, false);
+//                    int[][] c = new int[16][16];
+//                    for (int row = 0; row < 16; row++) {
+//                        for (int col = 0; col < 16; col++) {
+//                            c[row][col] = (a[row][col] ^ b[row][col]);
+//                        }
+//                    }
+//                    CustomArray.plusArrayDisplay(c, true, false, "powers: " + power + " " + ((power + 1) % 4));
+//                }
+//                powerLoop:
+//                for (int power = 0; power < 4; power++) {
+//                    gLoop:
+//                    for (int g = 0; g < 16; g++) {
+//                        for (int r = 0; r < 8; r++) {
+//                            if (Arrays.deepEquals(hadamard.allH[g], CustomArray.reflectRotateTransposeStatic(CustomArray.layerOf(control, power, 2, 2, false, false), r))) {
+//                                tupleDistro[gate][t] = g + 16;
+//                                continue powerLoop;
+//                            }
+//                        }
+//                    }
+//                    CustomArray.plusArrayDisplay(CustomArray.layerOf(control, power, 2, 2, false, false), false, false, "powers: " + power);
+//                }
+//            }
+//        }
+//        //CustomArray.plusArrayDisplay(distro, false, false, "distro");
+//        //Display
+//        for (int posNeg = 0; posNeg < 2; posNeg++) {
+//            for (int t = 0; t < 8; t++) {
+//                if (Arrays.deepEquals(additionTables[posNeg][t], h)) {
+//                    //System.out.println("posNeg: " + posNeg + " t: " + t);
+//                }
+//                for (int power = 0; power < 4; power++) {
+//                    int[][] display = new int[16][16];
+//                    for (int row = 0; row < 16; row++) {
+//                        for (int col = 0; col < 16; col++) {
+//                            display[row][col] = (additionTables[posNeg][t][row][col] >> power) % 2;
+//                        }
+//                    }
+//                    //CustomArray.plusArrayDisplay(display, false, false, "posNeg: " + posNeg + " t: " + t + " " + power);
+//                    //CustomArray.plusArrayDisplay(additionTables[posNeg][t], true, false, "posNeg: " + posNeg + " t: " + t + " " + hashTransform.unpackedList[t]);
+//                    //CustomArray.intoBinary(additionTables[posNeg][t], 4, 2, 2, true,false);
+//                }
+//            }
+//        }
+//        for (int posNeg = 0; posNeg < 2; posNeg++) {
+//            for (int t = 0; t < 8; t++) {
+//                for (int power = 0; power < 4; power++) {
+//                    int[][] display = new int[2][2];
+//                    for (int row = 0; row < 2; row++) {
+//                        for (int col = 0; col < 2; col++) {
+//                            display[row][col] = (additionTables[posNeg][t][row][col] >> power) % 2;
+//                            //   tupleDistro[gate][8 * posNeg + t] += (display[row][col] << (2 * row + col));
+//                        }
+//                    }
+//                    //CustomArray.plusArrayDisplay(display, false, false, "posNeg: " + posNeg + " t: " + t + " " + power);
+//                    //CustomArray.plusArrayDisplay(additionTables[posNeg][t], true, false, "posNeg: " + posNeg + " t: " + t + " " + hashTransform.unpackedList[t]);
+//                    //CustomArray.intoBinary(additionTables[posNeg][t], 4, 2, 2, true,false);
+//                }
+//            }
+//        }
+//        for (int posNeg = 0; posNeg < 2; posNeg++) {
+//            for (int t = 0; t < 8; t++) {
+//                //CustomArray.plusArrayDisplay(display, false, false, "posNeg: " + posNeg + " t: " + t + " " + power);
+//                //CustomArray.plusArrayDisplay(additionTables[posNeg][t], false, false, "posNeg: " + posNeg + " t: " + t + " " + hashTransform.unpackedList[t]);
+//                //CustomArray.intoBinary(additionTables[posNeg][t], 4, 2, 2, true,false);
+//            }
+//        }
         //hash.rowError = previousRowError;
     }
 
     /**
-     * Internal hash operation transform truth table generator
+     * Hash logic transform generator. This is the main function that generates the truth tables and calls testGate() for individual rules
      *
      * @param rowError if true, uses 2^row, if false uses 2^column weight on errorScore
      */
     public void testAllLogic(boolean rowError) throws IOException {
-        hash.initWolframs();
+        //hash.initWolframs();
         int[][] tupleDistro = new int[16][16];
-        int[][] h = new int[16][16];
-        h = hadamard.nonReducedHadamard(16);
-        hadamard.allHadamardish(4);
+
         for (int gate = 0; gate < 16; gate++) {
-            System.out.println("___________________________________________________________________________");
-            System.out.println("___________________________________________________________________________");
-            System.out.println("___________________________________________________________________________");
-            System.out.println("___________________________________________________________________________");
-            System.out.println("___________________________________________________________________________");
-            System.out.println("___________________________________________________________________________");
-            System.out.println("___________________________________________________________________________");
+
             System.out.println("___________________________________________________________________________");
             System.out.println("gate: " + gate);
-            testGate(gate, tupleDistro, h, rowError);
+            testGate(gate, tupleDistro,  rowError);
         }
         int[] gateDistro = new int[16];
         for (int gate = 0; gate < 16; gate++) {
             System.out.println("gate : " + gate + " tupleDistro : " + Arrays.toString(tupleDistro[gate]));
-            for (int element = 0; element < 16; element++) {
-                //gateDistro[tupleDistro[gate][element]]++;
-            }
+
         }
         logicTransform = tupleDistro;
-        System.out.println(Arrays.toString(gateDistro));
-        int[] gateDistro2 = new int[16];
-        int[] comp = new int[16];
-        Arrays.fill(comp, 1);
-        int[][] connected = new int[16][16];
-        for (int element = 0; element < 0; element++) {
-            gateDistro2 = new int[16];
-            for (int gate = 0; gate < 16; gate++) {
-                gateDistro2[tupleDistro[gate][element]]++;
-                //connected[gate][element] = 1;
-                //connected[element][gate] = 1;
-                //connected[tupleDistro[gate][element]][tupleDistro[element][gate]] = 1;
-                //connected[tupleDistro[element][gate]][tupleDistro[gate][element]] = 1;
-                connected[gate][tupleDistro[element][gate]] = 1;
-                connected[tupleDistro[gate][element]][gate] = 1;
-                connected[element][tupleDistro[gate][element]] = 1;
-                connected[tupleDistro[element][gate]][element] = 1;
-            }
-            if (Arrays.equals(comp, gateDistro2)) {
-                System.out.println("element: " + element);
-            }
-        }
-        CustomArray.plusArrayDisplay(connected, false, false, "connected");
-        int[][] negs = new int[16][16];
-        for (int row = 0; row < 16; row++) {
-            for (int col = 0; col < 16; col++) {
-                negs[row][col] = (tupleDistro[row][col] < 0) ? 1 : 0;
-            }
-        }
-        CustomArray.plusArrayDisplay(negs, false, false, "negs");
+//        System.out.println(Arrays.toString(gateDistro));
+//        int[] gateDistro2 = new int[16];
+//        int[] comp = new int[16];
+//        Arrays.fill(comp, 1);
+//        int[][] connected = new int[16][16];
+//        for (int element = 0; element < 0; element++) {
+//            gateDistro2 = new int[16];
+//            for (int gate = 0; gate < 16; gate++) {
+//                gateDistro2[tupleDistro[gate][element]]++;
+//                //connected[gate][element] = 1;
+//                //connected[element][gate] = 1;
+//                //connected[tupleDistro[gate][element]][tupleDistro[element][gate]] = 1;
+//                //connected[tupleDistro[element][gate]][tupleDistro[gate][element]] = 1;
+//                connected[gate][tupleDistro[element][gate]] = 1;
+//                connected[tupleDistro[gate][element]][gate] = 1;
+//                connected[element][tupleDistro[gate][element]] = 1;
+//                connected[tupleDistro[element][gate]][element] = 1;
+//            }
+//            if (Arrays.equals(comp, gateDistro2)) {
+//                System.out.println("element: " + element);
+//            }
+//        }
+//        CustomArray.plusArrayDisplay(connected, false, false, "connected");
+//        int[][] negs = new int[16][16];
+//        for (int row = 0; row < 16; row++) {
+//            for (int col = 0; col < 16; col++) {
+//                negs[row][col] = (tupleDistro[row][col] < 0) ? 1 : 0;
+//            }
+//        }
+//        CustomArray.plusArrayDisplay(negs, false, false, "negs");
     }
 
     /**
-     * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
+     * This function verifies that the hash logic op transform truth tables are correct by:
+     * 1. hashing a bitmap
+     * 2. generate an array of some changes to be made to the bitmap
+     * 3. hashing the changed bitmap
+     * 4. hashing the changes
+     * 5. combine the hashed changes and hashed original bitmap using the appropriate generated logic gate
+     * 6. testing to see if these two seperate hash pathways generate the same thing
      *
      * @throws IOException
      */
@@ -386,7 +394,7 @@ public class HashLogicOpTransform {
     }
 
     /**
-     * Generates a binary array with which to test the interal hash operation transform
+     * Generates a binary array of some changes with which to test the internal hash operation transform
      *
      * @param rows number of rows to output
      * @param cols number of columns to output
