@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="end of night, changes to the paper">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" afterDir="false" />
-    </list>
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="end of night, changes to the paper" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -149,15 +144,7 @@
       <workItem from="1747234126123" duration="33850000" />
       <workItem from="1747490671389" duration="2000" />
       <workItem from="1747491235354" duration="10870000" />
-      <workItem from="1747605840877" duration="599000" />
-    </task>
-    <task id="LOCAL-00006" summary="feature branch node, have been no fundamental alterations since last season and prior to gathering the files from several projects post thesis joss arxiv">
-      <option name="closed" value="true" />
-      <created>1740773859099</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1740773859099</updated>
+      <workItem from="1747605840877" duration="610000" />
     </task>
     <task id="LOCAL-00007" summary="Basic functions working&#10;&#10;The prime stretch is working in PrimeCAstagingLONG in doLogReductionPrimeTwo()&#10;&#10;The exhaustive and numTrials versions in minErrorStaging ecaBestFitHashCollision ... (), the numTrials parameter is redundant in the exhaustive version&#10;&#10;Next up is a lot of organizing polishing and cosmetic work">
       <option name="closed" value="true" />
@@ -543,7 +530,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747543360262</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="end of night, changes to the paper">
+      <option name="closed" value="true" />
+      <created>1747627706375</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1747627706375</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
