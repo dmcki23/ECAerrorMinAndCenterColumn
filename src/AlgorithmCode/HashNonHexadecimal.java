@@ -10,18 +10,20 @@ import java.awt.image.DataBufferInt;
 import java.awt.image.DataBufferUShort;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
- *
+ * This class is has a version of the hash that operates on arrays organized into single bits per location rather than hexadecimal
  */
 public class HashNonHexadecimal {
+    /**
+     * Hash manager class
+     */
     Hash hash;
 
     /**
      * Hash subroutines
      */
-    public HashTruthTables m ;
+    public HashTruthTables hashTruthTables;
     /**
      * The entire set of min and max codewords of [0,15,51,85,170,204,240,255]
      */
@@ -31,13 +33,19 @@ public class HashNonHexadecimal {
      * and unique codewords for every input
      */
     public int[] unpackedList = new int[]{0, 15, 51, 85, 170, 204, 240, 255};
-
+    /**
+     * Used in the inverse functions, does not do anything at the moment, was part of experimenting
+     */
     int[][][] outResult;
 
+    /**
+     * Sets the manager class
+     * @param inHash instance of Hash, the manager class
+     */
     public HashNonHexadecimal(Hash inHash) {
         //hashUtilities = in;
         hash = inHash;
-        m = hash.hashRows;
+        hashTruthTables = hash.hashRows;
     }
 
     /**
@@ -71,7 +79,7 @@ public class HashNonHexadecimal {
                     }
                 }
                 //finds the neighborhood's codeword
-                output[1][row][col] = m.minSolutionsAsWolfram[rule][cell];
+                output[1][row][col] = hashTruthTables.minSolutionsAsWolfram[rule][cell];
                 //output[1][row][col] = hash.allTables[layer][rule][cell];
             }
         }
@@ -108,7 +116,7 @@ public class HashNonHexadecimal {
                     }
                 }
                 //finds the neighborhood's codeword
-                deepInput[1][row][col] = m.maxSolutionsAsWolfram[rule][cell];
+                deepInput[1][row][col] = hashTruthTables.maxSolutionsAsWolfram[rule][cell];
             }
         }
         return deepInput;
@@ -144,7 +152,7 @@ public class HashNonHexadecimal {
                     }
                 }
                 //finds the neighborhood's codeword
-                deepInput[1][row][col] = m.maxSolutionsAsWolfram[rule][cell];
+                deepInput[1][row][col] = hashTruthTables.maxSolutionsAsWolfram[rule][cell];
             }
         }
         return deepInput;
@@ -186,7 +194,7 @@ public class HashNonHexadecimal {
                         }
                     }
                     //stores the neighborhood's codeword
-                    output[d][row][col] = (m.minSolutionsAsWolfram[rule][cell]);
+                    output[d][row][col] = (hashTruthTables.minSolutionsAsWolfram[rule][cell]);
                 }
             }
         }
@@ -229,7 +237,7 @@ public class HashNonHexadecimal {
                         }
                     }
                     //stores the neighborhood's codeword
-                    output[d][row][col] = (m.minSolutionsAsWolfram[rule][cell]);
+                    output[d][row][col] = (hashTruthTables.minSolutionsAsWolfram[rule][cell]);
                 }
             }
         }
@@ -268,7 +276,7 @@ public class HashNonHexadecimal {
                         }
                     }
                     //stores the neighborhood's codeword
-                    deepInput[d][row][col] = (m.maxSolutionsAsWolfram[rule][cell]);
+                    deepInput[d][row][col] = (hashTruthTables.maxSolutionsAsWolfram[rule][cell]);
                 }
             }
         }
@@ -280,17 +288,24 @@ public class HashNonHexadecimal {
      */
     public void initWolframs() {
         for (int r = 0; r < 8; r++) {
-            m.individualRule(unpackedList[r], 4, false, 0, false, 0, false);
+            hashTruthTables.individualRule(unpackedList[r], 4, false, 0, false, 0, false);
         }
         //Initialize the truth tables for both the min and max codewords of the set
         for (int spot = 0; spot < 8; spot++) {
             for (int column = 0; column < 256 * 256; column++) {
-                flatWolframs[0][spot][column] = m.minSolutionsAsWolfram[unpackedList[spot]][column];
-                flatWolframs[1][spot][column] = m.maxSolutionsAsWolfram[unpackedList[spot]][column];
+                flatWolframs[0][spot][column] = hashTruthTables.minSolutionsAsWolfram[unpackedList[spot]][column];
+                flatWolframs[1][spot][column] = hashTruthTables.maxSolutionsAsWolfram[unpackedList[spot]][column];
             }
         }
     }
 
+    /**
+     * A hash inverse for a single codeword set
+     * @param input a 2D array of hashed data
+     * @param depth depth of hashing of the data
+     * @param ruleSetIndex which member of the set was used to hash the input (todo needs to be changed to 0-255 ECA rules)
+     * @return inverted hashed data
+     */
     public int[][] reconstructDepthD(int[][] input, int depth, int ruleSetIndex) {
         int neighborDistance = 1 << (depth - 1);
         //neighborDistance = 1;
@@ -299,7 +314,7 @@ public class HashNonHexadecimal {
             for (int col = 0; col < input[0].length; col++) {
                 //apply its vote to every location that it influences
                 //including itself
-                int[][] generatedGuess = m.generateCodewordTile(input[row][col], unpackedList[ruleSetIndex%8]);
+                int[][] generatedGuess = hashTruthTables.generateCodewordTile(input[row][col], unpackedList[ruleSetIndex%8]);
                 for (int r = 0; r < 4; r++) {
                     for (int c = 0; c < 4; c++) {
                         //for (int power = 0; power < 4; power++) {
@@ -356,6 +371,12 @@ public class HashNonHexadecimal {
         return outResult;
     }
 
+    /**
+     * Hash inversion
+     * @param input A set of hashed data, input[codeword][row][column] where the codeword field contains all 32 minMax row column truth tables
+     * @param depth depth of hashing on the input data
+     * @return inverted hashed data
+     */
     public int[][] reconstructDepthD(int[][][] input, int depth) {
         int neighborDistance = 1 << (depth - 1);
         neighborDistance = 1;
@@ -366,7 +387,7 @@ public class HashNonHexadecimal {
                     for (int t = 0; t < 8; t++) {
                         //apply its vote to every location that it influences
                         //including itself
-                        int[][] generatedGuess = m.generateCodewordTile(input[8 * posNeg + t][row][col], unpackedList[t]);
+                        int[][] generatedGuess = hashTruthTables.generateCodewordTile(input[8 * posNeg + t][row][col], unpackedList[t]);
                         for (int r = 0; r < 4; r++) {
                             for (int c = 0; c < 4; c++) {
                                 //for (int power = 0; power < 4; power++) {
@@ -426,7 +447,7 @@ public class HashNonHexadecimal {
 
     /**
      * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
-     *
+     * @param filepath name of the bitmap being transformed, not including the directory path
      * @throws IOException
      */
     public void bitmapTransform(String filepath) throws IOException {
@@ -552,7 +573,7 @@ public class HashNonHexadecimal {
             bFieldSet[posNegt] = initializeDepthZero(bFieldSet[posNegt], unpackedList[posNegt])[1];
             bFieldSet[posNegt + 8] = initializeDepthMax(bFieldSet[posNegt + 8], unpackedList[posNegt])[1];
         }
-        int[][] undo = hashInverseDepth0(bFieldSet, 1, 3);
+        int[][] undo = hashInverseDepth0(bFieldSet, 1);
         int[][] undoRasterized = new int[inverse.getHeight()][inverse.getWidth()];
         System.out.println("inverse.getHeight(): " + inverse.getHeight() + " inverse.getWidth(): " + inverse.getWidth());
         System.out.println(undo.length + " " + undo[0].length);
@@ -614,7 +635,8 @@ public class HashNonHexadecimal {
 
     /**
      * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
-     *
+     * @param filepath name of the bitmap to be hashed, not including the directory structure
+     * @param dummy a dummy variable to distinguish it from the other bitmapTransform()
      * @throws IOException
      */
     public void bitmapTransform(String filepath, int dummy) throws IOException {
@@ -740,7 +762,7 @@ public class HashNonHexadecimal {
             bFieldSet[posNegt] = initializeDepthZero(bFieldSet[posNegt], unpackedList[posNegt])[1];
             bFieldSet[posNegt + 8] = initializeDepthMax(bFieldSet[posNegt + 8], unpackedList[posNegt])[1];
         }
-        int[][] undo = hashInverseDepth0(bFieldSet, 1, 3);
+        int[][] undo = hashInverseDepth0(bFieldSet, 1);
         short[][] undoRasterized = new short[inverse.getHeight()][inverse.getWidth()];
         System.out.println("inverse.getHeight(): " + inverse.getHeight() + " inverse.getWidth(): " + inverse.getWidth());
         System.out.println(undo.length + " " + undo[0].length);
@@ -816,7 +838,8 @@ public class HashNonHexadecimal {
 
     /**
      * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
-     *
+     * @param filepath name of the bitmap to be hashed, not including the directory path
+     * @param dummy a dummy variable to distinguish it from other hashBitmap()s
      * @throws IOException
      */
     public void hashBitmapSingleBit(String filepath, int dummy) throws IOException {
@@ -977,7 +1000,7 @@ public class HashNonHexadecimal {
         for (int t = 0; t < 8; t++) {
             //undoSet[t] = initializeDepthZero(bFieldSet[t], unpackedList[t])[1];
         }
-        int[][] undo = hashInverseDepth0(bFieldSet, depth, 3);
+        int[][] undo = hashInverseDepth0(bFieldSet, depth);
         short[][] undoRasterized = new short[inverse.getHeight()][inverse.getWidth()];
         short[][] undoRasterizedSet = new short[inverse.getHeight()][inverse.getWidth()];
         System.out.println("inverse.getHeight(): " + inverse.getHeight() + " inverse.getWidth(): " + inverse.getWidth());
@@ -1126,9 +1149,11 @@ public class HashNonHexadecimal {
      * that codeword addition results in the non-reduced ROW AND COLUMN matrix that produces the boolean
      * Hadamard matrix.
      *
-     * @param in 2D codeword input array
+     * @param in a set of 2D codeword input arrays, in[codewordSet][row][column] so that the first field is all 32 codewords
+     * @param depth how many iterations of hashing the input has already gone through
+     * @return inverted input
      */
-    public int[][] hashInverseDepth0(int[][][] in, int depth, int rule) {
+    public int[][] hashInverseDepth0(int[][][] in, int depth) {
         int neighborDistance = 1 << (depth - 1);
         //load the minMax 8 tuple subset Wolfram codes
         //initWolframs();
@@ -1162,7 +1187,7 @@ public class HashNonHexadecimal {
                     for (t = 0; t < 8; t++) {
                         //apply its vote to every location that it influences
                         //including itself
-                        int[][] generatedGuess = m.generateCodewordTile(in[8 * posNeg + t][row][column], unpackedList[t]);
+                        int[][] generatedGuess = hashTruthTables.generateCodewordTile(in[8 * posNeg + t][row][column], unpackedList[t]);
                         //CustomArray.plusArrayDisplay(generatedGuess, false, true, "generatedGuess");
                         for (r = 0; r < 4; r++) {
                             for (c = 0; c < 4; c++) {
@@ -1204,6 +1229,11 @@ public class HashNonHexadecimal {
         return outResult;
     }
 
+    /**
+     * Flattens a 2D array into a 1D array
+     * @param in 2D input array
+     * @return 1D version of in[][]
+     */
     public int[] flatten(int[][] in) {
         int[] out = new int[in.length * in[0].length];
         for (int row = 0; row < in.length; row++) {
@@ -1214,34 +1244,6 @@ public class HashNonHexadecimal {
         return out;
     }
 
-    public int[] oneDtransformMin(int[] in, int rule, int phasePower, boolean reduce, boolean max) {
-        int spotSkip = 1;
-        if (reduce) spotSkip = 4;
-        int[] out = new int[in.length];
-        for (int spot = 0; spot < in.length; spot += spotSkip) {
-            for (int index = 0; index < 4; index++) {
-                out[spot / spotSkip] += (1 << (4 * index)) * (in[(spot + index * (1 << phasePower)) % in.length]);
-            }
-            out[spot / spotSkip] = m.minSolutionsAsWolfram[rule][out[spot / spotSkip]];
-            if (max) out[spot / spotSkip] = m.maxSolutionsAsWolfram[rule][out[spot / spotSkip]];
-        }
-        return out;
-    }
-
-    public int[] oneD(int[] in, int rule, int length, boolean reduce, boolean max) {
-        int log4 = (int) Math.ceil(Math.log(in.length) / Math.log(4));
-        int[] out = in;
-        for (int iter = 0; iter < log4; iter++) {
-            out = oneDtransformMin(out, rule, iter, false, max);
-        }
-        if (reduce) {
-            log4 -= (int) Math.ceil(Math.log(length) / Math.log(4));
-        }
-        for (int iter = 0; iter < log4; iter++) {
-            out = oneDtransformMin(out, rule, 1, true, max);
-        }
-        return out;
-    }
 }
 
 

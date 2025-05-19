@@ -7,7 +7,23 @@ import java.io.IOException;
  * hash minimums
  */
 public class PiBytes {
+    /**
+     * Initializes the binary constants
+     */
+    public PiBytes(){
+        initializeBinaryConstants();
+    }
+    /**
+     * A 2D array holding constant values with dimensions [4][512].
+     * Presumably used to store binary representations of mathematical constants or other related data.
+     */
     int[][] constants = new int[4][512];
+    /**
+     * An array that stores 512 constants used for Hamming codeword calculations.
+     * This array is utilized within methods for generating and analyzing Hamming
+     * codewords, often in the context of representing and processing binary
+     * constants such as Pi, Phi, and Sqrt(2).
+     */
     int[] hammingCodewordsConstants = new int[512];
 
     /**
@@ -93,6 +109,10 @@ public class PiBytes {
         return out;
     }
 
+    /**
+     * Initializes the binary constant arrays, pi phi and sqrt(2)
+     */
+
     public void initializeBinaryConstants() {
         String piString =
                 "110010010000111111011010101000100010000101101000110000100011010011000100" +
@@ -144,6 +164,13 @@ public class PiBytes {
         hammingCodewordsConstants = generateHammingCodewords(constants);
     }
 
+    /**
+     * Generates Hamming codewords for the given input matrix.
+     *
+     * @param in a 2D integer array where each column contains binary data on
+     *           which Hamming codeword generation is to be performed
+     * @return an integer array containing the generated Hamming codewords
+     */
     public int[] generateHammingCodewords(int[][] in) {
         int[] out = new int[in[0].length];
         for (int column = 0; column < in[0].length; column++) {
@@ -164,7 +191,7 @@ public class PiBytes {
      * then find the hash's minimizing codeword at each point and see if you can reconstruct Pi, Phi, Sqrt(2)
      * from hash codewords
      *
-     * @return
+     * @return ???
      */
     public int[][] doConstants() throws IOException {
         int length = 100;

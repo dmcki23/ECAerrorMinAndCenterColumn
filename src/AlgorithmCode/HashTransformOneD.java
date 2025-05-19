@@ -42,6 +42,7 @@ public class HashTransformOneD {
 
     /**
      * 1D version of the hash algorithm using all 32 codeword sets, compression version
+     *
      * @param input a 1D array of data to be hashed
      * @param depth iterative depth of hashing
      * @return input data compressively hashed to iteration depth
@@ -61,9 +62,11 @@ public class HashTransformOneD {
     /**
      * 1D version of the hash algorithm using only a single codeword set, hash-in-place version
      *
-     * @param input a 1D array of hashed data
-     * @param rule  a 0-255 ECA rule, typically within the two standard sets
-     * @param depth how many iterations of hashing to do
+     * @param input    a 1D array of hashed data
+     * @param rule     a 0-255 ECA rule, typically within the two standard sets
+     * @param depth    how many iterations of hashing to do
+     * @param minimize if true uses the minimizing codeword set of the rule, if false uses the maximizing set
+     * @param rowError if true uses the row-weighted errorScore set, if false uses the column-weighted errorScore set
      * @return the input data hashed depth times
      */
     public int[][] hashArray(int[] input, int rule, int depth, boolean minimize, boolean rowError) {
@@ -95,9 +98,11 @@ public class HashTransformOneD {
     /**
      * 1D version of the hash algorithm, single codeword set and compression version
      *
-     * @param input a 1D array of input data to be hashed
-     * @param rule  a 0-255 ECA rule
-     * @param depth iterative depth, how many times to hash the data
+     * @param input    a 1D array of input data to be hashed
+     * @param rule     a 0-255 ECA rule
+     * @param depth    iterative depth, how many times to hash the data
+     * @param minimize if true uses the minimizing codeword set, if false uses the maximizing set
+     * @param rowError if true uses the row-weighted truth tables, if false uses the column-weighted set
      * @return the input data, hashed depth times
      */
     public int[] hashArrayCompression(int[] input, int rule, int depth, boolean minimize, boolean rowError) {
@@ -193,8 +198,11 @@ public class HashTransformOneD {
     /**
      * 1D version of the hash inverse operation, single codeword seet
      *
-     * @param input hashed input data to be inverted
-     * @param depth depth of iteration of the hashed data
+     * @param input    hashed input data to be inverted
+     * @param rule     0-255 ECA rule used to hash the data
+     * @param depth    depth of iteration of the hashed data
+     * @param minimize if true uses the minimizing codeword set, if false uses the maximizing set
+     * @param rowError if true uses the row-weighted truth tables, if false uses the column-weighted set
      * @return inverted input[][]
      */
     public int[] invert(int[] input, int rule, int depth, boolean minimize, boolean rowError) {
@@ -270,7 +278,7 @@ public class HashTransformOneD {
         int diff = 0;
         for (int index = 0; index < size; index++) {
             for (int power = 0; power < 4; power++) {
-                if (((input[index]>>power)%2) == ((inversion[index]>>power)%2)) {
+                if (((input[index] >> power) % 2) == ((inversion[index] >> power) % 2)) {
                     same++;
                 } else {
                     diff++;

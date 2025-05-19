@@ -42,7 +42,10 @@ public class HashLogicOpTransform {
     Hadamard hadamard = new Hadamard();
 
     /**
-     * This function tests a single 0-15 logic gate against all 16 minMax codeword sets rowError or columnError
+     * This function tests a single 0-15 logic gate against all 16 minMax codeword sets rowError or columnError. This is a helper function for testAllGates()
+     * @param gate an integer representing a 0-15 logic gate, 8 = AND, 14 = OR, 6 = XOR
+     * @param tupleDistro the output array passed from testAllGates()
+     * @param inRowError if true uses the row-weighted truth tables, if false uses the column-weighted set
      */
     public void testGate(int gate, int[][] tupleDistro, boolean inRowError) {
         int listLayer = inRowError ? 0 : 1;
@@ -289,9 +292,11 @@ public class HashLogicOpTransform {
      * 5. combine the hashed changes and hashed original bitmap using the appropriate generated logic gate
      * 6. testing to see if these two seperate hash pathways generate the same thing
      *
+     * @param filepath name of the bitmap, not including the directory path
+     * @param rowError if true, uses the row-weighted codewords, if false uses the column-weighted codewords
      * @throws IOException
      */
-    public void verifyLogicOperationHash(String filepath, int dummy, boolean rowError) throws IOException {
+    public void verifyLogicOperationHash(String filepath,  boolean rowError) throws IOException {
         filepath = "src/ImagesProcessed/" + filepath;
         File file = new File(filepath);
         filepath = filepath.substring(0, filepath.length() - 4);
@@ -398,7 +403,7 @@ public class HashLogicOpTransform {
      *
      * @param rows number of rows to output
      * @param cols number of columns to output
-     * @return
+     * @return a random array of size (row, cols)
      */
     public int[][] generateOperation(int rows, int cols) {
         int[][] out = new int[rows][cols];

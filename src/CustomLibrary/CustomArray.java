@@ -1,11 +1,15 @@
 package CustomLibrary;
 
 /**
- * array display class
+ * Contains utility functions that display and operate on integer arrays, no specific hash function algorithms
  */
 public class CustomArray {
+    /**
+     * Does nothing at the moment
+     */
+    public CustomArray(){
 
-
+    }
     /**
      * Checks a 2D int array for Latin-ness, each row and column contains exactly one of each value. Used to help verify the integerity of the multiplication tables generated
      *
@@ -187,7 +191,7 @@ public class CustomArray {
      * @param modN  which mod
      * @return input with parameters applied
      */
-    public static int[][] layerOf(int[][] in, int layer, int base, int modN, boolean noZeros, boolean noSpaces) {
+    public static int[][] layerOf(int[][] in, int layer, int base, int modN) {
         int[][] out = new int[in.length][in[0].length];
         for (int row = 0; row < in.length; row++) {
             for (int column = 0; column < in.length; column++) {
@@ -196,12 +200,14 @@ public class CustomArray {
         }
         return out;
     }
-    public static void intoBinary(int[][] in, int layers, int base, int modN, boolean noZeros, boolean noSpaces) {
-        for (int place = 0; place < layers; place++) {
-            layerOf(in, place, base, modN, noZeros, noSpaces);
-        }
-    }
 
+    /**
+     * Reflects and transposes square integer arrays
+     * @param in square integer array
+     * @param rotation an integer 0-8, the one's place is reflecting across the y axis, the two's place is reflecting across
+     *                 the x-axis, and the four's place is the transpose. 0 would be do nothing and 7 would be all 3
+     * @return transformed input array
+     */
     public int[][] reflectRotateTranspose(int[][] in, int rotation) {
         int size = in.length;
         int[][] out = new int[size][size];
@@ -239,45 +245,13 @@ public class CustomArray {
         }
         return out;
     }
-    public static int[][] reflectRotateTransposeStatic(int[][] in, int rotation) {
-        int size = in.length;
-        int[][] out = new int[size][size];
-        for (int row = 0; row < size; row++) {
-            for (int column = 0; column < size; column++) {
-                out[row][column] = in[row][column];
-            }
-        }
-        if (rotation % 2 == 1) {
-            int[][] nextTemp = new int[size][size];
-            for (int row = 0; row < size; row++) {
-                for (int column = 0; column < size; column++) {
-                    nextTemp[row][column] = out[size - 1 - row][column];
-                }
-            }
-            out = nextTemp;
-        }
-        if (((rotation / 2) % 2) == 1) {
-            int[][] nextTemp = new int[size][size];
-            for (int row = 0; row < size; row++) {
-                for (int column = 0; column < size; column++) {
-                    nextTemp[row][column] = out[row][size - 1 - column];
-                }
-            }
-            out = nextTemp;
-        }
-        if (((rotation / 4) % 2) == 1) {
-            int[][] nextTemp = new int[size][size];
-            for (int row = 0; row < size; row++) {
-                for (int column = 0; column < size; column++) {
-                    nextTemp[row][column] = out[column][row];
-                }
-            }
-            out = nextTemp;
-        }
-        return out;
-    }
 
 
+    /**
+     * Takes in a 2D array and changes it into a 1D array
+     * @param in 2D integer array
+     * @return flattened input
+     */
     public int[] flatten(int[][] in) {
         int[] out = new int[in.length * in[0].length];
         for (int row = 0; row < in.length; row++) {

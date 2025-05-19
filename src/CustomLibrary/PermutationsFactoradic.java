@@ -13,6 +13,12 @@ public class PermutationsFactoradic {
      */
     public PermutationsFactoradic() {
     }
+
+    /**
+     * Rearranges the input by applying a Gray code to the axes
+     * @param in 2D square input data
+     * @return input array with Gray code applied
+     */
     public static int[][] grayify(int[][] in) {
         int[][] out = new int[in.length][in[0].length];
         int logLength = (int)(Math.log(in.length)/Math.log(2));

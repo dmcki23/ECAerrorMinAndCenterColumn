@@ -3,11 +3,6 @@ package AlgorithmCode;
 import CustomLibrary.CustomArray;
 import CustomLibrary.StringPrint;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -17,6 +12,10 @@ import java.util.Random;
  * initial value
  */
 public class HashTruthTables {
+    /**
+     * Whether this instance of the class uses row-weighted or column-weighted errorScores
+     */
+    public boolean rowError;
     /**
      * Last max codeword tile found
      */
@@ -176,7 +175,6 @@ public class HashTruthTables {
      * to be some kind of tiebreaker tbd.
      */
     int[] maxNumberOfSameSolutions;
-
     /**
      * Custom array display functions
      */
@@ -185,13 +183,14 @@ public class HashTruthTables {
      * Random number generator
      */
     Random rand = new Random();
-    Hadamard hadamard = new Hadamard();
-    public boolean rowError;
     Hash hash;
 
     /**
      * Initializes everything to size 4, therefore truth tables are 65536 long.
      * If you want a different size run initialize(size)
+     *
+     * @param inRowError whether this instance of the class will use row-weighted errorScores or column-weighted
+     * @param inHash     instance of the manager function
      */
     public HashTruthTables(boolean inRowError, Hash inHash) {
         hash = inHash;
@@ -213,7 +212,6 @@ public class HashTruthTables {
         minSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
         maxSolutionsAsWolfram = new int[256][(int) Math.pow(2, size * size)];
     }
-
 
     /**
      * Initializes arrays to size. Sizes above five bust it
@@ -265,9 +263,8 @@ public class HashTruthTables {
         //
         //Check every possible input neighborhood of length size
         for (int neighborhood = 0; neighborhood < maxNeighborhood; neighborhood++) {
-
             //Run Wolfram code on array with row 0 input = correction
-            trialField = generateCodewordTile(neighborhood,n);
+            trialField = generateCodewordTile(neighborhood, n);
             //
             //
             //Score the error
@@ -439,15 +436,16 @@ public class HashTruthTables {
 
     /**
      * For size 4, there are 65536 4x4 binary arrays, this takes in an integer 0-65536 and returns it as a 4x4 binary array
-     * @param in integer between 0-65536
+     *
+     * @param in   integer between 0-65536
      * @param size side length of the square
      * @return the input integer turned into a square binary array of size size
      */
-    public int[][] generateAddressTile(int in, int size){
+    public int[][] generateAddressTile(int in, int size) {
         int[][] out = new int[size][size];
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
-                out[row][column] = (in>>(size*row+column))%2;
+                out[row][column] = (in >> (size * row + column)) % 2;
             }
         }
         return out;
@@ -455,15 +453,16 @@ public class HashTruthTables {
 
     /**
      * Takes in a square binary array and returns its value as an integer
+     *
      * @param in square binary array
      * @return in[][] in integer form
      */
-    public int addressTileToInteger(int[][] in){
+    public int addressTileToInteger(int[][] in) {
         int size = in.length;
         int out = 0;
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
-                out += (1<<(size*row+column))*in[row][column];
+                out += (1 << (size * row + column)) * in[row][column];
             }
         }
         return out;
@@ -487,7 +486,6 @@ public class HashTruthTables {
         }
         return out;
     }
-
 
     /**
      * Exhaustively generates all 0-255 ECA rule hash algorithm truth tables and minMax codeword sets;
@@ -610,12 +608,11 @@ public class HashTruthTables {
         for (int n = 0; n < 256; n++) {
             System.out.println(minSorted[n] + " min error/bit " + minErrorPerBit[n] + " max error/bit" + maxErrorPerBit[n]);
         }
-        if (doChangeScore){
+        if (doChangeScore) {
             System.out.println(Arrays.toString(changeScore));
             System.out.println(Arrays.toString(changeChange));
             System.out.println(Arrays.toString(errorChange));
             System.out.println(Arrays.toString(hammingChange));
-
         }
     }
 
@@ -737,7 +734,6 @@ public class HashTruthTables {
 
     /**
      * Displays some nifty information about rule 150's 4x4 hash error heat map
-     *
      */
     public void oneFiftyDisplay() {
         int specificRule = 150;
@@ -745,12 +741,12 @@ public class HashTruthTables {
         System.out.println("Specific: " + specificRule);
         initialize(4);
         //Does the rule's truth table for the hash
-        individualRule(150,4,false,0,false,0,false);
+        individualRule(150, 4, false, 0, false, 0, false);
         System.out.println();
         //
-         //
-         //
-         //Sums the columns for each row of the min codeword error heat map and puts their ratios in minProportions
+        //
+        //
+        //Sums the columns for each row of the min codeword error heat map and puts their ratios in minProportions
         //The first two rows are summed and the last two rows are summed and this proportion is calculated
         CustomArray.plusArrayDisplay(minErrorMap[specificRule], false, false, "minErrorMap");
         double[] minRowTots = new double[size];
@@ -787,9 +783,9 @@ public class HashTruthTables {
             }
         }
         //
-         //
-         //
-         //This section takes specific ratios from above, and compares their binary with Pi and Phi in binary
+        //
+        //
+        //This section takes specific ratios from above, and compares their binary with Pi and Phi in binary
         //And checks to see how many significant figures the ratios have to the constants
         StringPrint s = new StringPrint();
         double PhiSquared = (Math.sqrt(5) + 1) / 2;
@@ -820,9 +816,9 @@ public class HashTruthTables {
             }
         }
         //
-         //
-         //
-         //Displays the relevant information
+        //
+        //
+        //Displays the relevant information
         s.println();
         s.println("a = row2 / row 3 = " + minProportions[2][3]);
         s.println("a = (row2 / row 3) - PI = " + (minProportions[2][3] - Math.PI));
@@ -847,6 +843,7 @@ public class HashTruthTables {
     /**
      * Outputs basic data about an individual rule
      *
+     * @param rule              0-255 ECA rule
      * @param size              side length of the square you want to operate on
      * @param doChangeScore     if this is set, it calls a function that randomly changes the address and sees how much the codeword changes, significantly affects runtime,
      *                          has not been tested in a while
@@ -880,18 +877,20 @@ public class HashTruthTables {
 
     /**
      * Overload of the other individualRuleManager() for simplicity's sake
+     *
      * @param rule 0-255 ECA rule number
      * @param size size of the square codeword tile
      */
-    public void individualRuleManager(int rule, int size){
+    public void individualRuleManager(int rule, int size) {
         individualRuleManager(rule, size, false, 0, false, 0, false);
     }
 
     /**
      * Overload of the other doAllRules() for simplicity's sake
+     *
      * @param size size of the square codeword tile
      */
-    public void doAllRules(int size){
+    public void doAllRules(int size) {
         doAllRules(size, false, 0, false, 0, false);
     }
 
@@ -924,9 +923,9 @@ public class HashTruthTables {
         int[][] temp = new int[size][size];
         System.out.println("rule " + rule);
         //
-         //
-         //
-         //Main loop, if doRandom then it selects random addresses
+        //
+        //
+        //Main loop, if doRandom then it selects random addresses
         //if !doRandom it finds the codeword for every possible binary size x size neighborhood
         for (trial = 0; trial < numBoards; trial++) {
             //if (trial % 1000 == 0) System.out.println("trial " + trial);
@@ -971,7 +970,7 @@ public class HashTruthTables {
                 }
             }
             //If voting,
-             //Tallies the votes and compares the results to the original input
+            //Tallies the votes and compares the results to the original input
             //Discrepancies in this comparison are totalled
             totMinErrors = 0;
             totMaxErrors = 0;
@@ -1053,8 +1052,8 @@ public class HashTruthTables {
         //the minimizing codeword for changed[][] produces this for output
         int[][] fitted;
         //
-         //
-         //These are all for-loop counters
+        //
+        //These are all for-loop counters
         //Initialized here to save some runtime on inline declarations
         int row;
         int column;
@@ -1099,5 +1098,4 @@ public class HashTruthTables {
         }
         return (double) totHammingChange / (double) totLocalErrors;
     }
-
 }

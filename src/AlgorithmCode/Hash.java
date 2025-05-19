@@ -89,7 +89,9 @@ public class Hash {
      * @param input a 2D array of hashed data
      * @param rule  a 0-255 ECA rule
      * @param depth iterative depth, also the power of how far away its neighbors are at each step
-     * @return the input data, hashed
+     * @param minimize if true, uses the error-minimizing codewords and if false uses the error-maximizing codewords
+     * @param rowError if true, uses the row-weighted codewords and if false uses the column-weighted codewords
+     * @return hashed input data
      */
     public int[][][] hashArray(int[][] input, int rule, int depth, boolean minimize, boolean rowError) {
         //initWolframs();
@@ -135,6 +137,8 @@ public class Hash {
      * @param input a 2D array of data to be hashed
      * @param rule  a 0-255 ECA rule
      * @param depth iterative depth
+     * @param minimize if true uses the minimizing codeword set of the rule, if false uses the maximizing codewords
+     * @param rowError if true uses the row-weighted errorScore truth tables, if false uses the column-weighted tables
      * @return the input data, hashed
      */
     public int[][] hashArrayCompression(int[][] input, int rule, int depth, boolean minimize, boolean rowError) {
@@ -234,6 +238,7 @@ public class Hash {
 
     /**
      * Initializes the set of hash truth tables for both row and column weighted lists, from the file generated in writeToFileMinMaxRowColumn()
+     * @param fromFile a dummy variable to distinguish it from the other initWolframs()
      */
     public void initWolframs(boolean fromFile) throws IOException {
 //        hashRows = new HashTruthTables(true,this);
@@ -244,7 +249,7 @@ public class Hash {
     /**
      * Initializes the set of hash truth tables for both row and column weighted lists
      */
-    public int initWolframs() {
+    public void initWolframs() {
         int[] comp = new int[65536];
         //if (!Arrays.equals(comp, flatWolframs[0][1])) return 0;
         //initWolframs(true);
@@ -295,7 +300,6 @@ public class Hash {
                 }
             }
         }
-        return 0;
     }
 
     /**
@@ -356,6 +360,10 @@ public class Hash {
         }
     }
 
+    /**
+     * Writes the 32 codeword size 4 truth tables to file
+     * @throws IOException
+     */
     public void writeToFileMinMaxRowColumn() throws IOException {
         File file = new File("src/AlgorithmCode/minMaxCodewordsTest.dat");
         FileOutputStream out = new FileOutputStream(file);
@@ -583,7 +591,10 @@ public class Hash {
 
     /**
      * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file using the given parameters
-     *
+     * @param filepath name of the file, not including the directory path
+     * @param rule 0-255 ECA rule to use
+     * @param minimize if true, uses the minimizing codewords, if false uses the maximizing codewords
+     * @param rowError if true, uses the row-weighted errorScore, if false uses the column-weighted errorScore
      * @throws IOException
      */
     public void hashBitmap(String filepath, int rule, boolean minimize, boolean rowError) throws IOException {
@@ -761,10 +772,11 @@ public class Hash {
 
     /**
      * This function experimentally tests the inverse operation and the avalanche property on a bitmap
+     * @param filepath name of the file, not including directory path
      *
      * @throws IOException
      */
-    public void verifyInverseAndAvalanche(String filepath, int dummy) throws IOException {
+    public void verifyInverseAndAvalanche(String filepath) throws IOException {
         filepath = "src/ImagesProcessed/" + filepath;
         File file = new File(filepath);
         filepath = filepath.substring(0, filepath.length() - 4);
@@ -890,10 +902,11 @@ public class Hash {
     /**
      * Experimentally tests the inverse function and avalanche properties on a bitmap, this one breaks down a bitmap's RGB codes into
      * single bits instead of the hexadecimal used in verifyInverseAndAvalanche()
+     * @param filepath name of the bitmap file, not including directory structure
      *
      * @throws IOException
      */
-    public void verifyInverseAndAvalancheSingleBit(String filepath, int dummy) throws IOException {
+    public void verifyInverseAndAvalancheSingleBit(String filepath) throws IOException {
         filepath = "src/ImagesProcessed/" + filepath;
         File file = new File(filepath);
         filepath = filepath.substring(0, filepath.length() - 4);

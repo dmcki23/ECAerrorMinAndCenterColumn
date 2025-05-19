@@ -21,6 +21,11 @@ public class HashCollisions {
      */
     public Hash hash;
 
+    /**
+     * Sets the manager function
+     * @param inHash main Hash algorithm class
+     * @throws IOException
+     */
     public HashCollisions(Hash inHash) throws IOException {
         hash = inHash;
     }
@@ -29,6 +34,7 @@ public class HashCollisions {
      * For all possible codewords of [0,15,51,85,170,104,240,255] compares the errorScore of its output tile
      * to the codeword's Hadamard parity. This is to make some kind of sense out of why substituting these two values in
      * checkInverse() result in the same reconstitution
+     * @param rowError if true uses row-weighted codewords, if false uses column-weighted codewords
      */
     public void checkErrorScoreVsHadamard(boolean rowError) {
         hash.initWolframs();
@@ -217,6 +223,9 @@ public class HashCollisions {
         System.out.println("numCollisions: " + Arrays.toString(numCollisions));
     }
 
+    /**
+     * Checks rates of collision in the compression version of the hash
+     */
     public void checkCompressionCollisions() {
         Random rand = new Random();
         int samples = 1000;
@@ -255,6 +264,9 @@ public class HashCollisions {
         }
     }
 
+    /**
+     * Checks if the binary complements of the truth tables are equal to any of the other rules
+     */
     public void checkTriplets() {
         hash.initWolframs();
         int same = 0;
@@ -274,6 +286,9 @@ public class HashCollisions {
         System.out.println("same: " + same + " diff: " + diff);
     }
 
+    /**
+     * The symmetries checked here are the same left-right-black-white symmetries of the 88 independent ECA rules applied to 4 bits instead of 8
+     */
     public void checkCodewordSymmetry() {
         hash.initWolframs();
         int same = 0;
@@ -362,6 +377,13 @@ public class HashCollisions {
         System.out.println("numUnique: " + numUnique);
     }
 
+    /**
+     * Applies the same algorithm as the 88 independent ECA left-right-black-white rules to 4 bits
+     * The left-right symmetry reverses the order of addressing bits
+     * The black-white symmetry reverses the truth table and taking the complement
+     * The left-right-black-white symmetry does both of these operations
+     * @return out[codeword][symmetry], where codeword is the input and symmetry is a number between 0-3 representing the 4 symmetries
+     */
     public int[][] generateFourBitLRBWsymmetry() {
         int[][] out = new int[16][4];
         for (int word = 0; word < 16; word++) {
