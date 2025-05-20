@@ -1,4 +1,5 @@
 package AlgorithmCode;
+
 import CustomLibrary.CustomArray;
 
 import javax.imageio.IIOImage;
@@ -16,11 +17,6 @@ import java.io.IOException;
  */
 public class HashNonHexadecimal {
     /**
-     * Hash manager class
-     */
-    Hash hash;
-
-    /**
      * Hash subroutines
      */
     public HashTruthTables hashTruthTables;
@@ -34,12 +30,17 @@ public class HashNonHexadecimal {
      */
     public int[] unpackedList = new int[]{0, 15, 51, 85, 170, 204, 240, 255};
     /**
+     * Hash manager class
+     */
+    Hash hash;
+    /**
      * Used in the inverse functions, does not do anything at the moment, was part of experimenting
      */
     int[][][] outResult;
 
     /**
      * Sets the manager class
+     *
      * @param inHash instance of Hash, the manager class
      */
     public HashNonHexadecimal(Hash inHash) {
@@ -301,8 +302,9 @@ public class HashNonHexadecimal {
 
     /**
      * A hash inverse for a single codeword set
-     * @param input a 2D array of hashed data
-     * @param depth depth of hashing of the data
+     *
+     * @param input        a 2D array of hashed data
+     * @param depth        depth of hashing of the data
      * @param ruleSetIndex which member of the set was used to hash the input (todo needs to be changed to 0-255 ECA rules)
      * @return inverted hashed data
      */
@@ -314,7 +316,7 @@ public class HashNonHexadecimal {
             for (int col = 0; col < input[0].length; col++) {
                 //apply its vote to every location that it influences
                 //including itself
-                int[][] generatedGuess = hashTruthTables.generateCodewordTile(input[row][col], unpackedList[ruleSetIndex%8]);
+                int[][] generatedGuess = hashTruthTables.generateCodewordTile(input[row][col], unpackedList[ruleSetIndex % 8]);
                 for (int r = 0; r < 4; r++) {
                     for (int c = 0; c < 4; c++) {
                         //for (int power = 0; power < 4; power++) {
@@ -324,9 +326,9 @@ public class HashNonHexadecimal {
 //                            votes[(row + neighborDistance * ((r / 2) % 2)) % input.length][(col + neighborDistance * (r % 2)) % input[0].length][c] -= (1 << r);
 //                        }
                         if (generatedGuess[r][c] == ruleSetIndex / 8) {
-                            votes[(row + neighborDistance * ((r ) % 2)) % input.length][(col + neighborDistance * ((r/2) % 2)) % input[0].length][c] += (1 << r);
+                            votes[(row + neighborDistance * ((r) % 2)) % input.length][(col + neighborDistance * ((r / 2) % 2)) % input[0].length][c] += (1 << r);
                         } else {
-                            votes[(row + neighborDistance * ((r ) % 2)) % input.length][(col + neighborDistance * ((r/2) % 2)) % input[0].length][c] -= (1 << r);
+                            votes[(row + neighborDistance * ((r) % 2)) % input.length][(col + neighborDistance * ((r / 2) % 2)) % input[0].length][c] -= (1 << r);
                         }
                         //}
                     }
@@ -373,6 +375,7 @@ public class HashNonHexadecimal {
 
     /**
      * Hash inversion
+     *
      * @param input A set of hashed data, input[codeword][row][column] where the codeword field contains all 32 minMax row column truth tables
      * @param depth depth of hashing on the input data
      * @return inverted hashed data
@@ -447,6 +450,7 @@ public class HashNonHexadecimal {
 
     /**
      * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
+     *
      * @param filepath name of the bitmap being transformed, not including the directory path
      * @throws IOException
      */
@@ -635,8 +639,9 @@ public class HashNonHexadecimal {
 
     /**
      * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
+     *
      * @param filepath name of the bitmap to be hashed, not including the directory structure
-     * @param dummy a dummy variable to distinguish it from the other bitmapTransform()
+     * @param dummy    a dummy variable to distinguish it from the other bitmapTransform()
      * @throws IOException
      */
     public void bitmapTransform(String filepath, int dummy) throws IOException {
@@ -838,8 +843,9 @@ public class HashNonHexadecimal {
 
     /**
      * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file
+     *
      * @param filepath name of the bitmap to be hashed, not including the directory path
-     * @param dummy a dummy variable to distinguish it from other hashBitmap()s
+     * @param dummy    a dummy variable to distinguish it from other hashBitmap()s
      * @throws IOException
      */
     public void hashBitmapSingleBit(String filepath, int dummy) throws IOException {
@@ -889,7 +895,6 @@ public class HashNonHexadecimal {
                 }
             }
         }
-
         //Initialize the minMax codeword truth table set
         //initWolframs();
         //hashUtilities.readFromFile();
@@ -913,7 +918,7 @@ public class HashNonHexadecimal {
             hashSet[8 + t] = ecaMaxTransform(hashSet[8 + t], unpackedList[t], depth)[depth];
             hashed[t + 8] = ecaMaxTransform(bFieldSet[t], unpackedList[t], depth);
         }
-        for (int t = 0; t < 7; t++){
+        for (int t = 0; t < 7; t++) {
             //System.out.println(Arrays.deepToString(hashed[t]));
         }
         //Convert the transform back into appropriate bitmap RGB format
@@ -941,7 +946,6 @@ public class HashNonHexadecimal {
                 }
             }
         }
-
         //
         //
         //
@@ -1018,14 +1022,14 @@ public class HashNonHexadecimal {
                 }
             }
         }
-        for (int t = 0; t <  8; t++){
+        for (int t = 0; t < 8; t++) {
             int total = 0;
-            int[][] recon = reconstructDepthD(hashed[t][depth],depth,t);
+            int[][] recon = reconstructDepthD(hashed[t][depth], depth, t);
             for (int row = 0; row < recon.length; row++) {
                 for (int column = 0; column < recon[0].length; column++) {
                     //total += recon[row][column] ^ hashed[t][depth-1][row][column];
                     for (int power = 0; power < 4; power++) {
-                        total += ((recon[row][column] >> power) % 2) ^ ((hashed[t][depth-1][row][column] >> power) % 2);
+                        total += ((recon[row][column] >> power) % 2) ^ ((hashed[t][depth - 1][row][column] >> power) % 2);
                     }
                 }
             }
@@ -1034,12 +1038,12 @@ public class HashNonHexadecimal {
             //System.out.println(Arrays.deepToString(recon));
             //System.out.println(Arrays.deepToString(hashed[t][depth]));
             total = 0;
-            recon = reconstructDepthD(hashed[t+8][depth],depth,t+8);
+            recon = reconstructDepthD(hashed[t + 8][depth], depth, t + 8);
             for (int row = 0; row < recon.length; row++) {
                 for (int column = 0; column < recon[0].length; column++) {
                     //total += recon[row][column] ^ hashed[t+8][depth-1][row][column];
                     for (int power = 0; power < 4; power++) {
-                        total += ((recon[row][column] >> power) % 2) ^ ((hashed[t+8][depth-1][row][column] >> power) % 2);
+                        total += ((recon[row][column] >> power) % 2) ^ ((hashed[t + 8][depth - 1][row][column] >> power) % 2);
                     }
                 }
             }
@@ -1056,7 +1060,7 @@ public class HashNonHexadecimal {
                 inverseImageRasterSet[row * inImage.getWidth() + column] = (short) (undoRasterizedSet[row][column] ^ inRaster[inImage.getWidth() * row + column]);
             }
         }
-        File inverseFile = new File( filepath + "inverse.bmp");
+        File inverseFile = new File(filepath + "inverse.bmp");
         ImageIO.write(inverse, "bmp", inverseFile);
         //
         //
@@ -1086,10 +1090,10 @@ public class HashNonHexadecimal {
         for (int row = 0; row < inverse.getHeight(); row++) {
             for (int column = 0; column < inverse.getWidth(); column++) {
                 //if (row == 655 || column == 655) { System.out.println("row: " + row + ", column: " + column); }
-                inverseImageRaster[row * inImage.getWidth() + column] = (short) (undoRasterized[row][column] );
+                inverseImageRaster[row * inImage.getWidth() + column] = (short) (undoRasterized[row][column]);
             }
         }
-        File inverseDepth1 = new File( filepath + "inverseDepth1.bmp");
+        File inverseDepth1 = new File(filepath + "inverseDepth1.bmp");
         ImageIO.write(inverse, "bmp", inverseDepth1);
         int numDifferent = 0;
         for (int row = 0; row < inRaster.length; row++) {
@@ -1149,7 +1153,7 @@ public class HashNonHexadecimal {
      * that codeword addition results in the non-reduced ROW AND COLUMN matrix that produces the boolean
      * Hadamard matrix.
      *
-     * @param in a set of 2D codeword input arrays, in[codewordSet][row][column] so that the first field is all 32 codewords
+     * @param in    a set of 2D codeword input arrays, in[codewordSet][row][column] so that the first field is all 32 codewords
      * @param depth how many iterations of hashing the input has already gone through
      * @return inverted input
      */
@@ -1231,6 +1235,7 @@ public class HashNonHexadecimal {
 
     /**
      * Flattens a 2D array into a 1D array
+     *
      * @param in 2D input array
      * @return 1D version of in[][]
      */
@@ -1243,7 +1248,6 @@ public class HashNonHexadecimal {
         }
         return out;
     }
-
 }
 
 

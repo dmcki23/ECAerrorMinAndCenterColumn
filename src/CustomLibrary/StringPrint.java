@@ -1,4 +1,3 @@
-
 package CustomLibrary;
 
 /**
@@ -6,15 +5,15 @@ package CustomLibrary;
  */
 public class StringPrint {
     /**
-     * Currently empty
-     */
-    public StringPrint() {
-
-    }
-    /**
      * Main field, this accumulates a String until printed
      */
     String outstring = "";
+
+    /**
+     * Currently empty
+     */
+    public StringPrint() {
+    }
 
     /**
      * Appends the given string followed by a newline character to the internal string accumulator,
@@ -58,8 +57,6 @@ public class StringPrint {
      * @return the internal accumulated string
      */
     public String aggregatedOutput() {
-
         return outstring;
     }
-
 }

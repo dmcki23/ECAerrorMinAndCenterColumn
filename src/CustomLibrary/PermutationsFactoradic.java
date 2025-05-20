@@ -3,7 +3,9 @@ package CustomLibrary;
 //April 10, 2024
 //
 //This class has various permutation functions, as well as gray code functions
+
 import java.util.Arrays;
+
 /**
  * Utility class that includes permutations, factoradics, composition of permutations, array insertions, and gray codes
  */
@@ -16,12 +18,13 @@ public class PermutationsFactoradic {
 
     /**
      * Rearranges the input by applying a Gray code to the axes
+     *
      * @param in 2D square input data
      * @return input array with Gray code applied
      */
     public static int[][] grayify(int[][] in) {
         int[][] out = new int[in.length][in[0].length];
-        int logLength = (int)(Math.log(in.length)/Math.log(2));
+        int logLength = (int) (Math.log(in.length) / Math.log(2));
         int[] gray = graySequence(logLength);
         for (int row = 0; row < in.length; row++) {
             for (int col = 0; col < in[row].length; col++) {
@@ -29,8 +32,8 @@ public class PermutationsFactoradic {
             }
         }
         return out;
-
     }
+
     /**
      * Inserts a bit of value value at index spot
      *
@@ -52,6 +55,7 @@ public class PermutationsFactoradic {
         }
         return out;
     }
+
     /**
      * All factoradics of given length
      *
@@ -114,6 +118,7 @@ public class PermutationsFactoradic {
         }
         return out;
     }
+
     /**
      * Specific permutation of a given length, typically for lengths of longer than 8 or 9, to save time and memory
      *
@@ -136,6 +141,7 @@ public class PermutationsFactoradic {
         }
         return out;
     }
+
     /**
      * Set of bit changes in a gray code of length places
      *
@@ -198,6 +204,7 @@ public class PermutationsFactoradic {
 //        }
 //        return graySequenceByPlace[degree];
     }
+
     /**
      * Gray code of length degree
      *
@@ -205,11 +212,11 @@ public class PermutationsFactoradic {
      * @return Gray code of length degree
      */
     public static int[] graySequence(int degree) {
-        int[][] graySequence = new int[16][256*256];
+        int[][] graySequence = new int[16][256 * 256];
         graySequence[1][0] = 0;
         graySequence[1][1] = 1;
         int init_length = 2;
-        int[][] graySequenceByPlace = new int[16][256*256];
+        int[][] graySequenceByPlace = new int[16][256 * 256];
         graySequenceByPlace[1][0] = 0;
         graySequenceByPlace[1][1] = 0;
         int init_bit = 1;
@@ -227,7 +234,7 @@ public class PermutationsFactoradic {
             init_length = init_length * 2;
             init_bit++;
         }
-        int[][] grayTranslated = new int[16][256*256];
+        int[][] grayTranslated = new int[16][256 * 256];
         for (int row = 2; row <= degree; row++) {
             for (int spot = 1; spot < (int) Math.pow(2, row); spot++) {
                 grayTranslated[row][spot] = grayTranslated[row][spot - 1] ^ graySequence[row][spot];
@@ -239,6 +246,7 @@ public class PermutationsFactoradic {
         }
         return out;
     }
+
     /**
      * Gray codes of lengths 1 to 256, by powers of 2
      *
@@ -294,7 +302,6 @@ public class PermutationsFactoradic {
             System.out.println(outstring);
             outstring = "";
         }
-
         for (int row = 1; row < degree + 1; row++) {
             for (int perm = 0; perm < factorial(row); perm++) {
                 for (int spot = 1; spot < (int) Math.pow(2, row); spot++) {
@@ -304,6 +311,7 @@ public class PermutationsFactoradic {
         }
         return grayPerm;
     }
+
     /**
      * All permutations of length degree
      *
@@ -350,6 +358,7 @@ public class PermutationsFactoradic {
         }
         return out;
     }
+
     /**
      * Removes a bit from an integer and shifts the remaining bits to cover the missing bit
      *
@@ -370,6 +379,7 @@ public class PermutationsFactoradic {
         }
         return out;
     }
+
     /**
      * Removes a bit from a double
      *
@@ -377,7 +387,7 @@ public class PermutationsFactoradic {
      * @param bit which place to removed
      * @return a double with bit's place removed, and shifted to cover the missing place
      */
-    public static  double removeBit(double in, int bit) {
+    public static double removeBit(double in, int bit) {
         double out = in - (in / (int) Math.pow(2, bit) % 2);
         double decimalPart = out - (Math.floor(out));
         double intPart = Math.floor(out);
@@ -393,6 +403,7 @@ public class PermutationsFactoradic {
         out += decimalPart;
         return out;
     }
+
     /**
      * Insert a bit into a double
      *
@@ -417,6 +428,7 @@ public class PermutationsFactoradic {
         out = out + decimalPart;
         return out;
     }
+
     /**
      * Removes an element from an int array
      *
@@ -424,7 +436,7 @@ public class PermutationsFactoradic {
      * @param spot index of element to remove
      * @return int array in with element spot removed
      */
-    public static  int[] removeElement(int[] in, int spot) {
+    public static int[] removeElement(int[] in, int spot) {
         int[] out = new int[in.length - 1];
         int index = 0;
         for (int power = 0; power < in.length; power++) {
@@ -461,6 +473,7 @@ public class PermutationsFactoradic {
         }
         return out;
     }
+
     /**
      * Permutations of permutations in grid form
      *
@@ -468,7 +481,6 @@ public class PermutationsFactoradic {
      * @return a grid of permutation compositions
      */
     public static int[][] permsOfPermsGrid(int length) {
-
         int[][] perms = permSequences(length);
         int[][] out = new int[factorial(length)][factorial(length)];
         int[] activePerm = new int[length];
@@ -500,6 +512,7 @@ public class PermutationsFactoradic {
         }
         return out;
     }
+
     /**
      * Inserts an int value into an array
      *
@@ -524,6 +537,7 @@ public class PermutationsFactoradic {
         }
         return out;
     }
+
     /**
      * Return the factoradic of the (zero indexed) input  sequence
      *
@@ -539,6 +553,7 @@ public class PermutationsFactoradic {
         }
         return out;
     }
+
     /**
      * The recursive part of combinations
      *
@@ -553,7 +568,7 @@ public class PermutationsFactoradic {
      * @param n          length of input array
      */
     public static void combinationUtil(int[] arr, int[] data, int start,
-                                int end, int index, int r, int[][] masterData, int[] mdIndex, int n) {
+                                       int end, int index, int r, int[][] masterData, int[] mdIndex, int n) {
         // Current combination is ready to be printed, print it
         if (index == r) {
             masterData[mdIndex[0]] = data.clone();
@@ -570,6 +585,7 @@ public class PermutationsFactoradic {
             }
         }
     }
+
     /**
      * Wrapper function that calls combinationUtil() to produce all combinations of size r
      * from an array of size n.
@@ -578,7 +594,7 @@ public class PermutationsFactoradic {
      * @param r size of output array
      * @return all combinations of size r from 0..n-1
      */
-    public static  int[][] combinations(int n, int r) {
+    public static int[][] combinations(int n, int r) {
         // A temporary array to store all combination one by one
         int[] data = new int[r];
         int[] arr = new int[n];

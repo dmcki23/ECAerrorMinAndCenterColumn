@@ -8,12 +8,6 @@ import java.io.IOException;
  */
 public class PiBytes {
     /**
-     * Initializes the binary constants
-     */
-    public PiBytes(){
-        initializeBinaryConstants();
-    }
-    /**
      * A 2D array holding constant values with dimensions [4][512].
      * Presumably used to store binary representations of mathematical constants or other related data.
      */
@@ -25,6 +19,12 @@ public class PiBytes {
      * constants such as Pi, Phi, and Sqrt(2).
      */
     int[] hammingCodewordsConstants = new int[512];
+    /**
+     * Initializes the binary constants
+     */
+    public PiBytes() {
+        initializeBinaryConstants();
+    }
 
     /**
      * Calculates PI via the Wallis product
@@ -112,7 +112,6 @@ public class PiBytes {
     /**
      * Initializes the binary constant arrays, pi phi and sqrt(2)
      */
-
     public void initializeBinaryConstants() {
         String piString =
                 "110010010000111111011010101000100010000101101000110000100011010011000100" +

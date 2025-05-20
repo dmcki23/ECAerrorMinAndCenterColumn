@@ -7,9 +7,9 @@ public class CustomArray {
     /**
      * Does nothing at the moment
      */
-    public CustomArray(){
-
+    public CustomArray() {
     }
+
     /**
      * Checks a 2D int array for Latin-ness, each row and column contains exactly one of each value. Used to help verify the integerity of the multiplication tables generated
      *
@@ -176,12 +176,6 @@ public class CustomArray {
         System.out.println();
     }
 
-
-
-
-
-
-
     /**
      * A particular place value's layer of an input array
      *
@@ -203,7 +197,8 @@ public class CustomArray {
 
     /**
      * Reflects and transposes square integer arrays
-     * @param in square integer array
+     *
+     * @param in       square integer array
      * @param rotation an integer 0-8, the one's place is reflecting across the y axis, the two's place is reflecting across
      *                 the x-axis, and the four's place is the transpose. 0 would be do nothing and 7 would be all 3
      * @return transformed input array
@@ -246,9 +241,9 @@ public class CustomArray {
         return out;
     }
 
-
     /**
      * Takes in a 2D array and changes it into a 1D array
+     *
      * @param in 2D integer array
      * @return flattened input
      */
@@ -261,5 +256,4 @@ public class CustomArray {
         }
         return out;
     }
-
 }

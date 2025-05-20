@@ -31,7 +31,6 @@ public class Hash {
      * Both hashRows and hashColumns in one array
      */
     public HashTruthTables[] hashRowsColumns;
-
     /**
      * The relative logic gate transform that occurs when hashing
      */
@@ -52,7 +51,6 @@ public class Hash {
      * The entire set of minMax row column codewords for all 256 ECA
      */
     public int[][][] allTables = new int[4][256][256 * 256];
-
     /**
      * The 8 rules referred to in the paper that have an even distribution of codewords
      * and unique codewords for every input
@@ -69,6 +67,7 @@ public class Hash {
 
     /**
      * Sets the helper classes and initiates generating the 32 basic codeword tables
+     *
      * @throws IOException
      */
     public Hash() throws IOException {
@@ -86,9 +85,9 @@ public class Hash {
     /**
      * Hashes 2D data with the given parameters, hash-in-place version
      *
-     * @param input a 2D array of hashed data
-     * @param rule  a 0-255 ECA rule
-     * @param depth iterative depth, also the power of how far away its neighbors are at each step
+     * @param input    a 2D array of hashed data
+     * @param rule     a 0-255 ECA rule
+     * @param depth    iterative depth, also the power of how far away its neighbors are at each step
      * @param minimize if true, uses the error-minimizing codewords and if false uses the error-maximizing codewords
      * @param rowError if true, uses the row-weighted codewords and if false uses the column-weighted codewords
      * @return hashed input data
@@ -134,9 +133,9 @@ public class Hash {
     /**
      * Hashes a 2D array of hexadecimal data with the given parameters, compression version
      *
-     * @param input a 2D array of data to be hashed
-     * @param rule  a 0-255 ECA rule
-     * @param depth iterative depth
+     * @param input    a 2D array of data to be hashed
+     * @param rule     a 0-255 ECA rule
+     * @param depth    iterative depth
      * @param minimize if true uses the minimizing codeword set of the rule, if false uses the maximizing codewords
      * @param rowError if true uses the row-weighted errorScore truth tables, if false uses the column-weighted tables
      * @return the input data, hashed
@@ -238,6 +237,7 @@ public class Hash {
 
     /**
      * Initializes the set of hash truth tables for both row and column weighted lists, from the file generated in writeToFileMinMaxRowColumn()
+     *
      * @param fromFile a dummy variable to distinguish it from the other initWolframs()
      */
     public void initWolframs(boolean fromFile) throws IOException {
@@ -267,7 +267,6 @@ public class Hash {
             hashColumns.individualRule(columnList[t], 4, false, 0, false, 0, false);
             for (int address = 0; address < 256 * 256; address++) {
                 //hashRows.individualRule(rowList[t], 4, false, 0, false, 0, false);
-
                 //allTables[0][rowList[t]] = hashRows.minSolutionsAsWolfram[rowList[t]];
                 //allTables[1][rowList[t]] = hashRows.maxSolutionsAsWolfram[rowList[t]];
                 allTables[2][columnList[t]][address] = hashColumns.minSolutionsAsWolfram[columnList[t]][address];
@@ -288,15 +287,15 @@ public class Hash {
             for (int t = 0; t < 8; t++) {
                 System.out.println(Arrays.toString(Arrays.copyOfRange(flatWolframs[layer][t], 0, 300)));
                 comp = new int[flatWolframs[layer][t].length];
-                if (Arrays.equals(comp, flatWolframs[layer][t])){
+                if (Arrays.equals(comp, flatWolframs[layer][t])) {
                     System.out.println("is zero");
                 }
             }
         }
-        for (int list = 0; list < 2; list++){
+        for (int list = 0; list < 2; list++) {
             for (int posNeg = 0; posNeg < 2; posNeg++) {
-                for (int t= 0; t < 8; t++){
-                    System.out.println(list + " " + posNeg + " " + t + " " + Arrays.toString(Arrays.copyOfRange(allTables[2*list+posNeg][bothLists[list][t]],0,300)));
+                for (int t = 0; t < 8; t++) {
+                    System.out.println(list + " " + posNeg + " " + t + " " + Arrays.toString(Arrays.copyOfRange(allTables[2 * list + posNeg][bothLists[list][t]], 0, 300)));
                 }
             }
         }
@@ -304,6 +303,7 @@ public class Hash {
 
     /**
      * Reads the codeword set truth tables from the file generated in writeToFileMinMaxRowColumn()
+     *
      * @throws IOException
      */
     public void readFromFileMinMaxRowColumn() throws IOException {
@@ -362,6 +362,7 @@ public class Hash {
 
     /**
      * Writes the 32 codeword size 4 truth tables to file
+     *
      * @throws IOException
      */
     public void writeToFileMinMaxRowColumn() throws IOException {
@@ -416,7 +417,7 @@ public class Hash {
                         }
                     }
                 } else {
-                    for (int r = 0; r < 4 ; r++) {
+                    for (int r = 0; r < 4; r++) {
                         for (int c = 0; c < 4; c++) {
                             if (generatedGuess[r][c] == negativeSign) {
                                 votes[(row + neighborDistance * ((r) % 2)) % input.length][(col + neighborDistance * ((r / 2) % 2)) % input[0].length][c] += (1 << c);
@@ -497,10 +498,10 @@ public class Hash {
                                 //for (int power = 0; power < 4; power++) {
                                 if (generatedGuess[r][c] == posNeg) {
                                     votes[t][(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << r);
-                                    altVotes[(row + neighborDistance * ((r/2) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << r);
+                                    altVotes[(row + neighborDistance * ((r / 2) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << r);
                                 } else {
                                     votes[t][(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << r);
-                                    altVotes[(row + neighborDistance * ((r/2) % 2)) % input[0].length][(col + neighborDistance * ((r ) % 2)) % input[0][0].length][c] -= (1 << r);
+                                    altVotes[(row + neighborDistance * ((r / 2) % 2)) % input[0].length][(col + neighborDistance * ((r) % 2)) % input[0][0].length][c] -= (1 << r);
                                 }
                                 //}
                             }
@@ -514,7 +515,7 @@ public class Hash {
                                     altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << c);
                                 } else {
                                     votes[t][(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << c);
-                                    altVotes[(row + neighborDistance * ((r/2) % 2)) % input[0].length][(col + neighborDistance * ((r ) % 2)) % input[0][0].length][c] -= (1 << c);
+                                    altVotes[(row + neighborDistance * ((r / 2) % 2)) % input[0].length][(col + neighborDistance * ((r) % 2)) % input[0][0].length][c] -= (1 << c);
                                 }
                                 //}
                             }
@@ -591,8 +592,9 @@ public class Hash {
 
     /**
      * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file using the given parameters
+     *
      * @param filepath name of the file, not including the directory path
-     * @param rule 0-255 ECA rule to use
+     * @param rule     0-255 ECA rule to use
      * @param minimize if true, uses the minimizing codewords, if false uses the maximizing codewords
      * @param rowError if true, uses the row-weighted errorScore, if false uses the column-weighted errorScore
      * @throws IOException
@@ -734,13 +736,13 @@ public class Hash {
 
     /**
      * Generates a gif from hashed data in hashBitmap()
-     * @param frames hashed data from hashBitmap(), frames[a][row][column] where frames[a] is a single frame of the gif
+     *
+     * @param frames   hashed data from hashBitmap(), frames[a][row][column] where frames[a] is a single frame of the gif
      * @param filepath name and location of where to put the gif
-     * @param depth depth of iteration, how many frames
-     * @param inImage passed as a parameter mostly for the inImage.getHeight() and .getWidth() information
+     * @param depth    depth of iteration, how many frames
+     * @param inImage  passed as a parameter mostly for the inImage.getHeight() and .getWidth() information
      * @throws IOException
      */
-
     public void writeGif(short[][][] frames, String filepath, int depth, BufferedImage inImage) throws IOException {
         AnimatedGifEncoder animatedGifEncoder = new AnimatedGifEncoder();
         animatedGifEncoder.start(filepath);
@@ -772,8 +774,8 @@ public class Hash {
 
     /**
      * This function experimentally tests the inverse operation and the avalanche property on a bitmap
-     * @param filepath name of the file, not including directory path
      *
+     * @param filepath name of the file, not including directory path
      * @throws IOException
      */
     public void verifyInverseAndAvalanche(String filepath) throws IOException {
@@ -899,11 +901,12 @@ public class Hash {
         System.out.println("overall total: " + total);
         //System.out.println(Arrays.toString(allTables[3][165]));
     }
+
     /**
      * Experimentally tests the inverse function and avalanche properties on a bitmap, this one breaks down a bitmap's RGB codes into
      * single bits instead of the hexadecimal used in verifyInverseAndAvalanche()
-     * @param filepath name of the bitmap file, not including directory structure
      *
+     * @param filepath name of the bitmap file, not including directory structure
      * @throws IOException
      */
     public void verifyInverseAndAvalancheSingleBit(String filepath) throws IOException {
@@ -928,7 +931,7 @@ public class Hash {
                 for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
                     for (int power = 0; power < 8; power++) {
                         for (int posNegt = 0; posNegt < 32; posNegt++) {
-                            bFieldSet[posNegt][row][16 * column + 8 * rgbbyte + power] = ((Math.abs(inRaster[row * cols / 16 + column]) >> (8 * rgbbyte +  power)) % 16);
+                            bFieldSet[posNegt][row][16 * column + 8 * rgbbyte + power] = ((Math.abs(inRaster[row * cols / 16 + column]) >> (8 * rgbbyte + power)) % 16);
                         }
                     }
                 }
@@ -942,7 +945,7 @@ public class Hash {
         int[][][][] hashed = new int[32][depth + 1][inImage.getHeight()][inImage.getWidth()];
         int[][][] abHashSet = new int[32][inImage.getHeight()][inImage.getWidth()];
         int[][][][] abHashed = new int[32][depth + 1][inImage.getHeight()][inImage.getWidth()];
-        int[][][][] initialized = new int[32][depth+1][inImage.getHeight()][inImage.getWidth()];
+        int[][][][] initialized = new int[32][depth + 1][inImage.getHeight()][inImage.getWidth()];
         Random rand = new Random();
         int randCol = rand.nextInt(0, bFieldSet[0][0].length);
         int randRow = rand.nextInt(0, bFieldSet[0].length);

@@ -375,7 +375,7 @@ public class HashUtilities {
                 for (int t = 0; t < 8; t++) {
                     for (int index = 0; index < 65536; index++) {
                         for (int place = 0; place < 4; place++) {
-                            hash.flatWolframs[posNeg+2*rowColumn][t][index] += (int) Math.pow(4, place) * (int) data[4 * index + place];
+                            hash.flatWolframs[posNeg + 2 * rowColumn][t][index] += (int) Math.pow(4, place) * (int) data[4 * index + place];
                         }
                     }
                 }
