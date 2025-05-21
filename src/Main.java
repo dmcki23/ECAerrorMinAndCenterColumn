@@ -149,7 +149,7 @@ public class Main {
          //
          //From this point: May 13, testing the recent refactor
         //
-
+         //In the paper, the only major things I saw were the avalanche and testing paragraphs
         Hash hash = new Hash();
         //HashCollisions hashCollisions = new HashCollisions();
         int rule = 2;
