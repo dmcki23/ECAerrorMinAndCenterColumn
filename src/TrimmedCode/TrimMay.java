@@ -2784,6 +2784,7 @@ public class TrimMay {
                     //Compare
                     totDifferent += (vote ^ totInInput);
                     System.out.println("vote: " + vote);
+                    //
                 }
             }
         }
