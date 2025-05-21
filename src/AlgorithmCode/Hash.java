@@ -37,6 +37,10 @@ public class Hash {
      */
     public HashOneD oneDHashTransform = new HashOneD(this);
     /**
+     * Two D and bitmap hash functions
+     */
+    public HashTwoD twoDHashTransform = new HashTwoD(this);
+    /**
      * Generally tests the hash algorithm for collisions and uniqueness
      */
     public HashCollisions hashCollisions;

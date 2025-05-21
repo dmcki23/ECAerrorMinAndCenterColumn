@@ -306,8 +306,8 @@ public class HashLogicOpTransform {
         int listLayer = rowError ? 0 : 1;
         for (int t = 0; t < 8; t++) {
             System.out.println("t: " + t);
-            hashSet[t] = hash.hashArray(bFieldSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
-            hashSet[8 + t] = hash.hashArray(bFieldSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
+            hashSet[t] = hash.twoDHashTransform.hashArray(bFieldSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
+            hashSet[8 + t] = hash.twoDHashTransform.hashArray(bFieldSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
             //hashSet[t] = bFieldSet[t];
             //hashSet[8 + t] = bFieldSet[8 + t];
         }
@@ -325,10 +325,10 @@ public class HashLogicOpTransform {
                     modifiedSet[8 + t][row][column] = (gate >> modifiedSet[8 + t][row][column]) % 2;
                 }
             }
-            modificationTransformed[t] = hash.hashArray(modification, hash.bothLists[listLayer][t], depth, true, rowError)[depth];
-            modificationTransformed[8 + t] = hash.hashArray(modification, hash.bothLists[listLayer][t], depth, false, rowError)[depth];
-            modifiedSet[t] = hash.hashArray(modifiedSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
-            modifiedSet[8 + t] = hash.hashArray(modifiedSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
+            modificationTransformed[t] = hash.twoDHashTransform.hashArray(modification, hash.bothLists[listLayer][t], depth, true, rowError)[depth];
+            modificationTransformed[8 + t] = hash.twoDHashTransform.hashArray(modification, hash.bothLists[listLayer][t], depth, false, rowError)[depth];
+            modifiedSet[t] = hash.twoDHashTransform.hashArray(modifiedSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
+            modifiedSet[8 + t] = hash.twoDHashTransform.hashArray(modifiedSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
             for (int row = 0; row < modifiedSet[0].length; row++) {
                 for (int column = 0; column < modifiedSet[0][0].length; column++) {
                     int tot = 0;

@@ -4,16 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="PiBytes is going to have to wait">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/AnimatedGifEncoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/AnimatedGifEncoder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTruthTables.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTruthTables.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/fourByfour.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/minMaxCodewords.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/minMaxCodewordsTest.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/package-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/package-info.java" afterDir="false" />
-    </list>
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="HashTwoD seems to be working" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -156,23 +147,7 @@
       <workItem from="1747605840877" duration="610000" />
       <workItem from="1747673623691" duration="15592000" />
       <workItem from="1747759880939" duration="7276000" />
-      <workItem from="1747846141965" duration="10326000" />
-    </task>
-    <task id="LOCAL-00019" summary="added some images to the center column paper&#10;updated doAllRules()">
-      <option name="closed" value="true" />
-      <created>1742057952101</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1742057952101</updated>
-    </task>
-    <task id="LOCAL-00020" summary="moved Wallis product and triangle to the new PiBytes">
-      <option name="closed" value="true" />
-      <created>1742244356627</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1742244356627</updated>
+      <workItem from="1747846141965" duration="11441000" />
     </task>
     <task id="LOCAL-00021" summary="SwingApplyFastMinTransform working">
       <option name="closed" value="true" />
@@ -550,7 +525,23 @@
       <option name="project" value="LOCAL" />
       <updated>1747855306554</updated>
     </task>
-    <option name="localTasksCounter" value="68" />
+    <task id="LOCAL-00068" summary="checkpoint, refactoring Hash into solely the management functions, 2D hashes going to HashTwoD">
+      <option name="closed" value="true" />
+      <created>1747868863777</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1747868863778</updated>
+    </task>
+    <task id="LOCAL-00069" summary="HashTwoD seems to be working">
+      <option name="closed" value="true" />
+      <created>1747870144570</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1747870144570</updated>
+    </task>
+    <option name="localTasksCounter" value="70" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -585,8 +576,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="the zeros with checkDoublesSetsFunctions() accounting for all 65536 addresses, and all zeros within Hamming distance 2 of a logic gate truth table bitmask on the address" />
-    <MESSAGE value="HashTranform bitmapTransformCompleteSet() does the transform for every rule in the minMax set and the inverse has a correct rate of 75%" />
     <MESSAGE value="Addition bitmapTransformCompleteSet is working. I think? I had also added a field to HashTransform because of the difference between binary and hexadecimal array inputs" />
     <MESSAGE value="pushing for backup" />
     <MESSAGE value="HashTransform bitmapTransformCompleteSet() is doing the inverses for any depth with 0 error" />
@@ -610,7 +599,9 @@
     <MESSAGE value="Javadoc comments have been given another rough lookover, need to look at inline comments and possibly get rid of the HashNonHexadecimal" />
     <MESSAGE value="got rid of HashNonHexadecimal" />
     <MESSAGE value="PiBytes is going to have to wait" />
-    <option name="LAST_COMMIT_MESSAGE" value="PiBytes is going to have to wait" />
+    <MESSAGE value="checkpoint, refactoring Hash into solely the management functions, 2D hashes going to HashTwoD" />
+    <MESSAGE value="HashTwoD seems to be working" />
+    <option name="LAST_COMMIT_MESSAGE" value="HashTwoD seems to be working" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
