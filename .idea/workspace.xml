@@ -4,17 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="went through Javadoc comments again, mostly for errors and missing values, not so much correctness - that'll be another day">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="paper looks pretty good except: the hash images, the fft like diagram?, the testing paragraph, the avalanche paragraph">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/AnimatedGifEncoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/AnimatedGifEncoder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashNonHexadecimal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashNonHexadecimal.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/PiBytes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/PiBytes.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CustomLibrary/CustomArray.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CustomLibrary/CustomArray.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CustomLibrary/PermutationsFactoradic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CustomLibrary/PermutationsFactoradic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CustomLibrary/StringPrint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CustomLibrary/StringPrint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/HashUtilities.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TrimmedCode/HashUtilities.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -157,30 +153,7 @@
       <workItem from="1747491235354" duration="10870000" />
       <workItem from="1747605840877" duration="610000" />
       <workItem from="1747673623691" duration="15592000" />
-    </task>
-    <task id="LOCAL-00011" summary="added some inline algorithm comments">
-      <option name="closed" value="true" />
-      <created>1740975536381</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1740975536381</updated>
-    </task>
-    <task id="LOCAL-00012" summary="consolidated ecaBestFitHashCollision() versions into errorMinimizationManager()&#10;&#10;renamed many variables with better names, declared some loop variables at a higher scope for performance, added a few parameters for random/exhaustive consolidation and performance">
-      <option name="closed" value="true" />
-      <created>1741045305606</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1741045305606</updated>
-    </task>
-    <task id="LOCAL-00013" summary="the bulk of the rearranging is done, has NOT been tested at all yet">
-      <option name="closed" value="true" />
-      <created>1741224487795</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1741224487795</updated>
+      <workItem from="1747759880939" duration="6306000" />
     </task>
     <task id="LOCAL-00014" summary="the minErrorStaging proportions are at least somewhat correct">
       <option name="closed" value="true" />
@@ -550,7 +523,31 @@
       <option name="project" value="LOCAL" />
       <updated>1747696564029</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="stuff went wack in AnimatedGifEncoder with no explanation. Various lines of code just disappeared somehow">
+      <option name="closed" value="true" />
+      <created>1747760069769</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1747760069770</updated>
+    </task>
+    <task id="LOCAL-00061" summary="AnimatedGifEncoder is working again after getting an older version. huh">
+      <option name="closed" value="true" />
+      <created>1747760167787</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1747760167787</updated>
+    </task>
+    <task id="LOCAL-00062" summary="paper looks pretty good except: the hash images, the fft like diagram?, the testing paragraph, the avalanche paragraph">
+      <option name="closed" value="true" />
+      <created>1747794435606</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1747794435606</updated>
+    </task>
+    <option name="localTasksCounter" value="63" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -585,9 +582,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="changed a bunch of stuff in HashTransform that don't affect changePerTransform() in HashCollisions but don't entirely work in bitmapTransform(), the memory issue of all 16 bitmaps in the tuple set for one, two ??" />
-    <MESSAGE value="added truth tables for changes" />
-    <MESSAGE value="checkChangesPerTransformAllSingleChanges() is sort of working" />
     <MESSAGE value="After an hour's work" />
     <MESSAGE value="before the afternoon cleanup" />
     <MESSAGE value="HashUtilities every zero accounted for through generateEveryLogicFunction() and checkDoublesSetsFunctions()" />
@@ -610,7 +604,10 @@
     <MESSAGE value="updated most of the javadoc comments, about to outsource some stuff in findMinimizingCodeword()" />
     <MESSAGE value="findMinimizingCodeword() has been updated to call generateCodewordTile() several times instead of doing within the function, slightly slower but cleaner code" />
     <MESSAGE value="went through Javadoc comments again, mostly for errors and missing values, not so much correctness - that'll be another day" />
-    <option name="LAST_COMMIT_MESSAGE" value="went through Javadoc comments again, mostly for errors and missing values, not so much correctness - that'll be another day" />
+    <MESSAGE value="stuff went wack in AnimatedGifEncoder with no explanation. Various lines of code just disappeared somehow" />
+    <MESSAGE value="AnimatedGifEncoder is working again after getting an older version. huh" />
+    <MESSAGE value="paper looks pretty good except: the hash images, the fft like diagram?, the testing paragraph, the avalanche paragraph" />
+    <option name="LAST_COMMIT_MESSAGE" value="paper looks pretty good except: the hash images, the fft like diagram?, the testing paragraph, the avalanche paragraph" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

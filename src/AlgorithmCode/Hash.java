@@ -250,6 +250,9 @@ public class Hash {
      * Initializes the set of hash truth tables for both row and column weighted lists
      */
     public void initWolframs() {
+        hashRows = new HashTruthTables(true, this);
+        hashColumns = new HashTruthTables(false, this);
+        hashRowsColumns = new HashTruthTables[]{hashRows, hashColumns};
         int[] comp = new int[65536];
         //if (!Arrays.equals(comp, flatWolframs[0][1])) return 0;
         //initWolframs(true);
@@ -606,7 +609,7 @@ public class Hash {
         BufferedImage inImage = ImageIO.read(file);
         short[] inRaster = ((DataBufferUShort) inImage.getRaster().getDataBuffer()).getData();
         int depth = (int) (Math.log(inImage.getWidth() * inImage.getWidth()) / Math.log(2));
-        depth = 100;
+        depth = 10;
         int rows = inImage.getHeight();
         int cols = inImage.getWidth() * 4;
         int[][][] framesOfHashing = new int[depth][inImage.getHeight()][inImage.getWidth() * 8];
@@ -624,23 +627,31 @@ public class Hash {
             }
         }
         //Initialize the minMax codeword truth table set
-        initWolframs();
+        //initWolframs();
         //initWolframs(true);
         //hashRows.individualRule(rule,4,false,0,false,0,false);
         //Do the transform
         framesOfHashing = hashArray(bFieldSet, rule, depth, minimize, rowError);
         //Convert the transform back into appropriate bitmap RGB format
         short[][][] rasterized = new short[depth + 1][inImage.getHeight()][inImage.getWidth()];
+        BufferedImage outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_USHORT_565_RGB);
+        short[] outRaster = ((DataBufferUShort) outImage.getRaster().getDataBuffer()).getData();
+        File frameFile = new File(filepath + "resized.bmp");
+        ImageIO.write(inImage, "bmp", frameFile);
         for (int d = 0; d <= depth; d++) {
             for (int row = 0; row < inImage.getHeight(); row++) {
                 for (int column = 0; column < inImage.getWidth(); column++) {
                     for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
                         for (int hex = 0; hex < 2; hex++) {
                             rasterized[d][row][column] += (1 << (8 * rgbbyte + 4 * hex)) * framesOfHashing[d][row][4 * column + 2 * rgbbyte + hex];
+                            outRaster[row*cols/4+column] = (short) rasterized[d][row][column];
                         }
                     }
                 }
             }
+            frameFile = new File(filepath + "frames" + (d+1) + ".bmp");
+            ImageIO.write(outImage, "bmp", frameFile);
+
         }
         writeGif(rasterized, filepath + "gif.gif", depth, inImage);
         System.out.println("depth: " + depth);
@@ -670,7 +681,7 @@ public class Hash {
         System.out.println("inverse.getHeight(): " + inverse.getHeight() + " inverse.getWidth(): " + inverse.getWidth());
         System.out.println(undo.length + " " + undo[0].length);
         System.out.println(undoRasterized.length + " " + undoRasterized[0].length);
-        for (int d = 0; d <= 0; d++) {
+        for (int d = 0; d <= 1; d++) {
             for (int row = 0; row < inverse.getHeight(); row++) {
                 for (int column = 0; column < inverse.getWidth(); column++) {
                     for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
@@ -784,8 +795,12 @@ public class Hash {
         filepath = filepath.substring(0, filepath.length() - 4);
         BufferedImage inImage = ImageIO.read(file);
         short[] inRaster = ((DataBufferUShort) inImage.getRaster().getDataBuffer()).getData();
-        int depth = (int) (Math.log(inImage.getWidth() * inImage.getWidth()) / Math.log(2));
-        depth = 1;
+        int depth = (int) (Math.log(inImage.getWidth()*4) / Math.log(2));
+        if (inImage.getWidth() < inImage.getWidth()){
+            depth = (int) (Math.log(inImage.getHeight()*4) / Math.log(2));
+        }
+
+        //depth = 1;
         boolean rowError = true;
         int listIndex = rowError ? 0 : 1;
         boolean minimize;

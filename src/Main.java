@@ -149,7 +149,8 @@ public class Main {
          //
          //From this point: May 13, testing the recent refactor
         //
-         //In the paper, the only major things I saw were the avalanche and testing paragraphs
+         //In the paper, the only major things I saw were the avalanche and testing paragraphs and images
+        //also need to think about the website
         Hash hash = new Hash();
         //HashCollisions hashCollisions = new HashCollisions();
         int rule = 2;
@@ -187,6 +188,16 @@ public class Main {
         //hashCollisions.checkCompressionCollisions();
 
         //hash.hashCollisions.checkCodewordSymmetry();
-        hash.hashRows.doAllRules(4);
+        //hash.hashRows.doAllRules(4);
+
+        //
+         //
+         //
+         //
+         //May 20
+        //commenting, testing, avalanche, images, website presentation, possibly reading from the file as well
+        //hash.hashBitmap(filepath, hash.bothLists[0][rule],true,true);
+        //hash.verifyInverseAndAvalanche(filepath);
+        hash.hashLogicOpTransform.verifyLogicOperationHash("kitchenShrunk.bmp",true);
         }
 }
