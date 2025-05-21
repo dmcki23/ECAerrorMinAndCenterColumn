@@ -4,20 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="updated the paper images to better versionsw">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hadamard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TrimmedCode/Hadamard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTransformOneD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransformOneD.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTruthTables.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTruthTables.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/PiBytes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/PiBytes.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CustomLibrary/PermutationsFactoradic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TrimmedCode/PermutationsFactoradic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CustomLibrary/StringPrint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CustomLibrary/StringPrint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/TrimMay.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TrimmedCode/TrimMay.java" afterDir="false" />
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="got rid of HashNonHexadecimal">
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashNonHexadecimal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TrimmedCode/HashNonHexadecimal.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -161,23 +149,7 @@
       <workItem from="1747605840877" duration="610000" />
       <workItem from="1747673623691" duration="15592000" />
       <workItem from="1747759880939" duration="7276000" />
-      <workItem from="1747846141965" duration="4165000" />
-    </task>
-    <task id="LOCAL-00015" summary="made the error heat map arrays square and added the double min/max error rate numbers">
-      <option name="closed" value="true" />
-      <created>1741384351916</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1741384351916</updated>
-    </task>
-    <task id="LOCAL-00016" summary="next up is to add checkAllColumns() to minErrorStaging.java">
-      <option name="closed" value="true" />
-      <created>1741473151267</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1741473151267</updated>
+      <workItem from="1747846141965" duration="4536000" />
     </task>
     <task id="LOCAL-00017" summary="worked on ECAhashPaper.tex, worked on checkAllColumns() but not tested">
       <option name="closed" value="true" />
@@ -555,7 +527,23 @@
       <option name="project" value="LOCAL" />
       <updated>1747844627187</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL-00064" summary="Javadoc comments have been given another rough lookover, need to look at inline comments and possibly get rid of the HashNonHexadecimal">
+      <option name="closed" value="true" />
+      <created>1747854737118</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1747854737118</updated>
+    </task>
+    <task id="LOCAL-00065" summary="got rid of HashNonHexadecimal">
+      <option name="closed" value="true" />
+      <created>1747854782719</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1747854782719</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -590,8 +578,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="before the afternoon cleanup" />
-    <MESSAGE value="HashUtilities every zero accounted for through generateEveryLogicFunction() and checkDoublesSetsFunctions()" />
     <MESSAGE value="worked on bitmapTransform() in HashUtilities&#10;&#10;about to work on sorting out and fine tuning the zeros with checkDoublesSetsFunctions()" />
     <MESSAGE value="the zeros with checkDoublesSetsFunctions() accounting for all 65536 addresses, and all zeros within Hamming distance 2 of a logic gate truth table bitmask on the address" />
     <MESSAGE value="HashTranform bitmapTransformCompleteSet() does the transform for every rule in the minMax set and the inverse has a correct rate of 75%" />
@@ -615,7 +601,9 @@
     <MESSAGE value="AnimatedGifEncoder is working again after getting an older version. huh" />
     <MESSAGE value="paper looks pretty good except: the hash images, the fft like diagram?, the testing paragraph, the avalanche paragraph" />
     <MESSAGE value="updated the paper images to better versionsw" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated the paper images to better versionsw" />
+    <MESSAGE value="Javadoc comments have been given another rough lookover, need to look at inline comments and possibly get rid of the HashNonHexadecimal" />
+    <MESSAGE value="got rid of HashNonHexadecimal" />
+    <option name="LAST_COMMIT_MESSAGE" value="got rid of HashNonHexadecimal" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
