@@ -1353,19 +1353,6 @@ class LZWEncoder {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 //Related examples in the same category
 //1.	GIF Writer
 //2.	Class for converting images to GIF files

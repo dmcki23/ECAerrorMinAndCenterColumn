@@ -15,10 +15,7 @@ import java.util.Random;
  * This is the main entry point into the algorithm's structure, manages the others as well as containing a few of the 2D hash functions
  */
 public class Hash {
-    /**
-     * Hash subroutines, single bit processing instead of the hexadecimal used here
-     */
-    public HashNonHexadecimal hashNonHexadecimal;
+
     /**
      * Generates the codeword set truth tables as well as some minor functions, this one is set to rowError weighted errorScores
      */
@@ -38,7 +35,7 @@ public class Hash {
     /**
      * One D version of the hash
      */
-    public HashTransformOneD oneDHashTransform = new HashTransformOneD(this);
+    public HashOneD oneDHashTransform = new HashOneD(this);
     /**
      * Generally tests the hash algorithm for collisions and uniqueness
      */
@@ -76,9 +73,8 @@ public class Hash {
         hashRowsColumns = new HashTruthTables[]{hashRows, hashColumns};
         //hashUtilities = new HashUtilities(this);
         hashLogicOpTransform = new HashLogicOpTransform(this);
-        oneDHashTransform = new HashTransformOneD(this);
+        oneDHashTransform = new HashOneD(this);
         hashCollisions = new HashCollisions(this);
-        hashNonHexadecimal = new HashNonHexadecimal(this);
         initWolframs();
     }
 

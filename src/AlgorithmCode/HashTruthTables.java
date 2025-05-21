@@ -876,7 +876,10 @@ public class HashTruthTables {
     }
 
     /**
-     * Generates the entire truth table for a given size of a particular ECA rule
+     * Generates the entire truth table for a given size of a particular ECA rule, min and max codewords.
+     * The doVoting parameter and the vote loops are not considered in the paper, but there experimentally to decrease error.
+     * The doChangeScore and changeScoreTrials hash the input, randomly change input and rehash, to see how much the codewords change
+     * when the input changes and is not run when simply generating truth tables
      *
      * @param rule              0-255 ECA rule
      * @param size              side length of the square you want to operate on
