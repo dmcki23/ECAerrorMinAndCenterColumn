@@ -1,7 +1,5 @@
 package AlgorithmCode;
 
-import CustomLibrary.CustomArray;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferUShort;
@@ -15,8 +13,8 @@ import java.util.Random;
  * via a bitwise 0-15 logic gate operation and rehash the tile, the logic operation between the original codewords and the result codeword becomes transformed into another logic operation.
  * AND is 8, OR is 14.
  *
- * A logic operation between two inputs pre-hash becomes a different logic operation within the hash. Using these truth tables you can operate on hashed input without lossy inversion
- * and without the original data.
+ * A logic operation between two inputs pre-hash becomes a different logic operation within the hash. Using these truth tables, you can operate on hashed input without lossy inversion
+ * and without the original data, allowing for retroactive hashing
  *
  * This class generates and verifies these operation transformations for all 0-15 logic gates and all 16 row-weighted hashes, the column-weighted hashes have an incomplete set of these transformations.
  */
@@ -36,16 +34,13 @@ public class HashLogicOpTransform {
      * Truth table of generated logic op transformations
      */
     int[][] logicTransform = new int[16][16];
-    /**
-     * A class that generates Hadamard matrices, here it is experimental at the moment
-     */
-    Hadamard hadamard = new Hadamard();
+
 
     /**
      * This function tests a single 0-15 logic gate against all 16 minMax codeword sets rowError or columnError. This is a helper function for testAllGates()
      * @param gate an integer representing a 0-15 logic gate, 8 = AND, 14 = OR, 6 = XOR
      * @param tupleDistro the output array passed from testAllGates()
-     * @param inRowError if true uses the row-weighted truth tables, if false uses the column-weighted set
+     * @param inRowError if true uses the row-weighted truth tables; if false uses the column-weighted set
      */
     public void testGate(int gate, int[][] tupleDistro, boolean inRowError) {
         int listLayer = inRowError ? 0 : 1;
@@ -251,41 +246,11 @@ public class HashLogicOpTransform {
 
         }
         logicTransform = tupleDistro;
-//        System.out.println(Arrays.toString(gateDistro));
-//        int[] gateDistro2 = new int[16];
-//        int[] comp = new int[16];
-//        Arrays.fill(comp, 1);
-//        int[][] connected = new int[16][16];
-//        for (int element = 0; element < 0; element++) {
-//            gateDistro2 = new int[16];
-//            for (int gate = 0; gate < 16; gate++) {
-//                gateDistro2[tupleDistro[gate][element]]++;
-//                //connected[gate][element] = 1;
-//                //connected[element][gate] = 1;
-//                //connected[tupleDistro[gate][element]][tupleDistro[element][gate]] = 1;
-//                //connected[tupleDistro[element][gate]][tupleDistro[gate][element]] = 1;
-//                connected[gate][tupleDistro[element][gate]] = 1;
-//                connected[tupleDistro[gate][element]][gate] = 1;
-//                connected[element][tupleDistro[gate][element]] = 1;
-//                connected[tupleDistro[element][gate]][element] = 1;
-//            }
-//            if (Arrays.equals(comp, gateDistro2)) {
-//                System.out.println("element: " + element);
-//            }
-//        }
-//        CustomArray.plusArrayDisplay(connected, false, false, "connected");
-//        int[][] negs = new int[16][16];
-//        for (int row = 0; row < 16; row++) {
-//            for (int col = 0; col < 16; col++) {
-//                negs[row][col] = (tupleDistro[row][col] < 0) ? 1 : 0;
-//            }
-//        }
-//        CustomArray.plusArrayDisplay(negs, false, false, "negs");
     }
 
     /**
      * This function verifies that the hash logic op transform truth tables are correct by:
-     * 1. hashing a bitmap
+     * 1. hashing the bitmap
      * 2. generate an array of some changes to be made to the bitmap
      * 3. hashing the changed bitmap
      * 4. hashing the changes

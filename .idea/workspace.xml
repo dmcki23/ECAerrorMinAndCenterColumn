@@ -4,13 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="paper looks pretty good except: the hash images, the fft like diagram?, the testing paragraph, the avalanche paragraph">
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="updated the paper images to better versionsw">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hadamard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TrimmedCode/Hadamard.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTransformOneD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTransformOneD.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTruthTables.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTruthTables.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/PiBytes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/PiBytes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CustomLibrary/PermutationsFactoradic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TrimmedCode/PermutationsFactoradic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CustomLibrary/StringPrint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CustomLibrary/StringPrint.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/TrimMay.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TrimmedCode/TrimMay.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -153,15 +160,8 @@
       <workItem from="1747491235354" duration="10870000" />
       <workItem from="1747605840877" duration="610000" />
       <workItem from="1747673623691" duration="15592000" />
-      <workItem from="1747759880939" duration="6306000" />
-    </task>
-    <task id="LOCAL-00014" summary="the minErrorStaging proportions are at least somewhat correct">
-      <option name="closed" value="true" />
-      <created>1741322357712</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1741322357712</updated>
+      <workItem from="1747759880939" duration="7276000" />
+      <workItem from="1747846141965" duration="4165000" />
     </task>
     <task id="LOCAL-00015" summary="made the error heat map arrays square and added the double min/max error rate numbers">
       <option name="closed" value="true" />
@@ -547,7 +547,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747794435606</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="updated the paper images to better versionsw">
+      <option name="closed" value="true" />
+      <created>1747844627187</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1747844627187</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -582,7 +590,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="After an hour's work" />
     <MESSAGE value="before the afternoon cleanup" />
     <MESSAGE value="HashUtilities every zero accounted for through generateEveryLogicFunction() and checkDoublesSetsFunctions()" />
     <MESSAGE value="worked on bitmapTransform() in HashUtilities&#10;&#10;about to work on sorting out and fine tuning the zeros with checkDoublesSetsFunctions()" />
@@ -607,7 +614,8 @@
     <MESSAGE value="stuff went wack in AnimatedGifEncoder with no explanation. Various lines of code just disappeared somehow" />
     <MESSAGE value="AnimatedGifEncoder is working again after getting an older version. huh" />
     <MESSAGE value="paper looks pretty good except: the hash images, the fft like diagram?, the testing paragraph, the avalanche paragraph" />
-    <option name="LAST_COMMIT_MESSAGE" value="paper looks pretty good except: the hash images, the fft like diagram?, the testing paragraph, the avalanche paragraph" />
+    <MESSAGE value="updated the paper images to better versionsw" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated the paper images to better versionsw" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

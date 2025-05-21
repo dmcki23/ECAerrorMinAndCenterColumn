@@ -3,20 +3,15 @@ package AlgorithmCode;
 import java.io.IOException;
 
 /**
- * Various Pi related functions, most relevant to a 1-2% error rate in reconstructing the lossy compression
- * hash minimums
+ * Various Pi, Phi, sqrt() functions.
  */
 public class PiBytes {
     /**
-     * A 2D array holding constant values with dimensions [4][512].
-     * Presumably used to store binary representations of mathematical constants or other related data.
+     * Constants in binary form, constants[a][512] where the rows are a constant in binary
      */
     int[][] constants = new int[4][512];
     /**
-     * An array that stores 512 constants used for Hamming codeword calculations.
-     * This array is utilized within methods for generating and analyzing Hamming
-     * codewords, often in the context of representing and processing binary
-     * constants such as Pi, Phi, and Sqrt(2).
+     * Hamming(7,4) codewords of constants[]
      */
     int[] hammingCodewordsConstants = new int[512];
     /**
@@ -190,7 +185,7 @@ public class PiBytes {
      * then find the hash's minimizing codeword at each point and see if you can reconstruct Pi, Phi, Sqrt(2)
      * from hash codewords
      *
-     * @return ???
+     * @return hashed Hamming codewords
      */
     public int[][] doConstants() throws IOException {
         int length = 100;

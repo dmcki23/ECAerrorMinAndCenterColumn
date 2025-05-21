@@ -2739,4 +2739,60 @@ public class TrimMay {
         }
         System.out.println("numErrors: " + numErrors);
     }
+
+    /**
+     * For all possible codewords compares the errorScore of its output tile
+     * to the codeword's Hadamard parity. This is to make some kind of sense out of why substituting these two values in
+     * checkInverse() result in the same reconstitution
+     * @param rowError if true uses row-weighted codewords, if false uses column-weighted codewords
+     */
+    public void checkErrorScoreVsHadamard(boolean rowError) {
+        hash.initWolframs();
+        int totDifferent = 0;
+        int listLayer = rowError ? 0 : 1;
+        //For every 8-tuple element
+        for (int posNeg = 0; posNeg < 1; posNeg++) {
+            for (int t = 0; t < 8; t++) {
+                //For all possible values
+                for (int input = 0; input < 16; input++) {
+                    //Compare a single codeword tile's voting pattern
+                    //to that codeword's Hadamard parity
+                    int[][] cell = hash.hashRows.generateCodewordTile(input, hash.bothLists[listLayer][t]);
+                    //Do the voting
+                    int error = 0;
+                    for (int row = 0; row < 4; row++) {
+                        for (int column = 0; column < 4; column++) {
+                            if (cell[row][column] == 0) {
+                                error += (1 << row);
+                            } else {
+                                error -= (1 << row);
+                            }
+                        }
+                    }
+                    //Get the Hadamard parity
+                    int totInInput = 0;
+                    for (int power = 0; power < 4; power++) {
+                        totInInput += ((input >> power) % 2);
+                    }
+                    totInInput %= 2;
+                    System.out.println("totInInput: " + totInInput);
+                    System.out.println("error: " + error);
+                    //Get the results from the voting loops
+                    int vote = 0;
+                    if (error >= 0) vote = 0;
+                    else vote = 1;
+                    //Compare
+                    totDifferent += (vote ^ totInInput);
+                    System.out.println("vote: " + vote);
+                }
+            }
+        }
+        //The Hadamard parity is correlated with the voting result
+        //I have no direct explanation yet, only that codeword addition is
+        //the non-reduced boolean Hadamard matrix
+        System.out.println("totDifferent: " + totDifferent);
+        System.out.println("totDifferent = " + totDifferent + " out of 256, errors/address = " + (double) totDifferent / 256.0 + " correlation rate = (totLocations-errors)/numAddresses = " + (double) (256 - totDifferent) / 256.0);
+        System.out.println("this analysis is comparing ECA minMax hash transform addition and Hadamard parity");
+        System.out.println("Hadamard parity is the number of ones in its binary representation mod 2");
+    }
 }

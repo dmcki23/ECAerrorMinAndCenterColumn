@@ -196,7 +196,7 @@ public class HashTransformOneD {
     }
 
     /**
-     * 1D version of the hash inverse operation, single codeword seet
+     * 1D version of the hash inverse operation, single codeword set
      *
      * @param input    hashed input data to be inverted
      * @param rule     0-255 ECA rule used to hash the data

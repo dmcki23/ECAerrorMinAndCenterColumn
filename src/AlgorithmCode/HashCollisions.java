@@ -17,7 +17,7 @@ import java.util.Random;
  */
 public class HashCollisions {
     /**
-     * Middle layer of transform code
+     * Primary hash class, managing the other hash classes
      */
     public Hash hash;
 
@@ -30,67 +30,11 @@ public class HashCollisions {
         hash = inHash;
     }
 
-    /**
-     * For all possible codewords of [0,15,51,85,170,104,240,255] compares the errorScore of its output tile
-     * to the codeword's Hadamard parity. This is to make some kind of sense out of why substituting these two values in
-     * checkInverse() result in the same reconstitution
-     * @param rowError if true uses row-weighted codewords, if false uses column-weighted codewords
-     */
-    public void checkErrorScoreVsHadamard(boolean rowError) {
-        hash.initWolframs();
-        int totDifferent = 0;
-        int listLayer = rowError ? 0 : 1;
-        //For every 8-tuple element
-        for (int posNeg = 0; posNeg < 1; posNeg++) {
-            for (int t = 0; t < 8; t++) {
-                //For all possible values
-                for (int input = 0; input < 16; input++) {
-                    //Compare a single codeword tile's voting pattern
-                    //to that codeword's Hadamard parity
-                    int[][] cell = hash.hashRows.generateCodewordTile(input, hash.bothLists[listLayer][t]);
-                    //Do the voting
-                    int error = 0;
-                    for (int row = 0; row < 4; row++) {
-                        for (int column = 0; column < 4; column++) {
-                            if (cell[row][column] == 0) {
-                                error += (1 << row);
-                            } else {
-                                error -= (1 << row);
-                            }
-                        }
-                    }
-                    //Get the Hadamard parity
-                    int totInInput = 0;
-                    for (int power = 0; power < 4; power++) {
-                        totInInput += ((input >> power) % 2);
-                    }
-                    totInInput %= 2;
-                    System.out.println("totInInput: " + totInInput);
-                    System.out.println("error: " + error);
-                    //Get the results from the voting loops
-                    int vote = 0;
-                    if (error >= 0) vote = 0;
-                    else vote = 1;
-                    //Compare
-                    totDifferent += (vote ^ totInInput);
-                    System.out.println("vote: " + vote);
-                }
-            }
-        }
-        //The Hadamard parity is correlated with the voting result
-        //I have no direct explanation yet, only that codeword addition is
-        //the non-reduced boolean Hadamard matrix
-        System.out.println("totDifferent: " + totDifferent);
-        System.out.println("totDifferent = " + totDifferent + " out of 256, errors/address = " + (double) totDifferent / 256.0 + " correlation rate = (totLocations-errors)/numAddresses = " + (double) (256 - totDifferent) / 256.0);
-        System.out.println("this analysis is comparing ECA minMax hash transform addition and Hadamard parity");
-        System.out.println("Hadamard parity is the number of ones in its binary representation mod 2");
-    }
 
     /**
      * This function takes all 16 min max codewords for each of the 65536 4x4 neighborhoods
      * and compares them with all other tuple sets in the truth table to check for uniqueness.
-     * On their own they are not unique roughly 1/256 pairs are collisions. To force it to be unique
-     * see checkUnitWrappedTupleUniqueness() which is what the optional non-collision loop is based on
+     * On their own they are not unique, but the whole set of 32 codewords is for any input.
      *
      * @return whether the tuple sets in the truth tables are distinct
      */
@@ -265,7 +209,7 @@ public class HashCollisions {
     }
 
     /**
-     * Checks if the binary complements of the truth tables are equal to any of the other rules
+     * Checks if the binary complements of the truth tables are equal to any of the other rules, another symmetry besides the left-right-black-white process
      */
     public void checkTriplets() {
         hash.initWolframs();
@@ -352,18 +296,18 @@ public class HashCollisions {
             }
         }
         CustomArray.plusArrayDisplay(equals, true, true, "Symmetries");
-        Hadamard hadamard = new Hadamard();
-        int[][] squared = hadamard.matrixMultiply(equals, equals);
-        CustomArray.plusArrayDisplay(squared, true, true, "Squared Symmetries");
-        squared = hadamard.matrixMultiply(squared, squared);
-        CustomArray.plusArrayDisplay(squared, true, true, "Squared Symmetries squared");
+        //Hadamard hadamard = new Hadamard();
+        //int[][] squared = hadamard.matrixMultiply(equals, equals);
+        //CustomArray.plusArrayDisplay(squared, true, true, "Squared Symmetries");
+        //squared = hadamard.matrixMultiply(squared, squared);
+        //CustomArray.plusArrayDisplay(squared, true, true, "Squared Symmetries squared");
         int[][] groups = new int[32][32];
         int numUnique = 0;
         rowLoop:
         for (int row = 0; row < 32; row++) {
             checkLoop:
             for (int check = 0; check < numUnique; check++) {
-                if (Arrays.equals(groups[check], squared[row])) {
+                if (Arrays.equals(groups[check], groups[row])) {
                     continue rowLoop;
 
                 }
@@ -382,7 +326,7 @@ public class HashCollisions {
      * The left-right symmetry reverses the order of addressing bits
      * The black-white symmetry reverses the truth table and taking the complement
      * The left-right-black-white symmetry does both of these operations
-     * @return out[codeword][symmetry], where codeword is the input and symmetry is a number between 0-3 representing the 4 symmetries
+     * @return out[codeword][symmetry], where codeword is the input, and symmetry is a number between 0-3 representing the 4 symmetries
      */
     public int[][] generateFourBitLRBWsymmetry() {
         int[][] out = new int[16][4];
@@ -586,10 +530,10 @@ public class HashCollisions {
     }
 
     /**
-     * Proves a negative. Even though the tuple rules are linear the minMax errorScore for a tile depends on more than just the last row.
+     * Proves a negative. Even though the tuple rules are linear, the minMax errorScore for a tile depends on more than just the last row.
      * Changes in other rows besides the last row affect the code word as well. This is checked by finding codewords of random grids,
      * then making random changes in the grid anywhere but the last row, finding the codeword for the changed grid,
-     * and see if the two codewords remain the same.
+     * and seeing if the two codewords remain the same.
      */
     public void checkLastRowWeight() {
         //Number of random changes to make

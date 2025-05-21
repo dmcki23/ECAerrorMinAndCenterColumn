@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * Generates, tests, and displays sets of truth tables, where the table is addressed by a binary input neighborhood and it's value is
+ * Generates, tests, and displays sets of hash codeword truth tables, where the table is addressed by a binary input neighborhood, and it's value is
  * a hexadecimal codeword ECA rule pair together that minimize the discrepancies between the input and the ECA output using the codeword as the
  * initial value
  */
@@ -89,7 +89,7 @@ public class HashTruthTables {
      */
     int[] maxErrorBuckets;
     /**
-     * Length of an ECA rule's codeword truth table
+     * Length of an ECA rule's codeword truth table, is redundant and will be removed in the
      */
     int[] numberBoards;
     /**
@@ -106,7 +106,7 @@ public class HashTruthTables {
      */
     double[] changeChange;
     /**
-     * Part of changeChange(), this is the overall change score ???
+     * Part of changeChange(), this is the overall change score
      */
     int[] changeScore;
     /**
@@ -136,11 +136,11 @@ public class HashTruthTables {
      */
     int[][] minTemp;
     /**
-     * all 256 ECA rules' min codeword error/square
+     * all 256 ECA rules' min codeword error/tile
      */
     double[] minErrorPerArray;
     /**
-     * All 256 ECA rules' max codeword error/square
+     * All 256 ECA rules' max codeword error/tile
      */
     double[] maxErrorPerArray;
     /**
@@ -162,17 +162,15 @@ public class HashTruthTables {
     /**
      * All 256 ECA rules' number of ties in the min codeword error scores.
      * If an ECA rule has a 1, that means that every possible input
-     * has a unique codeword. If it's greater than 1 that means more
-     * than one codeword produces the same errorScore meaning there has
-     * to be some kind of tiebreaker tbd.
+     * has a unique codeword. If it's greater than 1, that means more
+     * than one codeword produces the same errorScore
      */
     int[] minNumberOfSameSolutions;
     /**
      * All 256 ECA rules' number of ties in the max codeword error scores.
      * If an ECA rule has a 1, that means that every possible input
-     * has a unique codeword. If it's greater than 1 that means more
-     * than one codeword produces the same errorScore meaning there has
-     * to be some kind of tiebreaker tbd.
+     * has a unique codeword. If it's greater than 1, that means more
+     * than one codeword produces the same errorScore
      */
     int[] maxNumberOfSameSolutions;
     /**
@@ -183,11 +181,14 @@ public class HashTruthTables {
      * Random number generator
      */
     Random rand = new Random();
+    /**
+     * Primary hash class that manages the other hash classes
+     */
     Hash hash;
 
     /**
-     * Initializes everything to size 4, therefore truth tables are 65536 long.
-     * If you want a different size run initialize(size)
+     * Initializes everything to size 4, so truth tables are 65536 long.
+     * If you want a different size, run initialize(size). Sizes greater than 5 break the JVM
      *
      * @param inRowError whether this instance of the class will use row-weighted errorScores or column-weighted
      * @param inHash     instance of the manager function
@@ -237,7 +238,7 @@ public class HashTruthTables {
     }
 
     /**
-     * Finds the minimum-discrepancy initial neighborhood output of the ECA n vs the input
+     * Primary hash function. Finds the minimizing and maximizing codewords of input in[][]
      *
      * @param n  ECA rule 0-255
      * @param in binary input array
@@ -367,7 +368,7 @@ public class HashTruthTables {
     }
 
     /**
-     * Outputs the square array, where row 0 is binary input and the rest of the rows are ECA output,
+     * Outputs the square array, where row 0 is the input and the rest of the rows are ECA output,
      * with wrapped columns so that it's cylindrical with the rows parallel to the circumfrence and
      * columns perpendicular. The basic unit of the hash algorithm
      *
@@ -399,8 +400,8 @@ public class HashTruthTables {
     }
 
     /**
-     * Outputs the square array, where row 0 is binary input and the rest of the rows are ECA output,
-     * with wrapped columns so that it's cylindrical with the rows parallel to the circumfrence and
+     * Outputs the square array, where row 0 is the input and the rest of the rows are ECA output,
+     * with wrapped columns so that it's cylindrical with the rows parallel to the circumference and
      * columns perpendicular. The basic unit of the hash algorithm
      *
      * @param inInt input neighborhood in integer form
@@ -469,13 +470,11 @@ public class HashTruthTables {
     }
 
     /**
-     * Basic unit of the hash. A power of 2 size square, 4x4 in the paper, with the input in row 0,
-     * the columns wrapped - the left boundary rolls over to the right boundary and vice versa. The rest of the rows
-     * are ECA output on that wrapped space.
+     * Takes an integer between 0-65536 (for size 4) and returns it as a square binary integer array
      *
      * @param size  length of the square
      * @param inInt integer value of the input neighborhood
-     * @return a square integer array of 1 row of input and the rest ECA output
+     * @return the input as a square binary array
      */
     public int[][] addressToArray(int size, int inInt) {
         int[][] out = new int[size][size];
@@ -497,7 +496,7 @@ public class HashTruthTables {
      * @param changeScoreTrials if doChangeScore is true this is how may random attempts doChangeScore() makes on a given codeword, significantly affects runtime
      * @param doRandom          size 4 is manageable computationally, larger than that you would want to set this true
      * @param numTrials         if doRandom is set, this is how many random attempts it makes at analyzing a given rule
-     * @param doVoting          does voting on reconstruction, has not been tested in a while
+     * @param doVoting          does voting on reconstruction; has not been tested in a while and may be redundant
      */
     public void doAllRules(int size, boolean doChangeScore, int changeScoreTrials, boolean doRandom, int numTrials, boolean doVoting) {
         //
@@ -712,28 +711,10 @@ public class HashTruthTables {
                 break;
             }
         }
-//        s.println("the following only apply to rule 150, i don't know about elsewise");
-//        s.println();
-//        s.println("a = row2 / row 3 = " + minProportions[2][3]);
-//        s.println("a = (row2 / row 3) - PI = " + (minProportions[2][3] - Math.PI));
-//        s.println("accurate to the binary 2^-" + numberPlaces[0] + " place");
-//        double a = minProportions[2][3] - Math.PI;
-//        s.println();
-//        s.println("b = row1 / row 0 = " + minProportions[1][0]);
-//        s.println("b = (row1 / row 1) - (PI/3) = " + (minProportions[1][0] - Math.PI / 3));
-//        s.println("accurate to the binary 2^-" + numberPlaces[1] + " place");
-//        double b = minProportions[1][1] - Math.PI / 3;
-//        s.println();
-//        s.println("c = (row0+row1)/(row2+row3) = " + firstTwoOverSecondTwo);
-//        s.println("c = (row0+row1)/(row2+row3) - PhiSquared = " + (firstTwoOverSecondTwo - PhiSquared));
-//        s.println("accurate to the binary 2^-" + numberPlaces[2] + " place");
-//        double c = firstTwoOverSecondTwo - PhiSquared;
-//        s.println();
-//        s.println("As well as the 1's and 2's place makes for 7, 11, and 10 accurate digits");
     }
 
     /**
-     * Displays some nifty information about rule 150's 4x4 hash error heat map
+     * Displays some nifty information about rule 150's 4x4 hash error heat map involving Pi and the Golden Ratio
      */
     public void oneFiftyDisplay() {
         int specificRule = 150;
@@ -841,16 +822,16 @@ public class HashTruthTables {
     }
 
     /**
-     * Outputs basic data about an individual rule
+     * Used when calculating an individual rule instead of entire sets; initializes the appropriate arrays
      *
      * @param rule              0-255 ECA rule
      * @param size              side length of the square you want to operate on
      * @param doChangeScore     if this is set, it calls a function that randomly changes the address and sees how much the codeword changes, significantly affects runtime,
      *                          has not been tested in a while
-     * @param changeScoreTrials if doChangeScore is true this is how may random attempts doChangeScore() makes on a given codeword, significantly affects runtime
+     * @param changeScoreTrials if doChangeScore is true, this is how may random attempts doChangeScore() makes on a given codeword, significantly affects runtime
      * @param doRandom          size 4 is manageable computationally, larger than that you would want to set this true
      * @param numTrials         if doRandom is set, this is how many random attempts it makes at analyzing a given rule
-     * @param doVoting          does voting on reconstruction, has not been tested in a while
+     * @param doVoting          does voting on reconstruction; has not been tested in a while
      */
     public void individualRuleManager(int rule, int size, boolean doChangeScore, int changeScoreTrials, boolean doRandom, int numTrials, boolean doVoting) {
         //Initializes variables, see Javadoc for detailed explanation
@@ -901,10 +882,10 @@ public class HashTruthTables {
      * @param size              side length of the square you want to operate on
      * @param doChangeScore     if this is set, it calls a function that randomly changes the address and sees how much the codeword changes, significantly affects runtime,
      *                          has not been tested in a while
-     * @param changeScoreTrials if doChangeScore is true this is how may random attempts doChangeScore() makes on a given codeword, significantly affects runtime
+     * @param changeScoreTrials if doChangeScore is true, this is how may random attempts doChangeScore() makes on a given codeword, significantly affects runtime
      * @param doRandom          size 4 is manageable computationally, larger than that you would want to set this true
      * @param numTrials         if doRandom is set, this is how many random attempts it makes at analyzing a given rule
-     * @param doVoting          does voting on reconstruction, has not been tested in a while
+     * @param doVoting          does voting on reconstruction; has not been tested in a while
      */
     public void individualRule(int rule, int size, boolean doChangeScore, int changeScoreTrials, boolean doRandom, int numTrials, boolean doVoting) {
         //for-loop counters

@@ -5,7 +5,7 @@ package CustomLibrary;
  */
 public class StringPrint {
     /**
-     * Main field, this accumulates a String until printed
+     * Main field, this accumulates a String until printed if desired
      */
     String outstring = "";
 

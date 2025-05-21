@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * This is the main entry point into the algorithm's structure, manages the others
+ * This is the main entry point into the algorithm's structure, manages the others as well as containing a few of the 2D hash functions
  */
 public class Hash {
     /**
@@ -88,8 +88,8 @@ public class Hash {
      * @param input    a 2D array of hashed data
      * @param rule     a 0-255 ECA rule
      * @param depth    iterative depth, also the power of how far away its neighbors are at each step
-     * @param minimize if true, uses the error-minimizing codewords and if false uses the error-maximizing codewords
-     * @param rowError if true, uses the row-weighted codewords and if false uses the column-weighted codewords
+     * @param minimize if true, uses the error-minimizing codewords, and if false uses the error-maximizing codewords
+     * @param rowError if true, uses the row-weighted codewords, and if false uses the column-weighted codewords
      * @return hashed input data
      */
     public int[][][] hashArray(int[][] input, int rule, int depth, boolean minimize, boolean rowError) {
@@ -310,43 +310,6 @@ public class Hash {
      * @throws IOException
      */
     public void readFromFileMinMaxRowColumn() throws IOException {
-//        File file = new File("src/AlgorithmCode/minMaxCodewordsTest.dat");
-//        FileInputStream in = new FileInputStream(file);
-//        byte[] data = new byte[(int) file.length()];
-//        data = in.readAllBytes();
-//        System.out.println("data.length: " + data.length);
-//        for (int posNeg = 0; posNeg < 2; posNeg++) {
-//            for (int rowColumn = 0; rowColumn < 2; rowColumn++) {
-//                for (int t = 0; t < 8; t++) {
-//                    for (int index = 0; index < 65536; index++) {
-//                        flatWolframs[posNeg + 2 * rowColumn][t][index] = (int) data[index];
-//                        if (posNeg == 0)
-//                            hashRowsColumns[rowColumn].minSolutionsAsWolfram[bothLists[rowColumn][t]][index] = flatWolframs[posNeg + 2 * rowColumn][t][index];
-//                        else
-//                            hashRowsColumns[rowColumn].maxSolutionsAsWolfram[bothLists[rowColumn][t]][index] = flatWolframs[posNeg + 2 * rowColumn][t][index];
-//                    }
-//                }
-//            }
-//        }
-//        System.out.println();
-//        for (int layer = 0; layer < 4; layer++) {
-//            for (int t = 0; t < 8; t++) {
-//                System.out.println(Arrays.toString(Arrays.copyOfRange(flatWolframs[layer][t], 0, 80)));
-//            }
-//        }
-//        in.close();
-//
-//
-//
-//        FileInputStream in = new FileInputStream(file);
-//        byte[] data = new byte[(int) file.length()];
-//        in.read(data);
-//        IntBuffer intBuf =
-//                ByteBuffer.wrap(data)
-//                        .order(ByteOrder.BIG_ENDIAN)
-//                        .asIntBuffer();
-//        int[] array = new int[intBuf.remaining()];
-//        in.close();
         File file = new File("src/AlgorithmCode/minMaxCodewordsTest.dat");
         FileInputStream in = new FileInputStream(file);
         byte[] data = new byte[(int) file.length()];
@@ -455,24 +418,11 @@ public class Hash {
                 totDifferent += outCompare[row][column];
             }
         }
-//        for (int row = 0; row < input.length; row++) {
-//            for (int col = 0; col < input[0].length; col++) {
-//                if (finalOutput[row][col] >= 0) {
-//                    //finalOutput[row][col] += 0;
-//                } else {
-//                    //finalOutput[row][col] = 0;
-//                }
-//            }
-//        }
-        //System.out.println("totDifferent: " + totDifferent);
-        //System.out.println("totArea: " + (input.length * input[0].length));
-        //System.out.println("different/Area=errors/bit= " + ((double) totDifferent / (double) (input.length * input[0].length)));
-        //CustomArray.plusArrayDisplay(finalOutput, false, false, "finalOutput");
         return outResult;
     }
 
     /**
-     * Computes the inverse transformation of a 2D array of hashed data using a voting mechanism using all 32 codewords
+     * Computes the inverse of a 2D array of hashed data using a voting mechanism using all 32 codewords
      *
      * @param input 32 codeword sets of 2D hashed data, input[codeword][row][column]
      * @param depth an integer indicating how far away neighbors are considered (powers of 2, e.g., 2^n)
@@ -577,19 +527,6 @@ public class Hash {
                 }
             }
         }
-//        for (int row = 0; row < input.length; row++) {
-//            for (int col = 0; col < input[0].length; col++) {
-//                if (finalOutput[row][col] >= 0) {
-//                    //finalOutput[row][col] += 0;
-//                } else {
-//                    //finalOutput[row][col] = 0;
-//                }
-//            }
-//        }
-        //System.out.println("totDifferent: " + totDifferent);
-        //System.out.println("totArea: " + (input.length * input[0].length));
-        ////System.out.println("different/Area=errors/bit= " + ((double) totDifferent / (double) (input.length * input[0].length)));
-        //CustomArray.plusArrayDisplay(finalOutput, false, false, "finalOutput");
         return finalOutput;
     }
 
@@ -626,10 +563,6 @@ public class Hash {
                 }
             }
         }
-        //Initialize the minMax codeword truth table set
-        //initWolframs();
-        //initWolframs(true);
-        //hashRows.individualRule(rule,4,false,0,false,0,false);
         //Do the transform
         framesOfHashing = hashArray(bFieldSet, rule, depth, minimize, rowError);
         //Convert the transform back into appropriate bitmap RGB format
@@ -644,14 +577,13 @@ public class Hash {
                     for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
                         for (int hex = 0; hex < 2; hex++) {
                             rasterized[d][row][column] += (1 << (8 * rgbbyte + 4 * hex)) * framesOfHashing[d][row][4 * column + 2 * rgbbyte + hex];
-                            outRaster[row*cols/4+column] = (short) rasterized[d][row][column];
+                            outRaster[row * cols / 4 + column] = (short) rasterized[d][row][column];
                         }
                     }
                 }
             }
-            frameFile = new File(filepath + "frames" + (d+1) + ".bmp");
+            frameFile = new File(filepath + "frames" + (d + 1) + ".bmp");
             ImageIO.write(outImage, "bmp", frameFile);
-
         }
         writeGif(rasterized, filepath + "gif.gif", depth, inImage);
         System.out.println("depth: " + depth);
@@ -746,7 +678,7 @@ public class Hash {
     }
 
     /**
-     * Generates a gif from hashed data in hashBitmap()
+     * Generates a gif from hashed data in hashBitmap(), uses AnimatedGifEncoder
      *
      * @param frames   hashed data from hashBitmap(), frames[a][row][column] where frames[a] is a single frame of the gif
      * @param filepath name and location of where to put the gif
@@ -784,9 +716,9 @@ public class Hash {
     }
 
     /**
-     * This function experimentally tests the inverse operation and the avalanche property on a bitmap
+     * This function experimentally tests the inverse operation and the avalanche property on a hashed bitmap
      *
-     * @param filepath name of the file, not including directory path
+     * @param filepath name of the file, not including the directory path
      * @throws IOException
      */
     public void verifyInverseAndAvalanche(String filepath) throws IOException {
@@ -795,11 +727,10 @@ public class Hash {
         filepath = filepath.substring(0, filepath.length() - 4);
         BufferedImage inImage = ImageIO.read(file);
         short[] inRaster = ((DataBufferUShort) inImage.getRaster().getDataBuffer()).getData();
-        int depth = (int) (Math.log(inImage.getWidth()*4) / Math.log(2));
-        if (inImage.getWidth() < inImage.getWidth()){
-            depth = (int) (Math.log(inImage.getHeight()*4) / Math.log(2));
+        int depth = (int) (Math.log(inImage.getWidth() * 4) / Math.log(2));
+        if (inImage.getWidth() < inImage.getWidth()) {
+            depth = (int) (Math.log(inImage.getHeight() * 4) / Math.log(2));
         }
-
         //depth = 1;
         boolean rowError = true;
         int listIndex = rowError ? 0 : 1;
@@ -839,13 +770,8 @@ public class Hash {
             for (int row = 0; row < bFieldSet[0].length; row++) {
                 for (int column = 0; column < bFieldSet[0][0].length; column++) {
                     abbFieldSet[t][row][column] = bFieldSet[t][row][column];
-                    //abbFieldSet[t + 8][row][column] = bFieldSet[t + 8][row][column];
                 }
             }
-            //abbFieldSet[t][randRow][randCol] = (15-abbFieldSet[t][randRow][randCol]);
-            //abbFieldSet[t+8][randRow][randCol] = (15-abbFieldSet[t+8][randRow][randCol]);
-            //abbFieldSet[t][randRow][randCol] = randNext;
-            //abbFieldSet[t+8][randRow][randCol] = randNext;
         }
         for (int change = 0; change < numChanges; change++) {
             randCol = rand.nextInt(0, bFieldSet[0][0].length);
@@ -853,7 +779,6 @@ public class Hash {
             randNext = rand.nextInt(0, 16);
             for (int t = 0; t < 32; t++) {
                 abbFieldSet[t][randRow][randCol] = randNext;
-                //abbFieldSet[t + 8][randRow][randCol] = randNext;
             }
         }
         int[] avalancheDifferences = new int[32];
@@ -862,155 +787,13 @@ public class Hash {
             listIndex = (t / 16) % 2;
             rowError = (t / 16) % 2 == 0 ? true : false;
             minimize = (t / 8) % 2 == 0 ? true : false;
-            //hashSet[t] = ecaMinTransform(bFieldSet[t], unpackedList[t], depth)[1];
-            //hashSet[8 + t] = ecaMaxTransform(bFieldSet[8 + t], unpackedList[t], depth)[1];
-            //hashSet[t] = bFieldSet[t];
-            //hashSet[8 + t] = bFieldSet[8 + t];
-            //abHashSet[t] = abbFieldSet[t];
-            //abHashSet[8 + t] = abbFieldSet[8 + t];
             hashSet[t] = hashArray(bFieldSet[t], bothLists[listIndex][t % 8], depth, minimize, rowError)[depth];
             hashed[t] = hashArray(bFieldSet[t], bothLists[listIndex][t % 8], depth, minimize, rowError);
-            //hashSet[8 + t] = hashArray(hashSet[8 + t], bothLists[listIndex][t], depth, false, rowError)[depth];
-            //hashed[t + 8] = hashArray(hashSet[8 + t], bothLists[listIndex][t], depth, false, rowError);
             abHashed[t] = hashArray(abbFieldSet[t], bothLists[listIndex][t % 8], depth, minimize, rowError);
-            //abHashed[8 + t] = hashArray(abbFieldSet[8 + t], bothLists[listIndex][t], depth, false, rowError);
             for (int row = 0; row < rows; row++) {
                 for (int column = 0; column < rows; column++) {
                     for (int bit = 0; bit < 16; bit++) {
                         avalancheDifferences[t] += (((hashed[t][depth][row][column] >> bit) % 2) ^ ((abHashed[t][depth][row][column] >> bit) % 2));
-                        //avalancheDifferences[8 + t] += (((hashed[8 + t][depth][row][column] >> bit) % 2) ^ ((abHashed[8 + t][depth][row][column] >> bit) % 2));
-                    }
-                }
-            }
-        }
-        System.out.println("avalancheDifferences: " + Arrays.toString(avalancheDifferences));
-        for (int t = 0; t < 32; t++) {
-            listIndex = (t / 16) % 2;
-            rowError = (t / 16) % 2 == 0 ? true : false;
-            minimize = (t / 8) % 2 == 0 ? true : false;
-            int total = 0;
-            int[][] recon = invert(hashSet[t], depth, bothLists[listIndex][t % 8], minimize, rowError);
-            System.out.println("t: " + t);
-            //System.out.println(Arrays.deepToString(hashSet[t]));
-            //System.out.println(Arrays.deepToString(recon));
-            //System.out.println(Arrays.deepToString(bFieldSet[t]));
-            for (int row = 0; row < recon.length; row++) {
-                for (int column = 0; column < recon[0].length; column++) {
-                    //total += recon[row][column] ^ hashed[t][depth-1][row][column];
-                    for (int power = 0; power < 4; power++) {
-                        total += ((recon[row][column] >> power) % 2) ^ ((bFieldSet[0][row][column] >> power) % 2);
-                    }
-                }
-            }
-            System.out.println("total: " + total + " " + (double) (total) / (inRaster.length * 16));
-        }
-        int[][] invertedSet = invert(hashSet, depth);
-        int total = 0;
-        for (int row = 0; row < invertedSet.length; row++) {
-            for (int col = 0; col < invertedSet[0].length; col++) {
-                for (int power = 0; power < 4; power++) {
-                    total += ((invertedSet[row][col] >> power) % 2) ^ ((bFieldSet[0][row][col] >> power) % 2);
-                }
-            }
-        }
-        System.out.println("overall total: " + total);
-        //System.out.println(Arrays.toString(allTables[3][165]));
-    }
-
-    /**
-     * Experimentally tests the inverse function and avalanche properties on a bitmap, this one breaks down a bitmap's RGB codes into
-     * single bits instead of the hexadecimal used in verifyInverseAndAvalanche()
-     *
-     * @param filepath name of the bitmap file, not including directory structure
-     * @throws IOException
-     */
-    public void verifyInverseAndAvalancheSingleBit(String filepath) throws IOException {
-        filepath = "src/ImagesProcessed/" + filepath;
-        File file = new File(filepath);
-        filepath = filepath.substring(0, filepath.length() - 4);
-        BufferedImage inImage = ImageIO.read(file);
-        short[] inRaster = ((DataBufferUShort) inImage.getRaster().getDataBuffer()).getData();
-        int depth = (int) (Math.log(inImage.getWidth() * inImage.getWidth()) / Math.log(2));
-        depth = 1;
-        boolean rowError = true;
-        int listIndex = rowError ? 0 : 1;
-        boolean minimize;
-        System.out.println("inRaster: " + inRaster.length);
-        System.out.println("imImage.getHeight(): " + inImage.getHeight());
-        System.out.println("imImage.getWidth(): " + inImage.getWidth());
-        int rows = inImage.getHeight();
-        int cols = inImage.getWidth() * 16;
-        int[][][] bFieldSet = new int[32][rows][cols];
-        for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < cols / 4; column++) {
-                for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
-                    for (int power = 0; power < 8; power++) {
-                        for (int posNegt = 0; posNegt < 32; posNegt++) {
-                            bFieldSet[posNegt][row][16 * column + 8 * rgbbyte + power] = ((Math.abs(inRaster[row * cols / 16 + column]) >> (8 * rgbbyte + power)) % 16);
-                        }
-                    }
-                }
-            }
-        }
-        System.out.println(Arrays.deepToString(bFieldSet[0]));
-        //Initialize the minMax codeword truth table set
-        //initWolframs();
-        //Do the transform
-        int[][][] hashSet = new int[32][inImage.getHeight()][inImage.getWidth()];
-        int[][][][] hashed = new int[32][depth + 1][inImage.getHeight()][inImage.getWidth()];
-        int[][][] abHashSet = new int[32][inImage.getHeight()][inImage.getWidth()];
-        int[][][][] abHashed = new int[32][depth + 1][inImage.getHeight()][inImage.getWidth()];
-        int[][][][] initialized = new int[32][depth + 1][inImage.getHeight()][inImage.getWidth()];
-        Random rand = new Random();
-        int randCol = rand.nextInt(0, bFieldSet[0][0].length);
-        int randRow = rand.nextInt(0, bFieldSet[0].length);
-        int[][][] abbFieldSet = new int[32][bFieldSet[0].length][bFieldSet[0][0].length];
-        int randNext = rand.nextInt(0, 16);
-        int numChanges = 8;
-        for (int t = 0; t < 32; t++) {
-            for (int row = 0; row < bFieldSet[0].length; row++) {
-                for (int column = 0; column < bFieldSet[0][0].length; column++) {
-                    abbFieldSet[t][row][column] = bFieldSet[t][row][column];
-                    //abbFieldSet[t + 8][row][column] = bFieldSet[t + 8][row][column];
-                }
-            }
-            //abbFieldSet[t][randRow][randCol] = (15-abbFieldSet[t][randRow][randCol]);
-            //abbFieldSet[t+8][randRow][randCol] = (15-abbFieldSet[t+8][randRow][randCol]);
-            //abbFieldSet[t][randRow][randCol] = randNext;
-            //abbFieldSet[t+8][randRow][randCol] = randNext;
-        }
-        for (int change = 0; change < numChanges; change++) {
-            randCol = rand.nextInt(0, bFieldSet[0][0].length);
-            randRow = rand.nextInt(0, bFieldSet[0].length);
-            randNext = rand.nextInt(0, 16);
-            for (int t = 0; t < 32; t++) {
-                abbFieldSet[t][randRow][randCol] = randNext;
-                //abbFieldSet[t + 8][randRow][randCol] = randNext;
-            }
-        }
-        int[] avalancheDifferences = new int[32];
-        System.out.println("depth: " + depth);
-        for (int t = 0; t < 32; t++) {
-            listIndex = (t / 16) % 2;
-            rowError = (t / 16) % 2 == 0 ? true : false;
-            minimize = (t / 8) % 2 == 0 ? true : false;
-            //hashSet[t] = ecaMinTransform(bFieldSet[t], unpackedList[t], depth)[1];
-            //hashSet[8 + t] = ecaMaxTransform(bFieldSet[8 + t], unpackedList[t], depth)[1];
-            //hashSet[t] = bFieldSet[t];
-            //hashSet[8 + t] = bFieldSet[8 + t];
-            //abHashSet[t] = abbFieldSet[t];
-            //abHashSet[8 + t] = abbFieldSet[8 + t];
-            hashSet[t] = hashArray(bFieldSet[t], bothLists[listIndex][t % 8], depth, minimize, rowError)[depth];
-            hashed[t] = hashArray(bFieldSet[t], bothLists[listIndex][t % 8], depth, minimize, rowError);
-            //hashSet[8 + t] = hashArray(hashSet[8 + t], bothLists[listIndex][t], depth, false, rowError)[depth];
-            //hashed[t + 8] = hashArray(hashSet[8 + t], bothLists[listIndex][t], depth, false, rowError);
-            abHashed[t] = hashArray(abbFieldSet[t], bothLists[listIndex][t % 8], depth, minimize, rowError);
-            //abHashed[8 + t] = hashArray(abbFieldSet[8 + t], bothLists[listIndex][t], depth, false, rowError);
-            for (int row = 0; row < rows; row++) {
-                for (int column = 0; column < rows; column++) {
-                    for (int bit = 0; bit < 16; bit++) {
-                        avalancheDifferences[t] += (((hashed[t][depth][row][column] >> bit) % 2) ^ ((abHashed[t][depth][row][column] >> bit) % 2));
-                        //avalancheDifferences[8 + t] += (((hashed[8 + t][depth][row][column] >> bit) % 2) ^ ((abHashed[8 + t][depth][row][column] >> bit) % 2));
                     }
                 }
             }
