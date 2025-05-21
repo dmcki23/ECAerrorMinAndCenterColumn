@@ -8,8 +8,20 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
+/**
+ * Contains hash functions for 2D arrays/bitmap hashing, inversions, and testing
+ */
+
 public class HashTwoD {
+    /**
+     * Manager function
+     */
     Hash hash;
+
+    /**
+     * Sets the Hash manager function
+     * @param inhash
+     */
     public HashTwoD(Hash inhash) {
         hash = inhash;
     }
