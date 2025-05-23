@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * This is the main entry point into the algorithm's structure, initiates truth table generation and manages the other Hash*** classes
+ * Main entry point into the algorithm's structure; initiates truth table generation and manages the other Hash___ classes
  */
 public class Hash {
 
@@ -151,24 +151,20 @@ public class Hash {
         hashColumns = new HashTruthTables(false, this);
         hashRowsColumns = new HashTruthTables[]{hashRows, hashColumns};
         int[] comp = new int[65536];
-        //if (!Arrays.equals(comp, flatWolframs[0][1])) return 0;
-        //initWolframs(true);
+
         for (int t = 0; t < 8; t++) {
             hashRows.individualRule(rowList[t], 4, false, 0, false, 0, false);
             for (int address = 0; address < 256 * 256; address++) {
-                //hashColumns.individualRule(columnList[t], 4, false, 0, false, 0, false);
+
                 allTables[0][rowList[t]][address] = hashRows.minSolutionsAsWolfram[rowList[t]][address];
                 allTables[1][rowList[t]][address] = hashRows.maxSolutionsAsWolfram[rowList[t]][address];
-                //allTables[2][columnList[t]] = hashColumns.minSolutionsAsWolfram[columnList[t]];
-                //allTables[3][columnList[t]] = hashColumns.maxSolutionsAsWolfram[columnList[t]];
+
             }
         }
         for (int t = 0; t < 8; t++) {
             hashColumns.individualRule(columnList[t], 4, false, 0, false, 0, false);
             for (int address = 0; address < 256 * 256; address++) {
-                //hashRows.individualRule(rowList[t], 4, false, 0, false, 0, false);
-                //allTables[0][rowList[t]] = hashRows.minSolutionsAsWolfram[rowList[t]];
-                //allTables[1][rowList[t]] = hashRows.maxSolutionsAsWolfram[rowList[t]];
+
                 allTables[2][columnList[t]][address] = hashColumns.minSolutionsAsWolfram[columnList[t]][address];
                 allTables[3][columnList[t]][address] = hashColumns.maxSolutionsAsWolfram[columnList[t]][address];
             }

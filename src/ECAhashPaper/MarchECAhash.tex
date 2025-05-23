@@ -74,20 +74,20 @@ There are several tests run to verify the integrity of the algorithm. One indica
 \includegraphics{kitchenShrunkresized}\\
 Original Image\\
 \includegraphics{kitchenShrunkframes0}\\
-Frame 0\\
-\includegraphics{kitchenShrunkframes1}\\
 Frame 1\\
+\includegraphics{kitchenShrunkframes1}\\
+Frame 2\\
 \end{center}
 
 \section{Other rules, shapes, and sizes}
 
-The codeword sets can be generated with an size array, with only size 4 being fully tested and 8 showing the same properties. Within this prototype project, calculation of truth table lengths of $2^{16}$ using all 4x4 binary grids are acceptable, lengths of $2^{64}$ using 8x8 grids would be challenging at this point. At size 8 there are $2^8=256$ possible codewords, which means that while you can't calculate the whole truth table at once you can calculate the codewords for any input individually on the spot. The codeword set's uniqueness and distribution properties seem to apply at size 8 by testing random codeword tile; it is only exhaustively tested for size 4. The internal hash logic transforms can also still be easily calculated for size 8 because you only have to work with codewords rather than the entire set of inputs. Future iterations of the project may implement rectangles.\\
+The codeword sets can be generated with an size array, with only size 4 being fully tested and 8 showing the same properties. Within this prototype project, calculation of truth table lengths of $2^{16}$ using all 4x4 binary grids are acceptable, lengths of $2^{64}$ using 8x8 grids would be challenging at this point. At size 8 there are $2^8=256$ possible codewords, which means that while you can't calculate the whole truth table at once you can calculate the codewords for any input individually on the spot. The codeword set's uniqueness and distribution properties seem to apply at size 8 by testing random codeword input tiles; it is only exhaustively tested for size 4. The internal hash logic transforms can also still be easily calculated for size 8 because you only have to work with codewords rather than the entire set of inputs. Future iterations of the project may implement input tile rectangles.\\
 
 Out of the other 0-255 ECA rules, some do better than these particular 8 at lossy compression, losing only 3/16 bits instead of 6/16 bits with these 8. In particular the Pascal rules 90, 165, 102, 153, 105, 150 rank near the top, connected to several of these 10 via the property of XOR-additiveness \cite{xorAdditive}. However none outside of these 10 have unique solutions or even distributions in either row or column weighted, maxxed or minned.\\
 
 \section{Rule 150}
 
-Running this algorithm for rule 150 minizations and producing a heat map of the errors in reconstructing the lossy compression, you get this. Summing the columns in each row and taking the ratios of the rows reveals Pi, Pi/3, and Phi squared to at least 7 digits, 5 past the decimal place. 7 binary digits is a 2\% error rate and is enough for ASCII operations. If you label a five point star and proceed backwards starting at 0, you get \{3,1,4,2,0\} which is roughly the same seven digit precision. While seven digits by itself is not impressive, 7 digits across three constants is notable.\\
+Running this algorithm for rule 150 minizations of size 4 and producing a heat map of the errors in reconstructing the lossy compression, you get this. Summing the columns in each row and taking the ratios of the rows reveals Pi, Pi/3, and Phi squared all to at least 7 digits, 5 past the decimal place. 7 binary digits is a 2\% error rate and is enough for ASCII operations. If you label a five point star and proceed backwards starting at 0, you get \{3,1,4,2,0\} which is roughly the same seven digit precision. While seven digits by itself is not impressive, 7 digits across four constants is notable; it's a 4 dimensional typewriter.\\
 
 \noindent rule 150\\
 
@@ -116,9 +116,9 @@ accurate to the binary -9 place\\
 c = (row0+row1)/(row2+row3) - PhiSquared = 0.003278055679122982\\
 accurate to the binary -8 place\\
 
-\noindent Throw in the 1's and 2's place makes for 7, 11, and 10 accurate digits\\
+\noindent 7, 11, and 10 accurate digits including the one's and two's places\\
 If you compare that accuracy to the method of computing pi by the edges of increasing numbers of triangles\\
-it takes dividing 2Pi into 32 triangles to get 7 digits or 32 iterations of the Wallis product\\
+it takes dividing 2Pi into 32 triangles to get 7 digits; 32 iterations of the Wallis product\\
 
 \bibliographystyle{plain}
 \bibliography{HashBib.bib}

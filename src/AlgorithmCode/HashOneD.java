@@ -28,36 +28,18 @@ public class HashOneD {
      * @param depth the iterative depth defining the transformation steps
      * @return a new 1D array containing the transformed and rehashed data
      */
-    public int[][][] hashArray(int[][][] input, int depth) {
-        int[][][] out = new int[4][8][input.length];
+    public int[][] hashArray(int[] input, int depth) {
+        int[][] out = new int[32][input.length];
         for (int layer = 0; layer < 4; layer++) {
             boolean minimize = (layer % 2) == 0 ? true : false;
             boolean rowError = (layer / 2) % 2 == 0 ? true : false;
             for (int t = 0; t < 8; t++) {
-                out[layer][t] = hashArray(input[layer][t], hash.bothLists[layer][t], depth, minimize, rowError)[depth];
+                out[4 * layer + t] = hashArray(input, hash.bothLists[layer][t], depth, minimize, rowError)[depth];
             }
         }
         return out;
     }
 
-    /**
-     * 1D version of the hash algorithm using all 32 codeword sets, compression version
-     *
-     * @param input a 1D array of data to be hashed
-     * @param depth iterative depth of hashing
-     * @return input data compressively hashed to iteration depth
-     */
-    public int[][][] hashCompression(int[][][] input, int depth) {
-        int[][][] out = new int[4][8][input.length];
-        for (int layer = 0; layer < 4; layer++) {
-            boolean minimize = layer % 2 == 0 ? true : false;
-            boolean rowError = (layer / 2) % 2 == 0 ? true : false;
-            for (int t = 0; t < 8; t++) {
-                out[layer][t] = hashArrayCompression(input[layer][t], hash.bothLists[layer][t], depth, minimize, rowError);
-            }
-        }
-        return out;
-    }
 
     /**
      * 1D version of the hash algorithm using only a single codeword set, hash-in-place version
@@ -70,7 +52,6 @@ public class HashOneD {
      * @return the input data hashed depth times
      */
     public int[][] hashArray(int[] input, int rule, int depth, boolean minimize, boolean rowError) {
-        //initWolframs();
         int rows = input.length;
         int[][] output = new int[depth + 1][rows];
         //initialize layer 0 to the input
@@ -78,7 +59,7 @@ public class HashOneD {
         for (int row = 0; row < rows; row++) {
             output[0][row] = input[row];
         }
-        //for however many iterations you want to do, typically log2(inputWidth+inputHeight)
+        //for however many iterations you want to do, typically log2(inputWidth or inputHeight, whichever is greater)
         for (int d = 1; d <= depth; d++) {
             //for every (row,column) location in the image
             for (int row = 0; row < rows; row++) {
@@ -211,7 +192,7 @@ public class HashOneD {
         int listLayer = rowError ? 0 : 1;
         int posNeg = minimize ? 0 : 1;
         for (int row = 0; row < input.length; row++) {
-            //apply its vote to every location that it influences
+            //a codeword applies its vote to every location that it influences
             //including itself
             int[][] generatedGuess = hash.hashRowsColumns[listLayer].generateCodewordTile(input[row], rule);
             for (int r = 0; r < 4 && rowError; r++) {
@@ -260,7 +241,6 @@ public class HashOneD {
      * Tests these 1D hash versions with random data
      */
     public void testOneD() {
-        //hash.initWolframs();
         int size = 100;
         int depth = 1;
         int rule = 2;
@@ -270,10 +250,10 @@ public class HashOneD {
         for (int index = 0; index < size; index++) {
             input[index] = rand.nextInt(0, 16);
         }
-        int[] out = hashArray(input, hash.bothLists[layer][rule], 1, true, true)[1];
+        int[] out = hashArray(input, hash.bothLists[layer][rule], depth, true, true)[1];
         System.out.println(Arrays.toString(input));
         System.out.println(Arrays.toString(out));
-        int[] inversion = invert(out, hash.bothLists[layer][rule], 1, true, true);
+        int[] inversion = invert(out, hash.bothLists[layer][rule], depth, true, true);
         int same = 0;
         int diff = 0;
         for (int index = 0; index < size; index++) {
@@ -288,7 +268,7 @@ public class HashOneD {
         System.out.println(Arrays.toString(inversion));
         System.out.println("same: " + same);
         System.out.println("diff: " + diff);
-        int[] compressed = hashArrayCompression(input, hash.bothLists[layer][rule], 1, true, true);
+        int[] compressed = hashArrayCompression(input, hash.bothLists[layer][rule], depth, true, true);
         System.out.println(Arrays.toString(compressed));
     }
 }

@@ -7,8 +7,8 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * Generates, tests, and displays sets of hash codeword truth tables, where the table is addressed by a binary input neighborhood, and it's value is
- * a hexadecimal codeword ECA rule pair together that minimize the discrepancies between the input and the ECA output using the codeword as the
+ * Generates, tests, and displays sets of hash codeword truth tables, where the table is addressed by the integer value of a square binary input neighborhood, and the values are
+ * a 4-bit hexadecimal codeword ECA rule minMax pair that minimize and maximize the discrepancies between the input and the ECA output using the codeword as the
  * initial value
  */
 public class HashTruthTables {
@@ -89,7 +89,7 @@ public class HashTruthTables {
      */
     int[] maxErrorBuckets;
     /**
-     * Length of an ECA rule's codeword truth table, is redundant and will be removed in the
+     * Number of samples used in generating a truth table
      */
     int[] numberBoards;
     /**
@@ -136,7 +136,7 @@ public class HashTruthTables {
      */
     int[][] minTemp;
     /**
-     * all 256 ECA rules' min codeword error/tile
+     * All 256 ECA rules' min codeword error/tile
      */
     double[] minErrorPerArray;
     /**
@@ -215,7 +215,7 @@ public class HashTruthTables {
     }
 
     /**
-     * Initializes arrays to size. Sizes above five bust it
+     * Initializes arrays to size. Sizes above five bust the JVM
      *
      * @param size length and width of the input neighborhood
      */
@@ -264,7 +264,7 @@ public class HashTruthTables {
         //
         //Check every possible input neighborhood of length size
         for (int neighborhood = 0; neighborhood < maxNeighborhood; neighborhood++) {
-            //Run Wolfram code on array with row 0 input = correction
+            //Run Wolfram code on an array with row 0 input = neighborhood
             trialField = generateCodewordTile(neighborhood, n);
             //
             //
@@ -369,7 +369,7 @@ public class HashTruthTables {
 
     /**
      * Outputs the square array, where row 0 is the input and the rest of the rows are ECA output,
-     * with wrapped columns so that it's cylindrical with the rows parallel to the circumfrence and
+     * with wrapped columns so that it's cylindrical with the rows parallel to the circumference and
      * columns perpendicular. The basic unit of the hash algorithm
      *
      * @param in   input neighborhood in array form
@@ -378,6 +378,7 @@ public class HashTruthTables {
      */
     public int[][] generateCodewordTile(int[] in, int rule) {
         int[][] out = new int[in.length][in.length];
+        //initialize row 0 input
         for (int row = 0; row < in.length; row++) {
             out[0][row] = in[row];
         }
@@ -389,6 +390,7 @@ public class HashTruthTables {
         int size = in.length;
         for (row = 1; row < size; row++) {
             for (column = 0; column < size; column++) {
+                //ECA operation for each location in the array
                 a = ((column - 1) + size) % size;
                 b = column;
                 c = ((column + 1)) % size;
@@ -414,6 +416,7 @@ public class HashTruthTables {
             in[row] = ((inInt) / (int) Math.pow(2, row) % 2);
         }
         int[][] out = new int[in.length][in.length];
+        //initialize row 0 input
         for (int row = 0; row < in.length; row++) {
             out[0][row] = in[row];
         }
@@ -425,6 +428,7 @@ public class HashTruthTables {
         int size = in.length;
         for (row = 1; row < size; row++) {
             for (column = 0; column < size; column++) {
+                //ECA operation for each location in the array
                 a = ((column - 1) + size) % size;
                 b = column;
                 c = ((column + 1)) % size;
@@ -638,6 +642,11 @@ public class HashTruthTables {
         System.out.println("maxSolutionDistro[] " + Arrays.toString(maxSolutionDistro[specificRule]));
         System.out.println("sameErrorMin[] " + Arrays.toString(sameErrorMin[specificRule]) + " " + String.format("%.4f", (double) minNumberOfSameSolutions[specificRule] / (double) numberBoards[specificRule]));
         System.out.println("sameErrorMax[] " + Arrays.toString(sameErrorMax[specificRule]) + " " + String.format("%.4f", (double) maxNumberOfSameSolutions[specificRule] / (double) numberBoards[specificRule]));
+        //
+         //
+         //
+         //Everything after this is the ratios of rows of the heat map of error distribution in a single ECA rule, same as oneFiftyDisplay()
+        //This is to see if there are any other notable proportions like rule 150, but I haven't seen any yet
         double[] minRowTots = new double[size];
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
@@ -932,6 +941,8 @@ public class HashTruthTables {
             minVote = new int[size][size];
             maxVote = new int[size][size];
             //This loop reflects, rotates, and transposes the input data array
+            //To further minimize error, for experimental purposes
+            //For the paper's purposes this only uses the identity - it only uses rotation 0
             for (int rotation = 0; rotation < numVotes; rotation++) {
                 temp = new int[size][size];
                 for (row = 0; row < size; row++) {

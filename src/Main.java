@@ -4,7 +4,16 @@ import java.io.IOException;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+
+/**
+ * Standard Main class
+ */
 public class Main {
+    /**
+     * Standard main function
+     * @param args Standard arg parameter, empty atm
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         //HashTruthTables m = new HashTruthTables(true);
         //m.manageLengthsMinimizations(150,4,500);

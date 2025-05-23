@@ -9,23 +9,16 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * This class produces and verifies truth tables of logic gate transformation when hashed. If you take a codeword-produced 4x4 tile and combine it with another codeword-produced 4x4 tile
+ * Produces and verifies truth tables of logic gate transformation when hashed. If you take a codeword-produced 4x4 tile and combine it with another codeword-produced 4x4 tile
  * via a bitwise 0-15 logic gate operation and rehash the tile, the logic operation between the original codewords and the result codeword becomes transformed into another logic operation.
  * AND is 8, OR is 14.
- *
+ * <p>
  * A logic operation between two inputs pre-hash becomes a different logic operation within the hash. Using these truth tables, you can operate on hashed input without lossy inversion
  * and without the original data, allowing for retroactive hashing
- *
+ * <p>
  * This class generates and verifies these operation transformations for all 0-15 logic gates and all 16 row-weighted hashes, the column-weighted hashes have an incomplete set of these transformations.
  */
 public class HashLogicOpTransform {
-    /**
-     * Loads the manager class
-     * @param inHash manager class
-     */
-    public HashLogicOpTransform(Hash inHash){
-        hash = inHash;
-    }
     /**
      * Manager class
      */
@@ -34,13 +27,21 @@ public class HashLogicOpTransform {
      * Truth table of generated logic op transformations
      */
     int[][] logicTransform = new int[16][16];
-
+    /**
+     * Loads the manager class
+     *
+     * @param inHash manager class
+     */
+    public HashLogicOpTransform(Hash inHash) {
+        hash = inHash;
+    }
 
     /**
      * This function tests a single 0-15 logic gate against all 16 minMax codeword sets rowError or columnError. This is a helper function for testAllGates()
-     * @param gate an integer representing a 0-15 logic gate, 8 = AND, 14 = OR, 6 = XOR
+     *
+     * @param gate        an integer representing a 0-15 logic gate, 8 = AND, 14 = OR, 6 = XOR
      * @param tupleDistro the output array passed from testAllGates()
-     * @param inRowError if true uses the row-weighted truth tables; if false uses the column-weighted set
+     * @param inRowError  if true uses the row-weighted truth tables; if false uses the column-weighted set
      */
     public void testGate(int gate, int[][] tupleDistro, boolean inRowError) {
         int listLayer = inRowError ? 0 : 1;
@@ -54,25 +55,21 @@ public class HashLogicOpTransform {
                         int[][] aa = hash.hashRows.generateCodewordTile(a, hash.bothLists[listLayer][t]);
                         int[][] bb = hash.hashColumns.generateCodewordTile(b, hash.bothLists[listLayer][t]);
                         int[][] cc = new int[4][4];
-                        int[][] dd = new int[4][4];
-                        //add the neighborhoods together pair-wise
+                        //combine the neighborhoods with the given logic gate
                         for (int row = 0; row < 4; row++) {
                             for (int col = 0; col < 4; col++) {
-                                //cc[row][col] = aa[row][col] + bb[row][col];
-                                //if (cc[row][col] < 2) dd[row][col] = 0;
-                                //else dd[row][col] = 1;
                                 cc[row][col] = (gate >> (aa[row][col] + 2 * bb[row][col])) % 2;
                             }
                         }
-                        //find the codeword of the sum of the neighborhoods
+                        //find the codeword of the combined neighborhood
                         int[][] ccc = hash.hashRowsColumns[listLayer].findMinimizingCodeword(hash.bothLists[listLayer][t], cc);
                         int result = 0;
                         for (int column = 0; column < 4; column++) {
                             result += (int) Math.pow(2, column) * ccc[0][column];
                         }
-                        //stortruee it in the table
-                        //additionTables[posNeg][t][a][b] = result;
-                        if (posNeg == 1) additionTables[posNeg][t][a][b] = hash.hashRowsColumns[listLayer].lastMaxCodeword;
+                        //store it in the table
+                        if (posNeg == 1)
+                            additionTables[posNeg][t][a][b] = hash.hashRowsColumns[listLayer].lastMaxCodeword;
                         else additionTables[posNeg][t][a][b] = hash.hashRowsColumns[listLayer].lastMinCodeword;
                     }
                 }
@@ -89,6 +86,7 @@ public class HashLogicOpTransform {
         for (int posNeg = 0; posNeg < 2; posNeg++) {
             for (int t = 0; t < 8; t++) {
                 Arrays.fill(distro[8 * posNeg + t], -1);
+                //for all gates, for all codewords
                 testGateLoop:
                 for (int g = 0; g < 16; g++) {
                     for (int a = 0; a < 16; a++) {
@@ -233,17 +231,14 @@ public class HashLogicOpTransform {
     public void testAllLogic(boolean rowError) throws IOException {
         //hash.initWolframs();
         int[][] tupleDistro = new int[16][16];
-
         for (int gate = 0; gate < 16; gate++) {
-
             System.out.println("___________________________________________________________________________");
             System.out.println("gate: " + gate);
-            testGate(gate, tupleDistro,  rowError);
+            testGate(gate, tupleDistro, rowError);
         }
         int[] gateDistro = new int[16];
         for (int gate = 0; gate < 16; gate++) {
             System.out.println("gate : " + gate + " tupleDistro : " + Arrays.toString(tupleDistro[gate]));
-
         }
         logicTransform = tupleDistro;
     }
@@ -261,7 +256,7 @@ public class HashLogicOpTransform {
      * @param rowError if true, uses the row-weighted codewords, if false uses the column-weighted codewords
      * @throws IOException
      */
-    public void verifyLogicOperationHash(String filepath,  boolean rowError) throws IOException {
+    public void verifyLogicOperationHash(String filepath, boolean rowError) throws IOException {
         filepath = "src/ImagesProcessed/" + filepath;
         File file = new File(filepath);
         filepath = filepath.substring(0, filepath.length() - 4);
@@ -271,50 +266,43 @@ public class HashLogicOpTransform {
         depth = 1;
         int rows = inImage.getHeight();
         int cols = inImage.getWidth();
-        int[][] bfield = new int[rows][cols*16];
+        int[][] bfield = new int[rows][cols * 16];
         System.out.println("inRaster: " + inRaster.length);
         System.out.println("imImage.getHeight(): " + inImage.getHeight());
         System.out.println("imImage.getWidth(): " + inImage.getWidth());
+        //Put the bitmap's raster into the bfield arrays
         int[][][] bFieldSet = new int[16][bfield.length][bfield[0].length];
         for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < cols/16; column++) {
+            for (int column = 0; column < cols / 16; column++) {
                 for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
                     for (int power = 0; power < 8; power++) {
                         bfield[row][16 * column + 8 * rgbbyte + power] = (int) ((Math.abs(inRaster[row * inImage.getWidth() + column]) >> (8 * rgbbyte + power)) % 2);
                         for (int posNegt = 0; posNegt < 16; posNegt++) {
-                            bFieldSet[posNegt][row][16 * column + 8 * rgbbyte + power] = ((Math.abs(inRaster[row*cols/16+column]) >> (8 * rgbbyte + power)) %2);
+                            bFieldSet[posNegt][row][16 * column + 8 * rgbbyte + power] = ((Math.abs(inRaster[row * cols / 16 + column]) >> (8 * rgbbyte + power)) % 2);
                         }
                     }
                 }
             }
         }
-        //Initialize the minMax codeword truth table set
-        //hash.initWolframs();
+        //Initialize logic gate op hash tables
         testAllLogic(true);
-        //hashUtilities.readFromFile();
-        //Change the RGB 4-bytes broken down into 32 bits into its depth 0 codewords
-        //bfield = hash.initializeDepthZero(bfield, hash.unpackedList[3])[1];
-        for (int t = 0; t < 8; t++) {
-            //bFieldSet[t] = initializeDepthZero(bFieldSet[t], unpackedList[t])[1];
-            //bFieldSet[8 + t] = initializeDepthMax(bFieldSet[8 + t], unpackedList[t])[1];
-        }
-        //Do the transform
-        //framesOfHashing = hash.ecaTransform(bfield, hash.unpackedList[3], depth);
+
         int[][][] hashSet = new int[16][inImage.getHeight()][inImage.getWidth()];
         depth = 3;
         int gate = 8;
         int listLayer = rowError ? 0 : 1;
+        //Hash the input
         for (int t = 0; t < 8; t++) {
             System.out.println("t: " + t);
             hashSet[t] = hash.twoDHashTransform.hashArray(bFieldSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
             hashSet[8 + t] = hash.twoDHashTransform.hashArray(bFieldSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
-            //hashSet[t] = bFieldSet[t];
-            //hashSet[8 + t] = bFieldSet[8 + t];
         }
+        //modification[][] is a random array
         int[][] modification = generateOperation(hashSet[0].length, hashSet[0][0].length);
         int[][][] modificationTransformed = new int[16][hashSet[0].length][hashSet[0][0].length];
         int[][][] modifiedSet = new int[16][hashSet[0].length][hashSet[0][0].length];
         int[][][] internallyModifiedSet = new int[16][hashSet[0].length][hashSet[0][0].length];
+        //
         for (int t = 0; t < 8; t++) {
             System.out.println("t: " + t);
             for (int row = 0; row < modifiedSet[0].length; row++) {

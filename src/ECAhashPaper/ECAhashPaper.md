@@ -9,10 +9,10 @@ ECA image here
 The algorithm has 3 properties of a good hash algorithm, and 2 that make it more suitable as a signal hash rather than a block data hash [some hash paper citation]. Each input has a unique solution, the solutions are distributed evenly across all possible solutions, and it loses less than half the bits per compression cycle. Small changes to the input do not produce large changes in the solution, and errors in compression are semi uneven which is mitigated in context of a signal.
 
 
-![](WrappedInput.jpg)
-![](ECAspace.jpg)
-![](ErrorScore.jpg)
-![](SignalVersion.jpg)
+![](../TrimmedCode/WrappedInput.jpg)
+![](../TrimmedCode/ECAspace.jpg)
+![](../TrimmedCode/ErrorScore.jpg)
+![](../TrimmedCode/SignalVersion.jpg)
 
 Unique Minimums\
 Certain ECA rules reduce to unique solutions for any given input. Another overlapping set reduces to a unique solution when the errorScore is calculated with an exponent of 4 instead of 2.\

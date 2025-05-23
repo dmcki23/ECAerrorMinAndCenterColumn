@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * The HashCollisions class is designed to analyze and verify various properties of codeword mappings,
+ * Designed to analyze and verify various properties of codeword mappings,
  * particularly focused on identifying and evaluating hash collisions within 4x4 neighborhoods.
  * It is centered around concepts like uniqueness, error scores, and collisions, with tools to assess
  * and validate these aspects experimentally and theoretically through verification checks.
@@ -39,7 +39,6 @@ public class HashCollisions {
      * @return whether the tuple sets in the truth tables are distinct
      */
     public boolean checkTupleUniqueness() {
-        hash.initWolframs();
         boolean out = true;
         int[][] innerOuterTuples = new int[4][16];
         int numSame = 0;
@@ -105,10 +104,9 @@ public class HashCollisions {
         int numTrials = 5000;
         //Random number generator
         Random rand = new Random();
-        //Initialize the 8-tuple truth tables
-        hash.initWolframs();
         //
         for (int trial = 0; trial < numTrials; trial++) {
+            //Generate and hash a random tile
             for (int row = 0; row < 5; row++) {
                 for (int column = 0; column < 5; column++) {
                     field[row][column] = rand.nextInt(0, 2);
@@ -132,6 +130,7 @@ public class HashCollisions {
                     }
                 }
             }
+            //randomly change the original array and hash it
             for (int numChanges = 1; numChanges < 16; numChanges++) {
                 for (int tr = 0; tr < numTrials; tr++) {
                     for (int row = 0; row < 5; row++) {
@@ -158,6 +157,7 @@ public class HashCollisions {
                             }
                         }
                     }
+                    //If equal, is a collision
                     if (Arrays.equals(innerCodewords, codewords)) {
                         numCollisions[numChanges]++;
                     }
@@ -186,15 +186,18 @@ public class HashCollisions {
                 different = 0;
                 tot = 0;
                 for (int sample = 0; sample < samples; sample++) {
+                    //Generate and hash a random tile
                     for (int index = 0; index < size; index++) {
                         field[index] = rand.nextInt(0, 2);
                     }
                     int[] fieldHash = hash.oneDHashTransform.hashArrayCompression(field, hash.bothLists[layer][t], depth, (layer % 2 == 0) ? true : false, ((layer / 2) % 2 == 0) ? true : false);
+                    //randomly change the original array and hash it
                     for (int s = 0; s < 100; s++) {
                         for (int index = 0; index < size; index++) {
                             fieldTwo[index] = rand.nextInt(0, 2);
                         }
                         int[] fieldHashTwo = hash.oneDHashTransform.hashArrayCompression(fieldTwo, hash.bothLists[layer][t], depth, (layer % 2 == 0) ? true : false, ((layer / 2) % 2 == 0) ? true : false);
+                        //If equal, is a collision
                         if (Arrays.equals(fieldHash, fieldHashTwo)) {
                             same++;
                         } else {
@@ -240,6 +243,7 @@ public class HashCollisions {
         int[][] symmetries = generateFourBitLRBWsymmetry();
         System.out.println(Arrays.deepToString(symmetries));
         int[][] equals = new int[4 * 8][4 * 8];
+        //Checks to see whether any of the codeword table symmetries are equal to each other using left-right-black-white symmetries
         for (int layer = 0; layer < 4; layer++) {
             for (int blayer = 0; blayer < 4; blayer++) {
                 for (int t = 0; t < 8; t++) {
@@ -256,6 +260,7 @@ public class HashCollisions {
                 }
             }
         }
+        //Checks to see whether any of the codeword table symmetries are equal to each other using the binary complement
         for (int layer = 0; layer < 4; layer++) {
             for (int blayer = 0; blayer < 4; blayer++) {
                 for (int t = 0; t < 8; t++) {
@@ -271,6 +276,7 @@ public class HashCollisions {
                 }
             }
         }
+        //Checks to see whether any of the codeword table symmetries are equal to each other using a logic gate to combine
         for (int layer = 0; layer < 4; layer++) {
             for (int blayer = 0; blayer < 4; blayer++) {
                 for (int t = 0; t < 8; t++) {
@@ -301,6 +307,9 @@ public class HashCollisions {
         //CustomArray.plusArrayDisplay(squared, true, true, "Squared Symmetries");
         //squared = hadamard.matrixMultiply(squared, squared);
         //CustomArray.plusArrayDisplay(squared, true, true, "Squared Symmetries squared");
+        //
+         //
+         //Checks to see if there are groups similar to the 88 left-right-black-white ECA rule symmetries
         int[][] groups = new int[32][32];
         int numUnique = 0;
         rowLoop:
@@ -332,6 +341,7 @@ public class HashCollisions {
         int[][] out = new int[16][4];
         for (int word = 0; word < 16; word++) {
             out[word][0] = word;
+            //Left right symmetry
             int tot = 0;
             for (int power = 0; power < 4; power++) {
                 int a = power % 2;
@@ -340,11 +350,13 @@ public class HashCollisions {
                 tot += (1 << power) * ((word >> power) % 2);
             }
             out[word][1] = tot;
+            //Black white symmetry
             tot = 0;
             for (int power = 0; power < 4; power++) {
                 tot += (1 << (3 - power)) * ((word >> power) % 2);
             }
             out[word][2] = tot;
+            //Both symmetries
             tot = 0;
             for (int power = 0; power < 4; power++) {
                 int a = power % 2;
