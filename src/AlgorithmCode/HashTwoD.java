@@ -70,6 +70,49 @@ public class HashTwoD {
         }
         return output;
     }
+    /**
+     * Hashes 2D data with the given parameters, hash-in-place version
+     *
+     * @param input    a 2D array of hashed data
+     * @param depth    iterative depth, also the power of how far away its neighbors are at each step
+     * @param minimize if true, uses the error-minimizing codewords, and if false uses the error-maximizing codewords
+     * @param rowError if true, uses the row-weighted codewords, and if false uses the column-weighted codewords
+     * @return hashed input data
+     */
+    public int[][][] hashArraySet(int[][] input, int ruleIndex, int depth, boolean minimize, boolean rowError) {
+        //initWolframs();
+        int rows = input.length;
+        int cols = input[0].length;
+        int[] comp = new int[hash.allTables[0][0].length];
+        int[][][] output = new int[depth + 1][rows][cols];
+        //initialize layer 0 to the input
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                output[0][row][col] = input[row][col];
+            }
+        }
+        int tableLayer = (minimize ? 0 : 1) + 2 * (rowError ? 0 : 1);
+        //for however many iterations you want to do, typically log2(inputWidth+inputHeight)
+        for (int d = 1; d <= depth; d++) {
+            //for every (row,column) location in the bitmap
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < cols; col++) {
+                    //gets its neighborhood
+                    int cell = 0;
+                    //distance between parts of the neighborhood doubles every depth
+                    int phasePower = (1 << ((d - 1) % 24));
+                    for (int r = 0; r < 2; r++) {
+                        for (int c = 0; c < 2; c++) {
+                            cell += (int) Math.pow(16, 2 * r + c) * output[d - 1][(row + phasePower * r) % rows][(col + phasePower * c) % cols];
+                        }
+                    }
+                    //stores the neighborhood's codeword
+                    output[d][row][col] = hash.flatWolframs[tableLayer][ruleIndex][cell];
+                }
+            }
+        }
+        return output;
+    }
 
     /**
      * Hashes a 2D array of hexadecimal data with the given parameters, compression version
@@ -131,7 +174,7 @@ public class HashTwoD {
      * @return a 2D array of integers representing the rehashed inverse-transformed data
      */
     public int[][] invert(int[][] input, int depth, int rule, boolean minimize, boolean rowError) {
-        int neighborDistance = 1 << (depth - 1);
+        int neighborDistance = 1 << (depth-1 );
         int[][][] votes = new int[input.length][input[0].length][4];
         int listLayer = rowError ? 0 : 1;
         int negativeSign = minimize ? 0 : 1;
@@ -191,11 +234,113 @@ public class HashTwoD {
      * @return a 2D array of integers representing the rehashed inverse-transformed data
      */
     public int[][] invert(int[][][] input, int depth) {
-        int neighborDistance = (int) Math.pow(2, depth - 1);
+        int neighborDistance = (int) Math.pow(2, depth -1);
         //neighborDistance = 1;
         int listLayer;
         boolean rowError = false;
         int[][][] altVotes = new int[input[0].length][input[0][0].length][4];
+        for (int row = 0; row < input[0].length; row++) {
+            for (int col = 0; col < input[0][0].length; col++) {
+                for (int layer = 0; layer < 4; layer++) {
+                    for (int t = 0; t < 8; t++) {
+                        int posNeg = layer % 2;
+                        listLayer = (layer / 2) % 2;
+                        rowError = (layer / 2) % 2 == 0 ? true : false;
+                        //generate the codeword's neighborhood and apply its vote to every location that it influences
+                        int[][] generatedGuess = hash.hashRows.generateCodewordTile(input[8*layer +t][row][col], hash.bothLists[listLayer][t % 8]);
+                        if (rowError) {
+                            for (int r = 0; r < 4; r++) {
+                                for (int c = 0; c < 4; c++) {
+                                    if (posNeg == 0){
+                                        if (generatedGuess[r][c] == 0){
+                                            altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << r);
+
+                                        } else {
+                                            altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << r);
+
+                                        }
+                                    } else {
+                                        if (generatedGuess[r][c] == 1){
+                                            altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << r);
+
+                                        } else {
+                                            altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << r);
+
+                                        }
+                                    }
+//                                    if (generatedGuess[r][c] == posNeg) {
+//                                        altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << r);
+//                                    } else {
+//                                        altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << r);
+//                                    }
+                                    //}
+                                }
+                            }
+                        } else {
+                            for (int r = 0; r < 4; r++) {
+                                for (int c = 0; c < 4; c++) {
+                                    if (posNeg == 0){
+                                        if (generatedGuess[r][c] == 0){
+                                            altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << c);
+
+                                        } else {
+                                            altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << c);
+
+                                        }
+                                    } else {
+                                        if (generatedGuess[r][c] == 1){
+                                            altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << c);
+
+                                        } else {
+                                            altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << c);
+
+                                        }
+                                    }
+//                                    if (generatedGuess[r][c] == posNeg) {
+//                                        altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << c);
+//                                    } else {
+//                                        altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << c);
+//                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //for each location, based on whether the final tally of the vote was positive or negative
+        //output a 0 if positive and 1 if negative, if the vote result is not what the
+        //original data is increment the error counter for analysis
+        //outResult = new int[16][input[0].length][input[0][0].length];
+        int[][] finalOutput = new int[input[0].length][input[0][0].length];
+        finalOutput = new int[input[0].length][input[0][0].length];
+        for (int row = 0; row < input[0].length; row++) {
+            for (int column = 0; column < input[0][0].length; column++) {
+                for (int power = 0; power < 4; power++) {
+                    if (altVotes[row][column][power] >= 0) {
+                        finalOutput[row][column] += 0;
+                    } else {
+                        finalOutput[row][column] += (1 << power);
+                    }
+                }
+            }
+        }
+        return finalOutput;
+    }
+
+    /**
+     * Computes the inverse of a 2D array of hashed data using a voting mechanism using all 32 codewords
+     *
+     * @param input 32 codeword sets of 2D hashed data, input[codeword][row][column]
+     * @param depth an integer indicating how far away neighbors are considered (powers of 2, e.g., 2^n)
+     * @return a 2D array of integers representing the rehashed inverse-transformed data
+     */
+    public int[][] invertExperimental(int[][][] input, int depth) {
+        int neighborDistance = (int) Math.pow(2, depth - 1);
+        //neighborDistance = 1;
+        int listLayer;
+        boolean rowError = false;
+        int[][][] altVotes = new int[input[0].length][input[0][0].length][16];
         for (int row = 0; row < input[0].length; row++) {
             for (int col = 0; col < input[0][0].length; col++) {
                 for (int t = 0; t < 16; t++) {
@@ -206,7 +351,12 @@ public class HashTwoD {
                     int[][] generatedGuess = hash.hashRows.generateCodewordTile(input[t][row][col], hash.bothLists[listLayer][t % 8]);
                     if (rowError) {
                         for (int r = 0; r < 4; r++) {
+                            int tot = 0;
                             for (int c = 0; c < 4; c++) {
+                                tot += (1 << c) * (generatedGuess[r][c] == posNeg ? 1 : 0);
+                            }
+                            altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][(tot % 16)] += (1 << r);
+                            for (int c = 0; c < 0; c++) {
                                 if (generatedGuess[r][c] == posNeg) {
                                     altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << r);
                                 } else {
@@ -216,7 +366,19 @@ public class HashTwoD {
                             }
                         }
                     } else {
-                        for (int r = 0; r < 4; r++) {
+                        for (int c = 0; c < 4; c++) {
+                            int tot = 0;
+                            for (int r = 0; r < 4; r++) {
+                                tot += (1 << r) * (generatedGuess[r][c] == posNeg ? 1 : 0);
+                            }
+                            altVotes[(row + neighborDistance * ((c) % 2)) % input[0].length][(col + neighborDistance * ((c / 2) % 2)) % input[0][0].length][(tot % 16)] += (1 << c);
+                        }
+                        for (int r = 0; r < 0; r++) {
+                            int tot = 0;
+                            for (int c = 0; c < 4; c++) {
+                                tot += (1 << c) * generatedGuess[r][c];
+                            }
+                            //altVotes[(row+neighborDistance*((r)%2)))%input[0].length][(col+neighborDistance*((r/2)%2))%input[0][0].length][tot] += (1)
                             for (int c = 0; c < 4; c++) {
                                 if (generatedGuess[r][c] == posNeg) {
                                     altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << c);
@@ -259,13 +421,14 @@ public class HashTwoD {
      * @throws IOException
      */
     public void hashBitmap(String filepath, int rule, boolean minimize, boolean rowError) throws IOException {
+        //String today = System.currentTimeMillis();
         filepath = "src/ImagesProcessed/" + filepath;
         File file = new File(filepath);
         filepath = filepath.substring(0, filepath.length() - 4);
         BufferedImage inImage = ImageIO.read(file);
         short[] inRaster = ((DataBufferUShort) inImage.getRaster().getDataBuffer()).getData();
         int depth = (int) (Math.log(inImage.getWidth() * inImage.getWidth()) / Math.log(2));
-        depth = 10;
+        //depth = 10;
         int rows = inImage.getHeight();
         int cols = inImage.getWidth() * 4;
         int[][][] framesOfHashing = new int[depth][inImage.getHeight()][inImage.getWidth() * 8];
@@ -303,7 +466,7 @@ public class HashTwoD {
                 }
             }
             frameFile = new File(filepath + "frames" + (d + 1) + ".bmp");
-            ImageIO.write(outImage, "bmp", frameFile);
+            if (d <= 10) ImageIO.write(outImage, "bmp", frameFile);
         }
         writeGif(rasterized, filepath + "gif.gif", depth, inImage);
         System.out.println("depth: " + depth);
@@ -451,6 +614,8 @@ public class HashTwoD {
         if (inImage.getWidth() < inImage.getWidth()) {
             depth = (int) (Math.log(inImage.getHeight() * 4) / Math.log(2));
         }
+        depth++;
+        depth = 1;
         boolean rowError = true;
         int listIndex = rowError ? 0 : 1;
         boolean minimize;
@@ -461,7 +626,7 @@ public class HashTwoD {
         int cols = inImage.getWidth() * 4;
         int[][][] bFieldSet = new int[32][rows][cols];
         for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < cols / 4; column++) {
+            for (int column = 0; column < cols/4; column++) {
                 for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
                     for (int power = 0; power < 2; power++) {
                         for (int posNegt = 0; posNegt < 32; posNegt++) {
@@ -471,7 +636,7 @@ public class HashTwoD {
                 }
             }
         }
-        System.out.println(Arrays.deepToString(bFieldSet[0]));
+        //System.out.println(Arrays.deepToString(bFieldSet[0]));
         //Initialize the minMax codeword truth table set
         int[][][] hashSet = new int[32][inImage.getHeight()][inImage.getWidth()];
         int[][][][] hashed = new int[32][depth + 1][inImage.getHeight()][inImage.getWidth()];
@@ -482,7 +647,7 @@ public class HashTwoD {
         int randRow = rand.nextInt(0, bFieldSet[0].length);
         int[][][] abbFieldSet = new int[32][bFieldSet[0].length][bFieldSet[0][0].length];
         int randNext = rand.nextInt(0, 16);
-        int numChanges = 8;
+        int numChanges = 1;
         //copy the original to another array
         for (int t = 0; t < 32; t++) {
             for (int row = 0; row < bFieldSet[0].length; row++) {
@@ -495,9 +660,9 @@ public class HashTwoD {
         for (int change = 0; change < numChanges; change++) {
             randCol = rand.nextInt(0, bFieldSet[0][0].length);
             randRow = rand.nextInt(0, bFieldSet[0].length);
-            randNext = rand.nextInt(0, 16);
+            randNext = (1<<rand.nextInt(0, 4));
             for (int t = 0; t < 32; t++) {
-                abbFieldSet[t][randRow][randCol] = randNext;
+                abbFieldSet[t][randRow][randCol] ^= randNext;
             }
         }
         int[] avalancheDifferences = new int[32];
@@ -507,20 +672,20 @@ public class HashTwoD {
             listIndex = (t / 16) % 2;
             rowError = (t / 16) % 2 == 0 ? true : false;
             minimize = (t / 8) % 2 == 0 ? true : false;
-            hashSet[t] = hashArray(bFieldSet[t], hash.bothLists[listIndex][t % 8], depth, minimize, rowError)[depth];
-            hashed[t] = hashArray(bFieldSet[t], hash.bothLists[listIndex][t % 8], depth, minimize, rowError);
-            abHashed[t] = hashArray(abbFieldSet[t], hash.bothLists[listIndex][t % 8], depth, minimize, rowError);
+            hashSet[t] = hashArraySet(bFieldSet[t], t % 8, depth, minimize, rowError)[depth];
+            hashed[t] = hashArraySet(bFieldSet[t], t % 8, depth, minimize, rowError);
+            abHashed[t] = hashArraySet(abbFieldSet[t], t % 8, depth, minimize, rowError);
             //compare the original and the hashed and display the total differences
             for (int row = 0; row < rows; row++) {
                 for (int column = 0; column < rows; column++) {
-                    for (int bit = 0; bit < 16; bit++) {
+                    for (int bit = 0; bit < 4; bit++) {
                         avalancheDifferences[t] += (((hashed[t][depth][row][column] >> bit) % 2) ^ ((abHashed[t][depth][row][column] >> bit) % 2));
                     }
                 }
             }
         }
         //
-         //
+        //
         //compare the original and the hashed and display
         System.out.println("avalancheDifferences: " + Arrays.toString(avalancheDifferences));
         for (int t = 0; t < 32; t++) {
@@ -538,7 +703,7 @@ public class HashTwoD {
                     }
                 }
             }
-            System.out.println("total: " + total + " " + (double) (total) / (inRaster.length * 16));
+            System.out.println("total incorrect: " + total + " errors/bit: " + (double) (total) / (inRaster.length * 16));
         }
         int[][] invertedSet = invert(hashSet, depth);
         int total = 0;
@@ -549,7 +714,7 @@ public class HashTwoD {
                 }
             }
         }
-        System.out.println("overall total: " + total);
+        System.out.println("overall total: " + total + " errors/bit: " + (double) (total) / (inRaster.length * 16));
         //System.out.println(Arrays.toString(allTables[3][165]));
     }
 }

@@ -205,8 +205,10 @@ public class Main {
          //
          //May 20
         //commenting, testing, avalanche, images, website presentation, possibly reading from the file as well
-        //hash.hashBitmap(filepath, hash.bothLists[0][rule],true,true);
-        //hash.verifyInverseAndAvalanche(filepath);
+        //hash.twoDHashTransform.hashBitmap(filepath, hash.bothLists[0][rule],true,true);
+        //hash.hashTwoD.verifyInverseAndAvalanche(filepath);
+        //hash.hashLogicOpTransform.verifyLogicOperationHash("kitchenShrunk.bmp",true);
+        //hash.hashTwoDsingleBit.verifyInverseAndAvalancheSingleBits(filepath);
         hash.hashLogicOpTransform.verifyLogicOperationHash("kitchenShrunk.bmp",true);
         }
 }

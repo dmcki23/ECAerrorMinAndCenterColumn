@@ -1,20 +1,17 @@
 package AlgorithmCode;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferUShort;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.Random;
 
 /**
  * Main entry point into the algorithm's structure; initiates truth table generation and manages the other Hash___ classes
  */
 public class Hash {
+    public HashTwoDsingleBit hashTwoDsingleBit;
 
     /**
      * Generates the codeword set truth tables as well as some minor functions, this one is set to rowError weighted errorScores
@@ -35,11 +32,11 @@ public class Hash {
     /**
      * One D version of the hash
      */
-    public HashOneD oneDHashTransform = new HashOneD(this);
+    public HashOneD hashOneD = new HashOneD(this);
     /**
      * Two D and bitmap hash functions
      */
-    public HashTwoD twoDHashTransform = new HashTwoD(this);
+    public HashTwoD hashTwoD = new HashTwoD(this);
     /**
      * Generally tests the hash algorithm for collisions and uniqueness
      */
@@ -77,8 +74,9 @@ public class Hash {
         hashRowsColumns = new HashTruthTables[]{hashRows, hashColumns};
         //hashUtilities = new HashUtilities(this);
         hashLogicOpTransform = new HashLogicOpTransform(this);
-        oneDHashTransform = new HashOneD(this);
+        hashOneD = new HashOneD(this);
         hashCollisions = new HashCollisions(this);
+        hashTwoDsingleBit = new HashTwoDsingleBit(this);
         initWolframs();
     }
 
@@ -193,6 +191,13 @@ public class Hash {
                 for (int t = 0; t < 8; t++) {
                     System.out.println(list + " " + posNeg + " " + t + " " + Arrays.toString(Arrays.copyOfRange(allTables[2 * list + posNeg][bothLists[list][t]], 0, 300)));
                 }
+            }
+        }
+        System.out.println("allTables.length: " + allTables.length);
+        for (int layer = 0; layer < 2; layer++){
+            for (int t = 0; t < 8; t++){
+                System.out.println(Arrays.toString(Arrays.copyOfRange(allTables[ 2*layer][bothLists[layer][t]], 0, 300)));
+                System.out.println(Arrays.toString(Arrays.copyOfRange(allTables[1+ 2*layer][bothLists[layer][t]], 0, 300)));
             }
         }
     }

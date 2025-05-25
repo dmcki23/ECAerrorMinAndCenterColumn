@@ -20,9 +20,11 @@
 
 \section{Introduction}
 
-Ten of the 256 elementary cellular automata (ECA) rules are explored as a non-cryptographic hash function using a lossy compression error-minimization function that operates on input data in 4x4 binary cells \cite{Wolfram}. The hash's key properties are that the codewords are unique and evenly distributed, has a lossy inverse, hashed data can be operated on efficiently within a hashed state, and through bitmap file processing shows a clear application to edge detection at shallow depths of iteration.  The loops parallel the nested $2^n$ structure of the Fast Fourier Transform (FFT) and Fast Walsh-Hadamard Transform. General algorithm outline, specific ECA rules, and aggregate properties are discussed along with the appearance of Pi and the Golden Ratio in the error distribution of rule 150's truth table. It is implemented in Java at \cite{mygit} and more images and gifs are available at the website.\\
+Ten of the 256 elementary cellular automata (ECA) rules are explored as a non-cryptographic hash function using a lossy compression error-minimization function that operates on input data in 4x4 binary cells \cite{Wolfram}. The hash's key properties are that the codewords are unique and evenly distributed, has a lossy inverse, hashed data can be operated on efficiently within a hashed state, and through bitmap file processing shows a clear application to edge detection at shallow depths of iteration.  The loops parallel the nested $2^n$ structure of the Fast Fourier Transform (FFT) and Fast Walsh-Hadamard Transform. General algorithm outline, specific ECA rules, and aggregate properties are discussed. It is implemented in Java at \cite{mygit} and more images and gifs are available at the website.\\
+
 \section{Main Algorithm}
-The hash algorithm is a kind of lossy compression that operates on 4x4 wrapped cells of binary input data. Within each cell, row 0 is the input neighborhood and rows 1, 2, and 3 are the ECA rule's output. All 16 possible row 0 inputs are calculated for a given input and then scored so that each bitwise discrepancy between the codeword's output and the input is summed with a weight of $2^row$. The input neighborhoods that minimize and maximize the error score are noted as the codeword pair for that 4x4 input and each codeword is 4 bits. Doing this procedure for all  $2^{16}=65536$ possible 4x4 input neighborhoods produces a truth table for a particular ECA rule.\\
+The hash algorithm is a kind of lossy compression that operates on 4x4 wrapped cells of binary input data that minimizes errors in compression on a small scale looped over all the input data. Within each cell, row 0 is the input neighborhood and rows 1, 2, and 3 are the ECA rule's output. All 16 possible row 0 inputs are calculated for a given input and then scored so that each bitwise discrepancy between the codeword's output and the input is summed with a weight of $2^row$. The input neighborhoods that minimize and maximize the error score are noted as the codeword pair for that 4x4 input and each codeword is 4 bits. Doing this procedure for all  $2^{16}=65536$ possible 4x4 input neighborhoods produces a truth table for a particular ECA rule.\\
+
 \begin{center}
 There are $2^{16}=65536$ binary 4x4 arrays, wrapped by column\\
 $2^4$ possible $row_0$ neighborhoods for a given ECA rule\\
@@ -35,6 +37,7 @@ Weighted by either $2^{row}$ or $2^{column}$\\
  as the codeword pair of the original binary matrix for a given ECA rule\\
 \includegraphics{fourByfour}
 \end{center}
+
 Having generated the truth table for a given ECA rule, it is applied to a 2D binary array and bitmap image as follows and with a slight variation is done for 1D input. For every (wrapped) (row,column) location in the input, the local 4x4 cell hash input is the sum of it and its neighbors $2^d$ away, $(row,column)..((row+2^d),(column+2^d))$ where d is depth of iteration. The location's value is replace with the respective minimizing or maximizing codewords that best represent its neighborhood by minimizing error. The comparing of neighbors of powers of 2 distance away is the same stucture as the FFT and Fast Walsh Transforms with rehashes instead of sums. When the iteration's neighbor distance is $log2_{row}$ or $log_2(column)$, whichever is greater, every bit has influenced every other bit and the avalanche property can be analyzed. Since every neighborhood has a unique solution, any size of any given input has a unique hash if hashing in place and not compressing.\\
 
 \begin{center}
@@ -48,7 +51,7 @@ Find the codewords of the codewords, twice as far apart each time.\\
 
 \section{Hash properties}
 
-Within the 256 ECA rules, there are 8 [0,15,51,85,170,204,240,255] using a row weighted errorScore that have the properties of unique codewords for any given input, every codeword occurs the same number of times with relatively even distribution of codewords across the 65536 neighborhoods in the truth table. 0 and 255 are included because of the 4 rows of the output matrix, 1 is neighborhood input and 3 are output, and so still produce an errorScore and a unique solution. These properties apply to both errorScore minimization and errorScore maximization. \\
+Within the 256 ECA rules, there are 8 [0,15,51,85,170,204,240,255] using a row weighted errorScore that have the properties of unique codewords for any given input, every codeword occurs the same number of times with relatively even distribution of codewords across the 65536 neighborhoods in the truth table. 0 and 255 are included because of the 4 rows of the output matrix, 1 is neighborhood input and 3 are output, and so still produce an errorScore and a unique solution. Since every small scall solution has a unique solution every input at large scale has a single hash output. These properties apply to both errorScore minimization and errorScore maximization. \\
 
 There is another overlapping subset of 8, [0,15,85,90,165,170,240,255] whose errorScore weight is $2^{column}$ rather than $2^{row}$. Again, the codewords are distributed perfectly evenly, there are unique solutions for every input, and has a minimizing and a maximizing codeword set. These lists share a few members with the XOR-additive list. \cite{xorAdditive}. Most properties apply to both with a few exceptions.\\
 
@@ -62,13 +65,15 @@ This algorithm displays the avalanche property; the threshold for testing is whe
 
 The 32 codewords for any 16 bit input display some symmetries generated by the same algorithm as the left-right-black-white symmetries of the ECA Wolfram code symmetry groups, applied to 4 bits instead of 8. The left right symmetry is reversing the bit's place order and the black white symmetry is done by reversing the truth table and taking the complement and the left right black white is doing both operations. Applying this to the 4 bit codewords yields some symmetries between rules but no two codeword sets have the same so there are no similar groups to the 88 independent sets in the ECA.\cite{Wolfram}\\
 
-Visual inspection of hashed bitmaps show a clear application to edge detection. Natural parts of images such as trees and shrubs appear chaotic while man made surfaces such as countertops, walls, and garage doors tend to converge to a single color that tends to change over an edge or corner.
+Visual inspection of hashed bitmaps show a clear application to edge detection. Natural parts of images such as trees and shrubs appear chaotic while man made surfaces such as countertops, walls, and garage doors tend to converge to a single color that tends to change over an edge or corner.\\
+
+The hash's cryptographic properties are split. The inverse correct rate rapidly goes to zero in several iterations while visual inspection of the frames of hashing bitmaps shows large structures remain at the avalanche point even though details are noise. However, altering the distance between neighbors from doubling per iteration to incrementing one between iteration shows bitmaps becoming noisy without large structures.\\
 
 \section{Implementation and Testing}
 
 The algorithm is prototyped on 2-byte RGB *.bmp bitmap files with most photos taken on an iPhone and converted with GIMP. Animated *.gif files and more images are available at my website. You can see the areas of the image hashing 2 by 2 and slowly dissolving into avalanche territory that eventually just looks like noise everywhere. The current image was chosen because you can clearly see parts of the image doubling itself as the avalanche property slowly takes over. The code works with any size bitmap or any array in general with future iterations supporting 3 and 4 byte RGB codes. \\
 
-There are several tests run to verify the integrity of the algorithm. One indicator is that every minimizing codeword set has a single gate solution across all 16x16 elements in the truth table, though this is less obvious with the column weighted set. The set of images and gifs produced at least visually verify that something is happening. Looking at the codeword truth tables some show clear obvious patterns and applying the same left-right-black-white symmetry as the 88 ECA symmetry groups \cite{Wolfram} yields some equalities between codewords. Loops that check for uniqueness and even distribution are easily verified in the 4x4 size. There may be a better inverse algorithm, the individual codeword hashes invert with roughly the same error rate as its truth table, however the expected synergy between codewords when inverting the entire set has not been as much as expected.\\
+There are several tests avalilable to verify the integrity of the algorithm. One indicator is that every minimizing codeword set has a single internal hash logic gate solution across all 16x16 elements in the truth table, though this is less obvious with the column weighted set because it is incomplete. The set of images and gifs produced at least visually verify that something is happening. Looking at the codeword truth tables some show clear obvious patterns and applying the same left-right-black-white symmetry as the 88 ECA symmetry groups \cite{Wolfram} yields some equalities between codewords. Loops that check for uniqueness and even distribution are easily verified visually in the 4x4 size. There may be a better inverse algorithm, the individual codeword hashes invert with roughly the same error rate as its truth table, however the expected synergy between codewords when inverting the entire set has not been as much as expected.\\
 
 \begin{center}
 \includegraphics{kitchenShrunkresized}\\
@@ -84,41 +89,6 @@ Frame 2\\
 The codeword sets can be generated with an size array, with only size 4 being fully tested and 8 showing the same properties. Within this prototype project, calculation of truth table lengths of $2^{16}$ using all 4x4 binary grids are acceptable, lengths of $2^{64}$ using 8x8 grids would be challenging at this point. At size 8 there are $2^8=256$ possible codewords, which means that while you can't calculate the whole truth table at once you can calculate the codewords for any input individually on the spot. The codeword set's uniqueness and distribution properties seem to apply at size 8 by testing random codeword input tiles; it is only exhaustively tested for size 4. The internal hash logic transforms can also still be easily calculated for size 8 because you only have to work with codewords rather than the entire set of inputs. Future iterations of the project may implement input tile rectangles.\\
 
 Out of the other 0-255 ECA rules, some do better than these particular 8 at lossy compression, losing only 3/16 bits instead of 6/16 bits with these 8. In particular the Pascal rules 90, 165, 102, 153, 105, 150 rank near the top, connected to several of these 10 via the property of XOR-additiveness \cite{xorAdditive}. However none outside of these 10 have unique solutions or even distributions in either row or column weighted, maxxed or minned.\\
-
-\section{Rule 150}
-
-Running this algorithm for rule 150 minizations of size 4 and producing a heat map of the errors in reconstructing the lossy compression, you get this. Summing the columns in each row and taking the ratios of the rows reveals Pi, Pi/3, and Phi squared all to at least 7 digits, 5 past the decimal place. 7 binary digits is a 2\% error rate and is enough for ASCII operations. If you label a five point star and proceed backwards starting at 0, you get \{3,1,4,2,0\} which is roughly the same seven digit precision. While seven digits by itself is not impressive, 7 digits across four constants is notable; it's a 4 dimensional typewriter.\\
-
-\noindent rule 150\\
-
-\noindent minErrorMap\\
-29482 29482 29476 29464 \\
-30940 30904 30958 30958 \\
-17486 17486 17516 17576 \\
-5532 5592 5502 5502 \\
-
-\noindent minProportions[][]\\
-1.0000 0.9527 1.6828 5.3283 \\
-1.0497 1.0000 1.7664 5.5929 \\
-0.5942 0.5661 1.0000 3.1663 \\
-0.1877 0.1788 0.3158 1.0000 \\
-2.621312044429018\\
-
-\noindent a = row2 / row 3 = 3.166305133767173\\
-a = (row2 / row 3) - PI = 0.024712480177379703\\
-accurate to the binary -5 place\\
-
-\noindent b = row1 / row 0 = 1.0496675261229476\\
-b = (row1 / row 1) - (PI/3) = 0.002469974926349927\\
-accurate to the binary -9 place\\
-
-\noindent c = (row0+row1)/(row2+row3) = 2.621312044429018\\
-c = (row0+row1)/(row2+row3) - PhiSquared = 0.003278055679122982\\
-accurate to the binary -8 place\\
-
-\noindent 7, 11, and 10 accurate digits including the one's and two's places\\
-If you compare that accuracy to the method of computing pi by the edges of increasing numbers of triangles\\
-it takes dividing 2Pi into 32 triangles to get 7 digits; 32 iterations of the Wallis product\\
 
 \bibliographystyle{plain}
 \bibliography{HashBib.bib}

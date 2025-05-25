@@ -294,8 +294,8 @@ public class HashLogicOpTransform {
         //Hash the input
         for (int t = 0; t < 8; t++) {
             System.out.println("t: " + t);
-            hashSet[t] = hash.twoDHashTransform.hashArray(bFieldSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
-            hashSet[8 + t] = hash.twoDHashTransform.hashArray(bFieldSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
+            hashSet[t] = hash.hashTwoD.hashArray(bFieldSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
+            hashSet[8 + t] = hash.hashTwoD.hashArray(bFieldSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
         }
         //modification[][] is a random array
         int[][] modification = generateOperation(hashSet[0].length, hashSet[0][0].length);
@@ -313,10 +313,10 @@ public class HashLogicOpTransform {
                     modifiedSet[8 + t][row][column] = (gate >> modifiedSet[8 + t][row][column]) % 2;
                 }
             }
-            modificationTransformed[t] = hash.twoDHashTransform.hashArray(modification, hash.bothLists[listLayer][t], depth, true, rowError)[depth];
-            modificationTransformed[8 + t] = hash.twoDHashTransform.hashArray(modification, hash.bothLists[listLayer][t], depth, false, rowError)[depth];
-            modifiedSet[t] = hash.twoDHashTransform.hashArray(modifiedSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
-            modifiedSet[8 + t] = hash.twoDHashTransform.hashArray(modifiedSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
+            modificationTransformed[t] = hash.hashTwoD.hashArray(modification, hash.bothLists[listLayer][t], depth, true, rowError)[depth];
+            modificationTransformed[8 + t] = hash.hashTwoD.hashArray(modification, hash.bothLists[listLayer][t], depth, false, rowError)[depth];
+            modifiedSet[t] = hash.hashTwoD.hashArray(modifiedSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
+            modifiedSet[8 + t] = hash.hashTwoD.hashArray(modifiedSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
             for (int row = 0; row < modifiedSet[0].length; row++) {
                 for (int column = 0; column < modifiedSet[0][0].length; column++) {
                     int tot = 0;

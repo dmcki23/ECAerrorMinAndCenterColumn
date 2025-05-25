@@ -190,13 +190,13 @@ public class HashCollisions {
                     for (int index = 0; index < size; index++) {
                         field[index] = rand.nextInt(0, 2);
                     }
-                    int[] fieldHash = hash.oneDHashTransform.hashArrayCompression(field, hash.bothLists[layer][t], depth, (layer % 2 == 0) ? true : false, ((layer / 2) % 2 == 0) ? true : false);
+                    int[] fieldHash = hash.hashOneD.hashArrayCompression(field, hash.bothLists[layer][t], depth, (layer % 2 == 0) ? true : false, ((layer / 2) % 2 == 0) ? true : false);
                     //randomly change the original array and hash it
                     for (int s = 0; s < 100; s++) {
                         for (int index = 0; index < size; index++) {
                             fieldTwo[index] = rand.nextInt(0, 2);
                         }
-                        int[] fieldHashTwo = hash.oneDHashTransform.hashArrayCompression(fieldTwo, hash.bothLists[layer][t], depth, (layer % 2 == 0) ? true : false, ((layer / 2) % 2 == 0) ? true : false);
+                        int[] fieldHashTwo = hash.hashOneD.hashArrayCompression(fieldTwo, hash.bothLists[layer][t], depth, (layer % 2 == 0) ? true : false, ((layer / 2) % 2 == 0) ? true : false);
                         //If equal, is a collision
                         if (Arrays.equals(fieldHash, fieldHashTwo)) {
                             same++;
