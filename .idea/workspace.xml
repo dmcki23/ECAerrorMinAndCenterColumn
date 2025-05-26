@@ -4,59 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="added the website beginnings">
-      <change afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/denTwoByteshrunk/denTwoByteshrunkIndex.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/HashWebsite/frontYardTwoByte/frontYardTwoByte.bmp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/HashWebsite/frontYardTwoByte/frontYardTwoByteIndex.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/HashWebsite/frontYardTwoByte/frontYardTwoByteframes1.bmp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/HashWebsite/frontYardTwoByte/frontYardTwoByteframes10.bmp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/HashWebsite/frontYardTwoByte/frontYardTwoByteframes11.bmp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/HashWebsite/frontYardTwoByte/frontYardTwoByteframes2.bmp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/HashWebsite/frontYardTwoByte/frontYardTwoByteframes3.bmp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/HashWebsite/frontYardTwoByte/frontYardTwoByteframes4.bmp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/HashWebsite/frontYardTwoByte/frontYardTwoByteframes5.bmp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/HashWebsite/frontYardTwoByte/frontYardTwoByteframes6.bmp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/HashWebsite/frontYardTwoByte/frontYardTwoByteframes7.bmp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/HashWebsite/frontYardTwoByte/frontYardTwoByteframes8.bmp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/HashWebsite/frontYardTwoByte/frontYardTwoByteframes9.bmp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/HashWebsite/frontYardTwoByte/frontYardTwoBytegif.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/HashWebsite/frontYardTwoByte/frontYardTwoByteinverse.bmp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/HashWebsite/frontYardTwoByte/frontYardTwoByteinverseDepth1.bmp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/HashWebsite/frontYardTwoByte/frontYardTwoByteresized.bmp" afterDir="false" />
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="the logic op transform is working, been playing with the inverses to see if i can get a better one">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoD.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBit.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/HashBib.bib" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/HashBib.bib" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/HashNonHexadecimal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/ECAhashImages.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/ECAhashImages.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk/kitchenShrunk.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/kitchenShrunk/kitchenShrunk.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk/kitchenShrunkIndex.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/kitchenShrunk/kitchenShrunkIndex.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk/kitchenShrunkframes0.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/kitchenShrunk/kitchenShrunkframes0.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk/kitchenShrunkframes1.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/kitchenShrunk/kitchenShrunkframes1.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk/kitchenShrunkframes10.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/kitchenShrunk/kitchenShrunkframes10.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk/kitchenShrunkframes11.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/kitchenShrunk/kitchenShrunkframes11.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk/kitchenShrunkframes2.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/kitchenShrunk/kitchenShrunkframes2.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk/kitchenShrunkframes3.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/kitchenShrunk/kitchenShrunkframes3.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk/kitchenShrunkframes4.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/kitchenShrunk/kitchenShrunkframes4.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk/kitchenShrunkframes5.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/kitchenShrunk/kitchenShrunkframes5.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk/kitchenShrunkframes6.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/kitchenShrunk/kitchenShrunkframes6.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk/kitchenShrunkframes7.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/kitchenShrunk/kitchenShrunkframes7.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk/kitchenShrunkframes8.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/kitchenShrunk/kitchenShrunkframes8.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk/kitchenShrunkframes9.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/kitchenShrunk/kitchenShrunkframes9.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk/kitchenShrunkgif.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/kitchenShrunk/kitchenShrunkgif.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk/kitchenShrunkinverse.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/kitchenShrunk/kitchenShrunkinverse.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk/kitchenShrunkinverseDepth1.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/kitchenShrunk/kitchenShrunkinverseDepth1.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk/kitchenShrunkiteration0.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/kitchenShrunk/kitchenShrunkiteration0.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk/kitchenShrunkresized.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/kitchenShrunk/kitchenShrunkresized.bmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk/kitchenShrunkresized.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashImages/kitchenShrunk/kitchenShrunkresized.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/ECAhashIndex.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/ECAhashIndex.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Website/package-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/HashWebsite/package-info.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -206,15 +162,7 @@
       <workItem from="1747605840877" duration="610000" />
       <workItem from="1747673623691" duration="15592000" />
       <workItem from="1747759880939" duration="7276000" />
-      <workItem from="1747846141965" duration="55153000" />
-    </task>
-    <task id="LOCAL-00023" summary="FastMinTransform Addition and SwingApplyFastMinTransform can be looked up in the javadocs at some point&#10;&#10;removed the center column part of this project to its own intellij project">
-      <option name="closed" value="true" />
-      <created>1743528831821</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1743528831821</updated>
+      <workItem from="1747846141965" duration="65569000" />
     </task>
     <task id="LOCAL-00024" summary="Rough draft Javadoc comments done">
       <option name="closed" value="true" />
@@ -600,7 +548,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747973189231</updated>
     </task>
-    <option name="localTasksCounter" value="72" />
+    <task id="LOCAL-00072" summary="the logic op transform is working, been playing with the inverses to see if i can get a better one">
+      <option name="closed" value="true" />
+      <created>1748216998384</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1748216998384</updated>
+    </task>
+    <option name="localTasksCounter" value="73" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -635,7 +591,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="HashTransform bitmapTransformCompleteSet() is doing the inverses for any depth with 0 error" />
     <MESSAGE value="HashTransform bitmapTransformCompleteSet() is successfully checking the avalanche property" />
     <MESSAGE value="the column-weighted minimizations are reasonably well integrated, currently testing the logic transforms" />
     <MESSAGE value="the row weighted code is working, at a good stopping point and about to trim unecessary code" />
@@ -660,7 +615,8 @@
     <MESSAGE value="HashTwoD seems to be working" />
     <MESSAGE value="fixed a couple twoDhash references in HashLogicOpTransform" />
     <MESSAGE value="added the website beginnings" />
-    <option name="LAST_COMMIT_MESSAGE" value="added the website beginnings" />
+    <MESSAGE value="the logic op transform is working, been playing with the inverses to see if i can get a better one" />
+    <option name="LAST_COMMIT_MESSAGE" value="the logic op transform is working, been playing with the inverses to see if i can get a better one" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

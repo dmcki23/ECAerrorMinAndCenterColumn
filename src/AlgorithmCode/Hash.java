@@ -186,10 +186,14 @@ public class Hash {
                 }
             }
         }
+        comp = new int[256*256];
         for (int list = 0; list < 2; list++) {
             for (int posNeg = 0; posNeg < 2; posNeg++) {
                 for (int t = 0; t < 8; t++) {
                     System.out.println(list + " " + posNeg + " " + t + " " + Arrays.toString(Arrays.copyOfRange(allTables[2 * list + posNeg][bothLists[list][t]], 0, 300)));
+                    if (Arrays.equals(comp,allTables[2*list+posNeg][bothLists[list][t]])){
+                        System.out.println("is zero");
+                    }
                 }
             }
         }

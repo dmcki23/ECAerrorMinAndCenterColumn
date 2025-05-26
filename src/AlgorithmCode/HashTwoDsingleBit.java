@@ -559,13 +559,107 @@ public class HashTwoDsingleBit {
     public int[][] inverseHex(int[][] input, int depth, int rule, boolean minimize, boolean rowError) {
         int neighborDistance = 1 << (depth - 1);
         //neighborDistance = 1;
-        int[][][] votes = new int[input.length][input[0].length][4];
+        int[][][] votes = new int[input.length][input[0].length][1];
         int minimizer = (minimize ? 0 : 1);
         for (int row = 0; row < input.length; row++) {
             for (int col = 0; col < input[0].length; col++) {
                 //apply its vote to every location that it influences
                 //including itself
                 int[][] generatedGuess = hashTruthTables.generateCodewordTile(input[row][col], rule);
+                for (int r = 0; r < 4; r++) {
+                    for (int c = 0; c < 4; c++) {
+                        if (rowError) {
+                            if (minimize) {
+                                if (generatedGuess[r][c] == 0)
+                                    votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r) % 2)) % input[0].length][0] += (1 << r);
+                                else
+                                    votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r ) % 2)) % input[0].length][0] -= (1 << r);
+                            } else {
+                                if (generatedGuess[r][c] == 1)
+                                    votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r ) % 2)) % input[0].length][0] += (1 << r);
+                                else
+                                    votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r ) % 2)) % input[0].length][0] -= (1 << r);
+                            }
+                        } else {
+                            if (minimize) {
+                                if (generatedGuess[r][c] == 0)
+                                    votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r ) % 2)) % input[0].length][0] += (1 << c);
+                                else
+                                    votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r) % 2)) % input[0].length][0] -= (1 << c);
+                            } else {
+                                if (generatedGuess[r][c] == 1)
+                                    votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r ) % 2)) % input[0].length][0] += (1 << c);
+                                else
+                                    votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r) % 2)) % input[0].length][0] -= (1 << c);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //for each location, based on whether the final tally of the vote was positive or negative
+        //output a 0 if positive and 1 if negative, if the vote result is not what the
+        //original data is increment the error counter for analysis
+        int[][] outResult = new int[input.length][input[0].length];
+        for (int row = 0; row < input.length; row++) {
+            for (int column = 0; column < input[0].length; column++) {
+                for (int power = 0; power < 1; power++) {
+                    if (votes[row][column][power] >= 0) {
+                        outResult[row][column] += 0;
+                    } else {
+                        outResult[row][column] += (1 << power);
+                    }
+                }
+            }
+        }
+        return outResult;
+    }
+    /**
+     * A hash inverse for a single codeword set
+     *
+     * @param input a 2D array of hashed data
+     * @param depth depth of hashing of the data
+     * @param rule  which rule of the set was used to hash the input (todo needs to be changed to 0-255 ECA rules)
+     * @return inverted hashed data
+     */
+    public int[][] inverseHexTest(int[][] input, int depth, int rule, boolean minimize, boolean rowError) {
+        int neighborDistance = 1 << (depth - 1);
+        //neighborDistance = 1;
+        int[][][] votes = new int[input.length][input[0].length][16];
+        int minimizer = (minimize ? 0 : 1);
+        for (int row = 0; row < input.length; row++) {
+            for (int col = 0; col < input[0].length; col++) {
+                //apply its vote to every location that it influences
+                //including itself
+                int[][] generatedGuess = hashTruthTables.generateCodewordTile(input[row][col], rule);
+//                for (int r = 0; r < 4 && rowError; r++) {
+//                    int tot = 0;
+//                    for (int c = 0; c < 4; c++){
+//                        tot += (1<<c)*generatedGuess[r][c];
+//                    }
+//                    if (minimize) {
+//
+//                        votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r) % 2)) % input[0].length][tot] += (1 << r);
+//
+//                    } else {
+//                        votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r) % 2)) % input[0].length][tot] -= (1 << r);
+//
+//                    }
+//                }
+//                for (int c = 0; c < 4 && !rowError; c++) {
+//                    int tot = 0;
+//                    for (int r = 0; r < 4; r++){
+//                        tot += (1<<c)*generatedGuess[r][c];
+//                    }
+//                    if (minimize) {
+//
+//                        votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r) % 2)) % input[0].length][tot] += (1 << r);
+//
+//                    } else {
+//                        votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r) % 2)) % input[0].length][tot] -= (1 << r);
+//
+//                    }
+//                }
                 for (int r = 0; r < 4; r++) {
                     for (int c = 0; c < 4; c++) {
                         if (rowError) {
@@ -585,12 +679,12 @@ public class HashTwoDsingleBit {
                                 if (generatedGuess[r][c] == 0)
                                     votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r ) % 2)) % input[0].length][c] += (1 << c);
                                 else
-                                    votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r ) % 2)) % input[0].length][c] -= (1 << c);
+                                    votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r) % 2)) % input[0].length][c] -= (1 << c);
                             } else {
                                 if (generatedGuess[r][c] == 1)
                                     votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r ) % 2)) % input[0].length][c] += (1 << c);
                                 else
-                                    votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r ) % 2)) % input[0].length][c] -= (1 << c);
+                                    votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r) % 2)) % input[0].length][c] -= (1 << c);
                             }
                         }
                     }
@@ -614,6 +708,7 @@ public class HashTwoDsingleBit {
         }
         return outResult;
     }
+
 
     /**
      * Hash inversion
@@ -758,14 +853,20 @@ public class HashTwoDsingleBit {
      * @param depth depth of hashing on the input data
      * @return inverted hashed data
      */
-    public int[][] inverseHex(int[][][] input, int depth) {
+    public int[][] inverseHex(int[][][] input, int depth, int[] betterThanHalf) {
         int neighborDistance = 1 << (depth - 1);
         //neighborDistance = 1;
-        int[][][] votes = new int[input[0].length][input[0][0].length][4];
+        int[][][] votes = new int[input[0].length][input[0][0].length][1];
         for (int row = 0; row < input[0].length; row++) {
             for (int col = 0; col < input[0][0].length; col++) {
                 for (int posNeg = 0; posNeg < 4; posNeg++) {
+                    tLoop:
                     for (int t = 0; t < 8; t++) {
+                        if (betterThanHalf[8*posNeg+t] > 0){
+
+                            continue tLoop;
+                        }
+                        //System.out.println("betterThanHalf: " + betterThanHalf[8*posNeg+t]);
                         //apply its vote to every location that it influences
                         //including itself
                         int[][] generatedGuess = hashTruthTables.generateCodewordTile(input[8 * posNeg + t][row][col], hash.bothLists[(posNeg / 2) % 2][t]);
@@ -774,26 +875,26 @@ public class HashTwoDsingleBit {
                                 if (posNeg < 2) {
                                     if (posNeg % 2 == 0) {
                                         if (generatedGuess[r][c] == 0)
-                                            votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r) % 2)) % input[0].length][c] += (1 << r);
+                                            votes[(row + neighborDistance * ((r/2) % 2)) % input[0].length][(col + neighborDistance * ((r) % 2)) % input[0][0].length][0] += (1 << r);
                                         else
-                                            votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r) % 2)) % input[0].length][c] -= (1 << r);
+                                            votes[(row + neighborDistance * ((r/2) % 2)) % input[0].length][(col + neighborDistance * ((r) % 2)) % input[0][0].length][0] -= (1 << r);
                                     } else {
                                         if (generatedGuess[r][c] == 1)
-                                            votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r) % 2)) % input[0].length][c] += (1 << r);
+                                            votes[(row + neighborDistance * ((r/2) % 2)) % input[0].length][(col + neighborDistance * ((r) % 2)) % input[0][0].length][0] += (1 << r);
                                         else
-                                            votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r) % 2)) % input[0].length][c] -= (1 << r);
+                                            votes[(row + neighborDistance * ((r/2) % 2)) % input[0].length][(col + neighborDistance * ((r) % 2)) % input[0][0].length][0] -= (1 << r);
                                     }
                                 } else {
                                     if (posNeg % 2 == 0) {
                                         if (generatedGuess[r][c] == 0)
-                                            votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r) % 2)) % input[0].length][c] += (1 << c);
+                                            votes[(row + neighborDistance * ((r/2) % 2)) % input[0].length][(col + neighborDistance * ((r) % 2)) % input[0][0].length][0] += (1 << c);
                                         else
-                                            votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r) % 2)) % input[0].length][c] -= (1 << c);
+                                            votes[(row + neighborDistance * ((r/2) % 2)) % input[0].length][(col + neighborDistance * ((r) % 2)) % input[0][0].length][0] -= (1 << c);
                                     } else {
                                         if (generatedGuess[r][c] == 1)
-                                            votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r) % 2)) % input[0].length][c] += (1 << c);
+                                            votes[(row + neighborDistance * ((r/2) % 2)) % input[0].length][(col + neighborDistance * ((r) % 2)) % input[0][0].length][0] += (1 << c);
                                         else
-                                            votes[(row + neighborDistance * ((r/2) % 2)) % input.length][(col + neighborDistance * ((r) % 2)) % input[0].length][c] -= (1 << c);
+                                            votes[(row + neighborDistance * ((r/2) % 2)) % input[0].length][(col + neighborDistance * ((r) % 2)) % input[0][0].length][0] -= (1 << c);
                                     }
                                 }
                             }
@@ -811,7 +912,7 @@ public class HashTwoDsingleBit {
             for (int t = 0; t < 8; t++) {
                 for (int row = 0; row < input[0].length; row++) {
                     for (int column = 0; column < input[0][0].length; column++) {
-                        for (int power = 0; power < 4; power++) {
+                        for (int power = 0; power < 1; power++) {
                             if (votes[row][column][power] >= 0) {
                                 finalOutput[row][column] += 0;
                             } else {
@@ -1761,21 +1862,33 @@ public class HashTwoDsingleBit {
         int rows = inImage.getHeight();
         int cols = inImage.getWidth() * 16;
         int[][][] bFieldSet = new int[32][rows][cols];
+        int[][][] initial = new int[32][rows][cols];
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < cols / 16; column++) {
                 for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
                     for (int power = 0; power < 8; power++) {
                         for (int posNegt = 0; posNegt < 32; posNegt++) {
-                            bFieldSet[posNegt][row][16 * column + 8 * rgbbyte + power] = ((Math.abs(inRaster[row * cols / 16 + column]) >> (8 * rgbbyte + power)) % 2);
+                            bFieldSet[posNegt][row][16 * column + 8 * rgbbyte + power] = ((int)(Math.abs(inRaster[row * cols / 16 + column]) >> (8 * rgbbyte + power)) % 2);
+                            initial[posNegt][row][column] = bFieldSet[posNegt][row][16 * column + 8 * rgbbyte + power];
                         }
                     }
                 }
+            }
+        }
+        for (int t = 0; t < 32; t++) {
+            for (int row = 0; row < 50; row++) {
+                System.out.println(Arrays.toString(Arrays.copyOfRange(bFieldSet[t][row], 0, 50)));
             }
         }
         for (int posNeg = 0; posNeg < 32; posNeg++) {
             minimize = (posNeg / 8) % 2 == 0 ? true : false;
             rowError = (posNeg / 16) % 2 == 0 ? true : false;
             bFieldSet[posNeg] = initializeDepthZero(bFieldSet[posNeg], hash.bothLists[(posNeg / 16) % 2][posNeg % 8], minimize, rowError);
+        }
+        for (int t = 0; t < 32; t++) {
+            for (int row = 0; row < 50; row++) {
+                System.out.println(Arrays.toString(Arrays.copyOfRange(bFieldSet[t][row], 0, 50)));
+            }
         }
         //System.out.println(Arrays.deepToString(bFieldSet[0]));
         //Initialize the minMax codeword truth table set
@@ -1829,29 +1942,37 @@ public class HashTwoDsingleBit {
         //
         //compare the original and the hashed and display
         System.out.println("avalancheDifferences: " + Arrays.toString(avalancheDifferences));
+        int[] betterThanHalf = new int[32];
         for (int t = 0; t < 32; t++) {
             listIndex = (t / 16) % 2;
             rowError = (t / 16) % 2 == 0 ? true : false;
             minimize = (t / 8) % 2 == 0 ? true : false;
             int total = 0;
+            int totOnes = 0;
             int[][] recon = inverseHex(hashSet[t], depth, hash.bothLists[listIndex][t % 8], minimize, rowError);
             System.out.println("t: " + t);
             for (int row = 0; row < recon.length; row++) {
                 for (int column = 0; column < recon[0].length; column++) {
                     //total += recon[row][column] ^ hashed[t][depth-1][row][column];
                     for (int power = 0; power < 4; power++) {
-                        total += ((recon[row][column] >> power) % 2) ^ ((bFieldSet[t][row][column] >> power) % 2);
+                        total += ((recon[row][column] >> power) % 2) ^ ((initial[t][row][column] >> power) % 2);
+                        totOnes += ((recon[row][column] >> power) % 2);
                     }
                 }
             }
             System.out.println("total incorrect: " + total + " errors/bit: " + (double) (total) / (inRaster.length * 64));
+            if ((double)(total)/(inRaster.length * 64) > 0.5) {
+                betterThanHalf[t]++;
+            }
+            System.out.println("total ones: " + totOnes);
         }
-        int[][] invertedSet = inverseHex(hashSet, depth);
+        System.out.println(Arrays.toString(betterThanHalf));
+        int[][] invertedSet = inverseHex(hashSet, depth, betterThanHalf);
         int total = 0;
         for (int row = 0; row < invertedSet.length; row++) {
             for (int col = 0; col < invertedSet[0].length; col++) {
                 for (int power = 0; power < 4; power++) {
-                    total += ((invertedSet[row][col] >> power) % 2) ^ ((bFieldSet[0][row][col] >> power) % 2);
+                    total += ((invertedSet[row][col] >> power) % 2) ^ ((initial[0][row][col] >> power) % 2);
                 }
             }
         }

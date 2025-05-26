@@ -208,7 +208,7 @@ public class Main {
         //hash.twoDHashTransform.hashBitmap(filepath, hash.bothLists[0][rule],true,true);
         //hash.hashTwoD.verifyInverseAndAvalanche(filepath);
         //hash.hashLogicOpTransform.verifyLogicOperationHash("kitchenShrunk.bmp",true);
-        //hash.hashTwoDsingleBit.verifyInverseAndAvalancheSingleBits(filepath);
-        hash.hashLogicOpTransform.verifyLogicOperationHash("kitchenShrunk.bmp",true);
+        hash.hashTwoDsingleBit.verifyInverseAndAvalancheSingleBits(filepath);
+        //hash.hashLogicOpTransform.verifyLogicOperationHash("kitchenShrunk.bmp",true);
         }
 }
