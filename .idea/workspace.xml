@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="got it! turns out the inverse needed to invert back to single bit rather than hexadecimal">
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="something just changed the errors to over a half?">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBit.java" afterDir="false" />
     </list>
@@ -156,15 +156,7 @@
       <workItem from="1747605840877" duration="610000" />
       <workItem from="1747673623691" duration="15592000" />
       <workItem from="1747759880939" duration="7276000" />
-      <workItem from="1747846141965" duration="91456000" />
-    </task>
-    <task id="LOCAL-00025" summary="rough draft inline comments are done">
-      <option name="closed" value="true" />
-      <created>1743895420503</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1743895420503</updated>
+      <workItem from="1747846141965" duration="92157000" />
     </task>
     <task id="LOCAL-00026" summary="some testing has been done on the recent rebuild, the list is in Main">
       <option name="closed" value="true" />
@@ -550,7 +542,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748302358853</updated>
     </task>
-    <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00074" summary="something just changed the errors to over a half?">
+      <option name="closed" value="true" />
+      <created>1748567396555</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1748567396555</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -585,7 +585,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="the column-weighted minimizations are reasonably well integrated, currently testing the logic transforms" />
     <MESSAGE value="the row weighted code is working, at a good stopping point and about to trim unecessary code" />
     <MESSAGE value="code trim is done, refactoring done, testing NOT done" />
     <MESSAGE value="a large chunk of testing on the refactor is done" />
@@ -610,7 +609,8 @@
     <MESSAGE value="added the website beginnings" />
     <MESSAGE value="the logic op transform is working, been playing with the inverses to see if i can get a better one" />
     <MESSAGE value="got it! turns out the inverse needed to invert back to single bit rather than hexadecimal" />
-    <option name="LAST_COMMIT_MESSAGE" value="got it! turns out the inverse needed to invert back to single bit rather than hexadecimal" />
+    <MESSAGE value="something just changed the errors to over a half?" />
+    <option name="LAST_COMMIT_MESSAGE" value="something just changed the errors to over a half?" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
