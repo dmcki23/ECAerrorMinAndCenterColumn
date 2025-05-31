@@ -4,9 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="something just changed the errors to over a half?">
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="working again">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -156,15 +160,7 @@
       <workItem from="1747605840877" duration="610000" />
       <workItem from="1747673623691" duration="15592000" />
       <workItem from="1747759880939" duration="7276000" />
-      <workItem from="1747846141965" duration="92157000" />
-    </task>
-    <task id="LOCAL-00026" summary="some testing has been done on the recent rebuild, the list is in Main">
-      <option name="closed" value="true" />
-      <created>1743912679682</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1743912679682</updated>
+      <workItem from="1747846141965" duration="103204000" />
     </task>
     <task id="LOCAL-00027" summary="checkChangesPerTransform() is working spectacularly">
       <option name="closed" value="true" />
@@ -550,7 +546,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748567396555</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary="working again">
+      <option name="closed" value="true" />
+      <created>1748568128420</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1748568128420</updated>
+    </task>
+    <option name="localTasksCounter" value="76" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -585,7 +589,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="the row weighted code is working, at a good stopping point and about to trim unecessary code" />
     <MESSAGE value="code trim is done, refactoring done, testing NOT done" />
     <MESSAGE value="a large chunk of testing on the refactor is done" />
     <MESSAGE value="the inverse is doing better than even but it's not zero like it was and i dunno if it's the op or my code atm" />
@@ -610,7 +613,8 @@
     <MESSAGE value="the logic op transform is working, been playing with the inverses to see if i can get a better one" />
     <MESSAGE value="got it! turns out the inverse needed to invert back to single bit rather than hexadecimal" />
     <MESSAGE value="something just changed the errors to over a half?" />
-    <option name="LAST_COMMIT_MESSAGE" value="something just changed the errors to over a half?" />
+    <MESSAGE value="working again" />
+    <option name="LAST_COMMIT_MESSAGE" value="working again" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
