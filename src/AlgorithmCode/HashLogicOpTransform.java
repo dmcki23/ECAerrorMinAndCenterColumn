@@ -1,5 +1,7 @@
 package AlgorithmCode;
 
+import CustomLibrary.CustomArray;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferUShort;
@@ -26,7 +28,8 @@ public class HashLogicOpTransform {
     /**
      * Truth table of generated logic op transformations
      */
-    int[][] logicTransform = new int[16][16];
+    int[][] logicTransformRowError = new int[16][16];
+    int[][] logicTransformColumnError = new int[16][16];
     /**
      * Loads the manager class
      *
@@ -107,7 +110,7 @@ public class HashLogicOpTransform {
         }
         //stores results in tupleDistro[][]
         Arrays.fill(tupleDistro[gate], -1);
-        for (int posNeg = 0; posNeg < 2; posNeg++) {
+        for (int posNeg = 0; posNeg < 2 ; posNeg++) {
             for (int t = 0; t < 8; t++) {
                 testGateLoop:
                 for (int g = 0; g < 16; g++) {
@@ -117,6 +120,7 @@ public class HashLogicOpTransform {
                 }
             }
         }
+
         //after this is experimental to see why it doesn't work for the column-weighted set
 //        for (int t = 0; t < 16; t++) {
 //            if (tupleDistro[gate][t] == -1) {
@@ -226,21 +230,37 @@ public class HashLogicOpTransform {
     /**
      * Hash logic transform generator. This is the main function that generates the truth tables and calls testGate() for individual rules
      *
-     * @param rowError if true, uses 2^row, if false uses 2^column weight on errorScore
      */
-    public void testAllLogic(boolean rowError) throws IOException {
+    public void testAllLogic() throws IOException {
         //hash.initWolframs();
         int[][] tupleDistro = new int[16][16];
-        for (int gate = 0; gate < 16; gate++) {
-            System.out.println("___________________________________________________________________________");
-            System.out.println("gate: " + gate);
-            testGate(gate, tupleDistro, rowError);
+        for (int row = 0; row < 16; row++) {
+            Arrays.fill(tupleDistro[row], -1);
         }
+        for (int gate = 0; gate < 16; gate++) {
+            //System.out.println("___________________________________________________________________________");
+            //System.out.println("gate: " + gate);
+            testGate(gate, logicTransformRowError, true);
+            testGate(gate, logicTransformColumnError, false);
+        }
+
+        //displays the hash logic op truth tables
         int[] gateDistro = new int[16];
         for (int gate = 0; gate < 16; gate++) {
             System.out.println("gate : " + gate + " tupleDistro : " + Arrays.toString(tupleDistro[gate]));
         }
-        logicTransform = tupleDistro;
+        //logicTransformRowError = tupleDistro;
+        System.out.println("Rows are logic gates, AND = 8, OR = 14, XOR = 6...");
+        System.out.println("Columns are the minimizing and maximizing codewords with the given rowError parameter weighted hash truth tables");
+        System.out.println("[0,15,51,85,170,204,240,255] minimizing and [0,15,51,85,170,204,240,255] maximizing - rowError set");
+        CustomArray.plusArrayDisplay(logicTransformRowError,false,false,"HashLogicOpTransform truth table",2);
+
+        System.out.println("Rows are logic gates, AND = 8, OR = 14, XOR = 6...");
+        System.out.println("Columns are the minimizing and maximizing codewords with the given rowError parameter weighted hash truth tables");
+        System.out.println("[0,15,51,90,165,204,240,255] minimizing and [0,15,51,90,165,204,240,255] maximizing - columnError set");
+        CustomArray.plusArrayDisplay(logicTransformColumnError,false,false,"HashLogicOpTransform truth table",2);
+
+        System.out.println();
     }
 
     /**
@@ -285,7 +305,7 @@ public class HashLogicOpTransform {
             }
         }
         //Initialize logic gate op hash tables
-        testAllLogic(true);
+        testAllLogic();
 
         int[][][] hashSet = new int[16][inImage.getHeight()][inImage.getWidth()];
         depth = 3;
@@ -294,8 +314,8 @@ public class HashLogicOpTransform {
         //Hash the input
         for (int t = 0; t < 8; t++) {
             System.out.println("t: " + t);
-            hashSet[t] = hash.hashTwoD.hashArray(bFieldSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
-            hashSet[8 + t] = hash.hashTwoD.hashArray(bFieldSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
+            hashSet[t] = hash.hashTwoDhexadecimal.hashArray(bFieldSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
+            hashSet[8 + t] = hash.hashTwoDhexadecimal.hashArray(bFieldSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
         }
         //modification[][] is a random array
         int[][] modification = generateOperation(hashSet[0].length, hashSet[0][0].length);
@@ -313,23 +333,23 @@ public class HashLogicOpTransform {
                     modifiedSet[8 + t][row][column] = (gate >> modifiedSet[8 + t][row][column]) % 2;
                 }
             }
-            modificationTransformed[t] = hash.hashTwoD.hashArray(modification, hash.bothLists[listLayer][t], depth, true, rowError)[depth];
-            modificationTransformed[8 + t] = hash.hashTwoD.hashArray(modification, hash.bothLists[listLayer][t], depth, false, rowError)[depth];
-            modifiedSet[t] = hash.hashTwoD.hashArray(modifiedSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
-            modifiedSet[8 + t] = hash.hashTwoD.hashArray(modifiedSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
+            modificationTransformed[t] = hash.hashTwoDhexadecimal.hashArray(modification, hash.bothLists[listLayer][t], depth, true, rowError)[depth];
+            modificationTransformed[8 + t] = hash.hashTwoDhexadecimal.hashArray(modification, hash.bothLists[listLayer][t], depth, false, rowError)[depth];
+            modifiedSet[t] = hash.hashTwoDhexadecimal.hashArray(modifiedSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
+            modifiedSet[8 + t] = hash.hashTwoDhexadecimal.hashArray(modifiedSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
             for (int row = 0; row < modifiedSet[0].length; row++) {
                 for (int column = 0; column < modifiedSet[0][0].length; column++) {
                     int tot = 0;
                     for (int power = 0; power < 4; power++) {
                         int ab = ((hashSet[t][row][column] >> power) % 2) + 2 * ((modificationTransformed[t][row][column] >> power) % 2);
-                        ab = (logicTransform[gate][t] >> ab) % 2;
+                        ab = (logicTransformRowError[gate][t] >> ab) % 2;
                         tot += (1 << power) * ab;
                     }
                     internallyModifiedSet[t][row][column] = tot;
                     tot = 0;
                     for (int power = 0; power < 4; power++) {
                         int ab = ((hashSet[8 + t][row][column] >> power) % 2) + 2 * ((modificationTransformed[8 + t][row][column] >> power) % 2);
-                        ab = (logicTransform[15 - gate][8 + t] >> ab) % 2;
+                        ab = (logicTransformRowError[15 - gate][8 + t] >> ab) % 2;
                         tot += (1 << power) * ab;
                     }
                     internallyModifiedSet[8 + t][row][column] = tot;

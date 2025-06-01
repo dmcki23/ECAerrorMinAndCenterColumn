@@ -15,6 +15,126 @@ public class Main {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
+
+        //
+         //
+         //
+         //
+         //
+         //From this point: May 13, testing the recent refactor
+        //
+         //In the paper, the only major things I saw were the avalanche and testing paragraphs and images
+        //also need to think about the website
+        Hash hash = new Hash();
+        //HashCollisions hashCollisions = new HashCollisions();
+        int rule = 2;
+        String filepath = "kitchenShrunkTest.bmp";
+
+        //this one boots everything up upon construction, sometimes causes conflicts if called independently
+        //hash.initWolframs();
+        //hash.hashRows.doAllRules(4,false,0,false,0,false);
+        //hash.hashColumns.doAllRules(4,false,0,false,0,false);
+        //does size 8, must initialize(8) first
+        //hash.hashColumns.initialize(8);
+        //hash.hashRows.initialize(8);
+        //hash.hashRows.doAllRules(8,false,0,true,1000,false);
+        //hash.hashColumns.doAllRules(8,false,0,true,1000,false);
+        //good
+        //hash.oneDHashTransform.testOneD();
+        //needs checking
+        //hash.hashArrayCompression(new int[1][1],hash.bothLists[0][rule],1,true,true);
+        //hash.hashArrayCompression(new int[1][1],hash.bothLists[0][rule],1,false,true);
+        //changeChange() needs display tweaking
+        //these two test random input of size four with changeChange() calculating the codeword hammingDistance/errorScoreChange
+        //hash.hashRows.doAllRules(4,true,100,true,100,false);
+        //hash.hashColumns.doAllRules(4,true,100,true,100,false);
+        //these hash a bitmap
+        //hash.hashTwoDhexadecimal.hashBitmap(filepath, hash.bothLists[0][rule],true,true);
+        //hash.hashBitmap(filepath, hash.bothLists[1][rule],false,true);
+        //hash.hashBitmap(filepath, hash.bothLists[0][rule],true,false);
+        //hash.hashBitmap(filepath, hash.bothLists[1][rule],false,true);
+        //hash.verifyInverseAndAvalanche(filepath,0);
+        //hash.verifyInverseAndAvalanche(filepath,0,false);
+        //hash.hashTwoDsingleBit.verifyInverseAndAvalancheSingleBits(filepath);
+
+        hash.hashLogicOpTransform.testAllLogic();
+        //hash.hashLogicOpTransform.verifyLogicOperationHash(filepath,0,true);
+        //This one doesn't do anything because the truth table is incomplete,
+        //Not all gates and elements have a single operation transform
+        //Some gates and elements do, but not all have a known retroactive hashing
+        //hash.hashLogicOpTransform.verifyLogicOperationHash(filepath,0,false);
+        //done, is unique with all 4 layers
+        //hashCollisions.checkTupleUniqueness();
+        //needs doing
+        //hashCollisions.checkCompressionCollisions();
+        //hash.hashCollisions.checkCodewordSymmetry();
+        //hash.hashRows.doAllRules(4);
+        //This randomly checks the algorithm with size 8 arrays instead of 4
+
+        //I feel like if all the previous are working, the paper is ready for arXiv
+        //todo put hash.hashBitmap() output into it's own directory
+        //todo changeChange() tweaks
+        //todo checkCompressionCollisions()
+        //
+         //
+         //
+         //
+         //
+        //hash.initWolframs(true);
+        //hash.initWolframsFromFileTest();
+        //hash.hashRows.doAllRules(4,false,0,false,0,false);
+        //hash.hashColumns.doAllRules(4,false,0,false,0,false);
+        //hash.hashRows.doAllRules(8,false,0,true,1000,false);
+        //hash.hashColumns.doAllRules(8,false,0,true,100,false);
+        //good
+        //hash.oneDHashTransform.testOneD();
+        //needs checking
+        //hash.hashArrayCompression(new int[1][1],hash.bothLists[0][rule],1,true,true);
+        //hash.hashArrayCompression(new int[1][1],hash.bothLists[0][rule],1,false,true);
+        //changeChange() needs tweaking
+        //hash.hashRows.doAllRules(4,true,100,true,100,false);
+        //hash.hashColumns.doAllRules(4,true,100,true,100,false);
+        //most of hashBitmap() is working except the gif
+        //hash.hashBitmap(filepath, hash.bothLists[0][rule],true,true);
+        //hash.hashBitmap(filepath, hash.bothLists[1][rule],false,true);
+        //hash.hashBitmap(filepath, hash.bothLists[0][rule],true,false);
+        //hash.hashBitmap(filepath, hash.bothLists[1][rule],false,true);
+        //needs double checking
+        //hash.verifyInverseAndAvalanche(filepath,0);
+        //hash.verifyInverseAndAvalanche(filepath,0,false);
+        //hash.hashNonHexadecimal.hashBitmapSingleBit(filepath,0);
+        //hash.hashLogicOpTransform.testAllLogic(true);
+        //hash.hashLogicOpTransform.testAllLogic(false);
+        //hash.hashLogicOpTransform.verifyLogicOperationHash(filepath,0,true);
+        //hash.hashLogicOpTransform.verifyLogicOperationHash(filepath,0,false);
+        //done, is unique with all 4 layers
+        //hashCollisions.checkTupleUniqueness();
+        //needs doing
+        //hashCollisions.checkCompressionCollisions();
+
+        //hash.hashCollisions.checkCodewordSymmetry();
+        //hash.hashRows.doAllRules(4);
+        //
+         //
+        //
+        //
+         //
+         //
+         //
+         //May 20
+        //commenting, testing, avalanche, images, website presentation, possibly reading from the file as well
+        //hash.twoDHashTransform.hashBitmap(filepath, hash.bothLists[0][rule],true,true);
+        //hash.hashTwoDhexadecimal.verifyInverseAndAvalanche(filepath);
+        //hash.hashLogicOpTransform.verifyLogicOperationHash("kitchenShrunk.bmp",true);
+        //hash.hashTwoDsingleBit.verifyInverseAndAvalancheSingleBits(filepath);
+        //hash.hashLogicOpTransform.verifyLogicOperationHash("kitchenShrunk.bmp",true);
+        //
+         //
+        //
+        //
+        //
+        //
+        //I keep these as a record of experimentation and debugging
         //HashTruthTables m = new HashTruthTables(true);
         //m.manageLengthsMinimizations(150,4,500);
         //m.ecaBestFitHashCollisionExhuastiveSizeTwo(105,2,false,false,500);
@@ -151,64 +271,5 @@ public class Main {
         //a.testAllLogic(false);
         //hash.m.oneFiftyDisplay();
         //hashCollisions.checkTupleUniqueness();
-        //
-         //
-         //
-         //
-         //
-         //From this point: May 13, testing the recent refactor
-        //
-         //In the paper, the only major things I saw were the avalanche and testing paragraphs and images
-        //also need to think about the website
-        Hash hash = new Hash();
-        //HashCollisions hashCollisions = new HashCollisions();
-        int rule = 2;
-        String filepath = "kitchenShrunk.bmp";
-        //hash.initWolframs(true);
-        //hash.initWolframsFromFileTest();
-        //hash.hashRows.doAllRules(4,false,0,false,0,false);
-        //hash.hashColumns.doAllRules(4,false,0,false,0,false);
-        //hash.hashRows.doAllRules(8,false,0,true,1000,false);
-        //hash.hashColumns.doAllRules(8,false,0,true,100,false);
-        //good
-        //hash.oneDHashTransform.testOneD();
-        //needs checking
-        //hash.hashArrayCompression(new int[1][1],hash.bothLists[0][rule],1,true,true);
-        //hash.hashArrayCompression(new int[1][1],hash.bothLists[0][rule],1,false,true);
-        //changeChange() needs tweaking
-        //hash.hashRows.doAllRules(4,true,100,true,100,false);
-        //hash.hashColumns.doAllRules(4,true,100,true,100,false);
-        //most of hashBitmap() is working except the gif
-        //hash.hashBitmap(filepath, hash.bothLists[0][rule],true,true);
-        //hash.hashBitmap(filepath, hash.bothLists[1][rule],false,true);
-        //hash.hashBitmap(filepath, hash.bothLists[0][rule],true,false);
-        //hash.hashBitmap(filepath, hash.bothLists[1][rule],false,true);
-        //needs double checking
-        //hash.verifyInverseAndAvalanche(filepath,0);
-        //hash.verifyInverseAndAvalanche(filepath,0,false);
-        //hash.hashNonHexadecimal.hashBitmapSingleBit(filepath,0);
-        //hash.hashLogicOpTransform.testAllLogic(true);
-        //hash.hashLogicOpTransform.testAllLogic(false);
-        //hash.hashLogicOpTransform.verifyLogicOperationHash(filepath,0,true);
-        //hash.hashLogicOpTransform.verifyLogicOperationHash(filepath,0,false);
-        //done, is unique with all 4 layers
-        //hashCollisions.checkTupleUniqueness();
-        //needs doing
-        //hashCollisions.checkCompressionCollisions();
-
-        //hash.hashCollisions.checkCodewordSymmetry();
-        //hash.hashRows.doAllRules(4);
-
-        //
-         //
-         //
-         //
-         //May 20
-        //commenting, testing, avalanche, images, website presentation, possibly reading from the file as well
-        //hash.twoDHashTransform.hashBitmap(filepath, hash.bothLists[0][rule],true,true);
-        //hash.hashTwoD.verifyInverseAndAvalanche(filepath);
-        //hash.hashLogicOpTransform.verifyLogicOperationHash("kitchenShrunk.bmp",true);
-        hash.hashTwoDsingleBit.verifyInverseAndAvalancheSingleBits(filepath);
-        //hash.hashLogicOpTransform.verifyLogicOperationHash("kitchenShrunk.bmp",true);
         }
 }

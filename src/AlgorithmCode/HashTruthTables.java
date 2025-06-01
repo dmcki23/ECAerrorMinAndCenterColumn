@@ -601,6 +601,7 @@ public class HashTruthTables {
             System.out.println("n: " + n + " " + minNumberOfSameSolutions[n] + " " + maxNumberOfSameSolutions[n] + " " + Arrays.toString(minSolutionDistro[n]) + " " + Arrays.toString(maxSolutionDistro[n]));
         }
         System.out.println();
+        //This displays only the rule sets with unique solutions, producing either the 8 row weighted rules or the 8 column weighted rules
         for (int n = 0; n < 256; n++) {
             if (minNumberOfSameSolutions[n] == 1 || maxNumberOfSameSolutions[n] == 1) {
                 System.out.println("n: " + n + " " + minNumberOfSameSolutions[n] + " " + maxNumberOfSameSolutions[n] + " " + Arrays.toString(minSolutionDistro[n]) + " " + Arrays.toString(maxSolutionDistro[n]));

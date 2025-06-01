@@ -4,13 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="working again">
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="the outputs in HashTwoDsingleBit verifyInverseAndAvalanche() is working and labelled">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTruthTables.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTruthTables.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDhexadecimal.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CustomLibrary/CustomArray.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CustomLibrary/CustomArray.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/HashBib.bib" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/HashBib.bib" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -160,15 +167,7 @@
       <workItem from="1747605840877" duration="610000" />
       <workItem from="1747673623691" duration="15592000" />
       <workItem from="1747759880939" duration="7276000" />
-      <workItem from="1747846141965" duration="103204000" />
-    </task>
-    <task id="LOCAL-00027" summary="checkChangesPerTransform() is working spectacularly">
-      <option name="closed" value="true" />
-      <created>1744159941084</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1744159941084</updated>
+      <workItem from="1747846141965" duration="122257000" />
     </task>
     <task id="LOCAL-00028" summary="bitmapCheck() ?? is working with a mod function on the phaseShift. It doesn't look like it's losing much information compared to the last iteration of the gif function">
       <option name="closed" value="true" />
@@ -554,7 +553,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748568128420</updated>
     </task>
-    <option name="localTasksCounter" value="76" />
+    <task id="LOCAL-00076" summary="the outputs in HashTwoDsingleBit verifyInverseAndAvalanche() is working and labelled">
+      <option name="closed" value="true" />
+      <created>1748655098072</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1748655098072</updated>
+    </task>
+    <option name="localTasksCounter" value="77" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -589,7 +596,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="code trim is done, refactoring done, testing NOT done" />
     <MESSAGE value="a large chunk of testing on the refactor is done" />
     <MESSAGE value="the inverse is doing better than even but it's not zero like it was and i dunno if it's the op or my code atm" />
     <MESSAGE value="the inverse wasn't working well enough and i remembered that the working version did not used hexadecimal it was all single bit and initializeDepthZero() was another step, before the regular hash the bitmap was hashed by initializeDepthZero()" />
@@ -614,7 +620,8 @@
     <MESSAGE value="got it! turns out the inverse needed to invert back to single bit rather than hexadecimal" />
     <MESSAGE value="something just changed the errors to over a half?" />
     <MESSAGE value="working again" />
-    <option name="LAST_COMMIT_MESSAGE" value="working again" />
+    <MESSAGE value="the outputs in HashTwoDsingleBit verifyInverseAndAvalanche() is working and labelled" />
+    <option name="LAST_COMMIT_MESSAGE" value="the outputs in HashTwoDsingleBit verifyInverseAndAvalanche() is working and labelled" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

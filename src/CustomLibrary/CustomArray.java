@@ -90,6 +90,40 @@ public class CustomArray {
         }
         System.out.println();
     }
+    /**
+     * displays a 2D integer array
+     *
+     * @param in       2D integer array to display
+     * @param noZeros  true if you want to replace zeros with spaces on output
+     * @param noSpaces true if you don't want space padding on output
+     * @param label    array title
+     */
+    public static void plusArrayDisplay(int[][] in, boolean noZeros, boolean noSpaces, String label, int numberPlaces) {
+        int rows = in.length;
+        int columns = in[0].length;
+        String outstring = "";
+        System.out.println(label);
+        String spaces = "";
+        for (int number = 0; number < numberPlaces; number++) {
+            spaces += " ";
+        }
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                if (in[row][column] == 0 && noZeros) {
+                    outstring += spaces;
+                } else {
+                    outstring += String.format("%0"+numberPlaces+"d", (in[row][column]));
+                }
+                if (!noSpaces) {
+                    outstring += " ";
+                }
+            }
+            outstring += "\\\\";
+            System.out.println(outstring);
+            outstring = "";
+        }
+        System.out.println();
+    }
 
     /**
      * displays a 2D integer array

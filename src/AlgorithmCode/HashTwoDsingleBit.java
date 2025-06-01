@@ -859,7 +859,7 @@ public class HashTwoDsingleBit {
      * @param depth depth of hashing on the input data
      * @return inverted hashed data
      */
-    public int[][] inverse(int[][][] input, int depth, int[] betterThanHalf) {
+    public int[][] inverse(int[][][] input, int depth) {
         int neighborDistance = 1 << (depth - 1);
         //neighborDistance = 1;
         int[][][] votes = new int[input[0].length][input[0][0].length][1];
@@ -868,9 +868,7 @@ public class HashTwoDsingleBit {
                 for (int posNeg = 0; posNeg < 4; posNeg++) {
                     tLoop:
                     for (int t = 0; t < 8; t++) {
-                        if (betterThanHalf[8 * posNeg + t] > 0) {
-                            //continue tLoop;
-                        }
+
                         //System.out.println("betterThanHalf: " + betterThanHalf[8*posNeg+t]);
                         //apply its vote to every location that it influences
                         //including itself
@@ -1800,9 +1798,9 @@ public class HashTwoDsingleBit {
             listIndex = (t / 16) % 2;
             rowError = (t / 16) % 2 == 0 ? true : false;
             minimize = (t / 8) % 2 == 0 ? true : false;
-            hashSet[t] = hash.hashTwoD.hashArray(bFieldSet[t], hash.bothLists[listIndex][t % 8], depth, minimize, rowError)[depth];
-            hashed[t] = hash.hashTwoD.hashArray(bFieldSet[t], hash.bothLists[listIndex][t % 8], depth, minimize, rowError);
-            abHashed[t] = hash.hashTwoD.hashArray(abbFieldSet[t], hash.bothLists[listIndex][t % 8], depth, minimize, rowError);
+            hashSet[t] = hash.hashTwoDhexadecimal.hashArray(bFieldSet[t], hash.bothLists[listIndex][t % 8], depth, minimize, rowError)[depth];
+            hashed[t] = hash.hashTwoDhexadecimal.hashArray(bFieldSet[t], hash.bothLists[listIndex][t % 8], depth, minimize, rowError);
+            abHashed[t] = hash.hashTwoDhexadecimal.hashArray(abbFieldSet[t], hash.bothLists[listIndex][t % 8], depth, minimize, rowError);
             for (int row = 0; row < rows; row++) {
                 for (int column = 0; column < rows; column++) {
                     for (int bit = 0; bit < 16; bit++) {
@@ -1817,7 +1815,7 @@ public class HashTwoDsingleBit {
             rowError = (t / 16) % 2 == 0 ? true : false;
             minimize = (t / 8) % 2 == 0 ? true : false;
             int total = 0;
-            int[][] recon = hash.hashTwoD.invert(hashSet[t], depth, hash.bothLists[listIndex][t % 8], minimize, rowError);
+            int[][] recon = hash.hashTwoDhexadecimal.invert(hashSet[t], depth, hash.bothLists[listIndex][t % 8], minimize, rowError);
             System.out.println("t: " + t);
             for (int row = 0; row < recon.length; row++) {
                 for (int column = 0; column < recon[0].length; column++) {
@@ -1828,7 +1826,7 @@ public class HashTwoDsingleBit {
             }
             System.out.println("total: " + total + " " + (double) (total) / (inRaster.length * 16));
         }
-        int[][] invertedSet = hash.hashTwoD.invert(hashSet, depth);
+        int[][] invertedSet = hash.hashTwoDhexadecimal.invert(hashSet, depth);
         int total = 0;
         for (int row = 0; row < invertedSet.length; row++) {
             for (int col = 0; col < invertedSet[0].length; col++) {
@@ -1848,11 +1846,11 @@ public class HashTwoDsingleBit {
      */
     public void verifyInverseAndAvalancheSingleBits(String filepath) throws IOException {
         //
-         //
-         //
-         //
-         //
-         //Initialization
+        //
+        //
+        //
+        //
+        //Initialization
         filepath = "src/ImagesProcessed/" + filepath;
         File file = new File(filepath);
         filepath = filepath.substring(0, filepath.length() - 4);
@@ -1896,7 +1894,6 @@ public class HashTwoDsingleBit {
         Random rand = new Random();
         //randomly change the copy
         int[][][] abbFieldSet = new int[32][veryInitial[0].length][veryInitial[0][0].length];
-
         //copy the original to another array
         for (int t = 0; t < 32; t++) {
             for (int row = 0; row < bFieldSet[0].length; row++) {
@@ -1909,7 +1906,7 @@ public class HashTwoDsingleBit {
         for (int change = 0; change < numChanges; change++) {
             int randCol = rand.nextInt(0, bFieldSet[0][0].length);
             int randRow = rand.nextInt(0, bFieldSet[0].length);
-            int randPower = rand.nextInt(0,4);
+            int randPower = rand.nextInt(0, 4);
             for (int t = 0; t < 32; t++) {
                 abbFieldSet[t][randRow][randCol] ^= (1);
             }
@@ -1921,7 +1918,7 @@ public class HashTwoDsingleBit {
             abbFieldSet[posNeg] = initializeDepthZero(abbFieldSet[posNeg], hash.bothLists[(posNeg / 16) % 2][posNeg % 8], minimize, rowError);
         }
         //make a copy of the initial bitmap raster breakdown for later comparison to hashed versions
-        for (int t  = 0; t < 32; t++) {
+        for (int t = 0; t < 32; t++) {
             for (int row = 0; row < rows; row++) {
                 for (int column = 0; column < cols; column++) {
                     initial[t][row][column] = bFieldSet[t][row][column];
@@ -1934,20 +1931,17 @@ public class HashTwoDsingleBit {
             }
         }
         //
-         //
-         //
-         //
-         //
-         //Hashing
+        //
+        //
+        //
+        //
+        //Hashing
         //System.out.println(Arrays.deepToString(bFieldSet[0]));
         //Initialize the minMax codeword truth table set
         int[][][] hashSet = new int[32][inImage.getHeight()][inImage.getWidth()];
         int[][][][] hashed = new int[32][depth + 1][inImage.getHeight()][inImage.getWidth() * 16];
         int[][][] abHashSet = new int[32][inImage.getHeight()][inImage.getWidth()];
         int[][][][] abHashed = new int[32][depth + 1][inImage.getHeight()][inImage.getWidth()];
-
-
-
         int[] avalancheDifferences = new int[32];
         System.out.println("depth: " + depth);
         int[][][][] heatmap = new int[32][inImage.getHeight()][inImage.getWidth() * 16][16];
@@ -1989,10 +1983,10 @@ public class HashTwoDsingleBit {
             }
         }
         //
-         //
-         //
-         //
-         //Rearrange hashes for processing
+        //
+        //
+        //
+        //Rearrange hashes for processing
         int[][][][] hashedRearranged = new int[depth + 2][32][hashed[0].length][hashed[0][0].length];
         int tot = 0;
         for (int t = 0; t < 32; t++) {
@@ -2000,26 +1994,25 @@ public class HashTwoDsingleBit {
                 for (int row = 0; row < hashed[0].length; row++) {
                     for (int col = 0; col < hashed[0][0].length; col++) {
                         hashedRearranged[d][t][row][col] = hashed[t][row][col][d];
-                        for (int power = 0; power < 4; power++){
+                        for (int power = 0; power < 4; power++) {
                             tot += ((hashedRearranged[d][t][row][col] >> power) % 2);
                         }
                     }
                 }
             }
-
         }
         System.out.println("total ones: " + tot);
         //
-         //
-         //
-         //
-         //
-         //Verify inverse, avalanche, and algorithm integrity
+        //
+        //
+        //
+        //
+        //Verify inverse, avalanche, and algorithm integrity
         //the first index, 0 = single bit inverse against original single bit expansion, 1 = hex inverse against initial hex initialization, 2 = hex inverse against previous depth hash
         int[][] hashSetDifferences = new int[4][depth + 2];
         int[][][] hashIndividualDifferences = new int[4][depth + 2][32];
         int[][][] ones = new int[4][depth + 2][32];
-        int[][] setOnes = new int[4][depth+2];
+        int[][] setOnes = new int[4][depth + 2];
         int[] betterThanHalf = new int[32];
         //for every depth
         for (int d = 1; d <= depth; d++) {
@@ -2044,52 +2037,50 @@ public class HashTwoDsingleBit {
                         for (int power = 0; power < 4; power++) {
                             //sum the discrepancies
                             //sum the 1 bits to verify that the algorithm is doing anything at all
-                            hashIndividualDifferences[1][d][t] += ((individualDifferences[row][col]>>power)%2) ^ ((hashedRearranged[d-1][t][row][col]>>power)%2);
-                            hashIndividualDifferences[2][d][t] += ((individualDifferences[row][col]>>power)%2) ^ ((bFieldSet[t][row][col]>>power)%2);
-                            ones[1][d][t] += ((individualDifferences[row][col]>>power)%2);
-                            ones[2][d][t] += (hashedRearranged[d-1][t][row][col]>>power)%2;
+                            hashIndividualDifferences[1][d][t] += ((individualDifferences[row][col] >> power) % 2) ^ ((hashedRearranged[d - 1][t][row][col] >> power) % 2);
+                            hashIndividualDifferences[2][d][t] += ((individualDifferences[row][col] >> power) % 2) ^ ((bFieldSet[t][row][col] >> power) % 2);
+                            ones[1][d][t] += ((individualDifferences[row][col] >> power) % 2);
+                            ones[2][d][t] += (hashedRearranged[d - 1][t][row][col] >> power) % 2;
                         }
                     }
                 }
-
             }
             //for the single bit entire codeword set inverse
-            int[][] setInverse = inverse(hashedRearranged[d],d, betterThanHalf);
+            int[][] setInverse = inverse(hashedRearranged[d], d);
             for (int row = 0; row < setInverse.length; row++) {
                 for (int col = 0; col < setInverse[0].length; col++) {
                     //sum the discrepancies
                     //sum the 1 bits to verify that the algorithm is doing anything at all
-                    hashSetDifferences[0][d ] += setInverse[row][col] ^ initial[0][row][col];
+                    hashSetDifferences[0][d] += setInverse[row][col] ^ initial[0][row][col];
                     setOnes[0][d] += setInverse[row][col];
                 }
             }
             //for the hex entire codeword set inverse
-            setInverse = inverseHex(hashedRearranged[d],d);
-            for (int row = 0; row < setInverse.length; row++){
-                for (int col = 0; col < setInverse[0].length; col++){
-                    for (int power = 0; power < 4; power++){
+            setInverse = inverseHex(hashedRearranged[d], d);
+            for (int row = 0; row < setInverse.length; row++) {
+                for (int col = 0; col < setInverse[0].length; col++) {
+                    for (int power = 0; power < 4; power++) {
                         //sum the discrepancies
                         //sum the 1 bits to verify that the algorithm is doing anything at all
-                        hashSetDifferences[1][d ] += ((setInverse[row][col]>>power)%2) ^ ((hashed[0][d - 1][row][col]>>power)%2);
-                        hashSetDifferences[2][d] += ((setInverse[row][col]>>power)%2) ^ ((hashed[0][0][row][col]>>power)%2);
-                        setOnes[1][d] += ((setInverse[row][col]>>power)%2);
-                        setOnes[2][d] += ((hashed[0][d][row][col]>>power)%2);
+                        hashSetDifferences[1][d] += ((setInverse[row][col] >> power) % 2) ^ ((hashed[0][d - 1][row][col] >> power) % 2);
+                        hashSetDifferences[2][d] += ((setInverse[row][col] >> power) % 2) ^ ((hashed[0][0][row][col] >> power) % 2);
+                        setOnes[1][d] += ((setInverse[row][col] >> power) % 2);
+                        setOnes[2][d] += ((hashed[0][d][row][col] >> power) % 2);
                     }
                 }
             }
         }
-        double[][][] hashIndividualDifferencesDouble = new double[4][depth+2][32];
-        double[][] hashSetDifferencesDouble = new double[4][depth+2];
-        int areaInputImage = inImage.getHeight()*inImage.getWidth();
-        double[] numCodewords = new double[]{16*areaInputImage,64*areaInputImage,64*areaInputImage,16*areaInputImage};
-
-        for (int layer = 0; layer < 4; layer++){
-            for (int d = 1; d <= depth; d++){
-                for (int t = 0; t < 32; t++){
-                    hashIndividualDifferencesDouble[layer][d][t] = (double)hashIndividualDifferences[layer][d][t] / numCodewords[layer];
+        double[][][] hashIndividualDifferencesDouble = new double[4][depth + 2][32];
+        double[][] hashSetDifferencesDouble = new double[4][depth + 2];
+        int areaInputImage = inImage.getHeight() * inImage.getWidth();
+        double[] numCodewords = new double[]{16 * areaInputImage, 64 * areaInputImage, 64 * areaInputImage, 16 * areaInputImage};
+        for (int layer = 0; layer < 4; layer++) {
+            for (int d = 1; d <= depth; d++) {
+                for (int t = 0; t < 32; t++) {
+                    hashIndividualDifferencesDouble[layer][d][t] = (double) hashIndividualDifferences[layer][d][t] / numCodewords[layer];
                 }
                 if (layer == 3) continue;
-                hashSetDifferencesDouble[layer][d] = (double)hashSetDifferences[layer][d] / (double)numCodewords[layer];
+                hashSetDifferencesDouble[layer][d] = (double) hashSetDifferences[layer][d] / (double) numCodewords[layer];
             }
         }
         //display
@@ -2097,27 +2088,26 @@ public class HashTwoDsingleBit {
             System.out.println("depth: " + d);
             System.out.println("these follow the total number of ones bits through every depth of iteration");
             System.out.println("the ones that the algorithm is doing something at all");
-            System.out.println("discrepancies are total errors per depth per codeword and rate is errors/(rows*cols*(4 or 16)");
+            System.out.println("discrepancies are total errors per depth per codeword and rate is errors/(rows*cols*(4 or 16))");
             System.out.println();
-            System.out.println("this one is the single bit single codeword total ones");
+            System.out.println("this one is the single bit single codeword total vs initial");
             System.out.println("ones: " + Arrays.toString(ones[0][d]));
             System.out.println("discrepancies: " + Arrays.toString(hashIndividualDifferences[0][d]));
             System.out.println("error/bit: " + Arrays.toString(hashIndividualDifferencesDouble[0][d]));
             System.out.println();
+            System.out.println("this one is the hex single codeword total ones vs last frame of hash");
             System.out.println("ones: " + Arrays.toString(ones[1][d]));
             System.out.println("discrepancies: " + Arrays.toString(hashIndividualDifferences[1][d]));
             System.out.println("error/bit: " + Arrays.toString(hashIndividualDifferencesDouble[1][d]));
             System.out.println();
+            System.out.println("this one is the hex entire codeword set total ones vs initial");
             System.out.println("ones: " + Arrays.toString(ones[2][d]));
             System.out.println("discrepancies: " + Arrays.toString(hashIndividualDifferences[2][d]));
             System.out.println("error/bit: " + Arrays.toString(hashIndividualDifferencesDouble[2][d]));
             System.out.println();
+            System.out.println("ones in the initial bitmap raster breakdown to one bit");
             System.out.println("ones: " + Arrays.toString(ones[3][d]));
-            System.out.println("discrepancies: " + Arrays.toString(hashIndividualDifferences[3][d]));
-            System.out.println("error/bit: " + Arrays.toString(hashIndividualDifferencesDouble[3][d]));
             System.out.println();
-
-
         }
         System.out.println("these show the total errors per level of hash");
         System.out.println("complete sets");
@@ -2136,61 +2126,95 @@ public class HashTwoDsingleBit {
         System.out.println("error/bit: " + Arrays.toString(hashSetDifferencesDouble[2]));
         System.out.println("setOnes[2]: " + Arrays.toString(setOnes[2]));
         System.out.println();
-
         System.out.println();
-
-
-
-
-
-
-
-
-
-        //
-         //
         //
         //
-         //Another set of inverse, algorithm inverse checks
+        //
+        //
+        //Another set of inverse, algorithm inverse checks
         //compare the original and the hashed and display
-        System.out.println("avalancheDifferences: " + Arrays.toString(avalancheDifferences));
-        //int[] betterThanHalf = new int[32];
-        for (int t = 0; t < 32; t++) {
-            listIndex = (t / 16) % 2;
-            rowError = (t / 16) % 2 == 0 ? true : false;
-            minimize = (t / 8) % 2 == 0 ? true : false;
-            int total = 0;
-            int totOnes = 0;
-            int[][] recon = inverse(hashSet[t], depth, hash.bothLists[listIndex][t % 8], minimize, rowError);
-            System.out.println("t: " + t);
-            for (int row = 0; row < recon.length; row++) {
-                for (int column = 0; column < recon[0].length; column++) {
-                    //total += recon[row][column] ^ hashed[t][depth-1][row][column];
-                    for (int power = 0; power < 4; power++) {
-                        total += ((recon[row][column] >> power) % 2) ^ ((veryInitial[t][row][column] >> power) % 2);
-                        totOnes += ((recon[row][column] >> power) % 2);
-                    }
-                }
-            }
-            System.out.println("total incorrect: " + total + " errors/bit: " + (double) (total) / (inRaster.length * 64));
-            if ((double) (total) / (inRaster.length * 64) > 0.5) {
-                //betterThanHalf[t]++;
-            }
-            System.out.println("total ones: " + totOnes);
-        }
-        //System.out.println(Arrays.toString(betterThanHalf));
-        int[][] invertedSet = inverse(hashSet, depth,new int[32]);
-        int total = 0;
-        for (int row = 0; row < invertedSet.length; row++) {
-            for (int col = 0; col < invertedSet[0].length; col++) {
-                for (int power = 0; power < 4; power++) {
-                    total += ((invertedSet[row][col] >> power) % 2) ^ ((veryInitial[0][row][col] >> power) % 2);
-                }
-            }
-        }
-        System.out.println("overall total: " + total + " errors/bit: " + (double) (total) / (inRaster.length * 64));
-        //System.out.println(Arrays.toString(allTables[3][165]));
+//        System.out.println("avalancheDifferences: " + Arrays.toString(avalancheDifferences));
+//        //int[] betterThanHalf = new int[32];
+//        for (int t = 0; t < 32; t++) {
+//            listIndex = (t / 16) % 2;
+//            rowError = (t / 16) % 2 == 0 ? true : false;
+//            minimize = (t / 8) % 2 == 0 ? true : false;
+//            int total = 0;
+//            int totOnes = 0;
+//            int[][] recon = inverse(hashedRearranged[1][t], 1, hash.bothLists[listIndex][t % 8], minimize, rowError);
+//            System.out.println("t: " + t);
+//            for (int row = 0; row < recon.length; row++) {
+//                for (int column = 0; column < recon[0].length; column++) {
+//                    //total += recon[row][column] ^ hashed[t][depth-1][row][column];
+//                    for (int power = 0; power < 1; power++) {
+//                        total += ((recon[row][column] >> power) % 2) ^ ((veryInitial[t][row][column] >> power) % 2);
+//                        totOnes += ((recon[row][column] >> power) % 2);
+//                    }
+//                }
+//            }
+//            System.out.println("total incorrect: " + total + " errors/bit: " + (double) (total) / (inRaster.length * 16));
+//            if ((double) (total) / (inRaster.length * 16) > 0.5) {
+//                //betterThanHalf[t]++;
+//            }
+//            System.out.println("total ones: " + totOnes);
+//        }
+//        //System.out.println(Arrays.toString(betterThanHalf));
+//        int[][] invertedSet = inverse(hashedRearranged[1], 1);
+//        int total = 0;
+//        for (int row = 0; row < invertedSet.length; row++) {
+//            for (int col = 0; col < invertedSet[0].length; col++) {
+//                for (int power = 0; power < 1; power++) {
+//                    total += ((invertedSet[row][col] >> power) % 2) ^ ((veryInitial[0][row][col] >> power) % 2);
+//                }
+//            }
+//        }
+//        System.out.println("overall total: " + total + " errors/bit: " + (double) (total) / (inRaster.length * 64));
+//        //System.out.println(Arrays.toString(allTables[3][165]));
+//        //
+//        //
+//        //
+//        //
+//        //
+//        //
+//        System.out.println();
+//        for (int t = 0; t < 32; t++) {
+//            listIndex = (t / 16) % 2;
+//            rowError = (t / 16) % 2 == 0 ? true : false;
+//            minimize = (t / 8) % 2 == 0 ? true : false;
+//            total = 0;
+//            int totOnes = 0;
+//            int[][] recon = inverseHex(hashedRearranged[1][t], 1, hash.bothLists[listIndex][t % 8], minimize, rowError);
+//            System.out.println("t: " + t);
+//            for (int row = 0; row < recon.length; row++) {
+//                for (int column = 0; column < recon[0].length; column++) {
+//                    //total += recon[row][column] ^ hashed[t][depth-1][row][column];
+//                    for (int power = 0; power < 4; power++) {
+//                        total += ((recon[row][column] >> power) % 2) ^ ((hashedRearranged[0][t][row][column] >> power) % 2);
+//                        totOnes += ((recon[row][column] >> power) % 2);
+//                    }
+//                }
+//            }
+//            System.out.println("total incorrect: " + total + " errors/bit: " + (double) (total) / (inRaster.length * 16));
+//            if ((double) (total) / (inRaster.length * 16) > 0.5) {
+//                //betterThanHalf[t]++;
+//            }
+//            System.out.println("total ones: " + totOnes);
+//            System.out.println();
+//        }
+//        //System.out.println(Arrays.toString(betterThanHalf));
+//        invertedSet = inverseHex(hashedRearranged[1], 1);
+//        total = 0;
+//        for (int row = 0; row < invertedSet.length; row++) {
+//            for (int col = 0; col < invertedSet[0].length; col++) {
+//                for (int power = 0; power < 4; power++) {
+//                    total += ((invertedSet[row][col] >> power) % 2) ^ ((initial[0][row][col] >> power) % 2);
+//                }
+//            }
+//        }
+//        System.out.println("overall total: " + total + " errors/bit: " + (double) (total) / (inRaster.length * 64));
+//        //System.out.println(Arrays.toString(allTables[3][165]));
     }
+
 }
 
 

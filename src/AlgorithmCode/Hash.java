@@ -36,7 +36,7 @@ public class Hash {
     /**
      * Two D and bitmap hash functions
      */
-    public HashTwoD hashTwoD = new HashTwoD(this);
+    public HashTwoDhexadecimal hashTwoDhexadecimal = new HashTwoDhexadecimal(this);
     /**
      * Generally tests the hash algorithm for collisions and uniqueness
      */

@@ -5,13 +5,15 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferUShort;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Random;
 
 /**
  * Contains hash functions for 2D arrays/bitmap hashing, inversions, and testing
  */
-public class HashTwoD {
+public class HashTwoDhexadecimal {
     /**
      * Manager function
      */
@@ -22,7 +24,7 @@ public class HashTwoD {
      *
      * @param inhash instance of manager class
      */
-    public HashTwoD(Hash inhash) {
+    public HashTwoDhexadecimal(Hash inhash) {
         hash = inhash;
     }
 
@@ -70,6 +72,7 @@ public class HashTwoD {
         }
         return output;
     }
+
     /**
      * Hashes 2D data with the given parameters, hash-in-place version
      *
@@ -174,7 +177,7 @@ public class HashTwoD {
      * @return a 2D array of integers representing the rehashed inverse-transformed data
      */
     public int[][] invert(int[][] input, int depth, int rule, boolean minimize, boolean rowError) {
-        int neighborDistance = 1 << (depth-1 );
+        int neighborDistance = 1 << (depth - 1);
         int[][][] votes = new int[input.length][input[0].length][4];
         int listLayer = rowError ? 0 : 1;
         int negativeSign = minimize ? 0 : 1;
@@ -234,7 +237,7 @@ public class HashTwoD {
      * @return a 2D array of integers representing the rehashed inverse-transformed data
      */
     public int[][] invert(int[][][] input, int depth) {
-        int neighborDistance = (int) Math.pow(2, depth -1);
+        int neighborDistance = (int) Math.pow(2, depth - 1);
         //neighborDistance = 1;
         int listLayer;
         boolean rowError = false;
@@ -247,25 +250,21 @@ public class HashTwoD {
                         listLayer = (layer / 2) % 2;
                         rowError = (layer / 2) % 2 == 0 ? true : false;
                         //generate the codeword's neighborhood and apply its vote to every location that it influences
-                        int[][] generatedGuess = hash.hashRows.generateCodewordTile(input[8*layer +t][row][col], hash.bothLists[listLayer][t % 8]);
+                        int[][] generatedGuess = hash.hashRows.generateCodewordTile(input[8 * layer + t][row][col], hash.bothLists[listLayer][t % 8]);
                         if (rowError) {
                             for (int r = 0; r < 4; r++) {
                                 for (int c = 0; c < 4; c++) {
-                                    if (posNeg == 0){
-                                        if (generatedGuess[r][c] == 0){
+                                    if (posNeg == 0) {
+                                        if (generatedGuess[r][c] == 0) {
                                             altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << r);
-
                                         } else {
                                             altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << r);
-
                                         }
                                     } else {
-                                        if (generatedGuess[r][c] == 1){
+                                        if (generatedGuess[r][c] == 1) {
                                             altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << r);
-
                                         } else {
                                             altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << r);
-
                                         }
                                     }
 //                                    if (generatedGuess[r][c] == posNeg) {
@@ -279,21 +278,17 @@ public class HashTwoD {
                         } else {
                             for (int r = 0; r < 4; r++) {
                                 for (int c = 0; c < 4; c++) {
-                                    if (posNeg == 0){
-                                        if (generatedGuess[r][c] == 0){
+                                    if (posNeg == 0) {
+                                        if (generatedGuess[r][c] == 0) {
                                             altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << c);
-
                                         } else {
                                             altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << c);
-
                                         }
                                     } else {
-                                        if (generatedGuess[r][c] == 1){
+                                        if (generatedGuess[r][c] == 1) {
                                             altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] += (1 << c);
-
                                         } else {
                                             altVotes[(row + neighborDistance * ((r) % 2)) % input[0].length][(col + neighborDistance * ((r / 2) % 2)) % input[0][0].length][c] -= (1 << c);
-
                                         }
                                     }
 //                                    if (generatedGuess[r][c] == posNeg) {
@@ -414,16 +409,18 @@ public class HashTwoD {
     /**
      * Loads a bitmap, eca hash transforms it, displays it, makes a .gif file using the given parameters
      *
-     * @param filepath name of the file, not including the directory path
+     * @param fileName name of the file, not including the directory path
      * @param rule     0-255 ECA rule to use
      * @param minimize if true, uses the minimizing codewords, if false uses the maximizing codewords
      * @param rowError if true, uses the row-weighted errorScore, if false uses the column-weighted errorScore
      * @throws IOException
      */
-    public void hashBitmap(String filepath, int rule, boolean minimize, boolean rowError) throws IOException {
+    public void hashBitmap(String fileName, int rule, boolean minimize, boolean rowError) throws IOException {
         //String today = System.currentTimeMillis();
-        filepath = "src/ImagesProcessed/" + filepath;
-        File file = new File(filepath);
+        String outputFilePath = "src/ImagesProcessed/" + fileName.substring(0, fileName.length() - 4);
+        Files.createDirectories(Paths.get(outputFilePath));
+        String filepath = outputFilePath + "/" + fileName;
+        File file = new File("src/ImagesProcessed/" + fileName);
         filepath = filepath.substring(0, filepath.length() - 4);
         BufferedImage inImage = ImageIO.read(file);
         short[] inRaster = ((DataBufferUShort) inImage.getRaster().getDataBuffer()).getData();
@@ -452,7 +449,7 @@ public class HashTwoD {
         short[][][] rasterized = new short[depth + 1][inImage.getHeight()][inImage.getWidth()];
         BufferedImage outImage = new BufferedImage(inImage.getWidth(), inImage.getHeight(), BufferedImage.TYPE_USHORT_565_RGB);
         short[] outRaster = ((DataBufferUShort) outImage.getRaster().getDataBuffer()).getData();
-        File frameFile = new File(filepath + "resized.bmp");
+        File frameFile = new File(outputFilePath + "/resized.bmp");
         ImageIO.write(inImage, "bmp", frameFile);
         for (int d = 0; d <= depth; d++) {
             for (int row = 0; row < inImage.getHeight(); row++) {
@@ -465,10 +462,10 @@ public class HashTwoD {
                     }
                 }
             }
-            frameFile = new File(filepath + "frames" + (d + 1) + ".bmp");
+            frameFile = new File(outputFilePath + "/frames" + (d + 1) + ".bmp");
             if (d <= 10) ImageIO.write(outImage, "bmp", frameFile);
         }
-        writeGif(rasterized, filepath + "gif.gif", depth, inImage);
+        writeGif(rasterized, outputFilePath + "/"+fileName.substring(0, fileName.length() - 4) + "gif.gif", depth, inImage);
         System.out.println("depth: " + depth);
         System.out.println("done with gif");
         //
@@ -514,7 +511,7 @@ public class HashTwoD {
                 inverseImageRaster[row * inImage.getWidth() + column] = (short) (undoRasterized[row][column] ^ inRaster[row * inImage.getWidth() + column]);
             }
         }
-        File inverseFile = new File(filepath + "inverse.bmp");
+        File inverseFile = new File(outputFilePath + "/"+fileName.substring(0, fileName.length() - 4) + "inverse.bmp");
         ImageIO.write(inverse, "bmp", inverseFile);
         //
         //
@@ -541,7 +538,7 @@ public class HashTwoD {
                 }
             }
         }
-        File inverseDepth1 = new File(filepath + "inverseDepth1.bmp");
+        File inverseDepth1 = new File(outputFilePath + "/inverseDepth1.bmp");
         ImageIO.write(inverse, "bmp", inverseDepth1);
         int numDifferent = 0;
         for (int row = 0; row < inRaster.length; row++) {
@@ -626,7 +623,7 @@ public class HashTwoD {
         int cols = inImage.getWidth() * 4;
         int[][][] bFieldSet = new int[32][rows][cols];
         for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < cols/4; column++) {
+            for (int column = 0; column < cols / 4; column++) {
                 for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
                     for (int power = 0; power < 2; power++) {
                         for (int posNegt = 0; posNegt < 32; posNegt++) {
@@ -660,7 +657,7 @@ public class HashTwoD {
         for (int change = 0; change < numChanges; change++) {
             randCol = rand.nextInt(0, bFieldSet[0][0].length);
             randRow = rand.nextInt(0, bFieldSet[0].length);
-            randNext = (1<<rand.nextInt(0, 4));
+            randNext = (1 << rand.nextInt(0, 4));
             for (int t = 0; t < 32; t++) {
                 abbFieldSet[t][randRow][randCol] ^= randNext;
             }
