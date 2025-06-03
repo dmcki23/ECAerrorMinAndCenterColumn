@@ -11,6 +11,14 @@ import java.util.Arrays;
  * Main entry point into the algorithm's structure; initiates truth table generation and manages the other Hash___ classes
  */
 public class Hash {
+    public HashTwoDsingleBitRedundant hashTwoDsingleBitRedundant;
+    /**
+     * Three D version of the hash, has the lossless inverse
+     */
+    public HashThreeD hashThreeD;
+    /**
+     * Two D version of the hash, has an extra set of redundancy and has mid-range lossy inverse
+     */
     public HashTwoDsingleBit hashTwoDsingleBit;
 
     /**
@@ -34,7 +42,7 @@ public class Hash {
      */
     public HashOneD hashOneD = new HashOneD(this);
     /**
-     * Two D and bitmap hash functions
+     * Two D and bitmap hash functions, minimum redundancy out of the three hash classes, used to hash gifs because of speed
      */
     public HashTwoDhexadecimal hashTwoDhexadecimal = new HashTwoDhexadecimal(this);
     /**
@@ -77,6 +85,7 @@ public class Hash {
         hashOneD = new HashOneD(this);
         hashCollisions = new HashCollisions(this);
         hashTwoDsingleBit = new HashTwoDsingleBit(this);
+        hashTwoDsingleBitRedundant = new HashTwoDsingleBitRedundant(this);
         initWolframs();
     }
 

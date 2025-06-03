@@ -236,7 +236,7 @@ public class HashCollisions {
     /**
      * The symmetries checked here are the same left-right-black-white symmetries of the 88 independent ECA rules applied to 4 bits instead of 8
      */
-    public void checkCodewordSymmetry() {
+    public int[][] checkCodewordSymmetry() {
         hash.initWolframs();
         int same = 0;
         int diff = 0;
@@ -328,6 +328,7 @@ public class HashCollisions {
             System.out.println("Group " + g + ": " + Arrays.toString(groups[g]));
         }
         System.out.println("numUnique: " + numUnique);
+        return equals;
     }
 
     /**

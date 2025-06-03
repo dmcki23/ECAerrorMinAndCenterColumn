@@ -4,20 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="the outputs in HashTwoDsingleBit verifyInverseAndAvalanche() is working and labelled">
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="leaving the working stuff, about to add the perfect 3d version of the hash and bitmap, also need to add a working columnWeighted HashLogicOpTransform test function. Probably need to nail down the error propogation in all that too, like following the avalanche propogation, for verifiable algorithm integrity">
+      <change afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashThreeD.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBitRedundant.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTruthTables.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTruthTables.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDhexadecimal.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CustomLibrary/CustomArray.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CustomLibrary/CustomArray.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/HashBib.bib" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/HashBib.bib" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/PermutationsFactoradic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CustomLibrary/PermutationsFactoradic.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,9 +23,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="package-info" />
         <option value="HTML File" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -65,31 +61,31 @@
     <option name="showLibraryContents" value="true" />
     <option name="sortKey" value="BY_TIME_DESCENDING" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Unnamed.executor": "Run",
-    "DefaultHtmlFileTemplate": "HTML File",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "reconstruction",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/daniel/IdeaProjects/ECAminErrorFit/src/HashWebsite/ECAhashImages",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "/home/daniel/IdeaProjects/ECAerrorMinAndCenterColumn/src/Main.java",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "editor.preferences.fonts.default",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Unnamed.executor&quot;: &quot;Run&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;reconstruction&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/daniel/IdeaProjects/ECAminErrorFit/src/HashWebsite/ECAhashImages&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;/home/daniel/IdeaProjects/ECAerrorMinAndCenterColumn/src/Main.java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/HashWebsite/ECAhashImages" />
@@ -97,9 +93,13 @@
       <recent name="$PROJECT_DIR$/src/Website/ECAhashImages/kitchenShrunk" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/CustomLibrary" />
       <recent name="$PROJECT_DIR$/src/AlgorithmCode" />
       <recent name="$PROJECT_DIR$/src/TrimmedCode" />
       <recent name="$PROJECT_DIR$/src" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="AlgorithmCode" />
     </key>
   </component>
   <component name="RunManager">
@@ -167,15 +167,9 @@
       <workItem from="1747605840877" duration="610000" />
       <workItem from="1747673623691" duration="15592000" />
       <workItem from="1747759880939" duration="7276000" />
-      <workItem from="1747846141965" duration="122257000" />
-    </task>
-    <task id="LOCAL-00028" summary="bitmapCheck() ?? is working with a mod function on the phaseShift. It doesn't look like it's losing much information compared to the last iteration of the gif function">
-      <option name="closed" value="true" />
-      <created>1744163153434</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1744163153435</updated>
+      <workItem from="1747846141965" duration="132424000" />
+      <workItem from="1748833482739" duration="52000" />
+      <workItem from="1748833719764" duration="24439000" />
     </task>
     <task id="LOCAL-00029" summary="bitmapCheck() ?? is working with a mod function on the phaseShift. It doesn't look like it's losing much information compared to the last iteration of the gif function">
       <option name="closed" value="true" />
@@ -561,7 +555,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748655098072</updated>
     </task>
-    <option name="localTasksCounter" value="77" />
+    <task id="LOCAL-00077" summary="leaving the working stuff, about to add the perfect 3d version of the hash and bitmap, also need to add a working columnWeighted HashLogicOpTransform test function. Probably need to nail down the error propogation in all that too, like following the avalanche propogation, for verifiable algorithm integrity">
+      <option name="closed" value="true" />
+      <created>1748820592298</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1748820592298</updated>
+    </task>
+    <option name="localTasksCounter" value="78" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -596,7 +598,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="a large chunk of testing on the refactor is done" />
     <MESSAGE value="the inverse is doing better than even but it's not zero like it was and i dunno if it's the op or my code atm" />
     <MESSAGE value="the inverse wasn't working well enough and i remembered that the working version did not used hexadecimal it was all single bit and initializeDepthZero() was another step, before the regular hash the bitmap was hashed by initializeDepthZero()" />
     <MESSAGE value="reintegrated the single bit hash with HashNonHexadecimal, turns out the inverse wasn't perfect it was a misreferenced array" />
@@ -621,7 +622,8 @@
     <MESSAGE value="something just changed the errors to over a half?" />
     <MESSAGE value="working again" />
     <MESSAGE value="the outputs in HashTwoDsingleBit verifyInverseAndAvalanche() is working and labelled" />
-    <option name="LAST_COMMIT_MESSAGE" value="the outputs in HashTwoDsingleBit verifyInverseAndAvalanche() is working and labelled" />
+    <MESSAGE value="leaving the working stuff, about to add the perfect 3d version of the hash and bitmap, also need to add a working columnWeighted HashLogicOpTransform test function. Probably need to nail down the error propogation in all that too, like following the avalanche propogation, for verifiable algorithm integrity" />
+    <option name="LAST_COMMIT_MESSAGE" value="leaving the working stuff, about to add the perfect 3d version of the hash and bitmap, also need to add a working columnWeighted HashLogicOpTransform test function. Probably need to nail down the error propogation in all that too, like following the avalanche propogation, for verifiable algorithm integrity" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

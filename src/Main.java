@@ -56,9 +56,10 @@ public class Main {
         //hash.verifyInverseAndAvalanche(filepath,0);
         //hash.verifyInverseAndAvalanche(filepath,0,false);
         //hash.hashTwoDsingleBit.verifyInverseAndAvalancheSingleBits(filepath);
-
-        hash.hashLogicOpTransform.testAllLogic();
+        hash.hashTwoDsingleBit.verifyInverseAndAvalancheSingleBitsRedundant(filepath);
+        //hash.hashLogicOpTransform.testAllLogic();
         //hash.hashLogicOpTransform.verifyLogicOperationHash(filepath,0,true);
+        //hash.hashLogicOpTransform.analyzeHashLogicOpIncompletionsFourAxis();
         //This one doesn't do anything because the truth table is incomplete,
         //Not all gates and elements have a single operation transform
         //Some gates and elements do, but not all have a known retroactive hashing
@@ -72,7 +73,6 @@ public class Main {
         //This randomly checks the algorithm with size 8 arrays instead of 4
 
         //I feel like if all the previous are working, the paper is ready for arXiv
-        //todo put hash.hashBitmap() output into it's own directory
         //todo changeChange() tweaks
         //todo checkCompressionCollisions()
         //
