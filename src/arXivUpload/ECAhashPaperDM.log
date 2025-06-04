@@ -1,0 +1,419 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.12) (preloaded format=pdflatex 2025.2.18)  3 JUN 2025 13:48
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**./ECAhashPaperDM.tex
+(ECAhashPaperDM.tex
+LaTeX2e <2024-11-01> patch level 2
+L3 programming layer <2025-01-18>
+(/home/daniel/.miktex/texmfs/install/tex/latex/base/article.cls
+Document Class: article 2024/06/29 v1.4n Standard LaTeX document class
+(/home/daniel/.miktex/texmfs/install/tex/latex/base/size11.clo
+File: size11.clo 2024/06/29 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count196
+\c@section=\count197
+\c@subsection=\count198
+\c@subsubsection=\count199
+\c@paragraph=\count266
+\c@subparagraph=\count267
+\c@figure=\count268
+\c@table=\count269
+\abovecaptionskip=\skip49
+\belowcaptionskip=\skip50
+\bibindent=\dimen141
+)
+(/home/daniel/.miktex/texmfs/install/tex/latex/braket/braket.sty)
+(/home/daniel/.miktex/texmfs/install/tex/latex/graphics/graphicx.sty
+Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/home/daniel/.miktex/texmfs/install/tex/latex/graphics/keyval.sty
+Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
+\KV@toks@=\toks17
+)
+(/home/daniel/.miktex/texmfs/install/tex/latex/graphics/graphics.sty
+Package: graphics 2024/08/06 v1.4g Standard LaTeX Graphics (DPC,SPQR)
+
+(/home/daniel/.miktex/texmfs/install/tex/latex/graphics/trig.sty
+Package: trig 2023/12/02 v1.11 sin cos tan (DPC)
+)
+(/home/daniel/.miktex/texmfs/install/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 106.
+
+(/home/daniel/.miktex/texmfs/install/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2024/04/13 v1.2c Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen142
+\Gin@req@width=\dimen143
+)
+(/home/daniel/.miktex/texmfs/install/tex/latex/geometry/geometry.sty
+Package: geometry 2020/01/02 v5.9 Page Geometry
+
+(/home/daniel/.miktex/texmfs/install/tex/generic/iftex/ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+
+(/home/daniel/.miktex/texmfs/install/tex/generic/iftex/iftex.sty
+Package: iftex 2024/12/12 v1.0g TeX engine tests
+))
+\Gm@cnth=\count270
+\Gm@cntv=\count271
+\c@Gm@tempcnt=\count272
+\Gm@bindingoffset=\dimen144
+\Gm@wd@mp=\dimen145
+\Gm@odd@mp=\dimen146
+\Gm@even@mp=\dimen147
+\Gm@layoutwidth=\dimen148
+\Gm@layoutheight=\dimen149
+\Gm@layouthoffset=\dimen150
+\Gm@layoutvoffset=\dimen151
+\Gm@dimlist=\toks18
+
+(/home/daniel/.miktex/texmfs/install/tex/latex/geometry/geometry.cfg))
+(/home/daniel/.miktex/texmfs/install/tex/latex/base/makeidx.sty
+Package: makeidx 2021/10/04 v1.0m Standard LaTeX package
+)
+(/home/daniel/.miktex/texmfs/install/tex/generic/iftex/ifpdf.sty
+Package: ifpdf 2019/10/25 v3.4 ifpdf legacy package. Use iftex instead.
+)
+(/home/daniel/.miktex/texmfs/install/tex/latex/url/url.sty
+\Urlmuskip=\muskip17
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+(/home/daniel/.miktex/texmfs/install/tex/latex/l3backend/l3backend-pdftex.def
+File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count273
+\l__pdf_internal_box=\box52
+)
+(ECAhashPaperDM.aux)
+\openout1 = `ECAhashPaperDM.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+
+(/home/daniel/.miktex/texmfs/install/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count274
+\scratchdimen=\dimen152
+\scratchbox=\box53
+\nofMPsegments=\count275
+\nofMParguments=\count276
+\everyMPshowfont=\toks19
+\MPscratchCnt=\count277
+\MPscratchDim=\dimen153
+\MPnumerator=\count278
+\makeMPintoPDFobject=\count279
+\everyMPtoPDFconversion=\toks20
+) (/home/daniel/.miktex/texmfs/install/tex/latex/epstopdf-pkg/epstopdf-base.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+(/home/daniel/.miktex/texmfs/install/tex/latex/00miktex/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
+))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: <default>
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(72.26999pt, 469.75502pt, 72.26999pt)
+* v-part:(T,H,B)=(72.26999pt, 650.43001pt, 72.26999pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=469.75502pt
+* \textheight=650.43001pt
+* \oddsidemargin=0.0pt
+* \evensidemargin=0.0pt
+* \topmargin=-37.0pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=11.0pt
+* \footskip=30.0pt
+* \marginparwidth=59.0pt
+* \marginparsep=10.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 19.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 19.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 19.
+
+LaTeX Warning: Citation `Wolfram' on page 1 undefined on input line 23.
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <10.95> on input line 23.
+
+LaTeX Warning: Citation `dmwebsite' on page 1 undefined on input line 23.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 23--24
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 27--28
+
+ []
+
+
+LaTeX Warning: Citation `app14219719' on page 1 undefined on input line 29.
+
+
+LaTeX Warning: Citation `article' on page 1 undefined on input line 29.
+
+
+LaTeX Warning: Citation `Rajeshwaran2019CellularAB' on page 1 undefined on inpu
+t line 29.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 29--30
+
+ []
+
+
+LaTeX Warning: Citation `Wolfram' on page 1 undefined on input line 33.
+
+
+
+[1
+
+{/home/daniel/.miktex/texmfs/data/fonts/map/pdftex/pdftex.map}]
+Underfull \hbox (badness 10000) in paragraph at lines 36--37
+
+ []
+
+<kitchenShrunkresized.png, id=11, 50.1875pt x 67.25125pt>
+File: kitchenShrunkresized.png Graphic file (type png)
+<use kitchenShrunkresized.png>
+Package pdftex.def Info: kitchenShrunkresized.png  used on input line 39.
+(pdftex.def)             Requested size: 50.18736pt x 67.25107pt.
+<kitchenShrunkframes0.png, id=12, 50.1875pt x 67.25125pt>
+File: kitchenShrunkframes0.png Graphic file (type png)
+<use kitchenShrunkframes0.png>
+Package pdftex.def Info: kitchenShrunkframes0.png  used on input line 43.
+(pdftex.def)             Requested size: 50.18736pt x 67.25107pt.
+<kitchenShrunkframes1.png, id=13, 50.1875pt x 67.25125pt>
+File: kitchenShrunkframes1.png Graphic file (type png)
+<use kitchenShrunkframes1.png>
+Package pdftex.def Info: kitchenShrunkframes1.png  used on input line 47.
+(pdftex.def)             Requested size: 50.18736pt x 67.25107pt.
+
+
+[2 <./kitchenShrunkresized.png> <./kitchenShrunkframes0.png> <./kitchenShrunkfr
+ames1.png>]
+<FourByFourC.png, id=19, 295.1025pt x 133.49875pt>
+File: FourByFourC.png Graphic file (type png)
+<use FourByFourC.png>
+Package pdftex.def Info: FourByFourC.png  used on input line 63.
+(pdftex.def)             Requested size: 295.10176pt x 133.4984pt.
+<FourByFourA.png, id=21, 291.0875pt x 214.8025pt>
+File: FourByFourA.png Graphic file (type png)
+<use FourByFourA.png>
+Package pdftex.def Info: FourByFourA.png  used on input line 64.
+(pdftex.def)             Requested size: 291.08678pt x 214.80197pt.
+<FourByFourB.png, id=22, 290.08376pt x 199.74625pt>
+File: FourByFourB.png Graphic file (type png)
+<use FourByFourB.png>
+Package pdftex.def Info: FourByFourB.png  used on input line 65.
+(pdftex.def)             Requested size: 290.08304pt x 199.74576pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 68--69
+
+ []
+
+
+
+[3 <./FourByFourC.png> <./FourByFourA.png> <./FourByFourB.png>]
+
+LaTeX Warning: Citation `enwiki:1261916659' on page 4 undefined on input line 7
+1.
+
+<FastWalshHadamard.png, id=31, 250.9375pt x 120.45pt>
+File: FastWalshHadamard.png Graphic file (type png)
+<use FastWalshHadamard.png>
+Package pdftex.def Info: FastWalshHadamard.png  used on input line 72.
+(pdftex.def)             Requested size: 250.93687pt x 120.44969pt.
+<AlgoStruct.png, id=32, 125.46875pt x 234.8775pt>
+File: AlgoStruct.png Graphic file (type png)
+<use AlgoStruct.png>
+Package pdftex.def Info: AlgoStruct.png  used on input line 76.
+(pdftex.def)             Requested size: 125.46843pt x 234.87692pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 84--85
+
+ []
+
+
+
+[4 <./FastWalshHadamard.png> <./AlgoStruct.png>]
+
+LaTeX Warning: Citation `xorAdditive' on page 5 undefined on input line 86.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 86--87
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 88--89
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 90--91
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 94--95
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 96--97
+
+ []
+
+
+
+[5]
+Underfull \hbox (badness 10000) in paragraph at lines 101--102
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 103--106
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 107--124
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 125--129
+
+ []
+
+
+
+[6]
+Underfull \hbox (badness 10000) in paragraph at lines 130--147
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 150--151
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 154--155
+
+ []
+
+
+LaTeX Warning: Citation `Wolfram' on page 7 undefined on input line 157.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 157--158
+
+ []
+
+
+
+[7]
+Underfull \hbox (badness 10000) in paragraph at lines 160--161
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 164--165
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 166--167
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 174--175
+
+ []
+
+
+
+[8]
+
+LaTeX Warning: Citation `xorAdditive' on page 9 undefined on input line 176.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 176--177
+
+ []
+
+(ECAhashPaperDM.bbl)
+
+[9] (ECAhashPaperDM.aux)
+ ***********
+LaTeX2e <2024-11-01> patch level 2
+L3 programming layer <2025-01-18>
+ ***********
+
+
+LaTeX Warning: There were undefined references.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 2126 strings out of 473531
+ 35389 string characters out of 5719187
+ 435825 words of memory out of 5000000
+ 25360 multiletter control sequences out of 15000+600000
+ 564008 words of font info for 53 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 57i,6n,65p,1516b,199s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmbx10.pf
+b></home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmbx12.pf
+b></home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmex10.pf
+b></home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmmi10.pf
+b></home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmmi8.pfb
+></home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmr10.pfb>
+</home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmr12.pfb><
+/home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmr17.pfb></
+home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmr8.pfb></ho
+me/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+Output written on ECAhashPaperDM.pdf (9 pages, 286043 bytes).
+PDF statistics:
+ 96 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 41 words of extra memory for PDF output out of 10000 (max. 10000000)
+

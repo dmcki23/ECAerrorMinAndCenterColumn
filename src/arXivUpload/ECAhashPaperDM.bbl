@@ -1,0 +1,41 @@
+\begin{thebibliography}{1}
+
+\bibitem{app14219719}
+Peng Du, Youheng Dong, Qi~Cui, and Hui Li.
+\newblock A novel hybrid elementary cellular automata and its application in a
+  stream cipher.
+\newblock {\em Applied Sciences}, 14(21), 2024.
+
+\bibitem{dmwebsite}
+Daniel McKinley.
+\newblock https://www.danielmckinley.com, 2025.
+
+\bibitem{Rajeshwaran2019CellularAB}
+Kartik Rajeshwaran and Kakelli~Anil Kumar.
+\newblock Cellular automata based hashing algorithm (cabha) for strong
+  cryptographic hash function.
+\newblock {\em 2019 IEEE International Conference on Electrical, Computer and
+  Communication Technologies (ICECCT)}, pages 1--6, 2019.
+
+\bibitem{xorAdditive}
+Todd Rowland and Eric~W. Weisstein.
+\newblock Additive cellular automaton.
+
+\bibitem{article}
+Youssef Sbaytri and Saiida Lazaar.
+\newblock A design of a new hash function based on cellular automata.
+\newblock {\em Journal of Theoretical and Applied Information Technology},
+  99:2280--2289, 05 2021.
+
+\bibitem{enwiki:1261916659}
+{Wikipedia contributors}.
+\newblock Fast walsh–algorithmcode.hadamard transform --- {Wikipedia}{,} the
+  free encyclopedia, 2024.
+\newblock [Online; accessed 4-April-2025].
+
+\bibitem{Wolfram}
+Stephen Wolfram.
+\newblock {\em A New Kind of Science}.
+\newblock Wolfram Media, 2002.
+
+\end{thebibliography}
