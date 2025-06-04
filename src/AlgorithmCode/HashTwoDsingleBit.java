@@ -15,7 +15,8 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * This class is has a version of the hash that operates on arrays organized into single bits per location rather than hexadecimal
+ * This class is has a version of the hash that operates on arrays organized into single bits per location rather than hexadecimal. Functions with RED in
+ * them have an extra loop of redundancy beyond the other single bit hex reconstruction of the input raster
  */
 public class HashTwoDsingleBit {
     /**

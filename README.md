@@ -1,7 +1,9 @@
 # ECAminErrorFit
 Daniel McKinley
+June 2025
 ECAminErrorFit - project and repository name
 Elementary Cellular Automata as Non-Cryptographic Hash Functions - paper name
+https://www.danielmckinley.com
 
 Probably the most used entry points would be:
 
@@ -31,7 +33,8 @@ doAllRules() establishes the 2 subsets of 8 and the rest of the 256 ECA too
 displays aggregate results
 
 HashTwoDSingleBit
-verifyInverseAndAvalanche(String filename) does what it says, the file has to be in ImagesProcessed/
+verifyInverseAndAvalanche(String filename) does what it says, the 2 byte RGB bitmap has to be in ImagesProcessed/
+One kink in the hose to be worked out is the ordering of array index values, a 5d array has to be rearranged halfway through
 
 HashTwoDhexadecimal
 hashBitmap(String filename) does what it says, the file has to be in ImagesProcessed/ ,
@@ -49,4 +52,5 @@ version are 10 times less lossy than the hexadecimal version with a perfect set 
 all the individual rules at the same time.
 
 HashCollisions, checkForTupleUniqueness() checks the size 4 truth tables for uniqueness at every point
+
 

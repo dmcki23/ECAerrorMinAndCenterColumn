@@ -5,15 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="leaving the working stuff, about to add the perfect 3d version of the hash and bitmap, also need to add a working columnWeighted HashLogicOpTransform test function. Probably need to nail down the error propogation in all that too, like following the avalanche propogation, for verifiable algorithm integrity">
-      <change afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashThreeD.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBitRedundant.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashCollisions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/PermutationsFactoradic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CustomLibrary/PermutationsFactoradic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/HashBib.bib" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/HashBib.bib" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.synctex.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECAhashPaper/MarchECAhash.tex" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,7 +30,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="af1c5348c56bdc23ed42a2875d9afc344a442caf" />
+        <entry key="$PROJECT_DIR$" value="b93438184f7a24a744ae28d4972ce0a9f4242faf" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />

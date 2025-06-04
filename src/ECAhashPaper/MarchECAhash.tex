@@ -10,7 +10,7 @@
 
 
 \title{Elementary Cellular Automata as Non-Cryptographic Hash Functions}
-\date{May 2025}
+\date{June 2025}
 \author{Daniel McKinley}
 
 % Document
@@ -20,7 +20,7 @@
 
 \section{Introduction}
 
-Ten of the 256 elementary cellular automata (ECA) rules are explored as a non-cryptographic hash function using a lossy compression error-minimization function that operates on input data in 4x4 binary cells \cite{Wolfram}. The hash's key properties are that the codewords are unique and evenly distributed, has a lossy inverse, hashed data can be operated on efficiently within a hashed state, and through bitmap file processing shows a clear application to edge detection at shallow depths of iteration.  The loops parallel the nested $2^n$ structure of the Fast Fourier Transform (FFT) and Fast Walsh-Hadamard Transform. General algorithm outline, specific ECA rules, and aggregate properties are discussed. It is implemented in Java and more images and gifs and code links are available at the website\cite{dmwebsite}.\\
+Ten of the 256 elementary cellular automata (ECA) rules are explored as a non-cryptographic hash function using a lossy compression error-minimization function that operates on input data in 4x4 binary cells \cite{Wolfram}. The hash's key properties are that the codewords are unique and evenly distributed, has a lossy inverse, hashed data can be operated on efficiently within a hashed state, and through bitmap file processing shows a clear application to edge detection at shallow depths of iteration.  The spacing of the individual tile neighborhoods parallel the nested $2^n$ structure of the Fast Fourier Transform (FFT) and Fast Walsh-Hadamard Transform. General algorithm outline, specific ECA rules, and aggregate properties are discussed. It is implemented in Java and more images and gifs and code links are available at the website\cite{dmwebsite}.\\
 
 \section{Main Algorithm}
 The hash algorithm is a kind of lossy compression that operates on 4x4 wrapped cells of binary input data that minimizes errors in compression on a small scale looped over all the input data. Within each cell, row 0 is the input neighborhood and rows 1, 2, and 3 are the ECA rule's output. All 16 possible row 0 inputs are calculated for a given input and then scored so that each bitwise discrepancy between the codeword's output and the input is summed with a weight of $2^row$. The input neighborhoods that minimize and maximize the error score are noted as the codeword pair for that 4x4 input and each codeword is 4 bits. Doing this procedure for all  $2^{16}=65536$ possible 4x4 input neighborhoods produces a truth table for a particular ECA rule.\\
