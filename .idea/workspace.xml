@@ -4,15 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="paper .bib updated, arxiv paper submitted, added some images to git">
-      <change afterPath="$PROJECT_DIR$/src/TrimmedCode/HashTwoDsingleBitRedundant.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBitRedundant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBitRedundant.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CustomLibrary/CustomArray.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CustomLibrary/CustomArray.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CustomLibrary/SpellCheckPaper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="paper unsubmitted, paper edited, reverified verifyInverseAvalancheSingleBitsHex()">
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashThreeD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TrimmedCode/HashThreeD.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBitRedundant.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -169,14 +163,6 @@
       <workItem from="1747846141965" duration="132424000" />
       <workItem from="1748833482739" duration="52000" />
       <workItem from="1748833719764" duration="24439000" />
-    </task>
-    <task id="LOCAL-00031" summary="added truth tables for changes">
-      <option name="closed" value="true" />
-      <created>1744224778580</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1744224778580</updated>
     </task>
     <task id="LOCAL-00032" summary="checkChangesPerTransformAllSingleChanges() is sort of working">
       <option name="closed" value="true" />
@@ -562,7 +548,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749012131599</updated>
     </task>
-    <option name="localTasksCounter" value="80" />
+    <task id="LOCAL-00080" summary="paper unsubmitted, paper edited, reverified verifyInverseAvalancheSingleBitsHex()">
+      <option name="closed" value="true" />
+      <created>1749092587574</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1749092587574</updated>
+    </task>
+    <option name="localTasksCounter" value="81" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -597,7 +591,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="the inverse wasn't working well enough and i remembered that the working version did not used hexadecimal it was all single bit and initializeDepthZero() was another step, before the regular hash the bitmap was hashed by initializeDepthZero()" />
     <MESSAGE value="reintegrated the single bit hash with HashNonHexadecimal, turns out the inverse wasn't perfect it was a misreferenced array" />
     <MESSAGE value="end of night, changes to the paper" />
     <MESSAGE value="beginning of day, changes to the paper" />
@@ -622,7 +615,8 @@
     <MESSAGE value="the outputs in HashTwoDsingleBit verifyInverseAndAvalanche() is working and labelled" />
     <MESSAGE value="leaving the working stuff, about to add the perfect 3d version of the hash and bitmap, also need to add a working columnWeighted HashLogicOpTransform test function. Probably need to nail down the error propogation in all that too, like following the avalanche propogation, for verifiable algorithm integrity" />
     <MESSAGE value="paper .bib updated, arxiv paper submitted, added some images to git" />
-    <option name="LAST_COMMIT_MESSAGE" value="paper .bib updated, arxiv paper submitted, added some images to git" />
+    <MESSAGE value="paper unsubmitted, paper edited, reverified verifyInverseAvalancheSingleBitsHex()" />
+    <option name="LAST_COMMIT_MESSAGE" value="paper unsubmitted, paper edited, reverified verifyInverseAvalancheSingleBitsHex()" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
