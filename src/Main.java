@@ -55,8 +55,8 @@ public class Main {
         //hash.hashBitmap(filepath, hash.bothLists[1][rule],false,true);
         //hash.verifyInverseAndAvalanche(filepath,0);
         //hash.verifyInverseAndAvalanche(filepath,0,false);
-        //hash.hashTwoDsingleBit.verifyInverseAndAvalancheSingleBits(filepath);
-        hash.hashTwoDsingleBit.verifyInverseAndAvalancheSingleBitsRedundant(filepath);
+        hash.hashTwoDsingleBit.verifyInverseAndAvalancheSingleBitsHexRedundant(filepath);
+        //hash.hashTwoDsingleBit.verifyInverseAndAvalancheSingleBitsRedundant(filepath);
         //hash.hashLogicOpTransform.testAllLogic();
         //hash.hashLogicOpTransform.verifyLogicOperationHash(filepath,0,true);
         //hash.hashLogicOpTransform.analyzeHashLogicOpIncompletionsFourAxis();

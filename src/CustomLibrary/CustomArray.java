@@ -90,6 +90,179 @@ public class CustomArray {
         }
         System.out.println();
     }
+
+    public static int getArrayDimensions(Object array) {
+        if (array == null || !array.getClass().isArray()) {
+            return 0; // Not an array or null
+        }
+        int dimensions = 1; // Start with 1 for the base array
+        Object current = array;
+        while (current.getClass().isArray()) {
+            if (java.lang.reflect.Array.getLength(current) == 0) {
+                break;
+            }
+            current = java.lang.reflect.Array.get(current, 0); // Get the first element
+            if (current != null && current.getClass().isArray()) {
+                dimensions++;
+            } else {
+                break; // If it's not an array, we're done
+            }
+        }
+        return dimensions;
+    }
+
+    public static int[] dimensions(Object array) {
+        int dimensions = getArrayDimensions(array);
+        System.out.println("dimensions: " + dimensions);
+
+            if (dimensions ==0) {
+            }
+            if (dimensions ==1) {
+                int[] asArray = (int[]) array;
+                int[] out = new int[1];
+                out[0] = asArray.length;
+                return out;
+            }
+            if (dimensions ==2) {
+                int[][] asArray = (int[][]) array;
+                int[] out = new int[2];
+                out[0] = asArray.length;
+                out[1] = asArray[0].length;
+                return out;
+            }
+            if (dimensions ==3) {
+                int[][][] asArray = (int[][][]) array;
+                int[] out = new int[3];
+                out[0] = asArray.length;
+                out[1] = asArray[0].length;
+                out[2] = asArray[0][0].length;
+                return out;
+            }
+            if (dimensions ==4) {
+                int[][][][] asArray = (int[][][][]) array;
+                int[] out = new int[4];
+                out[0] = asArray.length;
+                out[1] = asArray[0].length;
+                out[2] = asArray[0][0].length;
+                out[3] = asArray[0][0][0].length;
+                return out;
+            }
+            if (dimensions ==5) {
+                int[][][][][] asArray = (int[][][][][]) array;
+                int[] out = new int[5];
+                out[0] = asArray.length;
+                out[1] = asArray[0].length;
+                out[2] = asArray[0][0].length;
+                out[3] = asArray[0][0][0].length;
+                out[4] = asArray[0][0][0][0].length;
+                return out;
+            }
+            if (dimensions ==6) {
+                int[][][][][][] asArray = (int[][][][][][]) array;
+                int[] out = new int[6];
+                out[0] = asArray.length;
+                out[1] = asArray[0].length;
+                out[2] = asArray[0][0].length;
+                out[3] = asArray[0][0][0].length;
+                out[4] = asArray[0][0][0][0].length;
+                out[5] = asArray[0][0][0][0][0].length;
+                return out;
+            }
+
+        return new int[]{0};
+    }
+
+    public static int countOnes(Object array, int inPower) {
+        int[] dimensions = dimensions(array);
+        int i = dimensions.length;
+        int out = 0;
+        if (i == 0) {
+        }
+        if (i == 1) {
+            int[] asArray = (int[]) array;
+            for (int a = 0; a < dimensions[0]; a++) {
+                for (int power = 0; power < inPower; power++) {
+                    out += (asArray[a] >> power) % 2;
+                }
+            }
+        }
+        if (i == 2) {
+            int[][] asArray = (int[][]) array;
+            for (int a = 0; a < dimensions[0]; a++) {
+                for (int b = 0; b < dimensions[1]; b++) {
+                    for (int power = 0; power < inPower; power++) {
+                        out += (asArray[a][b] >> power) % 2;
+                    }
+                }
+            }
+        }
+        if (i == 3) {
+            int[][][] asArray = (int[][][]) array;
+            for (int a = 0; a < dimensions[0]; a++) {
+                for (int b = 0; b < dimensions[1]; b++) {
+                    for (int c = 0; c < dimensions[2]; c++) {
+                        for (int power = 0; power < inPower; power++) {
+                            out += (asArray[a][b][c] >> power) % 2;
+                        }
+                    }
+                }
+            }
+        }
+        if (i == 4) {
+            int[][][][] asArray = (int[][][][]) array;
+            for (int a = 0; a < dimensions[0]; a++) {
+                for (int b = 0; b < dimensions[1]; b++) {
+                    for (int c = 0; c < dimensions[2]; c++) {
+                        for (int d = 0; d < dimensions[3]; d++) {
+                            for (int power = 0; power < inPower; power++) {
+                                out += (asArray[a][b][c][d] >> power) % 2;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (i == 5) {
+            int[][][][][] asArray = (int[][][][][]) array;
+            for (int a = 0; a < dimensions[0]; a++) {
+                for (int b = 0; b < dimensions[1]; b++) {
+                    for (int c = 0; c < dimensions[2]; c++) {
+                        for (int d = 0; d < dimensions[3]; d++) {
+                            for (int e = 0; e < dimensions[4]; e++) {
+                                for (int f = 0; f < dimensions[5]; f++) {
+                                    for (int power = 0; power < inPower; power++) {
+                                        out += (asArray[a][b][c][d][e] >> power) % 2;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (i == 6) {
+            int[][][][][][] asArray = (int[][][][][][]) array;
+            for (int a = 0; a < dimensions[0]; a++) {
+                for (int b = 0; b < dimensions[1]; b++) {
+                    for (int c = 0; c < dimensions[2]; c++) {
+                        for (int d = 0; d < dimensions[3]; d++) {
+                            for (int e = 0; e < dimensions[4]; e++) {
+                                for (int f = 0; f < dimensions[5]; f++) {
+                                    for (int g = 0; g < dimensions[6]; g++) {
+                                        for (int power = 0; power < inPower; power++) {
+                                            out += (asArray[a][b][c][d][e][f] >> power) % 2;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return out;
+    }
+
     /**
      * displays a 2D integer array
      *
@@ -112,7 +285,7 @@ public class CustomArray {
                 if (in[row][column] == 0 && noZeros) {
                     outstring += spaces;
                 } else {
-                    outstring += String.format("%0"+numberPlaces+"d", (in[row][column]));
+                    outstring += String.format("%0" + numberPlaces + "d", (in[row][column]));
                 }
                 if (!noSpaces) {
                     outstring += " ";

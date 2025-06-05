@@ -11,11 +11,7 @@ import java.util.Arrays;
  * Main entry point into the algorithm's structure; initiates truth table generation and manages the other Hash___ classes
  */
 public class Hash {
-    public HashTwoDsingleBitRedundant hashTwoDsingleBitRedundant;
-    /**
-     * Three D version of the hash, has the lossless inverse
-     */
-    public HashThreeD hashThreeD;
+
     /**
      * Two D version of the hash, has an extra set of redundancy and has mid-range lossy inverse
      */
@@ -85,7 +81,7 @@ public class Hash {
         hashOneD = new HashOneD(this);
         hashCollisions = new HashCollisions(this);
         hashTwoDsingleBit = new HashTwoDsingleBit(this);
-        hashTwoDsingleBitRedundant = new HashTwoDsingleBitRedundant(this);
+        //hashTwoDsingleBitRedundant = new HashTwoDsingleBitRedundant(this);
         initWolframs();
     }
 
@@ -212,6 +208,11 @@ public class Hash {
                 System.out.println(Arrays.toString(Arrays.copyOfRange(allTables[ 2*layer][bothLists[layer][t]], 0, 300)));
                 System.out.println(Arrays.toString(Arrays.copyOfRange(allTables[1+ 2*layer][bothLists[layer][t]], 0, 300)));
             }
+        }
+        int[][][][] cells = new int[32][65536][4][4];
+        for (int t = 0; t < 32; t++){
+            int layer = (t/16)%2;
+            //int[][] cell = hashRowsColumns[layer].g
         }
     }
 
