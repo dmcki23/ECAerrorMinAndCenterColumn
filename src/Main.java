@@ -49,14 +49,15 @@ public class Main {
         //hash.hashRows.doAllRules(4,true,100,true,100,false);
         //hash.hashColumns.doAllRules(4,true,100,true,100,false);
         //these hash a bitmap
-        //hash.hashTwoDhexadecimal.hashBitmap(filepath, hash.bothLists[0][rule],true,true);
+        //hash.hashTwoDbitmap.hashBitmap(filepath, hash.bothLists[0][rule],true,true);
         //hash.hashBitmap(filepath, hash.bothLists[1][rule],false,true);
         //hash.hashBitmap(filepath, hash.bothLists[0][rule],true,false);
         //hash.hashBitmap(filepath, hash.bothLists[1][rule],false,true);
         //hash.verifyInverseAndAvalanche(filepath,0);
         //hash.verifyInverseAndAvalanche(filepath,0,false);
-        hash.hashTwoDsingleBit.verifyInverseAndAvalancheSingleBitsHexRedundant(filepath);
-        //hash.hashTwoDsingleBit.verifyInverseAndAvalancheSingleBitsRedundant(filepath);
+
+        //hash.hashTwoDhex.verifyInverseAndAvalancheSingleBitsRedundant(filepath);
+        hash.hashLogicOpTransform.checkEveryGateEveryDepth(filepath);
         //hash.hashLogicOpTransform.testAllLogic();
         //hash.hashLogicOpTransform.verifyLogicOperationHash(filepath,0,true);
         //hash.hashLogicOpTransform.analyzeHashLogicOpIncompletionsFourAxis();
@@ -124,9 +125,9 @@ public class Main {
          //May 20
         //commenting, testing, avalanche, images, website presentation, possibly reading from the file as well
         //hash.twoDHashTransform.hashBitmap(filepath, hash.bothLists[0][rule],true,true);
-        //hash.hashTwoDhexadecimal.verifyInverseAndAvalanche(filepath);
+        //hash.hashTwoDbitmap.verifyInverseAndAvalanche(filepath);
         //hash.hashLogicOpTransform.verifyLogicOperationHash("kitchenShrunk.bmp",true);
-        //hash.hashTwoDsingleBit.verifyInverseAndAvalancheSingleBits(filepath);
+        //hash.hashTwoDhex.verifyInverseAndAvalancheSingleBits(filepath);
         //hash.hashLogicOpTransform.verifyLogicOperationHash("kitchenShrunk.bmp",true);
         //
          //

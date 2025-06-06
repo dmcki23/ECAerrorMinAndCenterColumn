@@ -13,7 +13,7 @@ import java.util.Random;
 /**
  * Contains hash functions for 2D arrays/bitmap hashing, inversions, and testing
  */
-public class HashTwoDhexadecimal {
+public class HashTwoDbitmap {
     /**
      * Manager function
      */
@@ -24,7 +24,7 @@ public class HashTwoDhexadecimal {
      *
      * @param inhash instance of manager class
      */
-    public HashTwoDhexadecimal(Hash inhash) {
+    public HashTwoDbitmap(Hash inhash) {
         hash = inhash;
     }
 

@@ -79,7 +79,7 @@ public class HashLogicOpTransform {
                         for (int column = 0; column < 4; column++) {
                             result += (int) Math.pow(2, column) * ccc[0][column];
                         }
-                        if (posNeg == 0 ){
+                        if (posNeg == 0) {
                             additionTables[posNeg][t][a][b] = hash.hashRowsColumns[inRowError == true ? 0 : 1].lastMinCodeword;
                         } else {
                             additionTables[posNeg][t][a][b] = hash.hashRowsColumns[inRowError == true ? 0 : 1].lastMaxCodeword;
@@ -322,8 +322,8 @@ public class HashLogicOpTransform {
         //Hash the input
         for (int t = 0; t < 8; t++) {
             System.out.println("t: " + t);
-            hashSet[t] = hash.hashTwoDhexadecimal.hashArray(bFieldSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
-            hashSet[8 + t] = hash.hashTwoDhexadecimal.hashArray(bFieldSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
+            hashSet[t] = hash.hashTwoDbitmap.hashArray(bFieldSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
+            hashSet[8 + t] = hash.hashTwoDbitmap.hashArray(bFieldSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
         }
         //modification[][] is a random array
         int[][] modification = generateOperation(hashSet[0].length, hashSet[0][0].length);
@@ -341,10 +341,10 @@ public class HashLogicOpTransform {
                     modifiedSet[8 + t][row][column] = (gate >> modifiedSet[8 + t][row][column]) % 2;
                 }
             }
-            modificationTransformed[t] = hash.hashTwoDhexadecimal.hashArray(modification, hash.bothLists[listLayer][t], depth, true, rowError)[depth];
-            modificationTransformed[8 + t] = hash.hashTwoDhexadecimal.hashArray(modification, hash.bothLists[listLayer][t], depth, false, rowError)[depth];
-            modifiedSet[t] = hash.hashTwoDhexadecimal.hashArray(modifiedSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
-            modifiedSet[8 + t] = hash.hashTwoDhexadecimal.hashArray(modifiedSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
+            modificationTransformed[t] = hash.hashTwoDbitmap.hashArray(modification, hash.bothLists[listLayer][t], depth, true, rowError)[depth];
+            modificationTransformed[8 + t] = hash.hashTwoDbitmap.hashArray(modification, hash.bothLists[listLayer][t], depth, false, rowError)[depth];
+            modifiedSet[t] = hash.hashTwoDbitmap.hashArray(modifiedSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
+            modifiedSet[8 + t] = hash.hashTwoDbitmap.hashArray(modifiedSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
             for (int row = 0; row < modifiedSet[0].length; row++) {
                 for (int column = 0; column < modifiedSet[0][0].length; column++) {
                     int tot = 0;
@@ -380,6 +380,38 @@ public class HashLogicOpTransform {
     }
 
     /**
+     * Verifies the hashLogicOpTransform truth tables, by coming up with a bitmask and hashing it, hashing the original, applying the bitmask to a copy of the original and hashing that,
+     * then post-hash applying the appropriate logic gate transform and comparing the results.
+     * @param filepath
+     * @throws IOException
+     */
+    public void checkEveryGateEveryDepth(String filepath) throws IOException {
+        testAllLogic();
+        int[][][] differences = new int[11][32][16];
+        int[][][][] ones = new int[2][11][32][16];
+        for (int gate = 0; gate <16; gate++) {
+            verifyLogicOperationHashSingleBit(filepath, gate, 10, differences, ones);
+        }
+        for (int d = 0; d < 10; d++) {
+            System.out.println();
+            for (int t = 0; t < 32; t++) {
+                System.out.println("[d][t] = ["+d+"]["+t+"]");
+                System.out.println("differences[" + d + "][" + t + "] " + Arrays.toString(differences[d][t]));
+                System.out.println("maskedThenHashed ones["+d+"]["+t+"] " + Arrays.toString(ones[0][d][t]));
+                System.out.println("hashedThenMasked ones["+d+"]["+t+"] " + Arrays.toString(ones[1][d][t]));
+            }
+        }
+        System.out.println();
+        for (int d = 0; d < 10; d++){
+            System.out.println();
+            for (int t = 0; t < 32; t++){
+                //System.out.println("ones["+d+"]["+t+"] " + Arrays.toString(ones[0][d][t]));
+                //System.out.println("ones["+d+"]["+t+"] " + Arrays.toString(ones[1][d][t]));
+            }
+        }
+    }
+
+    /**
      * This function verifies that the hash logic op transform truth tables are correct by:
      * 1. hashing the bitmap
      * 2. generate an array of some changes to be made to the bitmap
@@ -391,7 +423,7 @@ public class HashLogicOpTransform {
      * @param filepath name of the bitmap, not including the directory path
      * @throws IOException
      */
-    public void verifyLogicOperationHash(String filepath, int gate, int depth) throws IOException {
+    public void verifyLogicOperationHashSingleBit(String filepath, int gate, int depth, int[][][] differences, int[][][][] ones) throws IOException {
         filepath = "src/ImagesProcessed/" + filepath;
         File file = new File(filepath);
         filepath = filepath.substring(0, filepath.length() - 4);
@@ -404,42 +436,211 @@ public class HashLogicOpTransform {
         System.out.println("imImage.getHeight(): " + inImage.getHeight());
         System.out.println("imImage.getWidth(): " + inImage.getWidth());
         //Put the bitmap's raster into the bfield arrays
-        int[][][] bFieldSet = new int[32][bfield.length][bfield[0].length];
+        int[][][] initialSet = new int[32][rows][cols * 16];
         for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < cols / 16; column++) {
+            for (int column = 0; column < cols; column++) {
                 for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
                     for (int power = 0; power < 8; power++) {
-                        bfield[row][16 * column + 8 * rgbbyte + power] = (int) ((Math.abs(inRaster[row * inImage.getWidth() + column]) >> (8 * rgbbyte + power)) % 2);
+                        bfield[row][4 * column + 2 * rgbbyte + power / 4] = (int) ((Math.abs(inRaster[row * inImage.getWidth() + column]) >> (8 * rgbbyte + power)) % 16);
                         for (int posNegt = 0; posNegt < 32; posNegt++) {
-                            bFieldSet[posNegt][row][16 * column + 8 * rgbbyte + power] = ((Math.abs(inRaster[row * cols / 16 + column]) >> (8 * rgbbyte + power)) % 2);
+                            //initialSet[posNegt][row][4 * column + 2 * rgbbyte + power/4] = (int) ((Math.abs(inRaster[row * inImage.getWidth() + column]) >> (8 * rgbbyte + power)) % 16);
+                            initialSet[posNegt][row][4 * column + 8 * rgbbyte + power] = (int) ((Math.abs(inRaster[row * inImage.getWidth() + column]) >> (8 * rgbbyte + power)) % 2);
                         }
                     }
                 }
             }
         }
         //Initialize logic gate op hash tables
-        testAllLogic();
-        int[][][] hashSet = new int[32][inImage.getHeight()][inImage.getWidth()];
+        int[][][][] hashedInitial = new int[32][11][initialSet[0].length][initialSet[0][0].length];
+        //bitmask[][] is a random array
+        int[][] bitmask = generateOperation(hashedInitial[0][0].length, hashedInitial[0][0][0].length);
+        int[][][][] bitmaskHashed = new int[32][11][hashedInitial[0][0].length][hashedInitial[0][0][0].length];
+        int[][][] masked = new int[32][hashedInitial[0][0].length][hashedInitial[0][0][0].length];
+        int[][][][] maskedThenHashed = new int[32][11][hashedInitial[0][0].length][hashedInitial[0][0][0].length];
+        int[][][][] hashedThenMasked = new int[32][11][hashedInitial[0][0].length][hashedInitial[0][0][0].length];
+        int[][][] heatmap = new int[hashedInitial[0][0].length][hashedInitial[0][0][0].length][20];
         //Hash the input
         for (int t = 0; t < 32; t++) {
-            hashSet[t] = hash.hashTwoDhexadecimal.hashArray(bFieldSet[t], hash.bothLists[(t / 16) % 2][t % 8], depth, (t / 8) % 2 == 0 ? true : false, (t / 16) % 2 == 0 ? true : false)[depth];
+            hashedInitial[t][0] = hash.hashTwoDhex.initializeDepthZero(initialSet[t], hash.bothLists[(t / 16) % 2][t % 8], (t / 8) % 2 == 0 ? true : false, (t / 16) % 2 == 0 ? true : false);
+            hashedInitial[t] = hash.hashTwoDhex.ecaHashHex(hashedInitial[t][0], hash.bothLists[(t / 16) % 2][t % 8], 9, (t / 8) % 2 == 0 ? true : false, (t / 16) % 2 == 0 ? true : false, heatmap);
         }
+        for (int t = 0; t < 32; t++) {
+            //System.out.println("t: " + t);
+            for (int row = 0; row < masked[0].length; row++) {
+                for (int column = 0; column < masked[0][0].length; column++) {
+                    for (int power = 0; power < 4; power++) {
+                        int a = ((initialSet[t][row][column] >> power) % 2) + 2 * ((bitmask[row][column] >> power) % 2);
+                        a = (gate >> a) % 2;
+                        masked[t][row][column] += (1 << power) * a;
+                    }
+                }
+            }
+            bitmaskHashed[t] = hash.hashTwoDhex.ecaHashHex(bitmask, hash.bothLists[(t / 16) % 2][t % 8], depth, (t / 8) % 2 == 0 ? true : false, (t / 16) % 2 == 0 ? true : false, heatmap);
+            maskedThenHashed[t] = hash.hashTwoDhex.ecaHashHex(masked[t], hash.bothLists[(t / 16) % 2][t % 8], depth, (t / 8) % 2 == 0 ? true : false, (t / 16) % 2 == 0 ? true : false, heatmap);
+            for (int d = 0; d < 10; d++) {
+                for (int row = 0; row < masked[0].length && (t / 16) % 2 == 0; row++) {
+                    for (int column = 0; column < masked[0][0].length; column++) {
+                        int tot = 0;
+                        for (int power = 0; power < 4; power++) {
+                            int ab = ((hashedInitial[t][d][row][column] >> power) % 2) + 2 * ((bitmaskHashed[t][d][row][column] >> power) % 2);
+                            ab = (logicTransformRowError[gate][t] >> ab) % 2;
+                            tot += (1 << power) * ab;
+                        }
+                        hashedThenMasked[t][d][row][column] = tot;
+//                    tot = 0;
+//                    for (int power = 0; power < 4; power++) {
+//                        int ab = ((hashedInitial[8 + t][row][column] >> power) % 2) + 2 * ((bitmaskHashed[8 + t][row][column] >> power) % 2);
+//                        ab = (logicTransformRowError[15 - gate][8 + t] >> ab) % 2;
+//                        tot += (1 << power) * ab;
+//                    }
+//                    hashedThenMasked[8 + t][row][column] = tot;
+                    }
+                }
+                if (t >= 16 && logicTransformColumnError[gate][t % 16] == -1) continue;
+                for (int row = 0; row < masked[0].length && (t / 16) % 2 == 1; row++) {
+                    for (int column = 0; column < masked[0][0].length; column++) {
+                        int tot = 0;
+                        for (int power = 0; power < 4; power++) {
+                            int ab = ((hashedInitial[t][d][row][column] >> power) % 2) + 2 * ((bitmaskHashed[t][d][row][column] >> power) % 2);
+                            ab = (logicTransformColumnError[gate][t % 16] >> ab) % 2;
+                            tot += (1 << power) * ab;
+                        }
+                        hashedThenMasked[t][d][row][column] = tot;
+//                    tot = 0;
+//                    for (int power = 0; power < 4; power++) {
+//                        int ab = ((hashedInitial[8 + t][row][column] >> power) % 2) + 2 * ((bitmaskHashed[8 + t][row][column] >> power) % 2);
+//                        ab = (logicTransformRowError[15 - gate][8 + t] >> ab) % 2;
+//                        tot += (1 << power) * ab;
+//                    }
+//                    hashedThenMasked[8 + t][row][column] = tot;
+                    }
+                }
+            }
+        }
+//        for (int t = 0; t < 8; t++) {
+//            System.out.println("t: " + t);
+//            for (int row = 0; row < masked[0].length; row++) {
+//                for (int column = 0; column < masked[0][0].length; column++) {
+//                    masked[t][row][column] = initialSet[t][row][column] + 2 * bitmask[row][column];
+//                    masked[8 + t][row][column] = initialSet[8 + t][row][column] + 2 * bitmask[row][column];
+//                    masked[t][row][column] = (gate >> masked[t][row][column]) % 2;
+//                    masked[8 + t][row][column] = (gate >> masked[8 + t][row][column]) % 2;
+//                }
+//            }
+//            bitmaskHashed[t] = hash.hashTwoDbitmap.hashArray(bitmask, hash.bothLists[listLayer][t], depth, true, rowError)[depth];
+//            bitmaskHashed[8 + t] = hash.hashTwoDbitmap.hashArray(bitmask, hash.bothLists[listLayer][t], depth, false, rowError)[depth];
+//            masked[t] = hash.hashTwoDbitmap.hashArray(masked[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
+//            masked[8 + t] = hash.hashTwoDbitmap.hashArray(masked[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
+//            for (int row = 0; row < masked[0].length; row++) {
+//                for (int column = 0; column < masked[0][0].length; column++) {
+//                    int tot = 0;
+//                    for (int power = 0; power < 4; power++) {
+//                        int ab = ((hashedInitial[t][row][column] >> power) % 2) + 2 * ((bitmaskHashed[t][row][column] >> power) % 2);
+//                        ab = (logicTransformRowError[gate][t] >> ab) % 2;
+//                        tot += (1 << power) * ab;
+//                    }
+//                    hashedThenMasked[t][row][column] = tot;
+//                    tot = 0;
+//                    for (int power = 0; power < 4; power++) {
+//                        int ab = ((hashedInitial[8 + t][row][column] >> power) % 2) + 2 * ((bitmaskHashed[8 + t][row][column] >> power) % 2);
+//                        ab = (logicTransformRowError[15 - gate][8 + t] >> ab) % 2;
+//                        tot += (1 << power) * ab;
+//                    }
+//                    hashedThenMasked[8 + t][row][column] = tot;
+//                }
+//            }
+//        }
+        //int[][][] numOnes = new int[2][10][32];
+        int[] numDifferent = new int[32];
+        for (int d = 0; d < 10; d++) {
+            numDifferent = new int[32];
+            for (int t = 0; t < 32; t++) {
+                for (int row = 0; row < maskedThenHashed[0][0].length; row++) {
+                    for (int column = 0; column < maskedThenHashed[0][0][0].length; column++) {
+
+                        for (int power = 0; power < 4; power++) {
+                            differences[d][t][gate] += (((maskedThenHashed[t][d][row][column] >> power) % 2) ^ ((hashedThenMasked[t][d][row][column] >> power) % 2));
+                            //numDifferent[8 + t] += (((masked[8 + t][row][column] >> power) % 2) ^ ((hashedThenMasked[8 + t][row][column] >> power) % 2));
+                            ones[0][d][t][gate] += (maskedThenHashed[t][d][row][column]>>power)%2;
+                            ones[1][d][t][gate] += (hashedThenMasked[t][d][row][column]>>power)%2;
+                        }
+                    }
+                }
+                if (t >= 16 && logicTransformColumnError[gate][t % 16] == -1) {
+                    numDifferent[t] = -1;
+                }
+            }
+            for (int t = 0; t < 32; t++) {
+                //differences[d][t][gate] = numDifferent[t];
+            }
+        }
+        System.out.println("numDifferent: " + Arrays.toString(numDifferent));
+        System.out.println("numBits: " + (inImage.getHeight() * inImage.getWidth()) * 16);
+    }
+
+    /**
+     * This function verifies that the hash logic op transform truth tables are correct by:
+     * 1. hashing the bitmap
+     * 2. generate an array of some changes to be made to the bitmap
+     * 3. hashing the changed bitmap
+     * 4. hashing the changes
+     * 5. combine the hashed changes and hashed original bitmap using the appropriate generated logic gate
+     * 6. testing to see if these two seperate hash pathways generate the same thing
+     *
+     * @param filepath name of the bitmap, not including the directory path
+     * @throws IOException
+     */
+    public void verifyLogicOperationHash(String filepath, int gate, int depth, int[][][] differences) throws IOException {
+        filepath = "src/ImagesProcessed/" + filepath;
+        File file = new File(filepath);
+        filepath = filepath.substring(0, filepath.length() - 4);
+        BufferedImage inImage = ImageIO.read(file);
+        short[] inRaster = ((DataBufferUShort) inImage.getRaster().getDataBuffer()).getData();
+        int rows = inImage.getHeight();
+        int cols = inImage.getWidth();
+        int[][] bfield = new int[rows][cols * 4];
+        System.out.println("inRaster: " + inRaster.length);
+        System.out.println("imImage.getHeight(): " + inImage.getHeight());
+        System.out.println("imImage.getWidth(): " + inImage.getWidth());
+        //Put the bitmap's raster into the bfield arrays
+        int[][][] initialSet = new int[32][rows][cols];
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < cols / 4; column++) {
+                for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
+                    for (int power = 0; power < 8; power += 4) {
+                        bfield[row][4 * column + 2 * rgbbyte + power / 4] = (int) ((Math.abs(inRaster[row * inImage.getWidth() + column]) >> (8 * rgbbyte + power)) % 16);
+                        for (int posNegt = 0; posNegt < 32; posNegt++) {
+                            initialSet[posNegt][row][4 * column + 2 * rgbbyte + power / 4] = (int) ((Math.abs(inRaster[row * inImage.getWidth() + column]) >> (8 * rgbbyte + power)) % 16);
+                        }
+                    }
+                }
+            }
+        }
+        //Initialize logic gate op hash tables
+        int[][][] hashSet = new int[32][initialSet[0].length][initialSet[0][0].length];
         //modification[][] is a random array
         int[][] modification = generateOperation(hashSet[0].length, hashSet[0][0].length);
-        int[][][] modificationTransformed = new int[16][hashSet[0].length][hashSet[0][0].length];
-        int[][][] modifiedSet = new int[16][hashSet[0].length][hashSet[0][0].length];
-        int[][][] internallyModifiedSet = new int[16][hashSet[0].length][hashSet[0][0].length];
-        //
+        int[][][] modificationTransformed = new int[32][hashSet[0].length][hashSet[0][0].length];
+        int[][][] modifiedSet = new int[32][hashSet[0].length][hashSet[0][0].length];
+        int[][][] internallyModifiedSet = new int[32][hashSet[0].length][hashSet[0][0].length];
+        int[][][] heatmap = new int[hashSet[0].length][hashSet[0][0].length][20];
+        //Hash the input
+        for (int t = 0; t < 32; t++) {
+            hashSet[t] = hash.hashTwoDhex.ecaHashHex(initialSet[t], hash.bothLists[(t / 16) % 2][t % 8], depth, (t / 8) % 2 == 0 ? true : false, (t / 16) % 2 == 0 ? true : false, heatmap)[depth];
+        }
         for (int t = 0; t < 32; t++) {
             System.out.println("t: " + t);
             for (int row = 0; row < modifiedSet[0].length; row++) {
                 for (int column = 0; column < modifiedSet[0][0].length; column++) {
-                    modifiedSet[t][row][column] = bFieldSet[t][row][column] + 2 * modification[row][column];
-                    modifiedSet[t][row][column] = (gate >> modifiedSet[t][row][column]) % 2;
+                    for (int power = 0; power < 4; power++) {
+                        int a = ((initialSet[t][row][column] >> power) % 2) + 2 * ((modification[row][column] >> power) % 2);
+                        a = (gate >> a) % 2;
+                        modifiedSet[t][row][column] += (1 << power) * a;
+                    }
                 }
             }
-            modificationTransformed[t] = hash.hashTwoDhexadecimal.hashArray(modification, hash.bothLists[(t / 16) % 2][t % 8], depth, (t / 8) % 2 == 0 ? true : false, (t / 16) % 2 == 0 ? true : false)[depth];
-            modifiedSet[t] = hash.hashTwoDhexadecimal.hashArray(modifiedSet[t], hash.bothLists[(t / 16) % 2][t % 8], depth, (t / 8) % 2 == 0 ? true : false, (t / 16) % 2 == 0 ? true : false)[depth];
+            modificationTransformed[t] = hash.hashTwoDhex.ecaHashHex(modification, hash.bothLists[(t / 16) % 2][t % 8], depth, (t / 8) % 2 == 0 ? true : false, (t / 16) % 2 == 0 ? true : false, heatmap)[depth];
+            modifiedSet[t] = hash.hashTwoDhex.ecaHashHex(modifiedSet[t], hash.bothLists[(t / 16) % 2][t % 8], depth, (t / 8) % 2 == 0 ? true : false, (t / 16) % 2 == 0 ? true : false, heatmap)[depth];
             for (int row = 0; row < modifiedSet[0].length && (t / 16) % 2 == 0; row++) {
                 for (int column = 0; column < modifiedSet[0][0].length; column++) {
                     int tot = 0;
@@ -449,13 +650,32 @@ public class HashLogicOpTransform {
                         tot += (1 << power) * ab;
                     }
                     internallyModifiedSet[t][row][column] = tot;
-                    tot = 0;
+//                    tot = 0;
+//                    for (int power = 0; power < 4; power++) {
+//                        int ab = ((hashSet[8 + t][row][column] >> power) % 2) + 2 * ((modificationTransformed[8 + t][row][column] >> power) % 2);
+//                        ab = (logicTransformRowError[15 - gate][8 + t] >> ab) % 2;
+//                        tot += (1 << power) * ab;
+//                    }
+//                    internallyModifiedSet[8 + t][row][column] = tot;
+                }
+            }
+            if (t >= 16 && logicTransformColumnError[gate][t % 16] == -1) continue;
+            for (int row = 0; row < modifiedSet[0].length && (t / 16) % 2 == 1; row++) {
+                for (int column = 0; column < modifiedSet[0][0].length; column++) {
+                    int tot = 0;
                     for (int power = 0; power < 4; power++) {
-                        int ab = ((hashSet[8 + t][row][column] >> power) % 2) + 2 * ((modificationTransformed[8 + t][row][column] >> power) % 2);
-                        ab = (logicTransformRowError[15 - gate][8 + t] >> ab) % 2;
+                        int ab = ((hashSet[t][row][column] >> power) % 2) + 2 * ((modificationTransformed[t][row][column] >> power) % 2);
+                        ab = (logicTransformColumnError[gate][t % 16] >> ab) % 2;
                         tot += (1 << power) * ab;
                     }
-                    internallyModifiedSet[8 + t][row][column] = tot;
+                    internallyModifiedSet[t][row][column] = tot;
+//                    tot = 0;
+//                    for (int power = 0; power < 4; power++) {
+//                        int ab = ((hashSet[8 + t][row][column] >> power) % 2) + 2 * ((modificationTransformed[8 + t][row][column] >> power) % 2);
+//                        ab = (logicTransformRowError[15 - gate][8 + t] >> ab) % 2;
+//                        tot += (1 << power) * ab;
+//                    }
+//                    internallyModifiedSet[8 + t][row][column] = tot;
                 }
             }
         }
@@ -463,16 +683,16 @@ public class HashLogicOpTransform {
 //            System.out.println("t: " + t);
 //            for (int row = 0; row < modifiedSet[0].length; row++) {
 //                for (int column = 0; column < modifiedSet[0][0].length; column++) {
-//                    modifiedSet[t][row][column] = bFieldSet[t][row][column] + 2 * modification[row][column];
-//                    modifiedSet[8 + t][row][column] = bFieldSet[8 + t][row][column] + 2 * modification[row][column];
+//                    modifiedSet[t][row][column] = initialSet[t][row][column] + 2 * modification[row][column];
+//                    modifiedSet[8 + t][row][column] = initialSet[8 + t][row][column] + 2 * modification[row][column];
 //                    modifiedSet[t][row][column] = (gate >> modifiedSet[t][row][column]) % 2;
 //                    modifiedSet[8 + t][row][column] = (gate >> modifiedSet[8 + t][row][column]) % 2;
 //                }
 //            }
-//            modificationTransformed[t] = hash.hashTwoDhexadecimal.hashArray(modification, hash.bothLists[listLayer][t], depth, true, rowError)[depth];
-//            modificationTransformed[8 + t] = hash.hashTwoDhexadecimal.hashArray(modification, hash.bothLists[listLayer][t], depth, false, rowError)[depth];
-//            modifiedSet[t] = hash.hashTwoDhexadecimal.hashArray(modifiedSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
-//            modifiedSet[8 + t] = hash.hashTwoDhexadecimal.hashArray(modifiedSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
+//            modificationTransformed[t] = hash.hashTwoDbitmap.hashArray(modification, hash.bothLists[listLayer][t], depth, true, rowError)[depth];
+//            modificationTransformed[8 + t] = hash.hashTwoDbitmap.hashArray(modification, hash.bothLists[listLayer][t], depth, false, rowError)[depth];
+//            modifiedSet[t] = hash.hashTwoDbitmap.hashArray(modifiedSet[t], hash.bothLists[listLayer][t], depth, true, rowError)[depth];
+//            modifiedSet[8 + t] = hash.hashTwoDbitmap.hashArray(modifiedSet[8 + t], hash.bothLists[listLayer][t], depth, false, rowError)[depth];
 //            for (int row = 0; row < modifiedSet[0].length; row++) {
 //                for (int column = 0; column < modifiedSet[0][0].length; column++) {
 //                    int tot = 0;
@@ -492,16 +712,22 @@ public class HashLogicOpTransform {
 //                }
 //            }
 //        }
-        int[] numDifferent = new int[16];
-        for (int t = 0; t < 8; t++) {
+        int[] numDifferent = new int[32];
+        for (int t = 0; t < 32; t++) {
             for (int row = 0; row < modifiedSet[0].length; row++) {
                 for (int column = 0; column < modifiedSet[0][0].length; column++) {
-                    for (int power = 0; power < 16; power++) {
+                    for (int power = 0; power < 4; power++) {
                         numDifferent[t] += (((modifiedSet[t][row][column] >> power) % 2) ^ ((internallyModifiedSet[t][row][column] >> power) % 2));
-                        numDifferent[8 + t] += (((modifiedSet[8 + t][row][column] >> power) % 2) ^ ((internallyModifiedSet[8 + t][row][column] >> power) % 2));
+                        //numDifferent[8 + t] += (((modifiedSet[8 + t][row][column] >> power) % 2) ^ ((internallyModifiedSet[8 + t][row][column] >> power) % 2));
                     }
                 }
             }
+            if (t >= 16 && logicTransformColumnError[gate][t % 16] == -1) {
+                numDifferent[t] = -1;
+            }
+        }
+        for (int t = 0; t < 32; t++) {
+            differences[depth][t][gate] = numDifferent[t];
         }
         System.out.println("numDifferent: " + Arrays.toString(numDifferent));
         System.out.println("numBits: " + (inImage.getHeight() * inImage.getWidth()) * 16);
@@ -644,7 +870,6 @@ public class HashLogicOpTransform {
         int[][] symms = hash.hashCollisions.checkCodewordSymmetry();
         System.out.println("combos: " + Arrays.deepToString(combosFive));
         int[][] validGates = new int[16][16];
-
         tLoop:
         for (int t = 0; t < 16; t++) {
             System.out.println("t: " + t + " " + hash.bothLists[1][t % 8]);
@@ -672,8 +897,8 @@ public class HashLogicOpTransform {
                 }
             }
             int max = totValid * 5;
-            int number = 4 + combosFour.length*5*totValid;
-            int finalTotal = 4+number*number;
+            int number = 4 + combosFour.length * 5 * totValid;
+            int finalTotal = 4 + number * number;
             int[] checklist = new int[16];
             int[][] twoByTwo = new int[2][4];
             int[][] circuitAxes = new int[3][totValid * 10];
@@ -702,24 +927,22 @@ public class HashLogicOpTransform {
                         for (int zoo = 0; zoo < 1; zoo++) {
                             int[] checkBits = new int[100000];
                             for (int input = 0; input < 4; input++) {
-                                int index = 4+combosFour.length*5*totValid;
-
+                                int index = 4 + combosFour.length * 5 * totValid;
                                 int[] bitsOut = new int[100000];
-
                                 bitsOut[0] = input % 2;
                                 bitsOut[1] = (input / 2) % 2;
-                                bitsOut[2] = (bitsOut[0]+1)%2;
-                                bitsOut[3] = (bitsOut[1]+1)%2;
-                                for (int c = 0; c < combosFour.length; c++){
-                                    for (int g = 0; g < 5*totValid; g++){
-                                        bitsOut[4+c*5*totValid+g] = (circuitAxes[0][g] >>( bitsOut[combosFour[c][0] + 2*combosFour[c][1]]))%2;
+                                bitsOut[2] = (bitsOut[0] + 1) % 2;
+                                bitsOut[3] = (bitsOut[1] + 1) % 2;
+                                for (int c = 0; c < combosFour.length; c++) {
+                                    for (int g = 0; g < 5 * totValid; g++) {
+                                        bitsOut[4 + c * 5 * totValid + g] = (circuitAxes[0][g] >> (bitsOut[combosFour[c][0] + 2 * combosFour[c][1]])) % 2;
                                     }
                                 }
-                                for (int x = 0; x < index; x++){
-                                    for (int y = 0; y < index; y++){
-                                        for (int g = 0; g < 5*totValid; g++){
-                                            bitsOut[index+x*index+y*5*totValid+g] = bitsOut[x] + 2*bitsOut[y];
-                                            bitsOut[index+x*index+y*5*totValid+g] = (circuitAxes[0][g]>>bitsOut[index+x*index+y*5*totValid+g])%2;
+                                for (int x = 0; x < index; x++) {
+                                    for (int y = 0; y < index; y++) {
+                                        for (int g = 0; g < 5 * totValid; g++) {
+                                            bitsOut[index + x * index + y * 5 * totValid + g] = bitsOut[x] + 2 * bitsOut[y];
+                                            bitsOut[index + x * index + y * 5 * totValid + g] = (circuitAxes[0][g] >> bitsOut[index + x * index + y * 5 * totValid + g]) % 2;
                                         }
                                     }
                                 }
@@ -746,7 +969,7 @@ public class HashLogicOpTransform {
                             }
                             for (int bit = 0; bit < checkBits.length; bit++) {
                                 checklist[checkBits[bit]] = 1;
-                                checklist[15 -checkBits[bit]] = 1;
+                                checklist[15 - checkBits[bit]] = 1;
                             }
                         }
                     }
@@ -764,11 +987,11 @@ public class HashLogicOpTransform {
 //                    }
 //                }
 //            }
-            for (int tt = 16; tt < 32; tt++){
-                for (int ttt = 16; ttt < 32; ttt++){
-                    if (symms[tt][ttt] == 1){
-                        for (int row = 0; row < 16; row++){
-                            if (validGates[ttt-16][row] == 1){
+            for (int tt = 16; tt < 32; tt++) {
+                for (int ttt = 16; ttt < 32; ttt++) {
+                    if (symms[tt][ttt] == 1) {
+                        for (int row = 0; row < 16; row++) {
+                            if (validGates[ttt - 16][row] == 1) {
                                 validGates[t][row] = 1;
                             }
                         }
@@ -787,18 +1010,17 @@ public class HashLogicOpTransform {
             }
             System.out.println(Arrays.toString(checklist));
             validGates[t] = checklist;
-
         }
-        for (int row = 0; row < 16; row++){
+        for (int row = 0; row < 16; row++) {
             if (counterIndex[row] == 1) {
-                for (int t = 16; t < 32; t++){
-                    if (symms[16+row][t] == 1){
-                        counterIndex[t-16] = 1;
+                for (int t = 16; t < 32; t++) {
+                    if (symms[16 + row][t] == 1) {
+                        counterIndex[t - 16] = 1;
                     }
                 }
             }
         }
         System.out.println("counter: " + Arrays.toString(counterIndex));
-        CustomArray.plusArrayDisplay(validGates,false,false,"validGates[][]");
+        CustomArray.plusArrayDisplay(validGates, false, false, "validGates[][]");
     }
 }

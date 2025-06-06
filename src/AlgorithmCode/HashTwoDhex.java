@@ -14,7 +14,7 @@ import java.util.Random;
  * This class is has a version of the hash that operates on arrays organized into single bits per location rather than hexadecimal. Functions with RED in
  * them have an extra loop of redundancy beyond the other single bit hex reconstruction of the input raster
  */
-public class HashTwoDsingleBit {
+public class HashTwoDhex {
     /**
      * Hash subroutines
      */
@@ -42,7 +42,7 @@ public class HashTwoDsingleBit {
      *
      * @param inHash instance of Hash, the manager class
      */
-    public HashTwoDsingleBit(Hash inHash) {
+    public HashTwoDhex(Hash inHash) {
         //hashUtilities = in;
         hash = inHash;
         hashTruthTables = hash.hashRows;
@@ -90,7 +90,43 @@ public class HashTwoDsingleBit {
         }
         return output;
     }
-
+    /**
+     * Takes raw binary data and does the initial conversion to one codeword per point covering its
+     * area of influence, before comparing them with neighbors in ecaMinMaxTransform()
+     *
+     * @param input a 2D binary array
+     * @param rule  an ECA rule
+     * @return a set of 2D arrays with input in layer 0, and layer 1 is the codeword-ified input,
+     * the rest is empty
+     */
+    public int[][] initializeDepthZero(int[][] input, int rule, boolean minimize, boolean rowError) {
+        int rows = input.length;
+        int cols = input[0].length;
+        int[][][] output = new int[4][rows][cols];
+        int layer = (minimize ? 0 : 1) + 2 * (rowError ? 0 : 1);
+        //initialize layer 0 to the input
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                output[0][row][col] = input[row][col];
+            }
+        }
+        //for every location in the bitmap
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                //gets its neighborhood
+                int cell = 0;
+                for (int r = 0; r < 4; r++) {
+                    for (int c = 0; c < 4; c++) {
+                        cell += (int) Math.pow(2, 4 * r + c) * output[0][(row + r) % rows][(col + c) % cols];
+                    }
+                }
+                //finds the neighborhood's codeword
+                //output[1][row][col] = hashTruthTables.minSolutionsAsWolfram[rule][cell];
+                output[1][row][col] = hash.allTables[layer][rule][cell];
+            }
+        }
+        return output[1];
+    }
 
 
 

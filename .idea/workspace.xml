@@ -4,9 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="paper unsubmitted, paper edited, reverified verifyInverseAvalancheSingleBitsHex()">
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashThreeD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TrimmedCode/HashThreeD.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBitRedundant.java" beforeDir="false" />
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="trimmed a bunch of duplicate experimentation loops, paper changes, about to build a function that tests HashLogicOpTramsform across every codeword and every rule">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Javadoc/AlgorithmCode/HashTwoD.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/AlgorithmCode/HashTwoD.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDhexadecimal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDbitmap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDhex.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CustomLibrary/SpellCheckPaper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TrimmedCode/SpellCheckPaper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,7 +81,7 @@
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "editor.preferences.fonts.default",
+    "settings.editor.selected.configurable": "editor.stickyLines",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -107,8 +113,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129" />
-        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129" />
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.26094.121" />
+        <option value="bundled-js-predefined-d6986cc7102b-b26f3e71634d-JavaScript-IU-251.26094.121" />
       </set>
     </attachedChunks>
   </component>
@@ -163,14 +169,7 @@
       <workItem from="1747846141965" duration="132424000" />
       <workItem from="1748833482739" duration="52000" />
       <workItem from="1748833719764" duration="24439000" />
-    </task>
-    <task id="LOCAL-00032" summary="checkChangesPerTransformAllSingleChanges() is sort of working">
-      <option name="closed" value="true" />
-      <created>1744258029698</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1744258029698</updated>
+      <workItem from="1749143678953" duration="10258000" />
     </task>
     <task id="LOCAL-00033" summary="After an hour's work">
       <option name="closed" value="true" />
@@ -556,7 +555,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749092587574</updated>
     </task>
-    <option name="localTasksCounter" value="81" />
+    <task id="LOCAL-00081" summary="trimmed a bunch of duplicate experimentation loops, paper changes, about to build a function that tests HashLogicOpTramsform across every codeword and every rule">
+      <option name="closed" value="true" />
+      <created>1749143406280</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1749143406281</updated>
+    </task>
+    <option name="localTasksCounter" value="82" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -591,7 +598,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="reintegrated the single bit hash with HashNonHexadecimal, turns out the inverse wasn't perfect it was a misreferenced array" />
     <MESSAGE value="end of night, changes to the paper" />
     <MESSAGE value="beginning of day, changes to the paper" />
     <MESSAGE value="updated most of the javadoc comments, about to outsource some stuff in findMinimizingCodeword()" />
@@ -616,7 +622,8 @@
     <MESSAGE value="leaving the working stuff, about to add the perfect 3d version of the hash and bitmap, also need to add a working columnWeighted HashLogicOpTransform test function. Probably need to nail down the error propogation in all that too, like following the avalanche propogation, for verifiable algorithm integrity" />
     <MESSAGE value="paper .bib updated, arxiv paper submitted, added some images to git" />
     <MESSAGE value="paper unsubmitted, paper edited, reverified verifyInverseAvalancheSingleBitsHex()" />
-    <option name="LAST_COMMIT_MESSAGE" value="paper unsubmitted, paper edited, reverified verifyInverseAvalancheSingleBitsHex()" />
+    <MESSAGE value="trimmed a bunch of duplicate experimentation loops, paper changes, about to build a function that tests HashLogicOpTramsform across every codeword and every rule" />
+    <option name="LAST_COMMIT_MESSAGE" value="trimmed a bunch of duplicate experimentation loops, paper changes, about to build a function that tests HashLogicOpTramsform across every codeword and every rule" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

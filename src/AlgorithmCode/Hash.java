@@ -15,7 +15,7 @@ public class Hash {
     /**
      * Two D version of the hash, has an extra set of redundancy and has mid-range lossy inverse
      */
-    public HashTwoDsingleBit hashTwoDsingleBit;
+    public HashTwoDhex hashTwoDhex;
 
     /**
      * Generates the codeword set truth tables as well as some minor functions, this one is set to rowError weighted errorScores
@@ -40,7 +40,7 @@ public class Hash {
     /**
      * Two D and bitmap hash functions, minimum redundancy out of the three hash classes, used to hash gifs because of speed
      */
-    public HashTwoDhexadecimal hashTwoDhexadecimal = new HashTwoDhexadecimal(this);
+    public HashTwoDbitmap hashTwoDbitmap = new HashTwoDbitmap(this);
     /**
      * Generally tests the hash algorithm for collisions and uniqueness
      */
@@ -80,7 +80,7 @@ public class Hash {
         hashLogicOpTransform = new HashLogicOpTransform(this);
         hashOneD = new HashOneD(this);
         hashCollisions = new HashCollisions(this);
-        hashTwoDsingleBit = new HashTwoDsingleBit(this);
+        hashTwoDhex = new HashTwoDhex(this);
         //hashTwoDsingleBitRedundant = new HashTwoDsingleBitRedundant(this);
         initWolframs();
     }
