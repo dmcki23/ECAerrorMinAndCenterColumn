@@ -4,15 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="trimmed a bunch of duplicate experimentation loops, paper changes, about to build a function that tests HashLogicOpTramsform across every codeword and every rule">
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="buncha stuff">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Javadoc/AlgorithmCode/HashTwoD.html" beforeDir="false" afterPath="$PROJECT_DIR$/Javadoc/AlgorithmCode/HashTwoD.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/Hash.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDhexadecimal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDbitmap.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDsingleBit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDhex.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CustomLibrary/SpellCheckPaper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TrimmedCode/SpellCheckPaper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDhex.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDhex.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/SpellCheckPaper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TrimmedCode/SpellCheckPaper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.synctex.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.tex" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,31 +59,31 @@
     <option name="showLibraryContents" value="true" />
     <option name="sortKey" value="BY_TIME_DESCENDING" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Unnamed.executor": "Run",
-    "DefaultHtmlFileTemplate": "HTML File",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/daniel/IdeaProjects/ECAminErrorFit/src/HashWebsite/ECAhashImages",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "/home/daniel/IdeaProjects/ECAerrorMinAndCenterColumn/src/Main.java",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "editor.stickyLines",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Unnamed.executor&quot;: &quot;Run&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/daniel/IdeaProjects/ECAminErrorFit/src/HashWebsite/ECAhashImages&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;/home/daniel/IdeaProjects/ECAerrorMinAndCenterColumn/src/Main.java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.stickyLines&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/HashWebsite/ECAhashImages" />
@@ -169,23 +168,8 @@
       <workItem from="1747846141965" duration="132424000" />
       <workItem from="1748833482739" duration="52000" />
       <workItem from="1748833719764" duration="24439000" />
-      <workItem from="1749143678953" duration="10258000" />
-    </task>
-    <task id="LOCAL-00033" summary="After an hour's work">
-      <option name="closed" value="true" />
-      <created>1744302736325</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1744302736326</updated>
-    </task>
-    <task id="LOCAL-00034" summary="before the afternoon cleanup">
-      <option name="closed" value="true" />
-      <created>1744320460824</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1744320460824</updated>
+      <workItem from="1749143678953" duration="10301000" />
+      <workItem from="1749228508601" duration="6545000" />
     </task>
     <task id="LOCAL-00035" summary="HashUtilities every zero accounted for through generateEveryLogicFunction() and checkDoublesSetsFunctions()">
       <option name="closed" value="true" />
@@ -563,7 +547,23 @@
       <option name="project" value="LOCAL" />
       <updated>1749143406281</updated>
     </task>
-    <option name="localTasksCounter" value="82" />
+    <task id="LOCAL-00082" summary="buncha stuff">
+      <option name="closed" value="true" />
+      <created>1749182250858</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1749182250858</updated>
+    </task>
+    <task id="LOCAL-00083" summary="buncha stuff">
+      <option name="closed" value="true" />
+      <created>1749182257686</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1749182257686</updated>
+    </task>
+    <option name="localTasksCounter" value="84" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -598,7 +598,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="end of night, changes to the paper" />
     <MESSAGE value="beginning of day, changes to the paper" />
     <MESSAGE value="updated most of the javadoc comments, about to outsource some stuff in findMinimizingCodeword()" />
     <MESSAGE value="findMinimizingCodeword() has been updated to call generateCodewordTile() several times instead of doing within the function, slightly slower but cleaner code" />
@@ -623,7 +622,8 @@
     <MESSAGE value="paper .bib updated, arxiv paper submitted, added some images to git" />
     <MESSAGE value="paper unsubmitted, paper edited, reverified verifyInverseAvalancheSingleBitsHex()" />
     <MESSAGE value="trimmed a bunch of duplicate experimentation loops, paper changes, about to build a function that tests HashLogicOpTramsform across every codeword and every rule" />
-    <option name="LAST_COMMIT_MESSAGE" value="trimmed a bunch of duplicate experimentation loops, paper changes, about to build a function that tests HashLogicOpTramsform across every codeword and every rule" />
+    <MESSAGE value="buncha stuff" />
+    <option name="LAST_COMMIT_MESSAGE" value="buncha stuff" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

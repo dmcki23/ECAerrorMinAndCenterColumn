@@ -55,9 +55,9 @@ public class Main {
         //hash.hashBitmap(filepath, hash.bothLists[1][rule],false,true);
         //hash.verifyInverseAndAvalanche(filepath,0);
         //hash.verifyInverseAndAvalanche(filepath,0,false);
-
-        //hash.hashTwoDhex.verifyInverseAndAvalancheSingleBitsRedundant(filepath);
-        hash.hashLogicOpTransform.checkEveryGateEveryDepth(filepath);
+        filepath = "kitchenShrunkThreeByte.bmp";
+        hash.hashTwoDhex.verifyInverseAndAvalancheSingleBitsHex(filepath,false,4);
+        //hash.hashLogicOpTransform.checkEveryGateEveryDepth(filepath);
         //hash.hashLogicOpTransform.testAllLogic();
         //hash.hashLogicOpTransform.verifyLogicOperationHash(filepath,0,true);
         //hash.hashLogicOpTransform.analyzeHashLogicOpIncompletionsFourAxis();
