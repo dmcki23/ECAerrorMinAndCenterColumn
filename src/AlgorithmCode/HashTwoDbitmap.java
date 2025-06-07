@@ -78,6 +78,7 @@ public class HashTwoDbitmap {
      *
      * @param input    a 2D array of hashed data
      * @param depth    iterative depth, also the power of how far away its neighbors are at each step
+     * @param ruleIndex the rule's index within the 8 member codeword set, 0..7
      * @param minimize if true, uses the error-minimizing codewords, and if false uses the error-maximizing codewords
      * @param rowError if true, uses the row-weighted codewords, and if false uses the column-weighted codewords
      * @return hashed input data
@@ -413,7 +414,7 @@ public class HashTwoDbitmap {
      * @param rule     0-255 ECA rule to use
      * @param minimize if true, uses the minimizing codewords, if false uses the maximizing codewords
      * @param rowError if true, uses the row-weighted errorScore, if false uses the column-weighted errorScore
-     * @throws IOException
+     * @throws IOException prints a message
      */
     public void hashBitmap(String fileName, int rule, boolean minimize, boolean rowError) throws IOException {
         //String today = System.currentTimeMillis();
@@ -564,7 +565,7 @@ public class HashTwoDbitmap {
      * @param filepath name and location of where to put the gif
      * @param depth    depth of iteration, how many frames
      * @param inImage  passed as a parameter mostly for the inImage.getHeight() and .getWidth() information
-     * @throws IOException
+     * @throws IOException prints a message
      */
     public void writeGif(short[][][] frames, String filepath, int depth, BufferedImage inImage) throws IOException {
         AnimatedGifEncoder animatedGifEncoder = new AnimatedGifEncoder();
@@ -599,7 +600,7 @@ public class HashTwoDbitmap {
      * This function experimentally tests the inverse operation and the avalanche property on a hashed bitmap
      *
      * @param filepath name of the file, not including the directory path
-     * @throws IOException
+     * @throws IOException prints a message
      */
     public void verifyInverseAndAvalanche(String filepath) throws IOException {
         filepath = "src/ImagesProcessed/" + filepath;

@@ -24,7 +24,7 @@ public class HashCollisions {
     /**
      * Sets the manager function
      * @param inHash main Hash algorithm class
-     * @throws IOException
+     * @throws IOException prints a message
      */
     public HashCollisions(Hash inHash) throws IOException {
         hash = inHash;
@@ -235,6 +235,7 @@ public class HashCollisions {
 
     /**
      * The symmetries checked here are the same left-right-black-white symmetries of the 88 independent ECA rules applied to 4 bits instead of 8
+     * @return an integer array of the symmetries, 32 x 32, minMax rowColumn codewords
      */
     public int[][] checkCodewordSymmetry() {
         hash.initWolframs();

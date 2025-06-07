@@ -91,6 +91,12 @@ public class CustomArray {
         System.out.println();
     }
 
+    /**
+     * Gets the number of dimensions of an integer array
+     * @param array an integer array of any number of dimensions
+     * @return the number of dimensions of the input
+     */
+
     public static int getArrayDimensions(Object array) {
         if (array == null || !array.getClass().isArray()) {
             return 0; // Not an array or null
@@ -111,6 +117,12 @@ public class CustomArray {
         return dimensions;
     }
 
+    /**
+     * Gets the number of dimensions of an array and returns the lengths as an int array
+     * Every axis must be the same length or there will be an error
+     * @param array an integer array in any number dimensions up to 6
+     * @return the lengths of each dimension
+     */
     public static int[] dimensions(Object array) {
         int dimensions = getArrayDimensions(array);
         System.out.println("dimensions: " + dimensions);
@@ -171,6 +183,13 @@ public class CustomArray {
 
         return new int[]{0};
     }
+
+    /**
+     * Counts the number of ones in any dimension integer array
+     * @param array an integer array
+     * @param inPower number of dimensions
+     * @return the total quantity of ones bits in the entire array
+     */
 
     public static int countOnes(Object array, int inPower) {
         int[] dimensions = dimensions(array);
@@ -270,6 +289,7 @@ public class CustomArray {
      * @param noZeros  true if you want to replace zeros with spaces on output
      * @param noSpaces true if you don't want space padding on output
      * @param label    array title
+     * @param numberPlaces number of characters per cell output
      */
     public static void plusArrayDisplay(int[][] in, boolean noZeros, boolean noSpaces, String label, int numberPlaces) {
         int rows = in.length;

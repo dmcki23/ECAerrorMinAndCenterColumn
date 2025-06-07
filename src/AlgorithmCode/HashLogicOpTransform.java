@@ -242,6 +242,7 @@ public class HashLogicOpTransform {
 
     /**
      * Hash logic transform generator. This is the main function that generates the truth tables and calls testGate() for individual rules
+     * @throws IOException prints a message
      */
     public void testAllLogic() throws IOException {
         //hash.initWolframs();
@@ -283,7 +284,7 @@ public class HashLogicOpTransform {
      *
      * @param filepath name of the bitmap, not including the directory path
      * @param rowError if true, uses the row-weighted codewords, if false uses the column-weighted codewords
-     * @throws IOException
+     * @throws IOException prints a message
      */
     public void verifyLogicOperationHash(String filepath, boolean rowError) throws IOException {
         filepath = "src/ImagesProcessed/" + filepath;
@@ -382,8 +383,8 @@ public class HashLogicOpTransform {
     /**
      * Verifies the hashLogicOpTransform truth tables, by coming up with a bitmask and hashing it, hashing the original, applying the bitmask to a copy of the original and hashing that,
      * then post-hash applying the appropriate logic gate transform and comparing the results.
-     * @param filepath
-     * @throws IOException
+     * @param filepath a 2 byte integer bitmap located in the src/ImagesProcessed directory
+     * @throws IOException prints a message
      */
     public void checkEveryGateEveryDepth(String filepath) throws IOException {
         testAllLogic();
@@ -421,7 +422,11 @@ public class HashLogicOpTransform {
      * 6. testing to see if these two seperate hash pathways generate the same thing
      *
      * @param filepath name of the bitmap, not including the directory path
-     * @throws IOException
+     * @param gate an integer 0..15 logic gate
+     * @param depth how many iterations to hash
+     * @param differences a counter array that keeps track of the number of discrepancies per depth per codeword per inverse
+     * @param ones a counter array that keeps track of the number of 1 bits per depth per codeword per inverse, showing that it's not empty or static without having to output to a gif every single time
+     * @throws IOException prints a message
      */
     public void verifyLogicOperationHashSingleBit(String filepath, int gate, int depth, int[][][] differences, int[][][][] ones) throws IOException {
         filepath = "src/ImagesProcessed/" + filepath;
@@ -588,7 +593,10 @@ public class HashLogicOpTransform {
      * 6. testing to see if these two seperate hash pathways generate the same thing
      *
      * @param filepath name of the bitmap, not including the directory path
-     * @throws IOException
+     * @param gate an integer 0..15 logic gate
+     * @param depth how many iterations of hash to do
+     * @param differences a counter array that keeps track of the number of discrepancies per depth per codeword per type inverse
+     * @throws IOException prints a message
      */
     public void verifyLogicOperationHash(String filepath, int gate, int depth, int[][][] differences) throws IOException {
         filepath = "src/ImagesProcessed/" + filepath;
@@ -752,6 +760,12 @@ public class HashLogicOpTransform {
         return out;
     }
 
+    /**
+     * An experimental function that assesses the incompletions in the column weighted error table.
+     * It also attempts to prove a codeword's limits as a universal set by brute forcing combinations of the logic gates that codeword does have
+     * @throws IOException prints a message
+     */
+
     public void analyzeHashLogicOpIncompletions() throws IOException {
         testAllLogic();
         int[][][] workingCombos = new int[16][500][16];
@@ -856,6 +870,12 @@ public class HashLogicOpTransform {
         }
         System.out.println("counter: " + Arrays.toString(counterIndex));
     }
+
+    /**
+     * Another version of an analysis of the incompletions in the column-weighted error score logic operation transform,
+     * also another version of brute forcing the limits of what gates the incomplete codewords do have
+     * @throws IOException prints a message
+     */
 
     public void analyzeHashLogicOpIncompletionsFourAxis() throws IOException {
         testAllLogic();

@@ -53,8 +53,11 @@ public class HashTwoDhex {
      * Takes in a 2D array of hashed data in codeword form, then rehashes sets of codewords increasingly far apart in steps of powers of 2, 1 apart 2 apart 4 apart ... 2^n apart
      *
      * @param input a 2D array of hashed data
-     * @param rule  one of {0,15,51,85,170,204,240,255}
+     * @param rule  a 0..255 ECA rule, typically one of {0,15,51,85,170,204,240,255}
      * @param depth iterative depth, also the power of how far away its neighbors are
+     * @param minimize if true the hash refers to the minimizing version of the rule, else refers to the maximizing version
+     * @param rowError if true the hash refers to the row-weighted error scoring, if false refers to the column-weighted error scoring
+     * @param heatmap keeps track of the number of ones bits throughout the hashing process
      * @return the input data, rehashed with neighbors 2^depth apart
      */
     public int[][][] ecaHashHex(int[][] input, int rule, int depth, boolean minimize, boolean rowError, int[][][] heatmap) {
@@ -96,6 +99,8 @@ public class HashTwoDhex {
      *
      * @param input a 2D binary array
      * @param rule  an ECA rule
+     * @param minimize if true the initial hash uses the minimizing version of the codeword, else refers to the maximizing version
+     * @param rowError if true the initial hash uses the row-weighted error scoring codewords, else refers to the column-weighted error score
      * @return a set of 2D arrays with input in layer 0, and layer 1 is the codeword-ified input,
      * the rest is empty
      */
@@ -133,6 +138,8 @@ public class HashTwoDhex {
      *
      * @param input a 2D array of hashed data
      * @param depth depth of hashing of the data
+     * @param minimize if true the inverse refers to the minimizing version of the codeword inverse, else refers to the maximizing codeword inverse
+     * @param rowError if true the inverse refers to the row-weighted error scoring, else refers to the column-weighted error scoring
      * @param rule  which rule of the set was used to hash the input (todo needs to be changed to 0-255 ECA rules)
      * @return inverted hashed data
      */
@@ -250,8 +257,10 @@ public class HashTwoDhex {
     /**
      * This function experimentally tests the inverse operation and the avalanche property on a hashed bitmap
      *
+     * @param hex if true the raster is broken down into hexadecimal and then hashed, else the raster is broken down into single bits then initialized then hashed
+     * @param bytes number of bytes in the bitmap RGB code, must be 2 or 4
      * @param filepath name of the file, not including the directory path
-     * @throws IOException
+     * @throws IOException prints a message
      */
     public void verifyInverseAndAvalancheSingleBitsHex(String filepath, boolean hex, int bytes) throws IOException {
         //
@@ -634,6 +643,8 @@ public class HashTwoDhex {
      *
      * @param input a 2D array of hashed data
      * @param depth depth of hashing of the data
+     * @param minimize if true it refers to the minimization version of the codeword, else it refers to the maximization codeword
+     * @param rowError if true it refers to the row-weighted error scoring inverse, else it refers to the column-weighted error scoring
      * @param rule  which rule of the set was used to hash the input (todo needs to be changed to 0-255 ECA rules)
      * @return inverted hashed data
      */

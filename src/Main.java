@@ -12,7 +12,7 @@ public class Main {
     /**
      * Standard main function
      * @param args Standard arg parameter, empty atm
-     * @throws IOException
+     * @throws IOException prints a message
      */
     public static void main(String[] args) throws IOException {
 

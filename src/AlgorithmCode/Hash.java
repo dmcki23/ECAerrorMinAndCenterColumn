@@ -70,7 +70,7 @@ public class Hash {
     /**
      * Sets the helper classes and initiates generating the 32 basic codeword tables
      *
-     * @throws IOException
+     * @throws IOException prints a messsage
      */
     public Hash() throws IOException {
         hashRows = new HashTruthTables(true, this);
@@ -87,6 +87,7 @@ public class Hash {
 
     /**
      * Initializes the set of hash truth tables for both row and column weighted lists, stores it in a file and tests it (not working atm)
+     * @throws IOException prints a message
      */
     public void initWolframsFromFileTest() throws IOException {
         for (int r = 0; r < 8; r++) {
@@ -139,6 +140,7 @@ public class Hash {
      * Initializes the set of hash truth tables for both row and column weighted lists, from the file generated in writeToFileMinMaxRowColumn()
      *
      * @param fromFile a dummy variable to distinguish it from the other initWolframs()
+     * @throws IOException prints a message
      */
     public void initWolframs(boolean fromFile) throws IOException {
 //        hashRows = new HashTruthTables(true,this);
@@ -219,7 +221,7 @@ public class Hash {
     /**
      * Reads the codeword set truth tables from the file generated in writeToFileMinMaxRowColumn()
      *
-     * @throws IOException
+     * @throws IOException prints a message
      */
     public void readFromFileMinMaxRowColumn() throws IOException {
         File file = new File("src/AlgorithmCode/minMaxCodewordsTest.dat");
@@ -241,7 +243,7 @@ public class Hash {
     /**
      * Writes the 32 codeword size 4 truth tables to file
      *
-     * @throws IOException
+     * @throws IOException prints a message
      */
     public void writeToFileMinMaxRowColumn() throws IOException {
         File file = new File("src/AlgorithmCode/minMaxCodewordsTest.dat");
