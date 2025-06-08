@@ -10,6 +10,14 @@ Peng Du, Youheng Dong, Qi~Cui, and Hui Li.
 Daniel McKinley.
 \newblock https://www.danielmckinley.com, 2025.
 
+\bibitem{fastHash}
+Miodrag Mihaljevi{\'{c}}, Yuliang Zheng, and Hideki Imai.
+\newblock A cellular automaton based fast one-way hash function suitable for
+  hardware implementation.
+\newblock In Hideki Imai and Yuliang Zheng, editors, {\em Public Key
+  Cryptography}, pages 217--233, Berlin, Heidelberg, 1998. Springer Berlin
+  Heidelberg.
+
 \bibitem{Rajeshwaran2019CellularAB}
 Kartik Rajeshwaran and Kakelli~Anil Kumar.
 \newblock Cellular automata based hashing algorithm (cabha) for strong

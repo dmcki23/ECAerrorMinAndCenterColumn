@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.12) (preloaded format=pdflatex 2025.2.18)  3 JUN 2025 13:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.6.6)  7 JUN 2025 18:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -193,6 +193,9 @@ LaTeX Warning: Citation `Rajeshwaran2019CellularAB' on page 1 undefined on inpu
 t line 29.
 
 
+LaTeX Warning: Citation `fastHash' on page 1 undefined on input line 29.
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 29--30
 
  []
@@ -228,58 +231,51 @@ Package pdftex.def Info: kitchenShrunkframes1.png  used on input line 47.
 
 [2 <./kitchenShrunkresized.png> <./kitchenShrunkframes0.png> <./kitchenShrunkfr
 ames1.png>]
-<FourByFourC.png, id=19, 295.1025pt x 133.49875pt>
+<FourByFourC.png, id=18, 295.1025pt x 133.49875pt>
 File: FourByFourC.png Graphic file (type png)
 <use FourByFourC.png>
-Package pdftex.def Info: FourByFourC.png  used on input line 63.
+Package pdftex.def Info: FourByFourC.png  used on input line 64.
 (pdftex.def)             Requested size: 295.10176pt x 133.4984pt.
-<FourByFourA.png, id=21, 291.0875pt x 214.8025pt>
+<FourByFourA.png, id=20, 291.0875pt x 214.8025pt>
 File: FourByFourA.png Graphic file (type png)
 <use FourByFourA.png>
-Package pdftex.def Info: FourByFourA.png  used on input line 64.
+Package pdftex.def Info: FourByFourA.png  used on input line 65.
 (pdftex.def)             Requested size: 291.08678pt x 214.80197pt.
-<FourByFourB.png, id=22, 290.08376pt x 199.74625pt>
+<FourByFourB.png, id=21, 290.08376pt x 199.74625pt>
 File: FourByFourB.png Graphic file (type png)
 <use FourByFourB.png>
-Package pdftex.def Info: FourByFourB.png  used on input line 65.
+Package pdftex.def Info: FourByFourB.png  used on input line 66.
 (pdftex.def)             Requested size: 290.08304pt x 199.74576pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 68--69
+
+[3 <./FourByFourC.png> <./FourByFourA.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 69--70
 
  []
 
-
-
-[3 <./FourByFourC.png> <./FourByFourA.png> <./FourByFourB.png>]
 
 LaTeX Warning: Citation `enwiki:1261916659' on page 4 undefined on input line 7
-1.
+2.
 
-<FastWalshHadamard.png, id=31, 250.9375pt x 120.45pt>
+<FastWalshHadamard.png, id=30, 250.9375pt x 120.45pt>
 File: FastWalshHadamard.png Graphic file (type png)
 <use FastWalshHadamard.png>
-Package pdftex.def Info: FastWalshHadamard.png  used on input line 72.
+Package pdftex.def Info: FastWalshHadamard.png  used on input line 73.
 (pdftex.def)             Requested size: 250.93687pt x 120.44969pt.
-<AlgoStruct.png, id=32, 125.46875pt x 234.8775pt>
+<AlgoStruct.png, id=31, 125.46875pt x 234.8775pt>
 File: AlgoStruct.png Graphic file (type png)
 <use AlgoStruct.png>
-Package pdftex.def Info: AlgoStruct.png  used on input line 76.
+Package pdftex.def Info: AlgoStruct.png  used on input line 78.
 (pdftex.def)             Requested size: 125.46843pt x 234.87692pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 84--85
 
- []
-
-
-
-[4 <./FastWalshHadamard.png> <./AlgoStruct.png>]
-
-LaTeX Warning: Citation `xorAdditive' on page 5 undefined on input line 86.
-
-
+[4 <./FourByFourB.png> <./FastWalshHadamard.png>]
 Underfull \hbox (badness 10000) in paragraph at lines 86--87
 
  []
+
+
+LaTeX Warning: Citation `xorAdditive' on page 5 undefined on input line 88.
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 88--89
@@ -292,6 +288,8 @@ Underfull \hbox (badness 10000) in paragraph at lines 90--91
  []
 
 
+
+[5 <./AlgoStruct.png>]
 Underfull \hbox (badness 10000) in paragraph at lines 94--95
 
  []
@@ -302,46 +300,23 @@ Underfull \hbox (badness 10000) in paragraph at lines 96--97
  []
 
 
-
-[5]
-Underfull \hbox (badness 10000) in paragraph at lines 101--102
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 103--106
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 107--124
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 125--129
+Underfull \hbox (badness 10000) in paragraph at lines 98--99
 
  []
 
 
 
 [6]
-Underfull \hbox (badness 10000) in paragraph at lines 130--147
+
+[7]
+Underfull \hbox (badness 10000) in paragraph at lines 151--152
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 150--151
+Underfull \hbox (badness 10000) in paragraph at lines 153--154
 
  []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 154--155
-
- []
-
-
-LaTeX Warning: Citation `Wolfram' on page 7 undefined on input line 157.
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 157--158
@@ -349,19 +324,28 @@ Underfull \hbox (badness 10000) in paragraph at lines 157--158
  []
 
 
-
-[7]
 Underfull \hbox (badness 10000) in paragraph at lines 160--161
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 164--165
+Underfull \hbox (badness 10000) in paragraph at lines 163--164
 
  []
 
 
+
+[8]
+
+LaTeX Warning: Citation `Wolfram' on page 9 undefined on input line 166.
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 166--167
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 172--173
 
  []
 
@@ -371,19 +355,28 @@ Underfull \hbox (badness 10000) in paragraph at lines 174--175
  []
 
 
-
-[8]
-
-LaTeX Warning: Citation `xorAdditive' on page 9 undefined on input line 176.
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 176--177
+
+ []
+
+
+
+[9]
+Underfull \hbox (badness 10000) in paragraph at lines 184--185
+
+ []
+
+
+LaTeX Warning: Citation `xorAdditive' on page 10 undefined on input line 186.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 186--187
 
  []
 
 (ECAhashPaperDM.bbl)
 
-[9] (ECAhashPaperDM.aux)
+[10] (ECAhashPaperDM.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -392,15 +385,18 @@ L3 programming layer <2025-01-18>
 
 LaTeX Warning: There were undefined references.
 
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
  ) 
 Here is how much of TeX's memory you used:
- 2126 strings out of 473531
- 35389 string characters out of 5719187
- 435825 words of memory out of 5000000
- 25360 multiletter control sequences out of 15000+600000
- 564008 words of font info for 53 fonts, out of 8000000 for 9000
+ 2137 strings out of 473524
+ 35708 string characters out of 5719024
+ 434816 words of memory out of 5000000
+ 25372 multiletter control sequences out of 15000+600000
+ 564354 words of font info for 54 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,6n,65p,1516b,199s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 57i,6n,65p,1108b,199s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmbx10.pf
 b></home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmbx12.pf
 b></home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmex10.pf
@@ -410,10 +406,11 @@ b></home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmmi8.pfb
 </home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmr12.pfb><
 /home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmr17.pfb></
 home/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmr8.pfb></ho
-me/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on ECAhashPaperDM.pdf (9 pages, 286043 bytes).
+me/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmsy10.pfb></ho
+me/daniel/.miktex/texmfs/install/fonts/type1/public/amsfonts/cm/cmti10.pfb>
+Output written on ECAhashPaperDM.pdf (10 pages, 306026 bytes).
 PDF statistics:
- 96 PDF objects out of 1000 (max. 8388607)
+ 104 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  41 words of extra memory for PDF output out of 10000 (max. 10000000)
 

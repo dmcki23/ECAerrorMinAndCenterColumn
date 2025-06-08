@@ -4,11 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="buncha stuff">
+    <list default="true" id="64a4e07e-a116-4e62-a09a-aac1354c6465" name="Changes" comment="updated Javadoc comments">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashLogicOpTransform.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDhex.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AlgorithmCode/HashTwoDhex.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TrimmedCode/SpellCheckPaper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TrimmedCode/SpellCheckPaper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.aux" beforeDir="false" afterPath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.aux" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.bbl" beforeDir="false" afterPath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.bbl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.bib" beforeDir="false" afterPath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.bib" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.blg" beforeDir="false" afterPath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.blg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.log" beforeDir="false" afterPath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.synctex.gz" beforeDir="false" afterPath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.synctex.gz" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.tex" beforeDir="false" afterPath="$PROJECT_DIR$/src/arXivUpload/ECAhashPaperDM.tex" afterDir="false" />
@@ -169,23 +174,8 @@
       <workItem from="1748833482739" duration="52000" />
       <workItem from="1748833719764" duration="24439000" />
       <workItem from="1749143678953" duration="10301000" />
-      <workItem from="1749228508601" duration="6545000" />
-    </task>
-    <task id="LOCAL-00035" summary="HashUtilities every zero accounted for through generateEveryLogicFunction() and checkDoublesSetsFunctions()">
-      <option name="closed" value="true" />
-      <created>1744669825255</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1744669825255</updated>
-    </task>
-    <task id="LOCAL-00036" summary="worked on bitmapTransform() in HashUtilities&#10;&#10;about to work on sorting out and fine tuning the zeros with checkDoublesSetsFunctions()">
-      <option name="closed" value="true" />
-      <created>1744766600255</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1744766600255</updated>
+      <workItem from="1749228508601" duration="11202000" />
+      <workItem from="1749332471728" duration="3327000" />
     </task>
     <task id="LOCAL-00037" summary="the zeros with checkDoublesSetsFunctions() accounting for all 65536 addresses, and all zeros within Hamming distance 2 of a logic gate truth table bitmask on the address">
       <option name="closed" value="true" />
@@ -563,7 +553,23 @@
       <option name="project" value="LOCAL" />
       <updated>1749182257686</updated>
     </task>
-    <option name="localTasksCounter" value="84" />
+    <task id="LOCAL-00084" summary="paper and two parameters in verifyInverseAndAvalanche() in HashTwoDhex, added a parameter that changes the number of bytes in the bitmap and whether to process down to hash or down to single bits then hash hexadecimal, submitted this version of the paper to arXiv">
+      <option name="closed" value="true" />
+      <created>1749265224935</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1749265224936</updated>
+    </task>
+    <task id="LOCAL-00085" summary="updated Javadoc comments">
+      <option name="closed" value="true" />
+      <created>1749268411077</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1749268411077</updated>
+    </task>
+    <option name="localTasksCounter" value="86" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -598,8 +604,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="beginning of day, changes to the paper" />
-    <MESSAGE value="updated most of the javadoc comments, about to outsource some stuff in findMinimizingCodeword()" />
     <MESSAGE value="findMinimizingCodeword() has been updated to call generateCodewordTile() several times instead of doing within the function, slightly slower but cleaner code" />
     <MESSAGE value="went through Javadoc comments again, mostly for errors and missing values, not so much correctness - that'll be another day" />
     <MESSAGE value="stuff went wack in AnimatedGifEncoder with no explanation. Various lines of code just disappeared somehow" />
@@ -623,7 +627,9 @@
     <MESSAGE value="paper unsubmitted, paper edited, reverified verifyInverseAvalancheSingleBitsHex()" />
     <MESSAGE value="trimmed a bunch of duplicate experimentation loops, paper changes, about to build a function that tests HashLogicOpTramsform across every codeword and every rule" />
     <MESSAGE value="buncha stuff" />
-    <option name="LAST_COMMIT_MESSAGE" value="buncha stuff" />
+    <MESSAGE value="paper and two parameters in verifyInverseAndAvalanche() in HashTwoDhex, added a parameter that changes the number of bytes in the bitmap and whether to process down to hash or down to single bits then hash hexadecimal, submitted this version of the paper to arXiv" />
+    <MESSAGE value="updated Javadoc comments" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated Javadoc comments" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

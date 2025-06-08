@@ -444,8 +444,8 @@ public class HashLogicOpTransform {
         int[][][] initialSet = new int[32][rows][cols * 16];
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < cols; column++) {
-                for (int rgbbyte = 0; rgbbyte < 2; rgbbyte++) {
-                    for (int power = 0; power < 8; power++) {
+                for (int rgbbyte = 0; rgbbyte < 1; rgbbyte++) {
+                    for (int power = 0; power < 4; power++) {
                         bfield[row][4 * column + 2 * rgbbyte + power / 4] = (int) ((Math.abs(inRaster[row * inImage.getWidth() + column]) >> (8 * rgbbyte + power)) % 16);
                         for (int posNegt = 0; posNegt < 32; posNegt++) {
                             //initialSet[posNegt][row][4 * column + 2 * rgbbyte + power/4] = (int) ((Math.abs(inRaster[row * inImage.getWidth() + column]) >> (8 * rgbbyte + power)) % 16);
@@ -480,6 +480,8 @@ public class HashLogicOpTransform {
                     }
                 }
             }
+            int localGate = gate;
+            if (((t/8)%2==1)) localGate = 15 - gate;
             bitmaskHashed[t] = hash.hashTwoDhex.ecaHashHex(bitmask, hash.bothLists[(t / 16) % 2][t % 8], depth, (t / 8) % 2 == 0 ? true : false, (t / 16) % 2 == 0 ? true : false, heatmap);
             maskedThenHashed[t] = hash.hashTwoDhex.ecaHashHex(masked[t], hash.bothLists[(t / 16) % 2][t % 8], depth, (t / 8) % 2 == 0 ? true : false, (t / 16) % 2 == 0 ? true : false, heatmap);
             for (int d = 0; d < 10; d++) {
@@ -488,7 +490,7 @@ public class HashLogicOpTransform {
                         int tot = 0;
                         for (int power = 0; power < 4; power++) {
                             int ab = ((hashedInitial[t][d][row][column] >> power) % 2) + 2 * ((bitmaskHashed[t][d][row][column] >> power) % 2);
-                            ab = (logicTransformRowError[gate][t] >> ab) % 2;
+                            ab = (logicTransformRowError[localGate][t] >> ab) % 2;
                             tot += (1 << power) * ab;
                         }
                         hashedThenMasked[t][d][row][column] = tot;
@@ -507,7 +509,7 @@ public class HashLogicOpTransform {
                         int tot = 0;
                         for (int power = 0; power < 4; power++) {
                             int ab = ((hashedInitial[t][d][row][column] >> power) % 2) + 2 * ((bitmaskHashed[t][d][row][column] >> power) % 2);
-                            ab = (logicTransformColumnError[gate][t % 16] >> ab) % 2;
+                            ab = (logicTransformColumnError[localGate][t % 16] >> ab) % 2;
                             tot += (1 << power) * ab;
                         }
                         hashedThenMasked[t][d][row][column] = tot;
@@ -579,7 +581,7 @@ public class HashLogicOpTransform {
                 //differences[d][t][gate] = numDifferent[t];
             }
         }
-        System.out.println("numDifferent: " + Arrays.toString(numDifferent));
+        //System.out.println("numDifferent: " + Arrays.toString(numDifferent));
         System.out.println("numBits: " + (inImage.getHeight() * inImage.getWidth()) * 16);
     }
 
